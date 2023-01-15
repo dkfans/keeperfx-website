@@ -21,7 +21,7 @@ return [
 
     'dev_mode' => $_ENV['APP_ENV'] === 'dev',
 
-    'cache_dir' => APP_ROOT . '/cache/doctrine', // If useing 'filesystem' cache
+    'cache_dir' => APP_ROOT . '/cache/doctrine', // If using 'filesystem' cache
 
     'orm_naming_strategy' => new \Doctrine\ORM\Mapping\UnderscoreNamingStrategy(CASE_LOWER),
 

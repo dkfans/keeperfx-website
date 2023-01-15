@@ -26,7 +26,7 @@ return [
     'persistent_token_mode' => false,
 
     /**
-     * Tthis is the maximum amount of tokens that are remembered.
+     * This is the maximum amount of tokens that are remembered.
      * This setting is ignored when using persistent tokens.
      */
     'storage_limit' => 200,
