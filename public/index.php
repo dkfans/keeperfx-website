@@ -40,12 +40,13 @@ if(Config::get('app.whoops.is_enabled') === true){
 }
 
 // Add default error handler (for end users)
-if(Config::get('app.whoops.is_enabled') === false){
-    $errorMiddleware = $app->addErrorMiddleware(true, true, true, $logger);
-    $errorHandler    = $errorMiddleware->getDefaultErrorHandler();
-    // add json errorcontroller
-    $errorHandler->registerErrorRenderer('text/html', $container->get(App\Controller\Error\HtmlErrorController::class));
-}
+// THIS IS COMMENTED OUT BECAUSE IT MESSES UP THE SESSIONS MIDDLEWARE
+// if(Config::get('app.whoops.is_enabled') === false){
+//     $errorMiddleware = $app->addErrorMiddleware(true, true, true, $logger);
+//     $errorHandler    = $errorMiddleware->getDefaultErrorHandler();
+//     // // add json errorcontroller
+//     $errorHandler->registerErrorRenderer('text/html', $container->get(App\Controller\Error\HtmlErrorController::class));
+// }
 
 // Add default body parsing middlewares
 // Example: converts 'application/json' POST data
