@@ -1,0 +1,41 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="" style="align-items: center; width: 100%">
+
+    <div class="bg-keeper bd-keeper login-box">
+
+        <h2 class="login-title">Login</h2>
+
+        {{ render_flash_messages() }}
+
+        <form action="/login" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+            <div class="row g-3">
+
+                <div class="col-12">
+                    <input type="text" class="form-control" name="username" placeholder="Username" autofocus />
+                </div>
+
+                <div class="col-12">
+                    <input type="password" class="form-control" name="password" placeholder="Password" />
+                </div>
+
+                <div class="col-12">
+                    <input type="submit" class="btn btn-dk" style="width: 100%" value="Sign In" />
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

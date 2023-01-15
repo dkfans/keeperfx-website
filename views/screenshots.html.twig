@@ -1,0 +1,167 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block title %}Screenshots{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.min.css"
+        integrity="sha512-TdCx5ObKpq3+lwUdiXFgFLhqwTB98YsdaQWSJrwkOz084qaeO86+NMYfU/pnpPo1pDVah0a7yvFmbcvI8ZiGAw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block body_javascript %}
+    <script type="module">
+        import PhotoSwipeLightbox from 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe-lightbox.esm.min.js';
+
+        // Initialize image lightbox
+        const lightbox = new PhotoSwipeLightbox({
+            bgOpacity: 0.8,
+            gallery: '#screenshots',
+            children: 'a',
+            pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.esm.min.js'),
+            mainClass: 'pswp-with-perma-preloader',
+            initialZoomLevel: 'fit',
+            showHideAnimationType: 'zoom'
+        });
+
+        // Init lightbox
+        lightbox.init();
+    </script>
+{% endblock %}
+
+{% block content %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Screenshots</h2>
+    </div>
+    <div class="content-body">
+
+<div style="display: flex; align-content: center;">
+
+        <div id="screenshots">
+
+            <div class="screenshot">
+                <a href="/screenshots/keeperfx-drag-rooms.png"
+                    data-pswp-width="1225"
+                    data-pswp-height="869"
+                    data-cropped="true"
+                    target="_blank">
+                    <img src="/screenshots/keeperfx-drag-rooms.png" alt="" />
+                </a>
+                <span class="screenshot-title">
+                    Place rooms by dragging an area
+                </span>
+            </div>
+
+            <div class="screenshot">
+                <a href="/screenshots/keeperfx-possesion.jpg"
+                    data-pswp-width="1661"
+                    data-pswp-height="934"
+                    data-cropped="true"
+                    target="_blank">
+                    <img src="/screenshots/keeperfx-possesion.jpg" alt="" />
+                </a>
+                <span class="screenshot-title">
+                    Higher render distance
+                </span>
+            </div>
+
+            <div class="screenshot">
+                <a href="/screenshots/keeperfx-ctrl-hold-mine.png"
+                    data-pswp-width="1745"
+                    data-pswp-height="982"
+                    data-cropped="true"
+                    target="_blank">
+                    <img src="/screenshots/keeperfx-ctrl-hold-mine.png" alt="" />
+                </a>
+                <span class="screenshot-title">
+                    Bulk mining
+                </span>
+            </div>
+
+            <div class="screenshot">
+                <a href="/screenshots/keeperfx-far-zoom.jpg"
+                    data-pswp-width="1660"
+                    data-pswp-height="934"
+                    data-cropped="true"
+                    target="_blank">
+                    <img src="/screenshots/keeperfx-far-zoom.jpg" alt="" />
+                </a>
+                <span class="screenshot-title">
+                    Far zoom
+                </span>
+            </div>
+
+            <div class="screenshot">
+                <a href="/screenshots/keeperfx-new-hotkeys.jpg"
+                    data-pswp-width="1587"
+                    data-pswp-height="893"
+                    data-cropped="true"
+                    target="_blank">
+                    <img src="/screenshots/keeperfx-new-hotkeys.jpg" alt="" />
+                </a>
+                <span class="screenshot-title">
+                    New hotkeys
+                </span>
+            </div>
+
+            <div class="screenshot">
+                <a href="/screenshots/keeperfx-shift-room-creation.png"
+                    data-pswp-width="1024"
+                    data-pswp-height="687"
+                    data-cropped="true"
+                    target="_blank">
+                    <img src="/screenshots/keeperfx-shift-room-creation.png" alt="" />
+                </a>
+                <span class="screenshot-title">
+                    Smart room placement
+                </span>
+            </div>
+
+            <div class="screenshot">
+                <a href="/screenshots/keeperfx-multiplayer.jpg"
+                    data-pswp-width="1389"
+                    data-pswp-height="799"
+                    data-cropped="true"
+                    target="_blank">
+                    <img src="/screenshots/keeperfx-multiplayer.jpg" alt="" />
+                </a>
+                <span class="screenshot-title">
+                    Modern multiplayer protocols
+                </span>
+            </div>
+
+            <div class="screenshot">
+                <a href="/screenshots/keeperfx-new-map-scripts.png"
+                    data-pswp-width="1920"
+                    data-pswp-height="1080"
+                    data-cropped="true"
+                    target="_blank">
+                    <img src="/screenshots/keeperfx-new-map-scripts.png" alt="" />
+                </a>
+                <span class="screenshot-title">
+                    New level script commands
+                </span>
+            </div>
+
+            <div class="screenshot">
+                <a href="/screenshots/keeperfx-new-custom-sprites.png"
+                    data-pswp-width="1273"
+                    data-pswp-height="654"
+                    data-cropped="true"
+                    target="_blank">
+                    <img src="/screenshots/keeperfx-new-custom-sprites.png" alt="" />
+                </a>
+                <span class="screenshot-title">
+                    Extra textures and sprites
+                </span>
+            </div>
+
+</div>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}

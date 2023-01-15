@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<ruleset name="Xenokore Default">
+
+    <description>Xenokore Default Ruleset (PSR2 Extended)</description>
+
+    <arg name="report" value="summary"/>
+    <arg name="colors"/>
+    <arg name="parallel" value="16"/>
+    <arg value="sp"/>
+
+    <file>./app</file>
+    <file>./config</file>
+    <file>./controllers</file>
+    <file>./migrations</file>
+    <file>./public</file>
+    <file>./src</file>
+    <file>./tests</file>
+
+    <exclude-pattern>./config/*</exclude-pattern>
+
+    <rule ref="PSR2">
+        <exclude name="Squiz.WhiteSpace.ControlStructureSpacing.SpacingAfterOpen"/>
+    </rule>
+
+    <rule ref="Symfony.Files.AlphanumericFilename.Invalid">
+        <exclude-pattern>./app/*</exclude-pattern>
+        <exclude-pattern>./app/container/*</exclude-pattern>
+    </rule>
+
+    <rule ref="Generic.Arrays.ArrayIndent"/>
+    <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
+    <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+    <rule ref="Generic.Formatting.MultipleStatementAlignment"/>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found"/>
+
+    <rule ref="Squiz.PHP.DisallowInlineIf"/>
+
+    <rule ref="./vendor/escapestudios/symfony2-coding-standard/Symfony/Sniffs/Arrays"/>
+    <rule ref="./vendor/escapestudios/symfony2-coding-standard/Symfony/Sniffs/Classes"/>
+    <rule ref="./vendor/escapestudios/symfony2-coding-standard/Symfony/Sniffs/Files"/>
+    <rule ref="./vendor/escapestudios/symfony2-coding-standard/Symfony/Sniffs/Formatting/ReturnOrThrowSniff.php"/>
+    <rule ref="./vendor/escapestudios/symfony2-coding-standard/Symfony/Sniffs/Functions"/>
+    <rule ref="./vendor/escapestudios/symfony2-coding-standard/Symfony/Sniffs/NamingConventions"/>
+    <rule ref="./vendor/escapestudios/symfony2-coding-standard/Symfony/Sniffs/Whitespace/CommaSpacingSniff.php"/>
+
+    <rule ref="Generic.Commenting.Todo.CommentFound">
+        <message>Please review this TODO comment: %s</message>
+        <severity>3</severity>
+    </rule>
+
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="150"/>
+        </properties>
+    </rule>
+
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array">
+                <element key="delete" value="unset"/>
+                <element key="print" value="echo"/>
+                <element key="create_function" value="null"/>
+            </property>
+        </properties>
+    </rule>
+
+</ruleset>

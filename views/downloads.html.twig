@@ -1,0 +1,131 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block title %}Downloads{% endblock %}
+
+{% block content %}
+
+{# Download buttons #}
+<div class="content-box" style="padding: 10px; text-align: center;">
+    {% if stable_releases|length > 0 %}
+        <a class="btn btn-dk" style="margin: 15px; min-height: 100px; padding: 20px">
+            <h3>Download latest stable</h3>
+            <span class="text-secondary">{{ stable_releases[0].name }}</span>
+        </a>
+    {% endif %}
+    {% if alpha_builds|length > 0 %}
+        <a href=""class="btn btn-dk btn-dk-gray" style="margin: 15px; min-height: 100px; padding: 20px">
+            <h5>Download latest alpha patch</h5>
+            <span class="text-secondary">{{ alpha_builds[0].name }}</span>
+        </a>
+    {% endif %}
+</div>
+
+{# Stable Releases #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Stable Releases</h2>
+    </div>
+    <div class="content-body">
+
+        <p>
+            Here are the downloads for <strong>KeeperFX</strong>.
+            You'll probably want to use the latest stable release.
+            It's very easy to get started but be sure to follow the <a href="/wiki/Home" target="_blank">installation instructions</a> as there is no automatic installer.
+        </p>
+        <p>
+            Currently <strong>only Windows is supported</strong>, but Linux and Mac users can use <a href="https://www.winehq.org/" target="_blank">Wine</a>.
+        </p>
+        <p>
+            To update your installation to the latest version, you can simply extract the newer version over your current installation.
+        </p>
+
+        <table class="table" style="margin-top: 40px; max-width: 900px;">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Date</th>
+                    <th>Changelog</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for release in stable_releases %}
+                    <tr class="{% if loop.first %}latest-release{% endif %}">
+                        <td>
+                            <a href="{{ release.downloadUrl }}" download>
+                                {{ release.name }}
+                            </a>
+                            {% if loop.first %}(latest){% endif %}
+                        </td>
+                        <td>{{ release.sizeInBytes|format_bytes }}</td>
+                        <td>{{ release.timestamp|date('Y-m-d') }}</td>
+                        <td>
+                            <a href="/changelog/{{ release.tag }}">Changelog</a>
+                            ({{ release.commits.count }})
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p>
+            <i>Stable releases are automatically pulled from the <a href="https://github.com/dkfans/keeperfx/releases" target="_blank">GitHub releases</a> page.</i>
+        </p>
+
+    </div>
+</div>
+
+{# Alpha patches #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        {# <h2>Alpha Builds <span class="text-muted">(Development)</span></h2> #}
+        <h2>Alpha Patches</h2>
+    </div>
+    <div class="content-body">
+
+        <p>
+            Alpha patches are work-in-progress builds that contain the latest features and fixes.
+            They are shared with the community so people can have the most up-to-date version while we can gather feedback and make sure they are stable.
+            The builds are made available as patches that should be extracted over the files of the latest stable release.
+            You only have to download the latest one as each patch contains the earlier patches as well.
+        </p>
+
+        <p>
+            If you are using these builds, we would love to hear your feedback.
+            The best way to get in contact with the developers is on the <a href="{{ get_env('KEEPER_KLAN_DISCORD_INVITE_URL') }}" target="_blank">Keeper Klan Discord channel</a>.
+            You can also <a href="https://github.com/dkfans/keeperfx/issues" target="_blank">report an issue on Github</a> if you run into any trouble.
+        </p>
+
+        <table class="table" style="margin-top: 40px;">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Date</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for build in alpha_builds %}
+                    <tr>
+                        <td>
+                            <a href="/download/{{ build.filename }}" download>
+                                {{ build.name }}
+                            </a>
+                        </td>
+                        <td>{{ build.sizeInBytes|format_bytes }}</td>
+                        <td>{{ build.timestamp|date('Y-m-d') }}</td>
+                        <td>{{ build.workflowTitle|github_interact }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p>
+            <i>Alpha patches are automatically pulled from the <a href="https://github.com/dkfans/keeperfx/actions/workflows/Push.yml" target="_blank">GitHub Alpha build workflow</a> page.</i>
+        </p>
+
+    </div>
+</div>
+
+{% endblock %}

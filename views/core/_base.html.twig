@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        {# Page title #}
+        <title>
+            {% if block('full_title') is empty %}
+                {% if block('title') is not empty %}
+                    {% block title %}{% endblock %} -
+                {% endif %}
+                KeeperFX
+            {% else %}
+                {% block full_title %}{% endblock %}
+            {% endif %}
+            {% if get_env('APP_ENV') == 'dev' %}[DEV]{% endif %}
+        </title>
+
+        {# SEO stuff #}
+        {% if block('meta_description') is not empty %}
+            <meta name="description" content="{% block meta_description %}{% endblock %}" />
+        {% endif %}
+        <meta name="robots" content="index, follow" />
+        <meta name="keywords" content="keeperfx, dungeon keeper, opensource, open-source, remake, modern, windows, download" />
+
+        {# Favicon #}
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+        {# Bootstrap core CSS #}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+        {# CSS #}
+        <link rel="stylesheet" href="{{ asset('/css/theme.css') }}" />
+
+        {# Page specific stylesheets #}
+        {% block stylesheets %}{% endblock %}
+
+        {# App store - used for passing application variables to javascript #}
+        {% if app_store is defined %}
+            <script>const app_store = {{ app_store|json_encode()|raw }};</script>
+        {% endif %}
+
+        {# Sentry #}
+        {# {% if get_env('APP_SENTRY_DSN') %}
+            <script src="/lib/sentry-browser/bundle.min.js"></script>
+            <script type="module">
+                Sentry.init({
+                    dsn: "{{ get_env('APP_SENTRY_DSN') }}",
+                    environment: "{{ get_env('APP_ENV') }}",
+                });
+            </script>
+        {% endif %} #}
+
+        {# Javascript #}
+        {# <script src="/lib/jquery/jquery-3.6.0.min.js"></script> #}
+
+    </head>
+
+    <body>
+
+        {% block body %}{% endblock %}
+
+        {# Javascript #}
+        {% block body_javascript %}{% endblock %}
+
+    </body>
+
+</html>

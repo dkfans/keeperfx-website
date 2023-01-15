@@ -1,0 +1,38 @@
+#!/usr/bin/env php
+<?php
+
+use App\Config\Config;
+
+// Load the app
+require_once __DIR__ . '/app/bootstrap/bootstrap.php';
+
+// Create the console
+$console = new \Symfony\Component\Console\Application();
+
+// Add commands
+$commands = [];
+foreach((include APP_ROOT . '/app/commands.php') as $command_class){
+
+    // Load commands from the container if available
+    // This way we can use autowiring in ConsoleCommands
+    if($container->has($command_class)){
+        $commands[] = $container->get($command_class);
+    } else {
+        $commands[] = new $command_class();
+    }
+}
+
+// Add Doctrine migration commands
+if(Config::get('doctrine.is_enabled') === true && \is_array(Config::get('doctrine.migration_commands'))){
+    $dependency_factory = $container->get(Doctrine\Migrations\DependencyFactory::class);
+    foreach(Config::get('doctrine.migration_commands') as $class){
+        $commands[] = new $class($dependency_factory);
+    }
+}
+
+if($commands){
+    $console->addCommands($commands);
+}
+
+// Start the console
+$console->run();

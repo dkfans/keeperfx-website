@@ -1,0 +1,22 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block title %}Downloads{% endblock %}
+
+{% block content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Changelog: {{ release.name }}</h2>
+        </div>
+        <div class="content-body">
+            <p>
+                These are the latest commits for <strong>{{ release.name }}</strong>
+            </p>
+            <pre class="code"><code>{% for commit in commits %}{{ commit.message|github_interact }}&NewLine;{% endfor %}</code></pre>
+            <p>
+                <a href="/downloads" alt="Downloads">Go back to downloads</a>
+            </p>
+        </div>
+    </div>
+
+{% endblock %}

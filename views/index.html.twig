@@ -1,0 +1,147 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block full_title %}KeeperFX - Dungeon Keeper Fan eXpansion{% endblock %}
+{% block meta_description %}KeeperFX is an opensource remake of the game Dungeon Keeper. It also adds a ton of fan made content.{% endblock %}
+
+
+{% block content %}
+
+<div class="content-box bg-keeper bd-keeper">
+{# <img src="/img/header4.gif" width="100%" /> #}
+<img src="/img/header2.png" width="100%" />
+{# <img src="/img/header.gif" width="100%" /> #}
+</div>
+
+<div class="row" style="margin-top: 30px;">
+
+    <div class="col-sm-8">
+
+        {# Intro #}
+        <div class="content-box bg-keeper bd-keeper">
+            <div class="content-header">
+                <h2>KeeperFX</h2>
+            </div>
+            <div class="content-body">
+                <p>
+                    <strong>KeeperFX</strong> is an open-source remake and fan expansion of <a href="https://en.wikipedia.org/wiki/Dungeon_Keeper" target="_blank">Dungeon Keeper</a>.
+                </p>
+                <p>
+                    <strong>Features:</strong>
+                    <ul>
+                        <li>Windows 7/10/11 support</li>
+                        <li>Higher screen resolutions</li>
+                        <li>Better interface</li>
+                        <li>Many bugfixes</li>
+                        <li>Improved AI</li>
+                        <li>Modern multiplayer protocols</li>
+                        <li>Additional campaigns and maps</li>
+                        <li>New level script commands</li>
+                        <li>New textures and sprites</li>
+                        <li>And much more!</li>
+                    </ul>
+                </p>
+                <p>
+                    KeeperFX is a standalone game but requires the original game files to operate.
+                    You can use your old CDs or the digital Gold edition from GOG.com.
+                </p>
+            </div>
+        </div>
+
+        {# News #}
+        {% if articles %}
+            <div class="content-box bg-keeper bd-keeper">
+                <div class="content-header">
+                    <h2>News</h2>
+                </div>
+                <div class="content-body">
+                        {% for article in articles %}
+                            <div class="news">
+                                <h3 class="news-title">{{ article.title }}</h3>
+                                <span class="news-date">{{ article.createdTimestamp|date('Y-m-d') }}</span>
+                                <p class="news-content">{{ article.text|markdown_to_html }}</p>
+                                {# <p class="news-content">{{ article.shortText }}</p> #}
+                                {# <a href="/news/{{ article.id }}">Read more</a> #}
+                            </div>
+                        {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+    <div class="col-sm-4">
+
+        {# Download Button #}
+        {% if release %}
+            <a href="/downloads" alt="Download">
+                <button class="btn btn-dk" style="padding: 15px;width: 100%; margin-bottom: 25px">
+                    <h3>Download</h3>
+                    <span class="text-secondary">{{ release.name }}</span>
+                </button>
+            </a>
+        {% endif %}
+
+        {# Latest Stable box #}
+        {# <div class="content-box bg-keeper bd-keeper">
+            <div class="content-header">
+                <h2>Latest Stable Release</h2>
+            </div>
+            <div class="content-body">
+                {% if release %}
+                    <a href="/downloads">{{ release.name }}</a> ({{ release.timestamp|date('Y-m-d') }})
+                {% endif %}
+
+            </div>
+        </div> #}
+
+        {# Github box #}
+        <div class="content-box bg-keeper bd-keeper">
+            <div class="content-header">
+                <h2>GitHub</h2>
+            </div>
+            <div class="content-body">
+                Repository:
+                <a href="https://github.com/dkfans/keeperfx" target="_blank">
+                    dkfans/keeperfx
+                </a>
+
+                <br />
+                <br />
+
+                <img alt="GitHub release (latest by date)"
+                    src="https://img.shields.io/github/v/release/dkfans/keeperfx?style=flat-square">
+                <img alt="GitHub all releases"
+                    src="https://img.shields.io/github/downloads/dkfans/keeperfx/total?style=flat-square">
+                <img alt="GitHub contributors"
+                    src="https://img.shields.io/github/contributors/dkfans/keeperfx?style=flat-square">
+                <img alt="GitHub last commit"
+                    src="https://img.shields.io/github/last-commit/dkfans/keeperfx?style=flat-square">
+                <img alt="GitHub Repo stars"
+                    src="https://img.shields.io/github/stars/dkfans/keeperfx?style=flat-square">
+                    {# TODO: fix github LoC counter badge, its broken? #}
+                {# <img alt="Lines of code"
+                    src="https://img.shields.io/tokei/lines/github/dkfans/keeperfx?style=flat-square"> #}
+            </div>
+        </div>
+
+        {# Discord Box #}
+        <div class="content-box bg-keeper bd-keeper">
+            <div class="content-header">
+                <h2>Keeper Klan Discord</h2>
+            </div>
+            <div class="content-body">
+                <a href="{{ get_env('KEEPER_KLAN_DISCORD_INVITE_URL') }}" target="_blank" style="display:block;">
+                    <iframe
+                        src="https://discord.com/widget?id=480505152806191114&theme=dark" width="100%"
+                        height="74" allowtransparency="true" frameborder="0" style="pointer-events: none;">
+                    </iframe>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
