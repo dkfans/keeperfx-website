@@ -23,11 +23,9 @@ foreach((include APP_ROOT . '/app/commands.php') as $command_class){
 }
 
 // Add Doctrine migration commands
-if(Config::get('doctrine.is_enabled') === true && \is_array(Config::get('doctrine.migration_commands'))){
-    $dependency_factory = $container->get(Doctrine\Migrations\DependencyFactory::class);
-    foreach(Config::get('doctrine.migration_commands') as $class){
-        $commands[] = new $class($dependency_factory);
-    }
+$dependency_factory = $container->get(Doctrine\Migrations\DependencyFactory::class);
+foreach(Config::get('doctrine.migration_commands') as $class){
+    $commands[] = new $class($dependency_factory);
 }
 
 if($commands){

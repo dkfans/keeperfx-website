@@ -15,13 +15,9 @@ use App\Config\Config;
 // Load app bootstrap
 require __DIR__ . '/bootstrap.php';
 
-// Set Doctrine DBAL and EntityManager variables
-if(Config::get('doctrine.is_enabled') === true){
-    $dbal = $container->get(\Doctrine\DBAL\Connection::class);
-    $em   = $container->get(\Doctrine\ORM\EntityManager::class);
-}
-
 // Set variables
+$dbal       = $container->get(\Doctrine\DBAL\Connection::class);
+$em         = $container->get(\Doctrine\ORM\EntityManager::class);
 $cache      = $container->get(\Psr\SimpleCache\CacheInterface::class);
 $session    = $container->get(\Compwright\PhpSession\Session::class);
 $locale     = $container->get(\App\I18n\Locale::class);

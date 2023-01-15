@@ -5,8 +5,6 @@
  */
 return [
 
-    'is_enabled' => true,
-
     'connection' => [
         'host'     => $_ENV['APP_DB_HOST'],
         'port'     => $_ENV['APP_DB_PORT'],
@@ -16,15 +14,6 @@ return [
         'driver'   => $_ENV['APP_DB_DRIVER'],
         'charset'  => $_ENV['APP_DB_CHARSET'],
     ],
-
-    /**
-     * Force annotations instead of PHP 8 attributes
-     * The `doctrine/annotations` package is required (composer)
-     * Examples:
-     * - Attribute: #[Attribute]
-     * - Annotations: /** @Annotation * /
-     */
-    'force_annotations' => false,
 
     'entity_dirs' => [
         APP_ROOT . '/src/Entity',
@@ -36,15 +25,7 @@ return [
 
     'orm_naming_strategy' => new \Doctrine\ORM\Mapping\UnderscoreNamingStrategy(CASE_LOWER),
 
-    'proxy' => [
-        'is_enabled'    => false,
-        'dir'           => APP_ROOT . '/cache/doctrine/proxy',
-        'namespace'     => 'App\Doctrine\Proxies',
-        'auto_generate' =>
-            $_ENV['APP_ENV'] === 'dev' ?
-                \Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_ALWAYS :
-                \Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_NEVER,
-    ],
+    'proxy_dir' => APP_ROOT . '/cache/doctrine/proxy',
 
     'migration_config' => [
         'table_storage' => [
