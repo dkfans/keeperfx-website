@@ -1,7 +1,7 @@
 Console Commands
 ================
 
-Xenokore framework uses the Symfony Console library and comes with a set of preconfigured commands.
+The KeeperFX website uses the Symfony Console library and comes with a set of pre-configured commands.
 
 ## Default Commands
 

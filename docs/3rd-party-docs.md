@@ -1,5 +1,5 @@
-Xenokore web-base 3rd party docs
-================================
+KeeperFX website 3rd party references
+=====================================
 
 PHP:
 - [Twig](https://twig.symfony.com/)
