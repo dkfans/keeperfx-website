@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Console\Command\Github;
+namespace App\Console\Command\KeeperFX;
 
-use App\Entity\GithubAlphaBuild;
-use App\Entity\GithubRelease;
 use DateTime;
+use App\Entity\GithubAlphaBuild;
+
 use Doctrine\ORM\EntityManager;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
-use Xenokore\Utility\Helper\JsonHelper;
-
-class GithubFetchAlphaCommand extends Command
+class FetchAlphaCommand extends Command
 {
     public const GITHUB_WORKFLOW_RUNS_URL = 'https://api.github.com/repos/dkfans/keeperfx/actions/runs';
 
@@ -26,7 +24,7 @@ class GithubFetchAlphaCommand extends Command
 
     protected function configure()
     {
-        $this->setName("github:fetch-alpha")
+        $this->setName("kfx:fetch-alpha")
             ->setDescription("Fetch the latest alpha releases");
     }
 

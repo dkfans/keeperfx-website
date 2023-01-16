@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Command\Github;
+namespace App\Console\Command\KeeperFX;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;

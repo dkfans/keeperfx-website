@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Command\Project;
+namespace App\Console\Command\KeeperFX;
 
 use App\Entity\GitCommit;
 use App\Entity\GithubRelease;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
 
-class ProjectHandleCommitsCommand extends Command
+class HandleCommitsCommand extends Command
 {
     public const PROJECT_DIR = APP_ROOT . '/keeperfx';
 
@@ -26,7 +26,7 @@ class ProjectHandleCommitsCommand extends Command
 
     protected function configure()
     {
-        $this->setName("project:handle-commits")
+        $this->setName("kfx:handle-commits")
             ->setDescription("Handle the commit history of the KeeperFX project");
     }
 

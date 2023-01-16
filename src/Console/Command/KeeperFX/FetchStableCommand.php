@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Console\Command\Github;
-
+namespace App\Console\Command\KeeperFX;
 
 use App\Entity\GithubRelease;
 
@@ -13,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 
 use Xenokore\Utility\Helper\JsonHelper;
 
-class GithubFetchStableCommand extends Command
+class FetchStableCommand extends Command
 {
     public const GITHUB_RELEASE_URL = 'https://api.github.com/repos/dkfans/keeperfx/releases';
 
@@ -26,7 +25,7 @@ class GithubFetchStableCommand extends Command
 
     protected function configure()
     {
-        $this->setName("github:fetch-stable")
+        $this->setName("kfx:fetch-stable")
             ->setDescription("Fetch the latest stable release");
     }
 

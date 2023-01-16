@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Command\Project;
+namespace App\Console\Command\KeeperFX;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use Xenokore\Utility\Helper\DirectoryHelper;
 use Symfony\Component\Process\Process;
 
-class ProjectPullCommand extends Command
+class PullRepoCommand extends Command
 {
     public const GIT_REPO = 'https://github.com/dkfans/keeperfx.git';
 
@@ -16,7 +16,7 @@ class ProjectPullCommand extends Command
 
     protected function configure()
     {
-        $this->setName("project:pull")
+        $this->setName("kfx:pull-repo")
             ->setDescription("Pull the latest master branch of KeeperFX");
     }
 

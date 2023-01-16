@@ -4,17 +4,15 @@
 
 return [
 
+    // KeeperFX
+    \App\Console\Command\KeeperFX\FetchAlphaCommand::class,
+    \App\Console\Command\KeeperFX\FetchStableCommand::class,
+    \App\Console\Command\KeeperFX\FetchWikiCommand::class,
+    \App\Console\Command\KeeperFX\HandleCommitsCommand::class,
+    \App\Console\Command\KeeperFX\PullRepoCommand::class,
+
     // User
     \App\Console\Command\User\CreateUserCommand::class,
-
-    // Github Fetch commands
-    \App\Console\Command\Github\GithubFetchAlphaCommand::class,
-    \App\Console\Command\Github\GithubFetchStableCommand::class,
-    \App\Console\Command\Github\GithubFetchWikiCommand::class,
-
-    // Project git commands
-    \App\Console\Command\Project\ProjectPullCommand::class,
-    \App\Console\Command\Project\ProjectHandleCommitsCommand::class,
 
     // Cache
     \App\Console\Command\Cache\CacheClearCommand::class,
