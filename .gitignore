@@ -1,7 +1,7 @@
 # Project stuff
-wiki/
-keeperfx/
-temp/
+/wiki/
+/keeperfx/
+/temp/
 
 # Environment vars
 .env
