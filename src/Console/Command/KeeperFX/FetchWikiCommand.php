@@ -8,13 +8,13 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use Xenokore\Utility\Helper\DirectoryHelper;
 use Symfony\Component\Process\Process;
 
-class GithubFetchWikiCommand extends Command
+class FetchWikiCommand extends Command
 {
     public const GITHUB_WIKI_URL = 'https://github.com/dkfans/keeperfx.wiki.git';
 
     protected function configure()
     {
-        $this->setName("github:fetch-wiki")
+        $this->setName("kfx:fetch-wiki")
             ->setDescription("Fetch the latest wiki pages");
     }
 
