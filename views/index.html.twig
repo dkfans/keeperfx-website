@@ -1,6 +1,6 @@
 {% extends "core/_layout.html.twig" %}
 
-{% block full_title %}KeeperFX - Dungeon Keeper Fan eXpansion{% endblock %}
+{% block full_title %}KeeperFX - Dungeon Keeper Opensource Remake and Fan Expansion{% endblock %}
 {% block meta_description %}KeeperFX is an opensource remake of the game Dungeon Keeper. It also adds a ton of fan made content.{% endblock %}
 
 
@@ -74,25 +74,12 @@
         {# Download Button #}
         {% if release %}
             <a href="/downloads" alt="Download">
-                <button class="btn btn-dk" style="padding: 15px;width: 100%; margin-bottom: 25px">
+                <button class="btn btn-medieval" style="padding: 15px;width: 100%; margin-bottom: 25px">
                     <h3>Download</h3>
-                    <span class="text-secondary">{{ release.name }}</span>
+                    <span>{{ release.name }}</span>
                 </button>
             </a>
         {% endif %}
-
-        {# Latest Stable box #}
-        {# <div class="content-box bg-keeper bd-keeper">
-            <div class="content-header">
-                <h2>Latest Stable Release</h2>
-            </div>
-            <div class="content-body">
-                {% if release %}
-                    <a href="/downloads">{{ release.name }}</a> ({{ release.timestamp|date('Y-m-d') }})
-                {% endif %}
-
-            </div>
-        </div> #}
 
         {# Github box #}
         <div class="content-box bg-keeper bd-keeper">

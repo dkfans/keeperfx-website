@@ -2,15 +2,13 @@
 
 body {
     background-color: #232427;
-    background-image: url(/img/bg2.png);
-    /* background-image: url(/img/bg.png); */
+    background-image: url(/img/bg.png);
     font-family: 'Nunito', sans-serif;
 }
 
 * {
     color: rgb(215, 197, 182);
     --bs-secondary-color: rgba(148, 66, 0, 0.75);
-    /* --special-text-color: rgb(215, 197, 182); */
     --special-text-color: #dd4a29;
     --footer-text-color: #777;
 
@@ -77,24 +75,10 @@ a:hover {
 
 .bg-keeper {
     background: url(../img/bg-gray.png) repeat;
-    /* filter: blur(0.5); */
-}
-
-.bg-keeper-2 {
-    background: url(../img/bg-gold.png) repeat;
 }
 
 .bd-keeper {
-    box-shadow:
-        0 0 0 2px #362c2c,
-        0 0 0 3px #232427,
-        rgba(0, 0, 0, 0.3) 0px 25px 50px -12px;
-}
-
-.bd-keeper-2 {
-    box-shadow:
-        0 0 0 1px #56452c,
-        0 0 0 2px #603500;
+    border: 3px solid rgba(100, 100, 100, 0.2);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -382,33 +366,6 @@ input:focus {
     box-shadow: none;
 }
 
-.btn-dk {
-    font-size: 18px;
-    color: rgb(215, 197, 182);
-    font-family: 'Cinzel', serif;
-
-    padding: 10px;
-
-    background: url(../img/bg-gold.png) repeat;
-    border: 1px solid rgb(50 36 24);
-
-    filter: brightness(1.5);
-    /* filter: brightness(1.7); */
-}
-
-.btn-dk:hover {
-    border: 1px solid rgb(79, 57, 38);
-    filter: brightness(1.75);
-    /* filter: brightness(2); */
-
-    color: var(--bs-btn-hover-color);
-    text-decoration: none;
-}
-
-.btn-dk-gray {
-    background: url(../img/bg-gray.png) repeat;
-}
-
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -429,4 +386,30 @@ footer {
     text-align: center;
     color: var(--footer-text-color);
     padding-bottom: 15px;
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.btn-medieval {
+    border-radius: 0px;
+    background-color: #1c1c1c;
+    color: rgb(238, 231, 224);
+    box-shadow: inset 0 0 5px rgba(247, 219, 219, 0.5);
+    background: url(../img/bg-button-red.png) repeat;
+    text-shadow: 2px 2px 4px black;
+    font-family: 'Cinzel', serif;
+}
+
+.btn-medieval:hover {
+    background-color: inherit;
+    filter: brightness(1.3);
+    color: rgb(238, 231, 224) !important;
+    text-decoration: none;
+}
+
+.btn-medieval-gray {
+    box-shadow: inset 0 0 7px rgba(255, 241, 241, 0.25);
+    background: url(../img/bg-button.png) repeat;
 }

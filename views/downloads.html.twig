@@ -7,15 +7,15 @@
 {# Download buttons #}
 <div class="content-box" style="padding: 10px; text-align: center;">
     {% if stable_releases|length > 0 %}
-        <a href="{{ stable_releases[0].downloadUrl }}" class="btn btn-dk" style="margin: 15px; min-height: 100px; padding: 20px" download>
+        <a href="{{ stable_releases[0].downloadUrl }}" class="btn btn-medieval" style="margin: 15px; min-height: 100px; padding: 20px" download>
             <h3>Download latest stable</h3>
-            <span class="text-secondary">{{ stable_releases[0].name }}</span>
+            <span>{{ stable_releases[0].name }}</span>
         </a>
     {% endif %}
     {% if alpha_builds|length > 0 %}
-        <a href="/download/{{ alpha_builds[0].filename }}"class="btn btn-dk btn-dk-gray" style="margin: 15px; min-height: 100px; padding: 20px" download>
+        <a href="/download/{{ alpha_builds[0].filename }}"class="btn btn-medieval btn-medieval-gray" style="margin: 15px; min-height: 100px; padding: 20px" download>
             <h5>Download latest alpha patch</h5>
-            <span class="text-secondary">{{ alpha_builds[0].name }}</span>
+            <span>{{ alpha_builds[0].name }}</span>
         </a>
     {% endif %}
 </div>
