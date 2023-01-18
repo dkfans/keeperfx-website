@@ -25,11 +25,7 @@ $app->get('/downloads/alpha', [DownloadController::class, 'alphaDownloadsIndex']
 // $app->get('/download/stable/{filename}', [DownloadController::class, 'stableDownload']);
 
 // Wiki
-// TODO: use optional route param: /wiki[/page]
-$app->group('/wiki', function (RouteCollectorProxy $group) use ($container) {
-    $group->get('', [WikiController::class, 'wikiPage']);
-    $group->get('/{page}', [WikiController::class, 'wikiPage']);
-});
+$app->get('/wiki[/{page}]', [WikiController::class, 'wikiPage']);
 
 // Login
 $app->get('/login', [LoginController::class, 'loginIndex']);
