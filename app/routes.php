@@ -18,7 +18,9 @@ $app->get('/screenshots', [StaticPageController::class, 'screenshotsIndex']);
 $app->get('/changelog/{tag}', [StaticPageController::class, 'changelogIndex']);
 
 $app->get('/downloads', [DownloadController::class, 'downloadsIndex']);
-// Specific download routes can be created if a dwonload counter is implemented
+$app->get('/downloads/stable', [DownloadController::class, 'stableDownloadsIndex']);
+$app->get('/downloads/alpha', [DownloadController::class, 'alphaDownloadsIndex']);
+// TODO: Specific download routes can be created if a download counter is implemented
 // $app->get('/download/alpha/{filename}', [DownloadController::class, 'alphaDownload']);
 // $app->get('/download/stable/{filename}', [DownloadController::class, 'stableDownload']);
 

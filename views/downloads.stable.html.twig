@@ -1,0 +1,50 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block title %}Stable builds{% endblock %}
+
+{% block content %}
+
+{# Stable Releases #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Stable Releases</h2>
+    </div>
+    <div class="content-body">
+
+        <table class="table" style="margin-top: 40px;">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for release in stable_releases %}
+                    <tr class="{% if loop.first %}latest-release{% endif %}">
+                        <td>
+                            <a href="{{ release.downloadUrl }}" download>
+                                {{ release.name }}
+                            </a>
+                            {% if loop.first %}(latest){% endif %}
+                        </td>
+                        <td>{{ release.sizeInBytes|format_bytes }}</td>
+                        <td>{{ release.timestamp|date('Y-m-d') }}</td>
+                        <td>
+                            <a href="/changelog/{{ release.tag }}">Changelog</a>
+                            ({{ release.commits.count }})
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p style="margin-top: 30px;">
+            <a href="/downloads">Go back to downloads</a>
+        </p>
+
+    </div>
+</div>
+
+{% endblock %}

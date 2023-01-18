@@ -39,13 +39,13 @@
             To update your installation to the latest version, you can simply extract the newer version over your current installation.
         </p>
 
-        <table class="table" style="margin-top: 40px; max-width: 900px;">
+        <table class="table" style="margin-top: 40px;">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Size</th>
                     <th>Date</th>
-                    <th>Changelog</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -69,7 +69,11 @@
         </table>
 
         <p>
-            <i>Stable releases are automatically pulled from the <a href="https://github.com/dkfans/keeperfx/releases" target="_blank">GitHub releases</a> page.</i>
+            <a href="/downloads/stable">Browse all stable builds...</a>
+        </p>
+
+        <p>
+            <i style="color: #666;">Stable releases are automatically pulled from the <a href="https://github.com/dkfans/keeperfx/releases" target="_blank">GitHub releases</a> page.</i>
         </p>
 
     </div>
@@ -78,7 +82,6 @@
 {# Alpha patches #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">
-        {# <h2>Alpha Builds <span class="text-muted">(Development)</span></h2> #}
         <h2>Alpha Patches</h2>
     </div>
     <div class="content-body">
@@ -114,7 +117,7 @@
                             </a>
                         </td>
                         <td>{{ build.sizeInBytes|format_bytes }}</td>
-                        <td>{{ build.timestamp|date('Y-m-d') }}</td>
+                        <td>{{ build.timestamp|date('Y-m-d G:i:s') }}</td>
                         <td>{{ build.workflowTitle|github_interact }}</td>
                     </tr>
                 {% endfor %}
@@ -122,7 +125,11 @@
         </table>
 
         <p>
-            <i>Alpha patches are automatically pulled from the <a href="https://github.com/dkfans/keeperfx/actions/workflows/Push.yml" target="_blank">GitHub Alpha build workflow</a> page.</i>
+            <a href="/downloads/alpha">Browse all alpha patches...</a>
+        </p>
+
+        <p>
+            <i style="color: #666;">Alpha patches are automatically pulled from the <a href="https://github.com/dkfans/keeperfx/actions/workflows/Push.yml" target="_blank">GitHub Alpha build workflow</a> page.</i>
         </p>
 
     </div>

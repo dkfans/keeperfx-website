@@ -1,0 +1,46 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block title %}Alpha patches{% endblock %}
+
+{% block content %}
+
+{# Alpha patches #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Alpha Patches</h2>
+    </div>
+    <div class="content-body">
+
+        <table class="table" style="margin-top: 40px;">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Date</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for build in alpha_builds %}
+                    <tr>
+                        <td>
+                            <a href="/download/{{ build.filename }}" download>
+                                {{ build.name }}
+                            </a>
+                        </td>
+                        <td>{{ build.sizeInBytes|format_bytes }}</td>
+                        <td>{{ build.timestamp|date('Y-m-d G:i:s') }}</td>
+                        <td>{{ build.workflowTitle|github_interact }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p style="margin-top: 30px;">
+            <a href="/downloads">Go back to downloads</a>
+        </p>
+
+    </div>
+</div>
+
+{% endblock %}
