@@ -3,6 +3,7 @@
 namespace App\Middleware;
 
 use App\Account;
+use App\Enum\UserRole;
 use App\FlashMessage;
 
 use Psr\Http\Message\ResponseInterface;
@@ -46,18 +47,14 @@ class AuthAdminMiddleware implements MiddlewareInterface {
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // if(!$this->account->isLoggedIn()){
+        if(!$this->account->isLoggedIn() || $this->account->getUser()->getRole()->value < UserRole::Admin->value){
 
-        //     // Remember path for redirection after login
-        //     // $this->session['redirect_next'] = $request->getUri()->getPath();
+            $this->flash->warning('You do not have the rights to access this resource.');
 
-        //     $this->flash->info('You need to be logged in to access this resource.');
-
-        //     return $this->response_factory->createResponse()
-        //         ->withHeader('Location', '/login')
-        //         ->withStatus(302);
-
-        // }
+            return $this->response_factory->createResponse()
+                ->withHeader('Location', '/dashboard')
+                ->withStatus(302);
+        }
 
         $response = $handler->handle($request);
 
