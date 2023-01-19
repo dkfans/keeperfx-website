@@ -95,8 +95,8 @@ a ion-icon[name="log-out-outline"] {
     font-family: 'Cinzel', serif;
     padding: 10px 20px;
     /* text-align: center; */
-    /* background: url(../img/bg-gray.png) repeat; */
-    background: url(../img/bg-button.png) repeat;
+    background: url(../img/bg-gray.png) repeat;
+    /* background: url(../img/bg-button.png) repeat; */
 }
 
 .header a {
