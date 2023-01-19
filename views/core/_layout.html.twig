@@ -4,66 +4,53 @@
 
     <div class="container">
 
-        <nav class="navbar navbar-expand-lg bg-keeper bd-keeper">
-            <div class="container-fluid">
-                <a class="navbar-brand" style="margin-left: 0px;" href="/">
-                    <h1 style="display: none;">KeeperFX</h1>
-                    <img src="/img/horny.ico" style="margin-right: 10px;" />
-                    <img src="/img/logo.png" />
+        <div class="content-box bd-keeper" style="margin-top: 30px;">
+            <img src="/img/top-banner.png" width="100%" />
+        </div>
+
+        <nav class="navbar justify-content-between content-box bd-keeper header">
+            <div>
+
+                <a href="/">
+                    Home
+                </a>
+                <span class="header-separator">|</span>
+                <a href="/downloads">
+                    Downloads
+                </a>
+                <span class="header-separator">|</span>
+                <a href="/wiki">
+                    Wiki
+                </a>
+                <span class="header-separator">|</span>
+                <a href="/screenshots">
+                    Screenshots
+                </a>
+                <span class="header-separator">|</span>
+                <a href="https://keeperklan.com/forums/52-KeeperFX" target="_blank">
+                    Forums
                 </a>
 
-                <ul class="navbar-nav d-flex">
+            </div>
 
-                    {# Home #}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <img src="/img/header/home.png" alt="Home" />
-                        </a>
-                    </li>
+            <div>
 
-                    {# Downloads #}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/downloads">
-                            <img src="/img/header/downloads.png" alt="Downloads" />
-                        </a>
-                    </li>
-
-                    {# Wiki #}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/wiki">
-                            <img src="/img/header/wiki.png" alt="Wiki" />
-                        </a>
-                    </li>
-
-                    {# Screenshots #}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/screenshots">
-                            <img src="/img/header/screenshots.png" alt="Screenshots" />
-                        </a>
-                    </li>
-
-                    {# FAQ #}
-                    {# <li class="nav-item">
-                        <a class="nav-link" href="/faq">
-                            <img src="/img/header/faq.png" alt="FAQ" />
-                        </a>
-                    </li> #}
-
-                    {# Forums #}
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://keeperklan.com/forums/52-KeeperFX" target="_blank">
-                            <img src="/img/header/forums.png" alt="Forums" />
-                        </a>
-                    </li>
-                </ul>
+                {# <a href="/">
+                    Register
+                </a>
+                <span class="header-separator">|</span> #}
+                <a href="/login">
+                    Login
+                </a>
 
             </div>
+
         </nav>
 
         {% block content %}{% endblock %}
 
         <footer>
-            KeeperFX - Open Source Dungeon Keeper Remake & Fan Expansion - <a href="/login">Login</a>
+            KeeperFX - Open Source Dungeon Keeper Remake & Fan Expansion
         </footer>
 
     </div>

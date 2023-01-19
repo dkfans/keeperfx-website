@@ -78,7 +78,6 @@ a:hover {
 }
 
 .bd-keeper {
-    border: 3px solid rgba(100, 100, 100, 0.2);
     border: 3px solid rgb(50, 48, 47);
 }
 
@@ -86,57 +85,37 @@ a:hover {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
+.header {
+    font-size: 18px;
+    font-family: 'Cinzel', serif;
+    padding: 10px 20px;
+    /* text-align: center; */
+    /* background: url(../img/bg-gray.png) repeat; */
+    background: url(../img/bg-button.png) repeat;
+}
+
+.header a {
+    color: rgb(215, 197, 182);
+    margin: 0 15px;
+    /* margin: 0 40px; */
+}
+
+.header a:hover {
+    text-decoration: none;
+    color: var(--special-text-color);
+}
+
+.header-separator {
+    color: rgb(122, 103, 93);
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 nav {
-    margin-top: 40px;
     margin-bottom: 30px;
-}
-
-.navbar-nav {
-    flex-direction: row;
-    flex-flow: wrap;
-    justify-content: space-around;
-}
-
-.nav-item {
-    margin: 0 8px;
-}
-
-.nav-link:hover img {
-    filter: brightness(1.9);
-}
-
-.navbar-brand {
-    margin-left: 8px;
-    margin-right: 0;
-}
-
-.navbar-brand:hover {
-    filter: brightness(1.2);
-}
-
-.navbar-brand img {
-    width: auto;
-    height: 42px;
-}
-
-.nav-item img {
-    margin-bottom: 3px;
-}
-
-@media(max-width:497px) {
-    nav {
-        margin-top: 15px;
-    }
-
-    .navbar-brand {
-        text-align: center;
-        width: 100%;
-    }
-
-    .navbar-brand img {
-        display: block;
-        margin: auto !important;
-    }
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
