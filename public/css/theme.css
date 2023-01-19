@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Nunito&display=swap');
 
 body {
-    background-color: #232427;
+    background-color: #040404;
     background-image: url(/img/bg.png);
     font-family: 'Nunito', sans-serif;
 }
@@ -79,6 +79,7 @@ a:hover {
 
 .bd-keeper {
     border: 3px solid rgba(100, 100, 100, 0.2);
+    border: 3px solid rgb(50, 48, 47);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -154,7 +155,6 @@ nav {
 
 .content-header h2 {
     font-size: 22px;
-    color: #eee;
 }
 
 .content-body {
