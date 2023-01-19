@@ -11,7 +11,13 @@
     </div>
     <div class="content-body">
 
-        <table class="table" style="margin-top: 40px;">
+        {% if alpha_builds|length > 20 %}
+            <p>
+                <a href="/downloads">Go back to downloads</a>
+            </p>
+        {% endif %}
+
+        <table class="table">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -35,10 +41,6 @@
                 {% endfor %}
             </tbody>
         </table>
-
-        <p style="margin-top: 30px;">
-            <a href="/downloads">Go back to downloads</a>
-        </p>
 
     </div>
 </div>
