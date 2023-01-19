@@ -17,7 +17,7 @@ class IndexController {
         TwigEnvironment $twig,
         EntityManager $em,
     ){
-        $articles = $em->getRepository(NewsArticle::class)->findBy([], null, 3);
+        $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 3);
         $release = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
 
         $response->getBody()->write(
