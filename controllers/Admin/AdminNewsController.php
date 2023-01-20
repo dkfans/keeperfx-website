@@ -145,7 +145,7 @@ class AdminNewsController {
         $token_value,
     ){
 
-        // Check for valid logout request
+        // Check for valid CSRF token
         $valid = $csrf_guard->validateToken($token_name, $token_value);
         if($valid){
 
