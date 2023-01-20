@@ -31,6 +31,15 @@ class FetchAlphaCommand extends Command
     protected function execute(Input $input, Output $output)
     {
         $output->writeln("[>] Fetching latest alpha releases...");
+
+        // Create output directory if it does not exist
+        if(!\is_dir($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])){
+            if(!\mkdir($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])){
+                $output->writeln("[-] Failed to create alpha build download directory");
+                return Command::FAILURE;
+            }
+        }
+
         $output->writeln("[>] Download directory: " . $_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH']);
 
         $workflow_id = \intval($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_WORKFLOW_ID'] ?? 0);
