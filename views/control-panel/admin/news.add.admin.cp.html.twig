@@ -6,13 +6,9 @@
 
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h2>Create new article</h2>
+        <h2>Create new news article</h2>
     </div>
     <div class="content-body">
-
-        <p>
-            News articles use the markdown format.
-        </p>
 
         <form action="/admin/news/add" method="POST">
 
@@ -22,6 +18,10 @@
             <input type="text" class="form-control" placeholder="Title" name="title" />
 
             <textarea class="form-control" name="contents" rows="12" placeholder="Content" style="margin-top: 15px;"></textarea>
+
+            <span class="text-muted">
+                News articles use the markdown format.
+            </span>
 
             <div class="pull-right">
 

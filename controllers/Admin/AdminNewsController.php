@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Twig\Environment as TwigEnvironment;
+use Slim\Csrf\Guard;
 
 
 class AdminNewsController {
@@ -126,6 +127,35 @@ class AdminNewsController {
             $em->flush();
 
             $flash->success('News article updated!');
+        }
+
+        $response = $response->withHeader('Location', '/admin/news')->withStatus(302);
+        return $response;
+    }
+
+    public function newsDelete(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        FlashMessage $flash,
+        Guard $csrf_guard,
+        $id,
+        $token_name,
+        $token_value,
+    ){
+
+        // Check for valid logout request
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if($valid){
+
+            $article = $em->getRepository(NewsArticle::class)->find($id);
+            if($article){
+
+                $em->remove($article);
+                $em->flush();
+                $flash->success('News article successfully removed!');
+            }
         }
 
         $response = $response->withHeader('Location', '/admin/news')->withStatus(302);

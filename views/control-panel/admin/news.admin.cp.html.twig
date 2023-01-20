@@ -19,14 +19,18 @@
                     <th>Title</th>
                     <th>Author</th>
                     <th>Date</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for article in articles %}
                         <tr>
-                            <td><a href="/admin/news/{{ article.id }}">{{ article.title }}</a></td>
+                            <td><a href="/news/{{ article.id }}/{{ article.titleSlug }}">{{ article.title }}</a></td>
                             <td>{{ article.author.username }}</td>
                             <td>{{ article.createdTimestamp|date('Y-m-d') }}</td>
+                            <td>
+                                <a href="/admin/news/{{ article.id }}">Edit</a>
+                            </td>
                         </tr>
                 {% endfor %}
             </tbody>

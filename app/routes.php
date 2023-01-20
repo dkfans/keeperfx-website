@@ -38,11 +38,16 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
     // AUTH: ADMIN
     $group->group('/admin', function (RouteCollectorProxy $group) use ($container) {
-        $group->get('/news', [Admin\AdminNewsController::class, 'newsIndex']);
-        $group->get('/news/add', [Admin\AdminNewsController::class, 'newsAddIndex']);
-        $group->post('/news/add', [Admin\AdminNewsController::class, 'newsAdd']);
-        $group->get('/news/{id}', [Admin\AdminNewsController::class, 'newsEditIndex']);
-        $group->post('/news/{id}', [Admin\AdminNewsController::class, 'newsEdit']);
+
+    // Admin: NEWS
+    $group->group('/news', function (RouteCollectorProxy $group) use ($container) {
+        $group->get('', [Admin\AdminNewsController::class, 'newsIndex']);
+        $group->get('/add', [Admin\AdminNewsController::class, 'newsAddIndex']);
+        $group->post('/add', [Admin\AdminNewsController::class, 'newsAdd']);
+        $group->get('/{id:\d+}', [Admin\AdminNewsController::class, 'newsEditIndex']);
+        $group->post('/{id:\d+}', [Admin\AdminNewsController::class, 'newsEdit']);
+        $group->get('/{id:\d+}/delete/{token_name:.+}/{token_value:.+}', [Admin\AdminNewsController::class, 'newsDelete']);
+    });
 
     })->add(AuthAdminMiddleware::class);
 
