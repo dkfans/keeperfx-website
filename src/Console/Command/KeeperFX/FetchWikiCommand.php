@@ -20,7 +20,7 @@ class FetchWikiCommand extends Command
 
     protected function execute(Input $input, Output $output)
     {
-        $dir = APP_ROOT . '/wiki';
+        $dir = APP_ROOT . '/var/wiki';
 
         $output->writeln("[>] Fetching latest wiki revision...");
 

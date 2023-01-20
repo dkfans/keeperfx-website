@@ -15,7 +15,7 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 
 class HandleCommitsCommand extends Command
 {
-    public const PROJECT_DIR = APP_ROOT . '/keeperfx';
+    public const PROJECT_DIR = APP_ROOT . '/var/keeperfx';
 
     private EntityManager $em;
 

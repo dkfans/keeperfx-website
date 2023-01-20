@@ -12,7 +12,7 @@ class PullRepoCommand extends Command
 {
     public const GIT_REPO = 'https://github.com/dkfans/keeperfx.git';
 
-    public const PROJECT_DIR = APP_ROOT . '/keeperfx';
+    public const PROJECT_DIR = APP_ROOT . '/var/keeperfx';
 
     protected function configure()
     {

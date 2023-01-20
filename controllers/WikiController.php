@@ -10,7 +10,7 @@ use Xenokore\Utility\Helper\StringHelper;
 
 class WikiController {
 
-    private const WIKI_ROOT = APP_ROOT . '/wiki';
+    private const WIKI_ROOT = APP_ROOT . '/var/wiki';
 
     private function fixMarkdownHeaderTagsSEO(string $content): string
     {
