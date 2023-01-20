@@ -14,9 +14,6 @@ vendor/
 migrations/*
 !migrations/production
 
-# Cache
-/cache/
-
 # Laradock
 .laradock/
 laradock/
