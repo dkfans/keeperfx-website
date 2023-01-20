@@ -7,7 +7,7 @@ The official website is hosted at https://keeperfx.net
 
 ## Screenshot
 
-![KeeperFX Website Mainpage](https://v0id.us/uploads/YrdYrzNsMrmY2LEd.png)
+![KeeperFX Website Homepage](https://v0id.us/uploads/libmN0koKnaDK3ee.png)
 
 ## Features
 
