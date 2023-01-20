@@ -16,6 +16,7 @@ This is the suggested crontab for the automated tasks.
 */10 * * * * php /var/www/keeperfx/console kfx:fetch-wiki
 */10 * * * * php /var/www/keeperfx/console kfx:pull-repo
 */10 * * * * php /var/www/keeperfx/console kfx:handle-commits
+*/10 * * * * php /var/www/keeperfx/console kfx:fetch-forum-activity
 ```
 
 This list has a race condition between pulling the repo and handling the commits.

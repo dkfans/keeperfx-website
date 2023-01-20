@@ -123,6 +123,24 @@
             </div>
         </div>
 
+        {# Forum Threads #}
+        {% if forum_threads|length > 0  %}
+            <div class="content-box bg-keeper bd-keeper">
+                <div class="content-header">
+                    <h2>Latest Forum Activity</h2>
+                </div>
+                <div class="content-body">
+                    {% for thread in forum_threads %}
+                        <p>
+                            <a href="{{ thread.url }}" target="_blank">{{ thread.title }} <ion-icon name="log-out-outline"></ion-icon></a>
+                            <br />
+                            {{ thread.date_str }}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
     </div>
 
 </div>
