@@ -32,6 +32,8 @@ class LoginController {
         // $flash->warning('Something is happening. Testing?.');
         // $flash->error('Something is happening. Testing?.');
 
+        $flash->info('This area is currently for Developers and Admins only. Logged in user functionality will be implemented later.');
+
         $response->getBody()->write(
             $twig->render('login.html.twig')
         );
