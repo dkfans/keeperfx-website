@@ -76,7 +76,11 @@ class ContainerFactory {
                             $class_full_name = $namespace . '\\' . explode('.', $relative_path)[0];
                             $class_full_name = str_replace(['\\\\', '/'], '\\', $class_full_name);
 
-                            if (\enum_exists($class_full_name)) {
+                            if(\enum_exists($class_full_name)) {
+                                continue;
+                            }
+
+                            if(StringHelper::startsWith($class_full_name, 'App\\Entity\\')){
                                 continue;
                             }
 
