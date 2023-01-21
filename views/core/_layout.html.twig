@@ -5,6 +5,14 @@
     <div class="container">
 
         <div class="content-box bd-keeper" style="margin-top: 30px;">
+
+            {# 'dev' environment notice #}
+            {% if get_env('APP_ENV') == 'dev' %}
+                <div style="position: absolute; float: left;">
+                    <h1 style="font-family: monospace;">[dev]</h1>
+                </div>
+            {% endif %}
+
             <img src="/img/top-banner.png" width="100%" />
         </div>
 
