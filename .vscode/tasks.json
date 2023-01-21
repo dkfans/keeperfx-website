@@ -1,0 +1,50 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start REPL (PsySH)",
+            "type": "shell",
+            "command": "./vendor/bin/psysh",
+            "windows": {
+                "command": "php ./vendor/bin/psysh"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Clear cache",
+            "type": "shell",
+            "command": "./console cache:clear",
+            "windows": {
+                "command": "php .\\console cache:clear"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Warm cache",
+            "type": "shell",
+            "command": "./console cache:warm",
+            "windows": {
+                "command": "php .\\console cache:warm"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Create controller",
+            "type": "shell",
+            "command": "./console controller:create ${input:controllerName}",
+            "windows": {
+                "command": "php .\\console controller:create ${input:controllerName}"
+            },
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "controllerName",
+            "description": "The name of the new controller. Should not be affixed with \"Controller\".",
+            "type": "promptString"
+        }
+    ]
+}
