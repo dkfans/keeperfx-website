@@ -34,7 +34,7 @@ $app->post('/login', [LoginController::class, 'login']);
 // LOGGED IN USERS
 $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/dashboard', [DashboardController::class, 'dashboardIndex']);
-    $group->get('/logout/{token_name:.+}/{token_value:.+}', [AccountController::class, 'logout']);
+    $group->get('/logout/{token_name}/{token_value:.+}', [AccountController::class, 'logout']);
 
     // AUTH: ADMIN
     $group->group('/admin', function (RouteCollectorProxy $group) use ($container) {
@@ -46,7 +46,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->post('/add', [Admin\AdminNewsController::class, 'newsAdd']);
         $group->get('/{id:\d+}', [Admin\AdminNewsController::class, 'newsEditIndex']);
         $group->post('/{id:\d+}', [Admin\AdminNewsController::class, 'newsEdit']);
-        $group->get('/{id:\d+}/delete/{token_name:.+}/{token_value:.+}', [Admin\AdminNewsController::class, 'newsDelete']);
+        $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminNewsController::class, 'newsDelete']);
     });
 
     // Admin: USERS
@@ -56,7 +56,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->post('/add', [Admin\AdminUsersController::class, 'userAdd']);
         $group->get('/{id:\d+}', [Admin\AdminUsersController::class, 'userEditIndex']);
         $group->post('/{id:\d+}', [Admin\AdminUsersController::class, 'userEdit']);
-        $group->get('/{id:\d+}/delete/{token_name:.+}/{token_value:.+}', [Admin\AdminUsersController::class, 'userDelete']);
+        $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminUsersController::class, 'userDelete']);
     });
 
 
