@@ -43,7 +43,7 @@ class CacheWarmCommand extends Command
         $em = new EntityManager($dbal_conn, $orm_config);
         foreach(\glob(self::ENTITY_DIR . '/*.php') as $entity_file){
             $entity_name = \explode('.', \basename($entity_file))[0];
-            $output->writeln("[>] Generate proxy classes for: {$entity_name}");
+            $output->writeln("[>] Generate proxy class: {$entity_name}");
             $full_entity_class = 'App\\Entity\\' . $entity_name;
             $em->getRepository($full_entity_class)->findBy([], null, 1);
         }
@@ -51,7 +51,8 @@ class CacheWarmCommand extends Command
         // Compile Twig templates
         $twig = $this->container->get(TwigEnvironment::class);
         foreach(DirectoryHelper::tree(self::VIEWS_DIR, true) as $template){
-            $output->writeln("[>] Compiling twig template: {$template}");
+            $filename = \basename($template);
+            $output->writeln("[>] Compiling twig template: {$filename}");
             try {
                 $twig->render($template);
             } catch (\Exception $ex){}
