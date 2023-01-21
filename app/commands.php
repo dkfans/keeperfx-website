@@ -17,6 +17,7 @@ return [
 
     // Cache
     \App\Console\Command\Cache\CacheClearCommand::class,
+    \App\Console\Command\Cache\CacheWarmCommand::class,
 
     // Controller
     \App\Console\Command\Controller\ControllerCreateCommand::class,
