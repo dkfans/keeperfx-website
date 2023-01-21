@@ -24,14 +24,11 @@
                 {% endif %}
                 {% if account.role == roles.admin %}
                     <li>
-                        <a href="/admin/news">News</a>
+                        <a href="/admin/news/list">News</a>
                     </li>
-                    {# <li>
-                        <a href="/admin/wiki">Wiki</a>
-                    </li> #}
-                    {# <li>
-                        <a href="/admin/users">Users</a>
-                    </li> #}
+                    <li>
+                        <a href="/admin/user/list">Users</a>
+                    </li>
                 {% endif %}
                 <li>
                     <a href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">Logout</a>

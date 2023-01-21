@@ -1,0 +1,46 @@
+{% extends "core/_control-panel.html.twig" %}
+
+{% block title %}Add new user - Admin{% endblock %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Add new user</h2>
+    </div>
+    <div class="content-body">
+
+        <form action="/admin/users/add" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="text" class="form-control" id="password" name="password">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Role</label>
+                <select class="form-control" id="role" name="role">
+                    <option value="1">User</option>
+                    <option value="5">Developer</option>
+                    <option value="9">Admin</option>
+                </select>
+            </div>
+
+            <div class="form-group pull-right">
+                <input type="submit" class="btn btn-medieval" value="Add" />
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

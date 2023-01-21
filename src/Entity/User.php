@@ -140,7 +140,7 @@ class User {
      *
      * @return  self
      */
-    public function setRole(UserRole|int $role): self
+    public function setRole(UserRole $role): self
     {
         $this->role = $role;
 

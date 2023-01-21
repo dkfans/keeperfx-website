@@ -30,6 +30,7 @@ class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements 
 
         return [
             'account' => [
+                'id'       => $this->account->getUser()->getId(),
                 'username' => $this->account->getUser()->getUsername(),
                 'role'     => $this->account->getUser()->getRole()->value,
             ]

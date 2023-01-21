@@ -69,7 +69,7 @@ class AdminNewsController {
             $flash->success('News article posted!');
         }
 
-        $response = $response->withHeader('Location', '/admin/news')->withStatus(302);
+        $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
         return $response;
     }
 
@@ -86,7 +86,7 @@ class AdminNewsController {
 
         if(!$article){
             $flash->warning('News article not found.');
-            $response = $response->withHeader('Location', '/admin/news')->withStatus(302);
+            $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
             return $response;
         }
 
@@ -129,7 +129,7 @@ class AdminNewsController {
             $flash->success('News article updated!');
         }
 
-        $response = $response->withHeader('Location', '/admin/news')->withStatus(302);
+        $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
         return $response;
     }
 
@@ -158,7 +158,7 @@ class AdminNewsController {
             }
         }
 
-        $response = $response->withHeader('Location', '/admin/news')->withStatus(302);
+        $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
         return $response;
     }
 

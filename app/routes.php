@@ -41,13 +41,24 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
     // Admin: NEWS
     $group->group('/news', function (RouteCollectorProxy $group) use ($container) {
-        $group->get('', [Admin\AdminNewsController::class, 'newsIndex']);
+        $group->get('/list', [Admin\AdminNewsController::class, 'newsIndex']);
         $group->get('/add', [Admin\AdminNewsController::class, 'newsAddIndex']);
         $group->post('/add', [Admin\AdminNewsController::class, 'newsAdd']);
         $group->get('/{id:\d+}', [Admin\AdminNewsController::class, 'newsEditIndex']);
         $group->post('/{id:\d+}', [Admin\AdminNewsController::class, 'newsEdit']);
         $group->get('/{id:\d+}/delete/{token_name:.+}/{token_value:.+}', [Admin\AdminNewsController::class, 'newsDelete']);
     });
+
+    // Admin: USERS
+    $group->group('/user', function (RouteCollectorProxy $group) use ($container) {
+        $group->get('/list', [Admin\AdminUsersController::class, 'usersIndex']);
+        $group->get('/add', [Admin\AdminUsersController::class, 'userAddIndex']);
+        $group->post('/add', [Admin\AdminUsersController::class, 'userAdd']);
+        $group->get('/{id:\d+}', [Admin\AdminUsersController::class, 'userEditIndex']);
+        $group->post('/{id:\d+}', [Admin\AdminUsersController::class, 'userEdit']);
+        $group->get('/{id:\d+}/delete/{token_name:.+}/{token_value:.+}', [Admin\AdminUsersController::class, 'userDelete']);
+    });
+
 
     })->add(AuthAdminMiddleware::class);
 
