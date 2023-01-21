@@ -54,9 +54,14 @@
                             <div class="news">
                                 <h3 class="news-title">{{ article.title }}</h3>
                                 <span class="news-date">{{ article.createdTimestamp|date('Y-m-d') }}</span>
-                                <p class="news-content">{{ article.text|markdown_to_html }}</p>
-                                {# <p class="news-content">{{ article.shortText }}</p> #}
-                                {# <a href="/news/{{ article.id }}">Read more</a> #}
+                                {% if article.shortText %}
+                                    <p class="news-content">{{ article.text|markdown_to_html }}</p>
+                                {% else %}
+                                    <p class="news-content">{{ article.shortText|markdown_to_html }}</p>
+                                {% endif %}
+                                <p>
+                                    <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}">Read more</a>
+                                </p>
                             </div>
                         {% endfor %}
                 </div>

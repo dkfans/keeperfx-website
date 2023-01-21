@@ -16,6 +16,7 @@ use App\Middleware\AuthAdminMiddleware;
 $app->get('/', [IndexController::class, 'index']);
 $app->get('/screenshots', [ScreenshotController::class, 'screenshotsIndex']);
 $app->get('/changelog/{tag}', [ChangelogController::class, 'changelogIndex']);
+$app->get('/news/{id:\d+}[/{date_str}[/{slug}]]', [NewsController::class, 'newsArticleIndex']);
 
 $app->get('/downloads', [DownloadController::class, 'downloadsIndex']);
 $app->get('/downloads/stable', [DownloadController::class, 'stableDownloadsIndex']);

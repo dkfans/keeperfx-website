@@ -1,0 +1,20 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block title %}Downloads{% endblock %}
+
+{% block content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+    <span class="news-date">{{ article.createdTimestamp|date('Y-m-d') }}</span>
+            <h2>{{ article.title }}</h2>
+        </div>
+        <div class="content-body">
+            <p class="news-content">{{ article.text|markdown_to_html }}</p>
+            <p>
+                <a href="/">Go back</a>
+            </p>
+        </div>
+    </div>
+
+{% endblock %}
