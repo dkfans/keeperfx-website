@@ -6,6 +6,7 @@
 
         {# Page title #}
         <title>
+            {% if get_env('APP_ENV') == 'dev' %}[*dev*]{% endif %}
             {% if block('full_title') is empty %}
                 {% if block('title') is not empty %}
                     {% block title %}{% endblock %} -
@@ -14,7 +15,6 @@
             {% else %}
                 {% block full_title %}{% endblock %}
             {% endif %}
-            {% if get_env('APP_ENV') == 'dev' %}[DEV]{% endif %}
         </title>
 
         {# SEO stuff #}
