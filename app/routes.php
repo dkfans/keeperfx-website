@@ -14,8 +14,8 @@ use App\Middleware\AuthAdminMiddleware;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $app->get('/', [IndexController::class, 'index']);
-$app->get('/screenshots', [StaticPageController::class, 'screenshotsIndex']);
-$app->get('/changelog/{tag}', [StaticPageController::class, 'changelogIndex']);
+$app->get('/screenshots', [ScreenshotController::class, 'screenshotsIndex']);
+$app->get('/changelog/{tag}', [ChangelogController::class, 'changelogIndex']);
 
 $app->get('/downloads', [DownloadController::class, 'downloadsIndex']);
 $app->get('/downloads/stable', [DownloadController::class, 'stableDownloadsIndex']);

@@ -3,27 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\GitCommit;
-use App\Entity\GithubAlphaBuild;
 use App\Entity\GithubRelease;
-use Compwright\PhpSession\Session;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class StaticPageController {
-
-    public function screenshotsIndex(
-        Request $request,
-        Response $response,
-        TwigEnvironment $twig
-    ){
-        $response->getBody()->write(
-            $twig->render('screenshots.html.twig')
-        );
-
-        return $response;
-    }
+class ChangelogController {
 
     public function changelogIndex(
         Request $request,
