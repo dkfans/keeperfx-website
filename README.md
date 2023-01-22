@@ -9,18 +9,6 @@ The official website is hosted at https://keeperfx.net
 
 ![KeeperFX Website Homepage](https://v0id.us/uploads/libmN0koKnaDK3ee.png)
 
-## Features
-
-- Automatic Github release pulling
-- Automatic Github workflow Alpha build pulling
-    - Alpha builds are downloaded and stored locally because downloading Github artifacts requires a Github login
-- Automatic Github Wiki pulling
-- Automatic changelog generation based on commits
-- News
-- Screenshots
-- Admin panel
-    - Add and edit news
-
 ## Requirements
 
 - PHP 8.1
