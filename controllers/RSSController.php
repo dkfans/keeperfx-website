@@ -42,7 +42,6 @@ class RSSController {
                 ->setTitle($article->getTitle())
                 ->setDescription($article->getText())
                 ->setLink($_ENV['APP_ROOT_URL'] . '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug())
-                ->setAuthor('KeeperFX')
                 ->setDate($article->getCreatedTimestamp());
 
             $feed->addItem($item);
@@ -51,6 +50,8 @@ class RSSController {
         $response->getBody()->write(
             $feed->generateFeed()
         );
+
+        $response->withHeader('Content-Type', 'application/rss+xml');
 
         return $response;
     }
