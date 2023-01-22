@@ -41,7 +41,7 @@ class AddWorkshopTypeCommand extends Command
         $type_name = (string) $input->getArgument('type_name');
 
         // Check if type already exists
-        if($em->getRepository(User::class)->findOneBy(['name' => $type_name])){
+        if($em->getRepository(WorkshopType::class)->findOneBy(['name' => $type_name])){
             $output->writeln("[-] Workshop type '{$type_name}' already exists");
             return Command::FAILURE;
         }

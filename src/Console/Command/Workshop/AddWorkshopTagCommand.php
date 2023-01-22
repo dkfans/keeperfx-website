@@ -41,7 +41,7 @@ class AddWorkshopTagCommand extends Command
         $tag_name = (string) $input->getArgument('tag_name');
 
         // Check if tag already exists
-        if($em->getRepository(User::class)->findOneBy(['name' => $tag_name])){
+        if($em->getRepository(WorkshopTag::class)->findOneBy(['name' => $tag_name])){
             $output->writeln("[-] Workshop tag '{$tag_name}' already exists");
             return Command::FAILURE;
         }
