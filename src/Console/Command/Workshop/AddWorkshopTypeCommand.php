@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Command\User;
+namespace App\Console\Command\Workshop;
 
 use App\Entity\User;
 use App\Entity\WorkshopType;
