@@ -1,3 +1,18 @@
-<h1>Xenokore App</h1>
-<h2>Error 500</h2>
-<h3>Something went wrong...</h3>
+{% extends "core/_layout.html.twig" %}
+
+{% block title %}500 - Internal Server Error{% endblock %}
+
+{% block content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>500 - Internal Server Error</h2>
+        </div>
+        <div class="content-body">
+            <p>
+                Something went wrong... Try again later.
+            </p>
+        </div>
+    </div>
+
+{% endblock %}
