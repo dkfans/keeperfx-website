@@ -1,0 +1,32 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block title %}Downloads{% endblock %}
+
+{% block content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>RSS Feeds</h2>
+        </div>
+        <div class="content-body">
+            <p>
+                You can easily subscribe to our RSS feeds by using one of the links below:
+            </p>
+            <table class="table">
+                <tr>
+                    <td>News</td>
+                    <td><code>{{ get_env('APP_ROOT_URL') }}/rss/news</code></td>
+                </tr>
+                <tr>
+                    <td>Stable builds</td>
+                    <td><code>{{ get_env('APP_ROOT_URL') }}/rss/stable</code></td>
+                </tr>
+                <tr>
+                    <td>Alpha patches</td>
+                    <td><code>{{ get_env('APP_ROOT_URL') }}/rss/alpha</code></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

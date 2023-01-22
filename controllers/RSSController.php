@@ -5,12 +5,27 @@ namespace App\Controller;
 use App\Entity\GithubAlphaBuild;
 use App\Entity\GithubRelease;
 use App\Entity\NewsArticle;
-use Doctrine\ORM\EntityManager;
+
 use FeedWriter\RSS2;
+use Doctrine\ORM\EntityManager;
+use Twig\Environment as TwigEnvironment;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class RSSController {
+
+    public function rssInfoIndex(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig
+    ){
+        $response->getBody()->write(
+            $twig->render('rss-info.html.twig')
+        );
+
+        return $response;
+    }
 
     public function newsFeed(
         Request $request,
