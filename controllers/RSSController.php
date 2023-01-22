@@ -12,6 +12,7 @@ use Twig\Environment as TwigEnvironment;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use League\CommonMark\CommonMarkConverter;
 
 class RSSController {
 
@@ -57,11 +58,15 @@ class RSSController {
             // Create URL to article
             $url = $_ENV['APP_ROOT_URL'] . '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug();
 
+            // Create HTML content from markdown
+            $converter = new CommonMarkConverter();
+            $content   = $converter->convert($article->getText());
+
             // Create feed item
             $item = $feed->createNewItem();
             $item
                 ->setTitle($article->getTitle())
-                ->setDescription($article->getText())
+                ->setDescription($content)
                 ->setLink($url)
                 ->setId($url, true)
                 ->setDate($article->getCreatedTimestamp());
