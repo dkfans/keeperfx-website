@@ -9,6 +9,17 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class WorkshopController {
 
+    public function workshopIndex(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig
+    ){
+        $response->getBody()->write(
+            $twig->render('workshop/workshop.html.twig')
+        );
+        return $response;
+    }
+
     public function itemIndex(
         Request $request,
         Response $response,

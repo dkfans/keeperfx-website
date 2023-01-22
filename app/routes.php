@@ -67,6 +67,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
 // Workshop
 $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
+    $group->get('', [WorkshopController::class, 'workshopIndex']);
     $group->get('/item/{id}', [WorkshopController::class, 'itemIndex']);
 });
 
