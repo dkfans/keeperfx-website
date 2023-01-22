@@ -49,7 +49,9 @@
 
                 {% if account %}
                     <div class="userbit">
-                        {{ account.username }}
+                        <a href="/dashboard">
+                            {{ account.username }}
+                        </a>
                     </div>
                 {% else %}
                     <a href="/register">
@@ -68,7 +70,7 @@
         {% block content %}{% endblock %}
 
         <footer>
-            KeeperFX - Open Source Dungeon Keeper Remake & Fan Expansion - <a href="/rss-info">RSS</a> - <a href="/login">Login</a>
+            KeeperFX - Open Source Dungeon Keeper Remake & Fan Expansion - <a href="/rss-info">RSS</a>
         </footer>
 
     </div>
