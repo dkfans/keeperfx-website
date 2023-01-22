@@ -8,11 +8,31 @@ body {
 
 * {
     color: rgb(215, 197, 182);
+    box-sizing: border-box;
+
     --bs-secondary-color: rgba(148, 66, 0, 0.75);
     --special-text-color: #dd4a29;
     --footer-text-color: #777;
 
-    box-sizing: border-box;
+    --bs-info-text: #ffffff;
+    --bs-info-bg-subtle: #3aa2fb;
+    --bs-info-border-subtle: #1c2b2e;
+    --bs-info-text: #ffffff;
+
+    --bs-success-text: #ffffff;
+    --bs-success-bg-subtle: #1aa100;
+    --bs-success-border-subtle: #11241c;
+    --bs-success-text: #ffffff;
+
+    --bs-warning-text: #ffffff;
+    --bs-warning-bg-subtle: #e79300;
+    --bs-warning-border-subtle: #816c2f;
+    --bs-warning-text: #ffffff;
+
+    --bs-danger-text: #ffffff;
+    --bs-danger-bg-subtle: #f90017;
+    --bs-danger-border-subtle: #721d26;
+    --bs-danger-text: #ffffff;
 }
 
 ul {
@@ -423,4 +443,12 @@ footer {
 .form-group label {
     font-size: 18px;
     margin-bottom: 5px;
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.alert {
+    border-radius: 0;
 }

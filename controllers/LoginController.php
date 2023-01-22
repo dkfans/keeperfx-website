@@ -26,12 +26,6 @@ class LoginController {
             return $response;
         }
 
-        // TODO: make these look better:
-        // $flash->info('Something is happening. Testing?.');
-        // $flash->success('Something is happening. Testing?.');
-        // $flash->warning('Something is happening. Testing?.');
-        // $flash->error('Something is happening. Testing?.');
-
         $flash->info('This area is currently for Developers and Admins only. Logged in user functionality will be implemented later.');
 
         $response->getBody()->write(
