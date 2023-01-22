@@ -26,7 +26,8 @@ class RSSController {
             ->setLink($_ENV['APP_ROOT_URL'])
             ->setSelfLink($_ENV['APP_ROOT_URL'] . '/rss/news')
             ->setChannelElement('language', 'en-US')
-            ->setDate(\time());
+            ->setDate(\time())
+            ->addGenerator();
 
         // Loop trough all articles
         foreach($articles as $i => $article){
@@ -36,12 +37,16 @@ class RSSController {
                 $feed->setChannelElement('pubDate',  \date(\DATE_RSS, $article->getCreatedTimestamp()->getTimestamp()));
             }
 
+            // Create URL to article
+            $url = $_ENV['APP_ROOT_URL'] . '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug();
+
             // Create feed item
             $item = $feed->createNewItem();
             $item
                 ->setTitle($article->getTitle())
                 ->setDescription($article->getText())
-                ->setLink($_ENV['APP_ROOT_URL'] . '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug())
+                ->setLink($url)
+                ->setId($url, true)
                 ->setDate($article->getCreatedTimestamp());
 
             $feed->addItem($item);
@@ -51,9 +56,7 @@ class RSSController {
             $feed->generateFeed()
         );
 
-        $response->withHeader('Content-Type', 'application/rss+xml');
-
-        return $response;
+        return $response->withHeader('Content-Type', 'application/rss+xml');
     }
 
 }
