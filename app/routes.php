@@ -65,4 +65,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
 })->add(LoggedInMiddleware::class);
 
-
+// RSS
+$app->group('/rss', function (RouteCollectorProxy $group) use ($container) {
+    $group->get('/news', [RSSController::class, 'newsFeed']);
+});
