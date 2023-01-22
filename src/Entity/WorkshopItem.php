@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity]
+class WorkshopItem {
+
+    #[ORM\Id]
+    #[ORM\Column]
+    #[ORM\GeneratedValue]
+    private int $id;
+
+    #[ORM\Column]
+    private string $name;
+
+    #[ORM\Column]
+    private \DateTime $created_timestamp;
+
+    #[ORM\Column]
+    private \DateTime $updated_timestamp;
+
+    #[ORM\PrePersist]
+    public function onPrePersist()
+    {
+        $this->created_timestamp = new \DateTime("now");
+    }
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate()
+    {
+        $this->updated_timestamp = new \DateTime("now");
+    }
+
+    /**
+     * Get the value of id
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get the value of name
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set the value of name
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of created_timestamp
+     */
+    public function getCreatedTimestamp(): \DateTime
+    {
+        return $this->created_timestamp;
+    }
+
+    /**
+     * Set the value of created_timestamp
+     */
+    public function setCreatedTimestamp(\DateTime $created_timestamp): self
+    {
+        $this->created_timestamp = $created_timestamp;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of updated_timestamp
+     */
+    public function getUpdatedTimestamp(): \DateTime
+    {
+        return $this->updated_timestamp;
+    }
+
+    /**
+     * Set the value of updated_timestamp
+     */
+    public function setUpdatedTimestamp(\DateTime $updated_timestamp): self
+    {
+        $this->updated_timestamp = $updated_timestamp;
+
+        return $this;
+    }
+}
