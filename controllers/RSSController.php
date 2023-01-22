@@ -18,15 +18,25 @@ class RSSController {
         /** @var NewsArticle[] $articles */
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 5);
 
+        // Create feed
         $feed = new RSS2();
         $feed
-            ->setTitle('KeeperFX News')
+            ->setTitle('KeeperFX')
             ->setDescription('The latest news for KeeperFX')
             ->setLink($_ENV['APP_ROOT_URL'])
             ->setSelfLink($_ENV['APP_ROOT_URL'] . '/rss/news')
-            ->setChannelElement('language', 'en-US');
+            ->setChannelElement('language', 'en-US')
+            ->setDate(\time());
 
-        foreach($articles as $article){
+        // Loop trough all articles
+        foreach($articles as $i => $article){
+
+            // Add last updated date (first element)
+            if($i === 0){
+                $feed->setChannelElement('pubDate',  \date(\DATE_RSS, $article->getCreatedTimestamp()->getTimestamp()));
+            }
+
+            // Create feed item
             $item = $feed->createNewItem();
             $item
                 ->setTitle($article->getTitle())
