@@ -25,7 +25,9 @@ class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements 
     public function getGlobals(): array
     {
         if(!$this->account->isLoggedIn()){
-            return [];
+            return [
+                'account' => null,
+            ];
         }
 
         return [

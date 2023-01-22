@@ -65,6 +65,11 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
 })->add(LoggedInMiddleware::class);
 
+// Workshop
+$app->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
+    $group->get('/item/{id}', [WorkshopController::class, 'itemIndex']);
+});
+
 // RSS
 $app->get('/rss-info', [RSSController::class, 'rssInfoIndex']);
 $app->group('/rss', function (RouteCollectorProxy $group) use ($container) {

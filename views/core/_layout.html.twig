@@ -35,6 +35,10 @@
                     Screenshots
                 </a>
                 <span class="header-separator">|</span>
+                <a href="/workshop">
+                    Workshop
+                </a>
+                <span class="header-separator">|</span>
                 <a href="https://keeperklan.com/forums/52-KeeperFX" target="_blank">
                     Forums
                 </a>
@@ -43,13 +47,19 @@
 
             <div>
 
-                {# <a href="/">
-                    Register
-                </a>
-                <span class="header-separator">|</span>
-                <a href="/login">
-                    Login
-                </a> #}
+                {% if account %}
+                    <div class="userbit">
+                        {{ account.username }}
+                    </div>
+                {% else %}
+                    <a href="/register">
+                        Register
+                    </a>
+                    <span class="header-separator">|</span>
+                    <a href="/login">
+                        Login
+                    </a>
+                {% endif %}
 
             </div>
 

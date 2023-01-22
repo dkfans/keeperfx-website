@@ -1,0 +1,28 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block content %}
+
+<div class="row">
+
+    {# Sidebar #}
+    <div class="col-3">
+        <div class="content-box bg-keeper bd-keeper">
+            <div class="content-body">
+
+                <form action="/workshop/search" method="GET">
+                    <input class="form-control" placeholder="Search" name="search" value="" />
+                </form>
+
+                workshop menu
+            </div>
+        </div>
+    </div>
+
+    {# Wiki Page content #}
+    <div class="col-9">
+        {% block workshop_content %}{% endblock %}
+    </div>
+
+</div>
+
+{% endblock %}
