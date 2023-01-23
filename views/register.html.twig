@@ -1,0 +1,53 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+
+<div class="" style="align-items: center; width: 100%">
+
+    <div class="bg-keeper bd-keeper login-box">
+
+        <h2 class="login-title">Register an account</h2>
+
+        {{ render_flash_messages() }}
+
+        <form action="/register" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+            <div class="row g-3">
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" autofocus value="{% if username is defined %}{{ username }}{% endif %}">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{% if email is defined %}{{ email }}{% endif %}">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" value="{% if password is defined %}{{ password }}{% endif %}">
+                </div>
+
+                <div class="form-group">
+                    <label for="repeat_password">Repeat Password</label>
+                    <input type="password" class="form-control" id="repeat_password" name="repeat_password" value="{% if repeat_password is defined %}{{ repeat_password }}{% endif %}">
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-lg btn-medieval" style="width: 100%;" value="Register" />
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

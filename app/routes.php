@@ -32,6 +32,10 @@ $app->get('/wiki[/{page}]', [WikiController::class, 'wikiPage']);
 $app->get('/login', [LoginController::class, 'loginIndex']);
 $app->post('/login', [LoginController::class, 'login']);
 
+// Register
+$app->get('/register', [RegisterController::class, 'registerIndex']);
+$app->post('/register', [RegisterController::class, 'register']);
+
 // LOGGED IN USERS
 $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/dashboard', [DashboardController::class, 'dashboardIndex']);
