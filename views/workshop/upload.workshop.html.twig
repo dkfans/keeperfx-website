@@ -1,0 +1,63 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% block title %}Upload - Workshop{% endblock %}
+
+{% block workshop_content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Upload a workshop item</h2>
+        </div>
+
+        <div class="content-body">
+
+            <form action="/admin/users/add" method="POST">
+
+                <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+                <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Type</label>
+                            <select class="form-control" id="role" name="role">
+                                {% if types|length > 0 %}
+                                    {% for type in types %}
+                                        <option value="{{ type.name }}">{{ type.name }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="images">Images</label>
+                            <input type="file" class="form-control" id="images" name="images" multiple="multiple">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" name="description" rows="6"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="install_instructions">Install instructions</label>
+                            <textarea class="form-control" name="install_instructions" rows="4"></textarea>
+                        </div>
+
+                    </div>
+
+                <div class="form-group" style="margin: 10px;">
+                    <p>
+                        Files will be checked by the KeeperFX team before being shown to the public.
+                    </p>
+                    <input type="submit" class="btn btn-medieval" value="Submit" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

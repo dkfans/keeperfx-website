@@ -15,11 +15,17 @@ class WorkshopItem {
     #[ORM\Column]
     private string $name;
 
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    private User $author;
+
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
     #[ORM\Column]
     private \DateTime $updated_timestamp;
+
+    #[ORM\Column]
+    private bool $is_accepted = false;
 
     #[ORM\PrePersist]
     public function onPrePersist()
@@ -91,6 +97,42 @@ class WorkshopItem {
     public function setUpdatedTimestamp(\DateTime $updated_timestamp): self
     {
         $this->updated_timestamp = $updated_timestamp;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of author
+     */
+    public function getAuthor(): User
+    {
+        return $this->author;
+    }
+
+    /**
+     * Set the value of author
+     */
+    public function setAuthor(User $author): self
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of is_accepted
+     */
+    public function isIsAccepted(): bool
+    {
+        return $this->is_accepted;
+    }
+
+    /**
+     * Set the value of is_accepted
+     */
+    public function setIsAccepted(bool $is_accepted): self
+    {
+        $this->is_accepted = $is_accepted;
 
         return $this;
     }

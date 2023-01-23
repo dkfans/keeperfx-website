@@ -2,23 +2,84 @@
 
 {% block content %}
 
-<div class="row">
+<div class="row" style="margin-top: 30px;">
 
     {# Sidebar #}
     <div class="col-3">
+
+        {# Workshop title thing #}
         <div class="content-box bg-keeper bd-keeper">
+            <div class="content-header" style="border-bottom: 0">
+                <h2>Workshop</h2>
+            </div>
+        </div>
+
+        {# Upload button #}
+        {% if account %}
+            <a href="/workshop/upload" class="btn btn-lg btn-medieval" style="width: 100%; margin-top: 15px;">
+                Upload
+            </a>
+        {% endif %}
+
+        {# Search and filter box #}
+        <div class="content-box bg-keeper bd-keeper" style="margin-top: 15px;">
             <div class="content-body">
 
                 <form action="/workshop/search" method="GET">
-                    <input class="form-control" placeholder="Search" name="search" value="" />
-                </form>
+                    <div class="form-group">
+                        <label for="keywords">
+                            Search
+                        </label>
+                        <input class="form-control" id="keywords" name="keywords" placeholder="Keywords" value="" />
+                    </div>
 
-                workshop menu
+                    <div class="form-group">
+                        <label>
+                            Type
+                        </label>
+                        {% if types|length > 0 %}
+                            {% for type in types %}
+                                <div class="form-check" id="type">
+                                    <input class="form-check-input" type="radio" name="type" value="{{ type.name }}">
+                                    <label class="form-check-label">
+                                        {{ type.name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            Tags
+                        </label>
+                        {% if tags|length > 0 %}
+                            {% for tag in tags %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="tag[]" value="{{ tag.name }}">
+                                <label class="form-check-label">
+                                    {{ tag.name }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="author">Author</label>
+                        <input type="text" class="form-control" id="author" name="author">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" class="form-control btn btn-lg btn-medieval" value="Filter" />
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>
 
-    {# Wiki Page content #}
+    {# Workshop content #}
     <div class="col-9">
         {% block workshop_content %}{% endblock %}
     </div>
