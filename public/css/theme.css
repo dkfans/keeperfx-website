@@ -15,23 +15,19 @@ body {
     --footer-text-color: #777;
 
     --bs-info-text: #ffffff;
-    --bs-info-bg-subtle: #3aa2fb;
-    --bs-info-border-subtle: #1c2b2e;
-    --bs-info-text: #ffffff;
+    --bs-info-bg-subtle: #1367af;
+    --bs-info-border-subtle: #00d5ff;
 
     --bs-success-text: #ffffff;
-    --bs-success-bg-subtle: #1aa100;
-    --bs-success-border-subtle: #11241c;
-    --bs-success-text: #ffffff;
+    --bs-success-bg-subtle: #41af2c;
+    --bs-success-border-subtle: #00ff94;
 
     --bs-warning-text: #ffffff;
-    --bs-warning-bg-subtle: #e79300;
-    --bs-warning-border-subtle: #816c2f;
-    --bs-warning-text: #ffffff;
+    --bs-warning-bg-subtle: #cd8e00;
+    --bs-warning-border-subtle: #ff8100;
 
-    --bs-danger-text: #ffffff;
-    --bs-danger-bg-subtle: #f90017;
-    --bs-danger-border-subtle: #721d26;
+    --bs-danger-bg-subtle: #930916;
+    --bs-danger-border-subtle: #ff001b;
     --bs-danger-text: #ffffff;
 }
 
