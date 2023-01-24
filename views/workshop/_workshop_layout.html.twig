@@ -7,30 +7,33 @@
     {# Sidebar #}
     <div class="col-3">
 
-        {# Workshop title thing #}
+        {# Search and filter box #}
         <div class="content-box bg-keeper bd-keeper">
-            <div class="content-header" style="border-bottom: 0">
+            <div class="content-header">
                 <h2>Workshop</h2>
             </div>
+            <div class="content-body">
+                <a href="/workshop/upload" class="btn btn-lg btn-medieval" style="width: 100%">
+                    Upload
+                </a>
+            </div>
         </div>
-
-        {# Upload button #}
-        {% if account %}
-            <a href="/workshop/upload" class="btn btn-lg btn-medieval" style="width: 100%; margin-top: 15px;">
-                Upload
-            </a>
-        {% endif %}
-
-        {# Search and filter box #}
-        <div class="content-box bg-keeper bd-keeper" style="margin-top: 15px;">
+        <div class="content-box bg-keeper bd-keeper">
             <div class="content-header">
                 <h2>Search</h2>
             </div>
             <div class="content-body">
 
                 <form action="/workshop/search" method="GET">
+
                     <div class="form-group">
-                        <input class="form-control" name="keywords" placeholder="Keywords" value="" />
+                        <label for="keywords">Keywords</label>
+                        <input type="text" class="form-control" id="keywords" name="keywords">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="author">Author</label>
+                        <input type="text" class="form-control" id="author" name="author">
                     </div>
 
                     <div class="form-group">
@@ -66,12 +69,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="author">Author</label>
-                        <input type="text" class="form-control" id="author" name="author">
-                    </div>
-
-                    <div class="form-group">
-                        <input type="submit" class="form-control btn btn-lg btn-medieval" value="Filter" />
+                        <input type="submit" class="form-control btn btn-lg btn-medieval" value="Search" />
                     </div>
 
                 </form>

@@ -90,6 +90,9 @@ class WorkshopController {
         minimum_compatibility
         */
 
+        $success = true;
+
+        $uploaded_files        = $request->getUploadedFiles();
         $post                  = $request->getParsedBody();
         $name                  = (string) ($post['name'] ?? null);
         $type                  = (int) ($post['type'] ?? null);
@@ -97,20 +100,28 @@ class WorkshopController {
         $install_instructions  = (string) ($post['install_instructions'] ?? null);
         $minimum_compatibility = (int) ($post['minimum_compatibility'] ?? null);
 
+
         // Check if name is valid
         if(!$name){
-            $flash->error('Invalid workshop item name');
-            return $response;
+            $success = false;
+            $flash->warning('Invalid workshop item name');
         }
 
-        // Get type of workshop item
+        // Check if type is valid
         $ws_type = $em->getRepository(WorkshopType::class)->find($type);
         if(!$ws_type){
-            return $response;
+            $flash->warning('Invalid workshop type');
+            $success = false;
         }
 
-        dump($post);
-        die();
+        if(empty($uploaded_files['file'])){
+            $flash->warning('You did not submit a file');
+            $success = false;
+        }
+
+        if(!empty($uploaded_files['images'])){
+
+        }
 
         $response->getBody()->write(
             $twig->render('workshop/upload.workshop.html.twig', $this->getWorkshopOptions() + [

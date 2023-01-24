@@ -11,7 +11,7 @@
 
         <div class="content-body">
 
-            <form action="/workshop/upload" method="POST">
+            <form action="/workshop/upload" method="POST" enctype="multipart/form-data">
 
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
@@ -39,7 +39,7 @@
 
                 <div class="form-group">
                     <label for="images">Images</label>
-                    <input type="file" class="form-control" id="images" name="images" multiple="multiple">
+                    <input type="file" class="form-control" id="images" name="images[]" multiple="multiple">
                 </div>
 
                 <div class="form-group">
