@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\GithubRelease;
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopType;
-
+use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
@@ -19,14 +20,16 @@ class WorkshopController {
         $this->em = $em;
     }
 
-    private function getTypesAndTags(): array
+    private function getWorkshopOptions(): array
     {
-        $types = $this->em->getRepository(WorkshopType::class)->findBy([], ['name' => 'ASC']);
-        $tags  = $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']);
+        $types  = $this->em->getRepository(WorkshopType::class)->findBy([], ['name' => 'ASC']);
+        $tags   = $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']);
+        $builds = $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']);
 
         return [
-            'types' => $types,
-            'tags'  => $tags,
+            'types'  => $types,
+            'tags'   => $tags,
+            'builds' => $builds,
         ];
     }
 
@@ -37,7 +40,7 @@ class WorkshopController {
         EntityManager $em
     ){
         $response->getBody()->write(
-            $twig->render('workshop/workshop.html.twig', $this->getTypesAndTags())
+            $twig->render('workshop/workshop.html.twig', $this->getWorkshopOptions())
         );
 
         return $response;
@@ -49,7 +52,7 @@ class WorkshopController {
         TwigEnvironment $twig
     ){
         $response->getBody()->write(
-            $twig->render('workshop/item.workshop.html.twig', $this->getTypesAndTags())
+            $twig->render('workshop/item.workshop.html.twig', $this->getWorkshopOptions())
         );
 
         return $response;
@@ -61,7 +64,7 @@ class WorkshopController {
         TwigEnvironment $twig
     ){
         $response->getBody()->write(
-            $twig->render('workshop/upload.workshop.html.twig', $this->getTypesAndTags())
+            $twig->render('workshop/upload.workshop.html.twig', $this->getWorkshopOptions())
         );
 
         return $response;
@@ -69,9 +72,54 @@ class WorkshopController {
 
     public function upload(
         Request $request,
-        Response $response
+        Response $response,
+        FlashMessage $flash,
+        TwigEnvironment $twig,
+        EntityManager $em
     ){
-        $response = $response->withHeader('Location', '/workshop/upload')->withStatus(302);
+        /**
+         * $_ENV['APP_WORKSHOP_STORAGE]
+         */
+        /*
+        name
+        type
+        file
+        images
+        description
+        install_instructions
+        minimum_compatibility
+        */
+
+        $post                  = $request->getParsedBody();
+        $name                  = (string) ($post['name'] ?? null);
+        $type                  = (int) ($post['type'] ?? null);
+        $description           = (string) ($post['description'] ?? null);
+        $install_instructions  = (string) ($post['install_instructions'] ?? null);
+        $minimum_compatibility = (int) ($post['minimum_compatibility'] ?? null);
+
+        // Check if name is valid
+        if(!$name){
+            $flash->error('Invalid workshop item name');
+            return $response;
+        }
+
+        // Get type of workshop item
+        $ws_type = $em->getRepository(WorkshopType::class)->find($type);
+        if(!$ws_type){
+            return $response;
+        }
+
+        dump($post);
+        die();
+
+        $response->getBody()->write(
+            $twig->render('workshop/upload.workshop.html.twig', $this->getWorkshopOptions() + [
+                'name'                 => $name,
+                'description'          => $description,
+                'install_instructions' => $install_instructions,
+            ])
+        );
+
         return $response;
     }
 

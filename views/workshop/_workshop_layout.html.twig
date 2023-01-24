@@ -23,14 +23,14 @@
 
         {# Search and filter box #}
         <div class="content-box bg-keeper bd-keeper" style="margin-top: 15px;">
+            <div class="content-header">
+                <h2>Search</h2>
+            </div>
             <div class="content-body">
 
                 <form action="/workshop/search" method="GET">
                     <div class="form-group">
-                        <label for="keywords">
-                            Search
-                        </label>
-                        <input class="form-control" id="keywords" name="keywords" placeholder="Keywords" value="" />
+                        <input class="form-control" name="keywords" placeholder="Keywords" value="" />
                     </div>
 
                     <div class="form-group">
@@ -81,6 +81,9 @@
 
     {# Workshop content #}
     <div class="col-9">
+
+        {{ render_flash_messages() }}
+
         {% block workshop_content %}{% endblock %}
     </div>
 

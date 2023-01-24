@@ -19,6 +19,18 @@ class WorkshopItem {
     private User $author;
 
     #[ORM\Column]
+    private int $mapnumber;
+
+    #[ORM\ManyToOne(targetEntity: 'WorkshopType')]
+    private WorkshopType $type;
+
+    #[ORM\ManyToOne(targetEntity: 'GithubRelease')]
+    private GithubRelease $minimum_compatibility;
+
+    #[ORM\Column]
+    private \DateTime $creation_date;
+
+    #[ORM\Column]
     private \DateTime $created_timestamp;
 
     #[ORM\Column]
@@ -133,6 +145,60 @@ class WorkshopItem {
     public function setIsAccepted(bool $is_accepted): self
     {
         $this->is_accepted = $is_accepted;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of creation_date
+     */
+    public function getCreationDate(): \DateTime
+    {
+        return $this->creation_date;
+    }
+
+    /**
+     * Set the value of creation_date
+     */
+    public function setCreationDate(\DateTime $creation_date): self
+    {
+        $this->creation_date = $creation_date;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of minimum_compatibility
+     */
+    public function getMinimumCompatibility(): GithubRelease
+    {
+        return $this->minimum_compatibility;
+    }
+
+    /**
+     * Set the value of minimum_compatibility
+     */
+    public function setMinimumCompatibility(GithubRelease $minimum_compatibility): self
+    {
+        $this->minimum_compatibility = $minimum_compatibility;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of type
+     */
+    public function getType(): WorkshopType
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set the value of type
+     */
+    public function setType(WorkshopType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }
