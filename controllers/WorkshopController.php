@@ -58,53 +58,41 @@ class WorkshopController {
         return $response;
     }
 
-    public function uploadIndex(
+    public function submitIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig
     ){
         $response->getBody()->write(
-            $twig->render('workshop/upload.workshop.html.twig', $this->getWorkshopOptions())
+            $twig->render('workshop/submit.workshop.html.twig', $this->getWorkshopOptions())
         );
 
         return $response;
     }
 
-    public function upload(
+    public function submit(
         Request $request,
         Response $response,
         FlashMessage $flash,
         TwigEnvironment $twig,
         EntityManager $em
     ){
-        /**
-         * $_ENV['APP_WORKSHOP_STORAGE]
-         */
-        /*
-        name
-        type
-        file
-        images
-        description
-        install_instructions
-        minimum_compatibility
-        */
 
         $success = true;
 
         $uploaded_files        = $request->getUploadedFiles();
         $post                  = $request->getParsedBody();
+
         $name                  = (string) ($post['name'] ?? null);
         $type                  = (int) ($post['type'] ?? null);
         $description           = (string) ($post['description'] ?? null);
         $install_instructions  = (string) ($post['install_instructions'] ?? null);
-        $minimum_compatibility = (int) ($post['minimum_compatibility'] ?? null);
-
+        $min_game_build = null;
 
         // Check if name is valid
         if(!$name){
             $success = false;
-            $flash->warning('Invalid workshop item name');
+            $flash->warning('Please enter a name for this workshop item');
         }
 
         // Check if type is valid
@@ -119,12 +107,16 @@ class WorkshopController {
             $success = false;
         }
 
-        if(!empty($uploaded_files['images'])){
+        if(!empty($uploaded_files['screenshots'])){
 
         }
 
+        if(isset($post['min_game_build']) && !empty($post['min_game_build'])){
+            $min_game_build = (int) $post['min_game_build'];
+        }
+
         $response->getBody()->write(
-            $twig->render('workshop/upload.workshop.html.twig', $this->getWorkshopOptions() + [
+            $twig->render('workshop/submit.workshop.html.twig', $this->getWorkshopOptions() + [
                 'name'                 => $name,
                 'description'          => $description,
                 'install_instructions' => $install_instructions,

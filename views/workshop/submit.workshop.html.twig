@@ -1,17 +1,17 @@
 {% extends "workshop/_workshop_layout.html.twig" %}
 
-{% block title %}Upload - Workshop{% endblock %}
+{% block title %}Submit a new workshop item - Workshop{% endblock %}
 
 {% block workshop_content %}
 
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
-            <h2>Upload a new workshop item</h2>
+            <h2>Submit a new workshop item</h2>
         </div>
 
         <div class="content-body">
 
-            <form action="/workshop/upload" method="POST" enctype="multipart/form-data">
+            <form action="/workshop/submit" method="POST" enctype="multipart/form-data">
 
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
@@ -38,29 +38,30 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="images">Images</label>
-                    <input type="file" class="form-control" id="images" name="images[]" multiple="multiple">
-                </div>
-
-                <div class="form-group">
-                    <label for="minimum_compatibility">Minimum compatibility</label>
-                    <select class="form-control" id="minimum_compatibility" name="minimum_compatibility">
-                        {% if builds|length > 0 %}
-                            {% for build in builds %}
-                                <option value="{{ build.id }}" {% if loop.first %}selected=selected{% endif %}>{{ build.name }}</option>
-                            {% endfor %}
-                        {% endif %}
-                    </select>
-                </div>
-
-                <div class="form-group">
                     <label for="description">Description</label>
                     <textarea class="form-control" name="description" rows="6"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="install_instructions">Install instructions</label>
+                    <label for="screenshots">Screenshots <span class="text-muted">(Optional)</span></label>
+                    <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
+                </div>
+
+                <div class="form-group">
+                    <label for="install_instructions">Installation instructions <span class="text-muted">(Optional)</span></label>
                     <textarea class="form-control" name="install_instructions" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="min_game_build">Minimum game version <span class="text-muted">(Optional)</span></label>
+                    <select class="form-control" id="min_game_build" name="min_game_build">
+                        <option {# {% if loop.first %} #}selected=selected{# {% endif %} #}></option>
+                        {% if builds|length > 0 %}
+                            {% for build in builds %}
+                                <option value="{{ build.id }}" {# {% if loop.first %}selected=selected{% endif %} #}>{{ build.name }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
                 </div>
 
                 <div class="form-group">

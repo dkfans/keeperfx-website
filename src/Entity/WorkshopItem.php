@@ -15,17 +15,17 @@ class WorkshopItem {
     #[ORM\Column]
     private string $name;
 
-    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private User $author;
 
     #[ORM\Column]
-    private int $mapnumber;
+    private int|null $map_number = null;
 
-    #[ORM\ManyToOne(targetEntity: 'WorkshopType')]
+    #[ORM\ManyToOne(targetEntity: WorkshopType::class)]
     private WorkshopType $type;
 
-    #[ORM\ManyToOne(targetEntity: 'GithubRelease')]
-    private GithubRelease $minimum_compatibility;
+    #[ORM\ManyToOne(targetEntity: GithubRelease::class)]
+    private GithubRelease|null $min_game_build;
 
     #[ORM\Column]
     private \DateTime $creation_date;
@@ -168,24 +168,6 @@ class WorkshopItem {
     }
 
     /**
-     * Get the value of minimum_compatibility
-     */
-    public function getMinimumCompatibility(): GithubRelease
-    {
-        return $this->minimum_compatibility;
-    }
-
-    /**
-     * Set the value of minimum_compatibility
-     */
-    public function setMinimumCompatibility(GithubRelease $minimum_compatibility): self
-    {
-        $this->minimum_compatibility = $minimum_compatibility;
-
-        return $this;
-    }
-
-    /**
      * Get the value of type
      */
     public function getType(): WorkshopType
@@ -199,6 +181,42 @@ class WorkshopItem {
     public function setType(WorkshopType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of map_number
+     */
+    public function getMapNumber(): ?int
+    {
+        return $this->map_number;
+    }
+
+    /**
+     * Set the value of map_number
+     */
+    public function setMapNumber(?int $map_number): self
+    {
+        $this->map_number = $map_number;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of min_game_build
+     */
+    public function getMinGameBuild(): GithubRelease
+    {
+        return $this->min_game_build;
+    }
+
+    /**
+     * Set the value of min_game_build
+     */
+    public function setMinGameBuild(GithubRelease $min_game_build): self
+    {
+        $this->min_game_build = $min_game_build;
 
         return $this;
     }

@@ -13,8 +13,11 @@
                 <h2>Workshop</h2>
             </div>
             <div class="content-body">
-                <a href="/workshop/upload" class="btn btn-lg btn-medieval" style="width: 100%">
-                    Upload
+
+                {# TODO: add 'latest', 'highest rated', 'most downloaded' #}
+
+                <a href="/workshop/submit" class="btn btn-lg btn-medieval" style="width: 100%">
+                    Submit
                 </a>
             </div>
         </div>
@@ -42,9 +45,9 @@
                         </label>
                         {% if types|length > 0 %}
                             {% for type in types %}
-                                <div class="form-check" id="type">
-                                    <input class="form-check-input" type="radio" name="type" value="{{ type.name }}">
-                                    <label class="form-check-label">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="type" value="{{ type.name }}" id="type{{ loop.index }}">
+                                    <label class="form-check-label" for="type{{ loop.index }}">
                                         {{ type.name }}
                                     </label>
                                 </div>
@@ -59,8 +62,8 @@
                         {% if tags|length > 0 %}
                             {% for tag in tags %}
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="tag[]" value="{{ tag.name }}">
-                                <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" name="tag[]" value="{{ tag.name }}" id="tag{{ loop.index }}">
+                                <label class="form-check-label" for="tag{{ loop.index }}">
                                     {{ tag.name }}
                                 </label>
                             </div>
