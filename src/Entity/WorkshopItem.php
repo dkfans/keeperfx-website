@@ -18,7 +18,7 @@ class WorkshopItem {
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    private User $author;
+    private User $submitter;
 
     #[ORM\Column(nullable: true)]
     private int|null $map_number = null;
@@ -49,6 +49,9 @@ class WorkshopItem {
 
     #[ORM\Column]
     private bool $is_accepted = false;
+
+    #[ORM\Column(type: 'integer')]
+    private int $downloads = 0;
 
     #[ORM\PrePersist]
     public function onPrePersist()
@@ -126,24 +129,6 @@ class WorkshopItem {
     }
 
     /**
-     * Get the value of author
-     */
-    public function getAuthor(): User
-    {
-        return $this->author;
-    }
-
-    /**
-     * Set the value of author
-     */
-    public function setAuthor(User $author): self
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
-    /**
      * Get the value of is_accepted
      */
     public function isIsAccepted(): bool
@@ -200,7 +185,7 @@ class WorkshopItem {
     /**
      * Get the value of min_game_build
      */
-    public function getMinGameBuild(): GithubRelease
+    public function getMinGameBuild(): GithubRelease|null
     {
         return $this->min_game_build;
     }
@@ -218,7 +203,7 @@ class WorkshopItem {
     /**
      * Get the value of original_creation_date
      */
-    public function getOriginalCreationDate(): \DateTime
+    public function getOriginalCreationDate(): \DateTime|null
     {
         return $this->original_creation_date;
     }
@@ -236,7 +221,7 @@ class WorkshopItem {
     /**
      * Get the value of install_instructions
      */
-    public function getInstallInstructions(): ?string
+    public function getInstallInstructions(): string|null
     {
         return $this->install_instructions;
     }
@@ -283,6 +268,42 @@ class WorkshopItem {
     public function setFilename(string $filename): self
     {
         $this->filename = $filename;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of submitter
+     */
+    public function getSubmitter(): User
+    {
+        return $this->submitter;
+    }
+
+    /**
+     * Set the value of submitter
+     */
+    public function setSubmitter(User $submitter): self
+    {
+        $this->submitter = $submitter;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of downloads
+     */
+    public function getDownloads(): int
+    {
+        return $this->downloads;
+    }
+
+    /**
+     * Set the value of downloads
+     */
+    public function setDownloads(int $downloads): self
+    {
+        $this->downloads = $downloads;
 
         return $this;
     }

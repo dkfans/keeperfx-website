@@ -29,13 +29,10 @@ class WorkshopController {
 
     private function getWorkshopOptions(): array
     {
-        $tags   = $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']);
-        $builds = $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']);
-
         return [
             'types'  => WorkshopType::cases(),
-            'tags'   => $tags,
-            'builds' => $builds,
+            'tags'   => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+            'builds' => $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
         ];
     }
 
@@ -148,7 +145,7 @@ class WorkshopController {
         // Create the item in DB
         $workshop_item = new WorkshopItem();
         $workshop_item->setName($name);
-        $workshop_item->setAuthor($account->getUser());
+        $workshop_item->setSubmitter($account->getUser());
         $workshop_item->setType($type);
         $workshop_item->setFilename($uploaded_files['file']->getClientFilename());
 
@@ -186,7 +183,12 @@ class WorkshopController {
         /** @var UploadedFile $file */
         $file = $uploaded_files['file'];
         $filename = $file->getClientFilename();
-        $file->moveTo($workshop_item_dir . '/' . $filename);
+
+        $path = $workshop_item_dir . '/' . $filename;
+        $file->moveTo($path);
+        if(!\file_exists($path)){
+            throw new \Exception('Failed to move workshop item file');
+        }
 
         // Store any uploaded screenshots
         foreach($uploaded_files['screenshots'] as $screenshot_file){
@@ -195,8 +197,10 @@ class WorkshopController {
                 continue;
             }
 
-            $path = $workshop_item_screenshots_dir . '/' . $screenshot_file->getFilename();
-            if(!$screenshot_file->moveTo($path)){
+            $path = $workshop_item_screenshots_dir . '/' . $screenshot_file->getClientFilename();
+
+            $screenshot_file->moveTo($path);
+            if(!\file_exists($path)){
                 throw new \Exception('Failed to move workshop item screenshot');
             }
         }
