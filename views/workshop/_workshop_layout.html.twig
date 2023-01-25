@@ -16,9 +16,11 @@
 
                 {# TODO: add 'latest', 'highest rated', 'most downloaded' #}
 
-                <a href="/workshop/submit" class="btn btn-lg btn-medieval" style="width: 100%">
-                    Submit
-                </a>
+                {% if account %}
+                    <a href="/workshop/submit" class="btn btn-lg btn-medieval" style="width: 100%">
+                        Submit
+                    </a>
+                {% endif %}
             </div>
         </div>
         <div class="content-box bg-keeper bd-keeper">
@@ -46,7 +48,7 @@
                         {% if types|length > 0 %}
                             {% for type in types %}
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="type" value="{{ type.name }}" id="type{{ loop.index }}">
+                                    <input class="form-check-input" type="radio" name="type" value="{{ type.value }}" id="type{{ loop.index }}">
                                     <label class="form-check-label" for="type{{ loop.index }}">
                                         {{ type.name }}
                                     </label>

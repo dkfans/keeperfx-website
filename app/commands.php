@@ -17,7 +17,6 @@ return [
 
     // Workshop
     \App\Console\Command\Workshop\AddWorkshopTagCommand::class,
-    \App\Console\Command\Workshop\AddWorkshopTypeCommand::class,
 
     // Cache
     \App\Console\Command\Cache\CacheClearCommand::class,

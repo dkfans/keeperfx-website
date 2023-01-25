@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use App\Enum\WorkshopType;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class WorkshopItem {
 
     #[ORM\Id]
@@ -18,23 +20,32 @@ class WorkshopItem {
     #[ORM\ManyToOne(targetEntity: User::class)]
     private User $author;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private int|null $map_number = null;
 
-    #[ORM\ManyToOne(targetEntity: WorkshopType::class)]
+    #[ORM\Column(type: 'integer', enumType: WorkshopType::class)]
     private WorkshopType $type;
 
     #[ORM\ManyToOne(targetEntity: GithubRelease::class)]
     private GithubRelease|null $min_game_build;
 
-    #[ORM\Column]
-    private \DateTime $creation_date;
+    #[ORM\Column(nullable: true)]
+    private \DateTime|null $original_creation_date = null;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
     #[ORM\Column]
     private \DateTime $updated_timestamp;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private string|null $description = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private string|null $install_instructions = null;
+
+    #[ORM\Column]
+    private string $filename;
 
     #[ORM\Column]
     private bool $is_accepted = false;
@@ -43,6 +54,7 @@ class WorkshopItem {
     public function onPrePersist()
     {
         $this->created_timestamp = new \DateTime("now");
+        $this->updated_timestamp = new \DateTime("now");
     }
 
     #[ORM\PreUpdate]
@@ -150,24 +162,6 @@ class WorkshopItem {
     }
 
     /**
-     * Get the value of creation_date
-     */
-    public function getCreationDate(): \DateTime
-    {
-        return $this->creation_date;
-    }
-
-    /**
-     * Set the value of creation_date
-     */
-    public function setCreationDate(\DateTime $creation_date): self
-    {
-        $this->creation_date = $creation_date;
-
-        return $this;
-    }
-
-    /**
      * Get the value of type
      */
     public function getType(): WorkshopType
@@ -217,6 +211,78 @@ class WorkshopItem {
     public function setMinGameBuild(GithubRelease $min_game_build): self
     {
         $this->min_game_build = $min_game_build;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of original_creation_date
+     */
+    public function getOriginalCreationDate(): \DateTime
+    {
+        return $this->original_creation_date;
+    }
+
+    /**
+     * Set the value of original_creation_date
+     */
+    public function setOriginalCreationDate(\DateTime $original_creation_date): self
+    {
+        $this->original_creation_date = $original_creation_date;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of install_instructions
+     */
+    public function getInstallInstructions(): ?string
+    {
+        return $this->install_instructions;
+    }
+
+    /**
+     * Set the value of install_instructions
+     */
+    public function setInstallInstructions(?string $install_instructions): self
+    {
+        $this->install_instructions = $install_instructions;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of description
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set the value of description
+     */
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of filename
+     */
+    public function getFilename(): string
+    {
+        return $this->filename;
+    }
+
+    /**
+     * Set the value of filename
+     */
+    public function setFilename(string $filename): self
+    {
+        $this->filename = $filename;
 
         return $this;
     }
