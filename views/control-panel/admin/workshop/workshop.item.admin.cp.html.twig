@@ -1,0 +1,103 @@
+{% extends "core/_control-panel.html.twig" %}
+
+{% block title %}{{ workshop_item.name }} - Admin{% endblock %}
+
+{% block page %}
+
+    {% if workshop_item.isAccepted != true %}
+        <div class="alert alert-info">
+            This workshop item has not been accepted yet.
+        </div>
+    {% endif %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Workshop Item: {{ workshop_item.name }}</h2>
+        </div>
+
+        <div class="content-body">
+
+            <form action="/admin/workshop/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data">
+
+                <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+                <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ workshop_item.name }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <select class="form-control" id="type" name="type">
+                        {% if types|length > 0 %}
+                            {% for type in types %}
+                                <option value="{{ type.value }}" {% if type.value == workshop_item.type %}selected=selected{% endif %}>{{ type.name }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+
+                {# <div class="form-group">
+                    <label for="file">File</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div> #}
+
+                <div class="form-group">
+                    <label for="description">Description <span class="text-muted">(Optional)</span></label>
+                    <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
+                </div>
+
+                {# <div class="form-group">
+                    <label for="screenshots">Screenshots <span class="text-muted">(Optional)</span></label>
+                    <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
+                </div> #}
+
+                <div class="form-group">
+                    <label for="install_instructions">Installation instructions <span class="text-muted">(Optional)</span></label>
+                    <textarea class="form-control" name="install_instructions" rows="4">{{ workshop_item.installInstructions }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="min_game_build">Minimum game version <span class="text-muted">(Optional)</span></label>
+                    <select class="form-control" id="min_game_build" name="min_game_build">
+                        <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %}></option>
+                        {% if builds|length > 0 %}
+                            {% for build in builds %}
+                                <option value="{{ build.id }}" {% if workshop_item.minGameBuild == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="submitter">Submitter</label>
+                            <p id="submitter">
+                                <a href="/admin/user/{{ workshop_item.submitter.id }}">
+                                    {{ workshop_item.submitter.username }}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="submitter">Submission date</label>
+                            <p id="submitter">
+                                {{ workshop_item.createdTimestamp|date('Y-m-d') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-medieval" value="Save" />
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

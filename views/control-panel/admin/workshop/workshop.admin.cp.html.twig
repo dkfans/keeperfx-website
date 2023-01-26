@@ -1,0 +1,56 @@
+{% extends "core/_control-panel.html.twig" %}
+
+{% block title %}Users - Admin{% endblock %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Open workshop submissions</h2>
+    </div>
+    <div class="content-body">
+
+        {% if open_submissions|length > 0 %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Submitted by</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for workshop_item in open_submissions %}
+                        <tr>
+                            <td>{{ workshop_item.id }}</td>
+                            <td>{{ workshop_item.name }}</td>
+                            <td>{{ workshop_item.submitter.username }}</td>
+                            <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:m:s') }}</td>
+                            <td><a href="/admin/workshop/{{ workshop_item.id }}">View</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>
+                No open submissions
+            </p>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Workshop Items</h2>
+    </div>
+    <div class="content-body">
+
+        workshop items
+
+    </div>
+</div>
+
+{% endblock %}

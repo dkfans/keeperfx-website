@@ -13,7 +13,7 @@ use App\Enum\WorkshopType;
 use App\Entity\GithubRelease;
 use App\Entity\WorkshopItem;
 use App\Entity\WorkshopTag;
-
+use App\Enum\UserRole;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -205,10 +205,88 @@ class WorkshopController {
             }
         }
 
-        $response->getBody()->write(
-            $twig->render('workshop/submitted.workshop.html.twig', $this->getWorkshopOptions())
+        $flash->success(
+            'Your workshop item has been submitted and will be reviewed by the KeeperFX team.' .
+            'After it has been accepted it will be added to the workshop for others to download.'
         );
 
+        $response->getBody()->write(
+            $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+        );
+
+        return $response;
+    }
+
+    public function download(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        Account $account,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        $id,
+        $filename
+    )
+    {
+        // Check if workshop item has been found
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            $flash->warning('The requested workshop item could not be found.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+
+        // Check if workshop item has been accepted
+        // Admins can always download workshop items
+        if(
+            $workshop_item->getIsAccepted() !== true
+            && $account->getUser()->getRole()->value < UserRole::Admin->value
+        ){
+            $flash->warning('The requested workshop item has not been accepted yet.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+
+        // Check if filename matches the one in DB
+        if($filename !== $workshop_item->getFilename()){
+            $flash->warning('Invalid workshop download URL.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+
+        $filepath = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/' . $workshop_item->getFilename();
+
+        // Check if file exists
+        if(!\file_exists($filepath)){
+            $flash->warning('The requested workshop file could not be found.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+
+        // Increase download count
+        $downloads = $workshop_item->getDownloads();
+        $downloads++;
+        $workshop_item->setDownloads($downloads);
+        $em->flush();
+
+        // Return download
+        $response = $response
+            ->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->withHeader('Pragma', 'no-cache')
+            ->withHeader('Content-Type', 'application/octet-stream')
+            ->withHeader('Content-Transfer-Encoding', 'Binary')
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $workshop_item->getFilename() . '"');
+        $response->getBody()->write(
+            \file_get_contents($filepath)
+        );
         return $response;
     }
 

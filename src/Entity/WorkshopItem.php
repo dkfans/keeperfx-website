@@ -131,7 +131,7 @@ class WorkshopItem {
     /**
      * Get the value of is_accepted
      */
-    public function isIsAccepted(): bool
+    public function getIsAccepted(): bool
     {
         return $this->is_accepted;
     }
