@@ -197,9 +197,13 @@ class WorkshopController {
                 continue;
             }
 
-            $screenshot_filename = \preg_replace('/[^a-zA-Z0-9_-\.]+/', '-', $screenshot_file->getClientFilename());
+            // Generate screenshot output path
+            $ext = \strtolower(\pathinfo($screenshot_file->getClientFilename(), \PATHINFO_EXTENSION));
+            $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
+            $screenshot_filename = $str . '.' . $ext;
             $path = $workshop_item_screenshots_dir . '/' . $screenshot_filename;
 
+            // Move screenshot
             $screenshot_file->moveTo($path);
             if(!\file_exists($path)){
                 throw new \Exception('Failed to move workshop item screenshot');

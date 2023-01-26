@@ -111,12 +111,12 @@
                 <div class="form-group">
                     <label for="min_game_build">Minimum game version <span class="text-muted">(Optional)</span></label>
                     <select class="form-control" id="min_game_build" name="min_game_build">
+                        <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="-1"></option>
                         {% if builds|length > 0 %}
                             {% for build in builds %}
-                                <option value="{{ build.id }}" {% if workshop_item.minGameBuild == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
+                                <option value="{{ build.id }}" {% if workshop_item.minGameBuild.id == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
                             {% endfor %}
                         {% endif %}
-                        <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %}>Original Game</option>
                     </select>
                 </div>
 

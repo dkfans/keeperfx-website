@@ -52,9 +52,7 @@ class AdminWorkshopController {
         $screenshot_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/screenshots';
         if(\is_dir($screenshot_dir)){
             foreach(\glob($screenshot_dir . '/*') as $screenshot_file){
-
                 $size = \getimagesize($screenshot_file);
-
                 $screenshots[] = [
                     'filename' => \basename($screenshot_file),
                     'width'    => $size[0],
