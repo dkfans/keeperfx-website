@@ -47,12 +47,29 @@ class AdminWorkshopController {
             return $response;
         }
 
+        // Get screenshots
+        $screenshots = [];
+        $screenshot_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/screenshots';
+        if(\is_dir($screenshot_dir)){
+            foreach(\glob($screenshot_dir . '/*') as $screenshot_file){
+
+                $size = \getimagesize($screenshot_file);
+
+                $screenshots[] = [
+                    'filename' => \basename($screenshot_file),
+                    'width'    => $size[0],
+                    'height'   => $size[1],
+                ];
+            }
+        }
+
         $response->getBody()->write(
             $twig->render('control-panel/admin/workshop/workshop.item.admin.cp.html.twig', [
                 'workshop_item' => $workshop_item,
                 'types'         => WorkshopType::cases(),
                 'tags'          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
                 'builds'        => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
+                'screenshots'   => $screenshots,
             ])
         );
 

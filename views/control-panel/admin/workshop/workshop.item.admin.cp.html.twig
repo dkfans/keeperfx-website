@@ -2,6 +2,32 @@
 
 {% block title %}{{ workshop_item.name }} - Admin{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.min.css"
+        integrity="sha512-TdCx5ObKpq3+lwUdiXFgFLhqwTB98YsdaQWSJrwkOz084qaeO86+NMYfU/pnpPo1pDVah0a7yvFmbcvI8ZiGAw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block body_javascript %}
+    <script type="module">
+        import PhotoSwipeLightbox from 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe-lightbox.esm.min.js';
+
+        // Initialize image lightbox
+        const lightbox = new PhotoSwipeLightbox({
+            bgOpacity: 0.8,
+            gallery: '#workshop-screenshots',
+            children: 'a',
+            pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.esm.min.js'),
+            mainClass: 'pswp-with-perma-preloader',
+            initialZoomLevel: 'fit',
+            showHideAnimationType: 'zoom'
+        });
+
+        // Init lightbox
+        lightbox.init();
+    </script>
+{% endblock %}
+
 {% block page %}
 
     {% if workshop_item.isAccepted != true %}
@@ -38,20 +64,44 @@
                     </select>
                 </div>
 
-                {# <div class="form-group">
+                <div class="form-group">
                     <label for="file">File</label>
+                    <p id="file">
+                        <a href="/workshop/download/{{ workshop_item.id }}/{{ workshop_item.filename }}" download>{{ workshop_item.filename }}</a>
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="file">Change file</label>
                     <input type="file" class="form-control" id="file" name="file">
-                </div> #}
+                </div>
 
                 <div class="form-group">
                     <label for="description">Description <span class="text-muted">(Optional)</span></label>
                     <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
                 </div>
 
-                {# <div class="form-group">
+                <div class="form-group">
                     <label for="screenshots">Screenshots <span class="text-muted">(Optional)</span></label>
-                    <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
-                </div> #}
+
+                    {% if screenshots|length > 0 %}
+                        <div class="workshop-screenshots" id="workshop-screenshots">
+                            {% for screenshot in screenshots %}
+                                <div class="workshop-screenshot">
+                                    <a href="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}"
+                                        data-pswp-width="{{ screenshot.width }}"
+                                        data-pswp-height="{{ screenshot.height }}"
+                                        data-cropped="true"
+                                        target="_blank">
+                                            <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {# <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple"> #}
+                </div>
 
                 <div class="form-group">
                     <label for="install_instructions">Installation instructions <span class="text-muted">(Optional)</span></label>
@@ -61,12 +111,12 @@
                 <div class="form-group">
                     <label for="min_game_build">Minimum game version <span class="text-muted">(Optional)</span></label>
                     <select class="form-control" id="min_game_build" name="min_game_build">
-                        <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %}></option>
                         {% if builds|length > 0 %}
                             {% for build in builds %}
                                 <option value="{{ build.id }}" {% if workshop_item.minGameBuild == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
                             {% endfor %}
                         {% endif %}
+                        <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %}>Original Game</option>
                     </select>
                 </div>
 
@@ -88,6 +138,18 @@
                                 {{ workshop_item.createdTimestamp|date('Y-m-d') }}
                             </p>
                         </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check">
+                        <input
+                            class="form-check-input" type="checkbox" name="is_accepted" id="is_accepted"
+                            {% if workshop_item.isAccepted == true %}checked=checked{% endif %}
+                        />
+                        <label class="form-check-label" for="is_accepted">
+                            Accepted
+                        </label>
                     </div>
                 </div>
 

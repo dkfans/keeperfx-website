@@ -16,7 +16,7 @@ use App\Entity\WorkshopTag;
 use App\Enum\UserRole;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
+use Slim\Exception\HttpNotFoundException;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
 class WorkshopController {
@@ -197,7 +197,8 @@ class WorkshopController {
                 continue;
             }
 
-            $path = $workshop_item_screenshots_dir . '/' . $screenshot_file->getClientFilename();
+            $screenshot_filename = \preg_replace('/[^a-zA-Z0-9_-\.]+/', '-', $screenshot_file->getClientFilename());
+            $path = $workshop_item_screenshots_dir . '/' . $screenshot_filename;
 
             $screenshot_file->moveTo($path);
             if(!\file_exists($path)){
@@ -228,7 +229,7 @@ class WorkshopController {
         $filename
     )
     {
-        // Check if workshop item has been found
+        // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
         if(!$workshop_item){
             $flash->warning('The requested workshop item could not be found.');
@@ -287,6 +288,65 @@ class WorkshopController {
         $response->getBody()->write(
             \file_get_contents($filepath)
         );
+        return $response;
+    }
+
+    public function outputScreenshot(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        Account $account,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        $id,
+        $filename)
+    {
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request, 'workshop item not found');
+        }
+
+        // Check if workshop item has been accepted
+        // Admins can always output screenshots
+        if(
+            $workshop_item->getIsAccepted() !== true
+            && $account->getUser()->getRole()->value < UserRole::Admin->value
+        ){
+            throw new HttpNotFoundException($request, 'workshop item not accepted');
+        }
+
+        // Get screenshot dir
+        $screenshot_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/screenshots';
+        if(!\is_dir($screenshot_dir)){
+            throw new HttpNotFoundException($request, 'screenshot dir does not exist');
+        }
+
+        // Loop trough screenshot to see if one matches
+        $screenshot_filepath = null;
+        foreach(\glob($screenshot_dir . '/*') as $path){
+            if($filename === \basename($path)){
+                $screenshot_filepath = $path;
+                break;
+            }
+        }
+        if($screenshot_filepath === null){
+            throw new HttpNotFoundException($request, 'screenshot not found');
+        }
+
+        // Get mimetype of image
+        $finfo        = \finfo_open(\FILEINFO_MIME_TYPE);
+        $content_type = \finfo_file($finfo, $screenshot_filepath);
+        \finfo_close($finfo);
+
+        // Return screenshot
+        $response = $response->withHeader('Content-Type', $content_type);
+        $response->getBody()->write(
+            \file_get_contents($screenshot_filepath)
+        );
+
+        die('controllerd');
+
         return $response;
     }
 

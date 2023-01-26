@@ -17,4 +17,8 @@ return [
         'editor'     => $_ENV['APP_DEV_WHOOPS_EDITOR'],
     ],
 
+    'workshop' => [
+        'item_max_filesize_bytes' => 20971520, // 20 MiB
+    ],
+
 ];
