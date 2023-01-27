@@ -105,7 +105,7 @@
                 <div class="form-group row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="screenshots">Screenshots <span class="text-muted">(Optional)</span></label>
+                            <label for="screenshots">Screenshots</label>
 
                             {% if screenshots|length == 0 %}
                                 <p>
@@ -124,11 +124,20 @@
                                                     <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
                                             </a>
                                             <a
-                                                href="/workshop/screenshot/remove/{{ workshop_item.id }}/{{ screenshot.filename }}"
+                                                href="/workshop/screenshot/remove/{{ workshop_item.id }}/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
                                                 onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
                                                 class="btn-medieval btn-medieval-gray"
-                                                style="position: relative; top: -99px; right: -77px; padding: 0px 5px;">
-                                                &#10799;
+                                                style="display: inline-block; position: relative; top: -98px; right: -0px; width: 20px; height: 20px;"
+                                                alt="Set as main image" title="Set as main image">
+                                                <ion-icon name="bookmark-outline" style="margin-left: 2px;" alt="Set as main image" title="Set as main image"></ion-icon>
+                                            </a>
+                                            <a
+                                                href="/workshop/screenshot/remove/{{ workshop_item.id }}/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
+                                                onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
+                                                class="btn-medieval"
+                                                style="display: inline-block; position: relative; top: -98px; right: -54px;  width: 20px; height: 20px;"
+                                                alt="Remove" title="Remove">
+                                                <ion-icon name="close-outline" style="margin-left: 2px;" alt="Remove" title="Remove"></ion-icon>
                                             </a>
                                         </div>
                                     {% endfor %}
@@ -145,17 +154,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description <span class="text-muted">(Optional)</span></label>
+                    <label for="description">Description</label>
                     <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="install_instructions">Installation instructions <span class="text-muted">(Optional)</span></label>
+                    <label for="install_instructions">Installation instructions</label>
                     <textarea class="form-control" name="install_instructions" rows="4">{{ workshop_item.installInstructions }}</textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="min_game_build">Minimum game version <span class="text-muted">(Optional)</span></label>
+                    <label for="min_game_build">Minimum game version</label>
                     <select class="form-control" id="min_game_build" name="min_game_build">
                         <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="-1"></option>
                         {% if builds|length > 0 %}

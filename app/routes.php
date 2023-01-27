@@ -70,8 +70,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->get('/{id:\d+}', [Admin\AdminWorkshopController::class, 'itemIndex']);
         $group->post('/{id:\d+}', [Admin\AdminWorkshopController::class, 'itemUpdate']);
         // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminWorkshopController::class, 'userDelete']);
+        $group->get('/screenshot/delete/{id:\d+}/{filename}/{token_name}/{token_value:.+}', [AdminWorkshopController::class, 'deleteScreenshot']); // fallback
     });
-
 
     })->add(AuthAdminMiddleware::class);
 

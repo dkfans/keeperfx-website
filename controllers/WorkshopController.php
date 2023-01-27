@@ -16,6 +16,7 @@ use App\Entity\WorkshopTag;
 use App\Enum\UserRole;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Csrf\Guard;
 use Slim\Exception\HttpNotFoundException;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
@@ -352,24 +353,33 @@ class WorkshopController {
         return $response;
     }
 
-    public function removeScreenshot(
-        Request $request,
-        Response $response,
-        FlashMessage $flash,
-        Account $account,
-        TwigEnvironment $twig,
-        EntityManager $em,
-        $id,
-        $filename
-    ){
-        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
-        if(!$workshop_item){
-            throw new HttpNotFoundException($request, 'workshop item not found');
-        }
+    // public function removeScreenshot(
+    //     Request $request,
+    //     Response $response,
+    //     FlashMessage $flash,
+    //     Account $account,
+    //     TwigEnvironment $twig,
+    //     EntityManager $em,
+    //     Guard $csrf_guard,
+    //     $id,
+    //     $filename,
+    //     $token_name,
+    //     $token_value
+    // ){
+    //     // Validate against CSRF
+    //     $valid = $csrf_guard->validateToken($token_name, $token_value);
+    //     if(!$valid){
+    //         return $response;
+    //     }
 
-        // TODO: implement this
+    //     $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+    //     if(!$workshop_item){
+    //         throw new HttpNotFoundException($request, 'workshop item not found');
+    //     }
 
-        return $response;
-    }
+    //     // TODO: implement this
+
+    //     return $response;
+    // }
 
 }
