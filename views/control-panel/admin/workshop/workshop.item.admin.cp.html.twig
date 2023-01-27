@@ -16,7 +16,7 @@
         const lightbox = new PhotoSwipeLightbox({
             bgOpacity: 0.8,
             gallery: '#workshop-screenshots',
-            children: 'a',
+            children: 'a.workshop-screenshot-link',
             pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.esm.min.js'),
             mainClass: 'pswp-with-perma-preloader',
             initialZoomLevel: 'fit',
@@ -79,7 +79,7 @@
                     <select class="form-control" id="type" name="type">
                         {% if types|length > 0 %}
                             {% for type in types %}
-                                <option value="{{ type.value }}" {% if type.value == workshop_item.type %}selected=selected{% endif %}>{{ type.name }}</option>
+                                <option value="{{ type.value }}" {% if type.value == workshop_item.type.value %}selected=selected{% endif %}>{{ type.name }}</option>
                             {% endfor %}
                         {% endif %}
                     </select>
@@ -102,31 +102,51 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="description">Description <span class="text-muted">(Optional)</span></label>
-                    <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="screenshots">Screenshots <span class="text-muted">(Optional)</span></label>
+
+                            {% if screenshots|length == 0 %}
+                                <p>
+                                    No screenshots
+                                </p>
+                            {% else %}
+                                <div class="workshop-screenshots" id="workshop-screenshots">
+                                    {% for screenshot in screenshots %}
+                                        <div class="workshop-screenshot">
+                                            <a href="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}"
+                                                data-pswp-width="{{ screenshot.width }}"
+                                                data-pswp-height="{{ screenshot.height }}"
+                                                data-cropped="true"
+                                                class="workshop-screenshot-link"
+                                                target="_blank">
+                                                    <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
+                                            </a>
+                                            <a
+                                                href="/workshop/screenshot/remove/{{ workshop_item.id }}/{{ screenshot.filename }}"
+                                                onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
+                                                class="btn-medieval btn-medieval-gray"
+                                                style="position: relative; top: -99px; right: -77px; padding: 0px 5px;">
+                                                &#10799;
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="file">Add screenshots</label>
+                            <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="screenshots">Screenshots <span class="text-muted">(Optional)</span></label>
-
-                    {% if screenshots|length > 0 %}
-                        <div class="workshop-screenshots" id="workshop-screenshots">
-                            {% for screenshot in screenshots %}
-                                <div class="workshop-screenshot">
-                                    <a href="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}"
-                                        data-pswp-width="{{ screenshot.width }}"
-                                        data-pswp-height="{{ screenshot.height }}"
-                                        data-cropped="true"
-                                        target="_blank">
-                                            <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
-                                    </a>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    {# <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple"> #}
+                    <label for="description">Description <span class="text-muted">(Optional)</span></label>
+                    <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
                 </div>
 
                 <div class="form-group">

@@ -98,10 +98,17 @@ class AdminWorkshopController {
         $workshop_item->setDescription($description);
         $workshop_item->setInstallInstructions($install_instructions);
 
+        $type = WorkshopType::tryFrom((int) ($post['type'] ?? null));
+        $workshop_item->setType($type);
+
         $min_game_build = $em->getRepository(GithubRelease::class)->find((int) ($post['min_game_build'] ?? null));
         $workshop_item->setMinGameBuild($min_game_build ?? null);
 
         $workshop_item->setIsAccepted(isset($post['is_accepted']));
+
+        if(!empty($uploaded_files['file']) && $uploaded_files['file']->getError() !== UPLOAD_ERR_NO_FILE){
+            die('updating file');
+        }
 
         $em->flush();
 

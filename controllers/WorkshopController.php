@@ -349,7 +349,25 @@ class WorkshopController {
             \file_get_contents($screenshot_filepath)
         );
 
-        die('controllerd');
+        return $response;
+    }
+
+    public function removeScreenshot(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        Account $account,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        $id,
+        $filename
+    ){
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request, 'workshop item not found');
+        }
+
+        // TODO: implement this
 
         return $response;
     }
