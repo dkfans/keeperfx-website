@@ -10,7 +10,7 @@ use App\Enum\WorkshopType;
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
 use App\Entity\GithubRelease;
-
+use App\FlashMessage;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -22,11 +22,10 @@ class AdminWorkshopController {
         TwigEnvironment $twig,
         EntityManager $em
     ){
-        $open_submissions = $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => false]);
-
         $response->getBody()->write(
             $twig->render('control-panel/admin/workshop/workshop.admin.cp.html.twig', [
-                'open_submissions' => $open_submissions
+                'workshop_items'   => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => true]),
+                'open_submissions' => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => false]),
             ])
         );
 
@@ -72,6 +71,45 @@ class AdminWorkshopController {
         );
 
         return $response;
+    }
+
+    public function itemUpdate(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        FlashMessage $flash,
+        $id
+    ){
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            return $response;
+        }
+
+        $uploaded_files = $request->getUploadedFiles();
+        $post           = $request->getParsedBody();
+
+        $name                  = (string) ($post['name'] ?? null);
+        $description           = (string) ($post['description'] ?? null);
+        $install_instructions  = (string) ($post['install_instructions'] ?? null);
+
+        $workshop_item->setName($name);
+        $workshop_item->setDescription($description);
+        $workshop_item->setInstallInstructions($install_instructions);
+
+        $min_game_build = $em->getRepository(GithubRelease::class)->find((int) ($post['min_game_build'] ?? null));
+        $workshop_item->setMinGameBuild($min_game_build ?? null);
+
+        $workshop_item->setIsAccepted(isset($post['is_accepted']));
+
+        $em->flush();
+
+        $flash->success('Workshop item updated!');
+
+        $response = $response->withHeader('Location', '/admin/workshop/list')->withStatus(302);
+        return $response;
+
     }
 
 }

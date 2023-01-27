@@ -48,6 +48,27 @@
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
 
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="submitter">Submitter</label>
+                            <p id="submitter">
+                                <a href="/admin/user/{{ workshop_item.submitter.id }}">
+                                    {{ workshop_item.submitter.username }}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="submitter">Submission date</label>
+                            <p id="submitter">
+                                {{ workshop_item.createdTimestamp|date('Y-m-d') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" name="name" value="{{ workshop_item.name }}">
@@ -64,16 +85,21 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="file">File</label>
-                    <p id="file">
-                        <a href="/workshop/download/{{ workshop_item.id }}/{{ workshop_item.filename }}" download>{{ workshop_item.filename }}</a>
-                    </p>
-                </div>
-
-                <div class="form-group">
-                    <label for="file">Change file</label>
-                    <input type="file" class="form-control" id="file" name="file">
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="file">File</label>
+                            <p id="file">
+                                <a href="/workshop/download/{{ workshop_item.id }}/{{ workshop_item.filename }}" download>{{ workshop_item.filename }}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="file">Change file</label>
+                            <input type="file" class="form-control" id="file" name="file">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -114,31 +140,10 @@
                         <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="-1"></option>
                         {% if builds|length > 0 %}
                             {% for build in builds %}
-                                <option value="{{ build.id }}" {% if workshop_item.minGameBuild.id == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
+                                <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild.id == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
                             {% endfor %}
                         {% endif %}
                     </select>
-                </div>
-
-                <div class="row form-group">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="submitter">Submitter</label>
-                            <p id="submitter">
-                                <a href="/admin/user/{{ workshop_item.submitter.id }}">
-                                    {{ workshop_item.submitter.username }}
-                                </a>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="submitter">Submission date</label>
-                            <p id="submitter">
-                                {{ workshop_item.createdTimestamp|date('Y-m-d') }}
-                            </p>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="form-group">

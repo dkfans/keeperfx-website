@@ -27,7 +27,7 @@ class WorkshopItem {
     private WorkshopType $type;
 
     #[ORM\ManyToOne(targetEntity: GithubRelease::class)]
-    private GithubRelease|null $min_game_build;
+    private GithubRelease|null $min_game_build = null;
 
     #[ORM\Column(nullable: true)]
     private \DateTime|null $original_creation_date = null;
@@ -38,11 +38,11 @@ class WorkshopItem {
     #[ORM\Column]
     private \DateTime $updated_timestamp;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private string|null $description = null;
+    #[ORM\Column(type: 'text')]
+    private string $description = '';
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private string|null $install_instructions = null;
+    #[ORM\Column(type: 'text')]
+    private string $install_instructions = '';
 
     #[ORM\Column]
     private string $filename;
@@ -193,7 +193,7 @@ class WorkshopItem {
     /**
      * Set the value of min_game_build
      */
-    public function setMinGameBuild(GithubRelease $min_game_build): self
+    public function setMinGameBuild(GithubRelease|null $min_game_build): self
     {
         $this->min_game_build = $min_game_build;
 
@@ -221,7 +221,7 @@ class WorkshopItem {
     /**
      * Get the value of install_instructions
      */
-    public function getInstallInstructions(): string|null
+    public function getInstallInstructions(): string
     {
         return $this->install_instructions;
     }
@@ -229,7 +229,7 @@ class WorkshopItem {
     /**
      * Set the value of install_instructions
      */
-    public function setInstallInstructions(?string $install_instructions): self
+    public function setInstallInstructions(string $install_instructions): self
     {
         $this->install_instructions = $install_instructions;
 
@@ -239,7 +239,7 @@ class WorkshopItem {
     /**
      * Get the value of description
      */
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -247,7 +247,7 @@ class WorkshopItem {
     /**
      * Set the value of description
      */
-    public function setDescription(?string $description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 

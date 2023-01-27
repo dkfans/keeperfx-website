@@ -211,7 +211,7 @@ class WorkshopController {
         }
 
         $flash->success(
-            'Your workshop item has been submitted and will be reviewed by the KeeperFX team.' .
+            'Your workshop item has been submitted and will be reviewed by the KeeperFX team. ' .
             'After it has been accepted it will be added to the workshop for others to download.'
         );
 

@@ -27,7 +27,7 @@
                             <td>{{ workshop_item.id }}</td>
                             <td>{{ workshop_item.name }}</td>
                             <td>{{ workshop_item.submitter.username }}</td>
-                            <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:m:s') }}</td>
+                            <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:i') }}</td>
                             <td><a href="/admin/workshop/{{ workshop_item.id }}">View</a></td>
                         </tr>
                     {% endfor %}
@@ -48,7 +48,34 @@
     </div>
     <div class="content-body">
 
-        workshop items
+    {% if workshop_items|length > 0 %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Submitted by</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for workshop_item in workshop_items %}
+                    <tr>
+                        <td>{{ workshop_item.id }}</td>
+                        <td>{{ workshop_item.name }}</td>
+                        <td>{{ workshop_item.submitter.username }}</td>
+                        <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:i') }}</td>
+                        <td><a href="/admin/workshop/{{ workshop_item.id }}">View</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>
+            No workshop items
+        </p>
+    {% endif %}
 
     </div>
 </div>

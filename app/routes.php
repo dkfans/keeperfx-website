@@ -68,8 +68,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
         $group->get('/list', [Admin\AdminWorkshopController::class, 'listIndex']);
         $group->get('/{id:\d+}', [Admin\AdminWorkshopController::class, 'itemIndex']);
-        // $group->post('/{id:\d+}', [Admin\AdminUsersController::class, 'userEdit']);
-        // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminUsersController::class, 'userDelete']);
+        $group->post('/{id:\d+}', [Admin\AdminWorkshopController::class, 'itemUpdate']);
+        // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminWorkshopController::class, 'userDelete']);
     });
 
 
