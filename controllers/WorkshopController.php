@@ -62,19 +62,19 @@ class WorkshopController {
         return $response;
     }
 
-    public function submitIndex(
+    public function uploadIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig
     ){
         $response->getBody()->write(
-            $twig->render('workshop/submit.workshop.html.twig', $this->getWorkshopOptions())
+            $twig->render('workshop/upload.workshop.html.twig', $this->getWorkshopOptions())
         );
 
         return $response;
     }
 
-    public function submit(
+    public function upload(
         Request $request,
         Response $response,
         FlashMessage $flash,
@@ -134,7 +134,7 @@ class WorkshopController {
         if(!$success){
             // TODO: remove post vars (request twig extension)
             $response->getBody()->write(
-                $twig->render('workshop/submit.workshop.html.twig', $this->getWorkshopOptions() + [
+                $twig->render('workshop/upload.workshop.html.twig', $this->getWorkshopOptions() + [
                     'name'                 => $name,
                     'description'          => $description,
                     'install_instructions' => $install_instructions,

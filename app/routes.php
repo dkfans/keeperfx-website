@@ -83,9 +83,9 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     $group->get('/item/{id:\d+}', [WorkshopController::class, 'itemIndex']);
     $group->get('/download/{id:\d+}/{filename}', [WorkshopController::class, 'download']);
     $group->get('/screenshot/{id:\d+}/{filename}', [WorkshopController::class, 'outputScreenshot']); // fallback
-    // Workshop submit (LOGGED IN)
-    $group->get('/submit', [WorkshopController::class, 'submitIndex'])->add(LoggedInMiddleware::class);
-    $group->post('/submit', [WorkshopController::class, 'submit'])->add(LoggedInMiddleware::class);
+    // Workshop upload (LOGGED IN)
+    $group->get('/upload', [WorkshopController::class, 'uploadIndex'])->add(LoggedInMiddleware::class);
+    $group->post('/upload', [WorkshopController::class, 'upload'])->add(LoggedInMiddleware::class);
 });
 
 // RSS
