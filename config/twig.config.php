@@ -42,7 +42,8 @@ return [
         \App\Twig\Extension\FlashMessageTwigExtension::class,
         \App\Twig\Extension\GithubInteractTwigExtension::class,
         \App\Twig\Extension\RolesTwigExtension::class,
-        \App\Twig\Extension\WorkshopRatingExtension::class,
+        \App\Twig\Extension\WorkshopRatingTwigExtension::class,
+        \App\Twig\Extension\EnumTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class
     ],

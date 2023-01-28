@@ -1,17 +1,17 @@
 {% extends "workshop/_workshop_layout.html.twig" %}
 
-{% block title %}Submit a new workshop item - Workshop{% endblock %}
+{% block title %}Upload a new workshop item - Workshop{% endblock %}
 
 {% block workshop_content %}
 
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
-            <h2>Submit a new workshop item</h2>
+            <h2>Upload a new workshop item</h2>
         </div>
 
         <div class="content-body">
 
-            <form action="/workshop/submit" method="POST" enctype="multipart/form-data">
+            <form action="/workshop/upload" method="POST" enctype="multipart/form-data">
 
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
@@ -26,7 +26,7 @@
                     <select class="form-control" id="type" name="type">
                         {% if types|length > 0 %}
                             {% for type in types %}
-                                <option value="{{ type.value }}">{{ type.name }}</option>
+                                <option value="{{ type.value }}">{{ type.name|enum_beautify }}</option>
                             {% endfor %}
                         {% endif %}
                     </select>
@@ -55,10 +55,10 @@
                 <div class="form-group">
                     <label for="min_game_build">Minimum game version <span class="text-muted">(Optional)</span></label>
                     <select class="form-control" id="min_game_build" name="min_game_build">
-                        <option {# {% if loop.first %} #}selected=selected{# {% endif %} #}></option>
+                        <option selected=selected></option>
                         {% if builds|length > 0 %}
                             {% for build in builds %}
-                                <option value="{{ build.id }}" {# {% if loop.first %}selected=selected{% endif %} #}>{{ build.name }}</option>
+                                <option value="{{ build.id }}">{{ build.name }}</option>
                             {% endfor %}
                         {% endif %}
                     </select>

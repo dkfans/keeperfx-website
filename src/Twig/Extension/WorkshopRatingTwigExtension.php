@@ -1,14 +1,8 @@
 <?php
 
-/*
-<img src="/img/star-full.png" />
-
-<img src="/img/star-no.png" />
-*/
-
 namespace App\Twig\Extension;
 
-class WorkshopRatingExtension extends \Twig\Extension\AbstractExtension
+class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
 {
     protected const STAR_FULL = '<img src="/img/star-full.png" />';
     protected const STAR_HALF = '<img src="/img/star-half.png" />';

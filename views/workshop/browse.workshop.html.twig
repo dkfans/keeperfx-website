@@ -1,0 +1,44 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% block title %}Workshop{% endblock %}
+
+{% block workshop_content %}
+
+    <div style="
+    display: grid;
+    gap: 15px;
+    grid-template-columns: 1fr 1fr;
+    ">
+        {% for item in workshop_items %}
+            <div class="bg-keeper bd-keeper workshop-widget-item">
+
+                <div class="workshop-widget-image-container bd-keeper">
+                    <img src="/img/horny-face.png" />
+                </div>
+                <div class="workshop-widget-info">
+                    {# <div class="workshop-widget-title"> #}
+                        <h4>{{ item.name }}</h4>
+                    {# </div> #}
+                    <div class="row">
+                        <div class="col-6">
+                            {{ item.type.name|enum_beautify }} <br />
+                            By: {{ item.submitter.username }}
+                        </div>
+                        <div class="col-6" style="text-align: right;">
+                            {{ item.downloads }}
+                            {% if item.downloads == 1 %}
+                                download
+                            {% else %}
+                                downloads
+                            {% endif %}
+                            <br />
+                            <span style="width: 100px; display: inline-block">{{ workshop_rating(2.5) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

@@ -3,9 +3,9 @@
 namespace App\Enum;
 
 enum WorkshopType: int {
-    case Free_Play   = 1;
-    case Campaign    = 2;
-    case Multiplayer = 3;
-    case Tool        = 4;
-    case Asset       = 5;
+    case Campaign              = 10;
+    case FreePlayMap           = 20;
+    case MultiplayerMap        = 30;
+    case Tool                  = 50;
+    case Other                 = 100;
 }

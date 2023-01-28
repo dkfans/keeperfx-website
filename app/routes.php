@@ -79,7 +79,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
 // Workshop
 $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
-    $group->get('', [WorkshopController::class, 'workshopIndex']);
+    $group->get('', [WorkshopController::class, 'browseIndex']);
     $group->get('/item/{id:\d+}', [WorkshopController::class, 'itemIndex']);
     $group->get('/download/{id:\d+}/{filename}', [WorkshopController::class, 'download']);
     $group->get('/screenshot/{id:\d+}/{filename}', [WorkshopController::class, 'outputScreenshot']); // fallback

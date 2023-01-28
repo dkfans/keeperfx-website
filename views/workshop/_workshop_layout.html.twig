@@ -14,7 +14,20 @@
             </div>
             <div class="content-body">
 
-                {# TODO: add 'latest', 'highest rated', 'most downloaded', staff picks #}
+                <ul style="margin-bottom: 30px;">
+                    <li>
+                        <a href="/workshop">Browse</a>
+                    </li>
+                    <li>
+                        <a href="/workshop/highest-rated">Highest Rated</a>
+                    </li>
+                    <li>
+                        <a href="/workshop/most-downloaded">Most Downloaded</a>
+                    </li>
+                    <li>
+                        <a href="/workshop/staff-picks">Staff Picks</a>
+                    </li>
+                </ul>
 
                 {% if account %}
                     <a href="/workshop/upload" class="btn btn-lg btn-medieval" style="width: 100%">
@@ -57,7 +70,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="type" value="{{ type.value }}" id="type{{ loop.index }}">
                                     <label class="form-check-label" for="type{{ loop.index }}">
-                                        {{ type.name }}
+                                        {{ type.name|enum_beautify }}
                                     </label>
                                 </div>
                             {% endfor %}
