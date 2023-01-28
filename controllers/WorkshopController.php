@@ -278,10 +278,12 @@ class WorkshopController {
         }
 
         // Increase download count
-        $downloads = $workshop_item->getDownloads();
-        $downloads++;
-        $workshop_item->setDownloads($downloads);
-        $em->flush();
+        if(!isset($request->getQueryParams()['no_download_increment'])){
+            $downloads = $workshop_item->getDownloads();
+            $downloads++;
+            $workshop_item->setDownloads($downloads);
+            $em->flush();
+        }
 
         // Return download
         $response = $response
