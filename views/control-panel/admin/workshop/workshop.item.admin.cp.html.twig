@@ -16,7 +16,7 @@
         const lightbox = new PhotoSwipeLightbox({
             bgOpacity: 0.8,
             gallery: '#workshop-screenshots',
-            children: 'a.workshop-screenshot-link',
+            children: 'a.workshop-screenshot-item',
             pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.esm.min.js'),
             mainClass: 'pswp-with-perma-preloader',
             initialZoomLevel: 'fit',
@@ -58,6 +58,12 @@
                                 </a>
                             </p>
                         </div>
+                        <div class="form-group">
+                            <label for="downloads">Downloads</label>
+                            <p id="downloads">
+                                {{ workshop_item.downloads }}
+                            </p>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -90,13 +96,14 @@
                         <div class="form-group">
                             <label for="file">File</label>
                             <p id="file">
-                                <a href="/workshop/download/{{ workshop_item.id }}/{{ workshop_item.filename }}" download>{{ workshop_item.filename }}</a>
+                                <a href="/workshop/download/{{ workshop_item.id }}/{{ workshop_item.filename|url_encode }}?no_download_increment" download>{{ workshop_item.filename }}</a>
+                                <ion-icon name="download-outline"></ion-icon>
                             </p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="file">Change file</label>
+                            <label for="file">Update file</label>
                             <input type="file" class="form-control" id="file" name="file">
                         </div>
                     </div>
@@ -119,20 +126,20 @@
                                                 data-pswp-width="{{ screenshot.width }}"
                                                 data-pswp-height="{{ screenshot.height }}"
                                                 data-cropped="true"
-                                                class="workshop-screenshot-link"
+                                                class="workshop-screenshot-item"
                                                 target="_blank">
                                                     <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
                                             </a>
-                                            <a
-                                                href="/workshop/screenshot/remove/{{ workshop_item.id }}/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
+                                            {# <a
+                                                href="/workshop/screenshot/delete/{{ workshop_item.id }}/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
                                                 onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
                                                 class="btn-medieval btn-medieval-gray"
                                                 style="display: inline-block; position: relative; top: -98px; right: -0px; width: 20px; height: 20px;"
                                                 alt="Set as main image" title="Set as main image">
                                                 <ion-icon name="bookmark-outline" style="margin-left: 2px;" alt="Set as main image" title="Set as main image"></ion-icon>
-                                            </a>
+                                            </a> #}
                                             <a
-                                                href="/workshop/screenshot/remove/{{ workshop_item.id }}/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
+                                                href="/workshop/screenshot/delete/{{ workshop_item.id }}/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
                                                 onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
                                                 class="btn-medieval"
                                                 style="display: inline-block; position: relative; top: -98px; right: -54px;  width: 20px; height: 20px;"
@@ -147,7 +154,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="file">Add screenshots</label>
+                            <label for="file">Add screenshot(s)</label>
                             <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
                         </div>
                     </div>
