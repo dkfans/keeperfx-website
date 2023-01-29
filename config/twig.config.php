@@ -44,6 +44,7 @@ return [
         \App\Twig\Extension\RolesTwigExtension::class,
         \App\Twig\Extension\WorkshopRatingTwigExtension::class,
         \App\Twig\Extension\EnumTwigExtension::class,
+        \App\Twig\Extension\SlugifyTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class
     ],
