@@ -26,7 +26,7 @@ class AdminWorkshopController {
         EntityManager $em
     ){
         $response->getBody()->write(
-            $twig->render('control-panel/admin/workshop/workshop.admin.cp.html.twig', [
+            $twig->render('cp/admin/workshop/workshop.admin.cp.html.twig', [
                 'workshop_items'   => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => true]),
                 'open_submissions' => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => false]),
             ])
@@ -64,7 +64,7 @@ class AdminWorkshopController {
         }
 
         $response->getBody()->write(
-            $twig->render('control-panel/admin/workshop/workshop.item.admin.cp.html.twig', [
+            $twig->render('cp/admin/workshop/workshop.item.admin.cp.html.twig', [
                 'workshop_item' => $workshop_item,
                 'types'         => WorkshopType::cases(),
                 'tags'          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),

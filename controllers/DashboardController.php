@@ -15,7 +15,7 @@ class DashboardController {
     ){
 
         $response->getBody()->write(
-            $twig->render('control-panel/dashboard.cp.html.twig')
+            $twig->render('cp/dashboard.cp.html.twig')
         );
 
         return $response;

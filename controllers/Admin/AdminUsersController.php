@@ -23,7 +23,7 @@ class AdminUsersController {
         $users = $em->getRepository(User::class)->findAll();
 
         $response->getBody()->write(
-            $twig->render('control-panel/admin/users/users.admin.cp.html.twig', [
+            $twig->render('cp/admin/users/users.admin.cp.html.twig', [
                 'users' => $users
             ])
         );
@@ -37,7 +37,7 @@ class AdminUsersController {
         TwigEnvironment $twig
     ){
         $response->getBody()->write(
-            $twig->render('control-panel/admin/users/users.add.admin.cp.html.twig')
+            $twig->render('cp/admin/users/users.add.admin.cp.html.twig')
         );
 
         return $response;
@@ -110,7 +110,7 @@ class AdminUsersController {
         }
 
         $response->getBody()->write(
-            $twig->render('control-panel/admin/users/users.edit.admin.cp.html.twig', [
+            $twig->render('cp/admin/users/users.edit.admin.cp.html.twig', [
                 'user' => $user,
             ])
         );
