@@ -37,20 +37,17 @@ class WorkshopController {
         ];
     }
 
-    public function browseIndex(
+    public function browseLatestIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em
     ){
-        $workshop_items = $em->getRepository(WorkshopItem::class)->findAll();
-
         $response->getBody()->write(
-            $twig->render('workshop/browse.workshop.html.twig', $this->getWorkshopOptions() + [
-                'workshop_items' => $workshop_items
+            $twig->render('workshop/browse.latest.workshop.html.twig', $this->getWorkshopOptions() + [
+                'workshop_items' => $em->getRepository(WorkshopItem::class)->findAll()
             ])
         );
-
         return $response;
     }
 
