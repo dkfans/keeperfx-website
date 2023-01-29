@@ -47,11 +47,14 @@ class WorkshopItem {
     #[ORM\Column]
     private string $filename;
 
+    #[ORM\Column(nullable: true)]
+    private string|null $thumbnail = null;
+
     #[ORM\Column]
     private bool $is_accepted = false;
 
     #[ORM\Column(type: 'integer')]
-    private int $downloads = 0;
+    private int $download_count = 0;
 
     #[ORM\PrePersist]
     public function onPrePersist()
@@ -291,19 +294,37 @@ class WorkshopItem {
     }
 
     /**
-     * Get the value of downloads
+     * Get the value of download_count
      */
-    public function getDownloads(): int
+    public function getDownloadCount(): int
     {
-        return $this->downloads;
+        return $this->download_count;
     }
 
     /**
-     * Set the value of downloads
+     * Set the value of download_count
      */
-    public function setDownloads(int $downloads): self
+    public function setDownloadCount(int $download_count): self
     {
-        $this->downloads = $downloads;
+        $this->download_count = $download_count;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of thumbnail
+     */
+    public function getThumbnail(): ?string
+    {
+        return $this->thumbnail;
+    }
+
+    /**
+     * Set the value of thumbnail
+     */
+    public function setThumbnail(?string $thumbnail): self
+    {
+        $this->thumbnail = $thumbnail;
 
         return $this;
     }

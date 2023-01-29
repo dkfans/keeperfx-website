@@ -19,6 +19,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Csrf\Guard;
 use Slim\Exception\HttpNotFoundException;
 use Xenokore\Utility\Helper\DirectoryHelper;
+use URLify;
 
 class WorkshopController {
 
@@ -54,10 +55,34 @@ class WorkshopController {
     public function itemIndex(
         Request $request,
         Response $response,
-        TwigEnvironment $twig
+        TwigEnvironment $twig,
+        FlashMessage $flash,
+        EntityManager $em,
+        $id,
+        $slug = null
     ){
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            $flash->warning('The requested workshop item could not be found.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+
+        // Make sure title slug is in URL
+        if(URLify::slug($workshop_item->getName()) !== $slug){
+            $response = $response->withHeader('Location',
+                '/workshop/item/' . $workshop_item->getId() . '/' . URLify::slug($workshop_item->getName())
+            )->withStatus(302);
+            return $response;
+        }
+
         $response->getBody()->write(
-            $twig->render('workshop/item.workshop.html.twig', $this->getWorkshopOptions())
+            $twig->render('workshop/item.workshop.html.twig', $this->getWorkshopOptions() + [
+                'item' => $workshop_item
+            ])
         );
 
         return $response;
@@ -131,6 +156,24 @@ class WorkshopController {
             }
         }
 
+        // Check valid thumbnail file
+        // if(!empty($uploaded_files['thumbnail'])){
+        //     /** @var UploadedFile $thumbnail_file */
+        //     $thumbnail_file = $uploaded_files['thumbnail'];
+
+        //     // NO screenshots were added
+        //     if ($screenshot_file->getError() === UPLOAD_ERR_NO_FILE) {
+        //         continue;
+        //     }
+
+        //     $filename = $screenshot_file->getClientFilename();
+        //     $ext = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
+        //     if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
+        //         $success = false;
+        //         $flash->warning('One or more screenshots are invalid. Allowed file types: jpg, jpeg, png, gif');
+        //     }
+        // }
+
         // Return the page if submission is invalid
         if(!$success){
             // TODO: remove post vars (request twig extension)
@@ -195,7 +238,7 @@ class WorkshopController {
         // Store any uploaded screenshots
         foreach($uploaded_files['screenshots'] as $screenshot_file){
             // NO screenshots were added
-            if ($screenshot_file->getError() === UPLOAD_ERR_NO_FILE) {
+            if ($screenshot_file->getError() === \UPLOAD_ERR_NO_FILE) {
                 continue;
             }
 
@@ -211,6 +254,24 @@ class WorkshopController {
                 throw new \Exception('Failed to move workshop item screenshot');
             }
         }
+
+        // Store thumbnail
+        // $thumbnail_file = $uploaded_files['thumbnail'];
+        // if($thumbnail_file && $thumbnail_file->getError() !== UPLOAD_ERR_NO_FILE){
+
+        //     // Generate screenshot output path
+        //     $ext = \strtolower(\pathinfo($thumbnail_file->getClientFilename(), \PATHINFO_EXTENSION));
+        //     $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
+        //     $thumbnail_filename = $str . '.' . $ext;
+        //     $path = $workshop_item_screenshots_dir . '/' . $thumbnail_filename;
+
+        //     // Move screenshot
+        //     $screenshot_file->moveTo($path);
+        //     if(!\file_exists($path)){
+        //         throw new \Exception('Failed to move workshop item thumbnail');
+        //     }
+
+        // }
 
         $flash->success(
             'Your workshop item has been submitted and will be reviewed by the KeeperFX team. ' .
@@ -280,9 +341,9 @@ class WorkshopController {
 
         // Increase download count
         if(!isset($request->getQueryParams()['no_download_increment'])){
-            $downloads = $workshop_item->getDownloads();
-            $downloads++;
-            $workshop_item->setDownloads($downloads);
+            $download_count = $workshop_item->getDownloadCount();
+            $download_count++;
+            $workshop_item->setDownloadCount($download_count);
             $em->flush();
         }
 

@@ -32,36 +32,34 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
      */
     public function renderWorkshopRating(float|int $rating): string
     {
+        $str = '<span style="width: 100px; display: inline-block">';
+
         if($rating < 0.25){
-            return self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
+            $str .= self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
+        } elseif($rating < 0.75){
+            $str .= self::STAR_HALF . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
+        } elseif($rating < 1.25){
+            $str .= self::STAR_FULL . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
+        } elseif($rating < 1.75){
+            $str .= self::STAR_FULL . self::STAR_HALF . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
+        } elseif($rating < 2.25){
+            $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
+        } elseif($rating < 2.75){
+            $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_HALF . self::STAR_NONE . self::STAR_NONE;
+        } elseif($rating < 3.25){
+            $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_NONE . self::STAR_NONE;
+        } elseif($rating < 3.75){
+            $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_HALF . self::STAR_NONE;
+        } elseif($rating < 4.25){
+            $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_NONE;
+        } elseif($rating < 4.75){
+            $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_HALF;
+        } else {
+            $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL;
         }
-        if($rating < 0.75){
-            return self::STAR_HALF . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
-        }
-        if($rating < 1.25){
-            return self::STAR_FULL . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
-        }
-        if($rating < 1.75){
-            return self::STAR_FULL . self::STAR_HALF . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
-        }
-        if($rating < 2.25){
-            return self::STAR_FULL . self::STAR_FULL . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
-        }
-        if($rating < 2.75){
-            return self::STAR_FULL . self::STAR_FULL . self::STAR_HALF . self::STAR_NONE . self::STAR_NONE;
-        }
-        if($rating < 3.25){
-            return self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_NONE . self::STAR_NONE;
-        }
-        if($rating < 3.75){
-            return self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_HALF . self::STAR_NONE;
-        }
-        if($rating < 4.25){
-            return self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_NONE;
-        }
-        if($rating < 4.75){
-            return self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_HALF;
-        }
-        return self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL;
+
+        $str .= '</span>';
+
+        return $str;
     }
 }

@@ -80,15 +80,17 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
 // Workshop
 $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
-    $group->get('/item/{id:\d+}', [WorkshopController::class, 'itemIndex']);
+    $group->get('/item/{id:\d+}[/{slug}]', [WorkshopController::class, 'itemIndex']);
     $group->get('/download/{id:\d+}/{filename}', [WorkshopController::class, 'download']);
     $group->get('/screenshot/{id:\d+}/{filename}', [WorkshopController::class, 'outputScreenshot']); // fallback
+
     // Workshop upload (LOGGED IN)
     $group->get('/upload', [WorkshopController::class, 'uploadIndex'])->add(LoggedInMiddleware::class);
     $group->post('/upload', [WorkshopController::class, 'upload'])->add(LoggedInMiddleware::class);
-    // Browse
+
+    // Redirect '/workshop' to '/workshop/latest'
     $group->get('', function (Request $request, Response $response){
-        return $response->withStatus(302)->withHeader('Location', '/workshop/latest'); // redirect '/workshop' to '/workshop/latest'
+        return $response->withStatus(302)->withHeader('Location', '/workshop/latest');
     });
     $group->get('/latest', [WorkshopController::class, 'browseLatestIndex']);
 });

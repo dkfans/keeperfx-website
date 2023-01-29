@@ -1,17 +1,84 @@
 {% extends "workshop/_workshop_layout.html.twig" %}
 
-{% block title %}DZADOINAZDOINZAOID - Workshop{% endblock %}
+{% block title %}{{ item.name }} - Workshop{% endblock %}
 
 {% block workshop_content %}
 
     <div class="content-box bg-keeper bd-keeper">
+        {# <div class="content-header workshop-item-title">
+            <h2>{{ item.name }}</h2>
+        </div> #}
+        <div class="content-body">
+
+            <div class="row">
+
+                <div class="col-md-5">
+                    <div class="workshop-item-thumbnail bd-keeper">
+                        <img src="/img/horny-face.png" />
+                    </div>
+
+                    <a
+                        href="/workshop/download/{{ item.id }}/{{ item.filename|url_encode }}"
+                        class="btn btn-lg btn-medieval"
+                        style="margin-top: 30px; width: 100%;"
+                        download>
+                            Download
+                    </a>
+
+                </div>
+
+                <div class="col-md-7">
+
+                    {# Title  #}
+                    <h2 class="workshop-item-title">{{ item.name }}</h2>
+
+                    {# Info #}
+                    <div class="row" style="margin: 30px 20px 50px 20px;">
+                        <div class="col-md-6">
+                            Submitted by: {{ item.submitter.username }}
+                            <br /><br />
+                            Date: {{ item.createdTimestamp|date('Y-m-d') }}
+                        </div>
+                        <div class="col-md-6">
+                            Downloads: {{ item.downloadCount }}
+                            <br /><br />
+                            Rating: {{ workshop_rating(2.5) }}
+                        </div>
+                    </div>
+
+                    {# Description  #}
+                    {% if item.description is not empty %}
+                        <h5 style="margin-top: 50px;">Description</h5>
+                        <pre class="workshop-item-description force-wordwrap">{{ item.description }}</pre>
+                    {% endif %}
+
+                    {# Install Instructions #}
+                    {% if item.installInstructions is not empty %}
+                        <h5 style="margin-top: 50px;">Installation Intructions</h5>
+                        <pre class="workshop-item-description">{{ item.installInstructions }}</pre>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {# Comments #}
+    <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
-            <h2>Workshop Item Title</h2>
+            <h2>Comments</h2>
         </div>
         <div class="content-body">
             <p>
-                {{ workshop_rating(5) }}
+                No comments yet.
             </p>
+            <div class="form-group">
+                <textarea class="form-control" name="comment" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-medieval" value="Submit" />
+            </div>
         </div>
     </div>
 
