@@ -16,6 +16,7 @@ use App\Entity\WorkshopTag;
 use App\Enum\UserRole;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\UploadedFileInterface;
 use Slim\Csrf\Guard;
 use Slim\Exception\HttpNotFoundException;
 use Xenokore\Utility\Helper\DirectoryHelper;
@@ -132,7 +133,7 @@ class WorkshopController {
         }
 
         // Check if a file was uploaded
-        if(empty($uploaded_files['file']) || $uploaded_files['file']->getError() === UPLOAD_ERR_NO_FILE){
+        if(empty($uploaded_files['file']) || !($uploaded_files['file'] instanceof UploadedFileInterface) || $uploaded_files['file']->getError() === UPLOAD_ERR_NO_FILE){
             $flash->warning('You did not submit a file');
             $success = false;
         }
@@ -157,22 +158,17 @@ class WorkshopController {
         }
 
         // Check valid thumbnail file
-        // if(!empty($uploaded_files['thumbnail'])){
-        //     /** @var UploadedFile $thumbnail_file */
-        //     $thumbnail_file = $uploaded_files['thumbnail'];
+        if(!empty($uploaded_files['thumbnail']) && $uploaded_files['thumbnail']->getError() !== UPLOAD_ERR_NO_FILE){
+            /** @var UploadedFile $thumbnail_file */
+            $thumbnail_file = $uploaded_files['thumbnail'];
 
-        //     // NO screenshots were added
-        //     if ($screenshot_file->getError() === UPLOAD_ERR_NO_FILE) {
-        //         continue;
-        //     }
-
-        //     $filename = $screenshot_file->getClientFilename();
-        //     $ext = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-        //     if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
-        //         $success = false;
-        //         $flash->warning('One or more screenshots are invalid. Allowed file types: jpg, jpeg, png, gif');
-        //     }
-        // }
+            $filename = $thumbnail_file->getClientFilename();
+            $ext = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
+            if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
+                $success = false;
+                $flash->warning('Invalid thumbnail. Allowed file types: jpg, jpeg, png, gif');
+            }
+        }
 
         // Return the page if submission is invalid
         if(!$success){
@@ -192,7 +188,6 @@ class WorkshopController {
         $workshop_item->setName($name);
         $workshop_item->setSubmitter($account->getUser());
         $workshop_item->setType($type);
-        $workshop_item->setFilename($uploaded_files['file']->getClientFilename());
 
         if(!empty($description)){
             $workshop_item->setDescription($description);
@@ -211,7 +206,7 @@ class WorkshopController {
         }
 
         $em->persist($workshop_item);
-        $em->flush();
+        $em->flush(); // flush because we need ID for creating storage directory
 
         // Create directories for files
         $workshop_item_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
@@ -225,53 +220,60 @@ class WorkshopController {
 
         // Store the uploaded file
         // TODO: allow specific files only (archives .7z, .zip, .rar, etc)
-        /** @var UploadedFile $file */
         $file = $uploaded_files['file'];
         $filename = $file->getClientFilename();
-
         $path = $workshop_item_dir . '/' . $filename;
         $file->moveTo($path);
         if(!\file_exists($path)){
             throw new \Exception('Failed to move workshop item file');
         }
 
+        $workshop_item->setFilename($uploaded_files['file']->getClientFilename());
+
         // Store any uploaded screenshots
-        foreach($uploaded_files['screenshots'] as $screenshot_file){
-            // NO screenshots were added
-            if ($screenshot_file->getError() === \UPLOAD_ERR_NO_FILE) {
-                continue;
-            }
+        $screenshot_files = $uploaded_files['screenshots'] ?? [];
+        if(!empty($screenshot_files)){
+            foreach($screenshot_files as $screenshot_file){
+                // NO screenshots were added
+                if ($screenshot_file->getError() === \UPLOAD_ERR_NO_FILE) {
+                    continue;
+                }
 
-            // Generate screenshot output path
-            $ext = \strtolower(\pathinfo($screenshot_file->getClientFilename(), \PATHINFO_EXTENSION));
-            $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
-            $screenshot_filename = $str . '.' . $ext;
-            $path = $workshop_item_screenshots_dir . '/' . $screenshot_filename;
+                // Generate screenshot output path
+                $ext = \strtolower(\pathinfo($screenshot_file->getClientFilename(), \PATHINFO_EXTENSION));
+                $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
+                $thumbnail_filename = 'thumbnail_' . $str . '.' . $ext;
+                $path = $workshop_item_dir . '/' . $thumbnail_filename;
 
-            // Move screenshot
-            $screenshot_file->moveTo($path);
-            if(!\file_exists($path)){
-                throw new \Exception('Failed to move workshop item screenshot');
+                // Move screenshot
+                $screenshot_file->moveTo($path);
+                if(!\file_exists($path)){
+                    throw new \Exception('Failed to move workshop item screenshot');
+                }
             }
         }
 
         // Store thumbnail
-        // $thumbnail_file = $uploaded_files['thumbnail'];
-        // if($thumbnail_file && $thumbnail_file->getError() !== UPLOAD_ERR_NO_FILE){
+        $thumbnail_file = $uploaded_files['thumbnail'] ?? null;
+        if($thumbnail_file && $thumbnail_file->getError() !== UPLOAD_ERR_NO_FILE){
 
-        //     // Generate screenshot output path
-        //     $ext = \strtolower(\pathinfo($thumbnail_file->getClientFilename(), \PATHINFO_EXTENSION));
-        //     $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
-        //     $thumbnail_filename = $str . '.' . $ext;
-        //     $path = $workshop_item_screenshots_dir . '/' . $thumbnail_filename;
+            // Generate thumbnail output path
+            $ext = \strtolower(\pathinfo($thumbnail_file->getClientFilename(), \PATHINFO_EXTENSION));
+            $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
+            $thumbnail_filename = $str . '.' . $ext;
+            $path = $workshop_item_screenshots_dir . '/' . $thumbnail_filename;
 
-        //     // Move screenshot
-        //     $screenshot_file->moveTo($path);
-        //     if(!\file_exists($path)){
-        //         throw new \Exception('Failed to move workshop item thumbnail');
-        //     }
+            // Move thumbnail
+            $screenshot_file->moveTo($path);
+            if(!\file_exists($path)){
+                throw new \Exception('Failed to move workshop item thumbnail');
+            }
 
-        // }
+            $workshop_item->setThumbnail($thumbnail_filename);
+        }
+
+        // Flush again so files are added to DB entity
+        $em->flush();
 
         $flash->success(
             'Your workshop item has been submitted and will be reviewed by the KeeperFX team. ' .
