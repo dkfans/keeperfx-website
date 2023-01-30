@@ -71,7 +71,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->get('/{id:\d+}', [Admin\AdminWorkshopController::class, 'itemIndex']);
         $group->post('/{id:\d+}', [Admin\AdminWorkshopController::class, 'itemUpdate']);
         // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminWorkshopController::class, 'userDelete']);
-        $group->get('/screenshot/delete/{id:\d+}/{filename}/{token_name}/{token_value:.+}', [Admin\AdminWorkshopController::class, 'deleteScreenshot']); // fallback
+        $group->get('/screenshot/delete/{id:\d+}/{filename}/{token_name}/{token_value:.+}', [Admin\AdminWorkshopController::class, 'deleteScreenshot']);
     });
 
     })->add(AuthAdminMiddleware::class);
@@ -83,6 +83,7 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     $group->get('/item/{id:\d+}[/{slug}]', [WorkshopController::class, 'itemIndex']);
     $group->get('/download/{id:\d+}/{filename}', [WorkshopController::class, 'download']);
     $group->get('/screenshot/{id:\d+}/{filename}', [WorkshopController::class, 'outputScreenshot']); // fallback
+    $group->get('/thumbnail/{id:\d+}/{filename}', [WorkshopController::class, 'outputThumbnail']); // fallback
 
     // Workshop upload (LOGGED IN)
     $group->get('/upload', [WorkshopController::class, 'uploadIndex'])->add(LoggedInMiddleware::class);

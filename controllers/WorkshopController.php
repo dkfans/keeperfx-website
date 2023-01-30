@@ -47,7 +47,7 @@ class WorkshopController {
     ){
         $response->getBody()->write(
             $twig->render('workshop/browse.latest.workshop.html.twig', $this->getWorkshopOptions() + [
-                'workshop_items' => $em->getRepository(WorkshopItem::class)->findAll()
+                'workshop_items' => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => true])
             ])
         );
         return $response;
@@ -228,7 +228,7 @@ class WorkshopController {
             throw new \Exception('Failed to move workshop item file');
         }
 
-        $workshop_item->setFilename($uploaded_files['file']->getClientFilename());
+        $workshop_item->setFilename($filename);
 
         // Store any uploaded screenshots
         $screenshot_files = $uploaded_files['screenshots'] ?? [];
@@ -242,8 +242,8 @@ class WorkshopController {
                 // Generate screenshot output path
                 $ext = \strtolower(\pathinfo($screenshot_file->getClientFilename(), \PATHINFO_EXTENSION));
                 $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
-                $thumbnail_filename = 'thumbnail_' . $str . '.' . $ext;
-                $path = $workshop_item_dir . '/' . $thumbnail_filename;
+                $screenshot_filename = $str . '.' . $ext;
+                $path = $workshop_item_screenshots_dir . '/' . $screenshot_filename;
 
                 // Move screenshot
                 $screenshot_file->moveTo($path);
@@ -260,11 +260,11 @@ class WorkshopController {
             // Generate thumbnail output path
             $ext = \strtolower(\pathinfo($thumbnail_file->getClientFilename(), \PATHINFO_EXTENSION));
             $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
-            $thumbnail_filename = $str . '.' . $ext;
-            $path = $workshop_item_screenshots_dir . '/' . $thumbnail_filename;
+            $thumbnail_filename = 'thumbnail_' . $str . '.' . $ext;
+            $path = $workshop_item_dir . '/' . $thumbnail_filename;
 
             // Move thumbnail
-            $screenshot_file->moveTo($path);
+            $thumbnail_file->moveTo($path);
             if(!\file_exists($path)){
                 throw new \Exception('Failed to move workshop item thumbnail');
             }
@@ -378,15 +378,6 @@ class WorkshopController {
             throw new HttpNotFoundException($request, 'workshop item not found');
         }
 
-        // Check if workshop item has been accepted
-        // Admins can always output screenshots
-        if(
-            $workshop_item->getIsAccepted() !== true
-            && $account->getUser()->getRole()->value < UserRole::Admin->value
-        ){
-            throw new HttpNotFoundException($request, 'workshop item not accepted');
-        }
-
         // Get screenshot dir
         $screenshot_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/screenshots';
         if(!\is_dir($screenshot_dir)){
@@ -414,6 +405,54 @@ class WorkshopController {
         $response = $response->withHeader('Content-Type', $content_type);
         $response->getBody()->write(
             \file_get_contents($screenshot_filepath)
+        );
+
+        return $response;
+    }
+
+    public function outputThumbnail(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        Account $account,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        $id,
+        $filename)
+    {
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request, 'workshop item not found');
+        }
+
+        // Check if workshop item has thumbnail
+        if(!$workshop_item->getThumbnail()){
+            throw new HttpNotFoundException($request, 'workshop item does not have thumbnail');
+        }
+
+        // Check if thumbnail filename matches
+        if($workshop_item->getThumbnail() !== $filename){
+            throw new HttpNotFoundException($request, 'workshop item does not have thumbnail with that name');
+        }
+
+        // Get thumbnail filepath
+        $thumbnail_filepath = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/' . $workshop_item->getThumbnail();
+
+        // Check if file exists
+        if(!\file_exists($thumbnail_filepath)){
+            throw new HttpNotFoundException($request, 'workshop item thumbnail does not exist');
+        }
+
+        // Get mimetype of image
+        $finfo        = \finfo_open(\FILEINFO_MIME_TYPE);
+        $content_type = \finfo_file($finfo, $thumbnail_filepath);
+        \finfo_close($finfo);
+
+        // Return screenshot
+        $response = $response->withHeader('Content-Type', $content_type);
+        $response->getBody()->write(
+            \file_get_contents($thumbnail_filepath)
         );
 
         return $response;

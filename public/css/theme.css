@@ -491,8 +491,8 @@ footer {
 }
 
 .workshop-widget-image-container {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     flex-grow: 0;
     flex-shrink: 0;
 }

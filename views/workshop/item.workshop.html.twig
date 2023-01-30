@@ -14,7 +14,11 @@
 
                 <div class="col-md-5">
                     <div class="workshop-item-thumbnail bd-keeper">
-                        <img src="/img/horny-face.png" />
+                        {% if item.thumbnail is not null %}
+                            <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
+                        {% else %}
+                            <img src="/img/horny-face.png" />
+                        {% endif %}
                     </div>
 
                     <a

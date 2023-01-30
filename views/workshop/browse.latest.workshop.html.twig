@@ -13,7 +13,11 @@
             <div class="bg-keeper bd-keeper workshop-widget-item">
 
                 <div class="workshop-widget-image-container bd-keeper">
-                    <img src="/img/horny-face.png" />
+                    {% if item.thumbnail is not null %}
+                        <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
+                    {% else %}
+                        <img src="/img/horny-face.png" />
+                    {% endif %}
                 </div>
                 <div class="workshop-widget-info">
                     <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}"  class="workshop-widget-title">

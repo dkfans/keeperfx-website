@@ -44,8 +44,8 @@ class WorkshopItem {
     #[ORM\Column(type: 'text')]
     private string $install_instructions = '';
 
-    #[ORM\Column]
-    private string $filename;
+    #[ORM\Column(nullable: true)]
+    private string|null $filename = null;
 
     #[ORM\Column(nullable: true)]
     private string|null $thumbnail = null;
