@@ -149,13 +149,34 @@ class AdminWorkshopController {
             }
         }
 
+        // Update or set thumbnail
+        if(!empty($uploaded_files['thumbnail']) && $uploaded_files['thumbnail']->getError() !== UPLOAD_ERR_NO_FILE){
+
+            $thumbnail_file     = $uploaded_files['thumbnail'];
+            $thumbnail_filename = $thumbnail_file->getClientFilename();
+            $thumbnail_path     = $workshop_item_dir . '/' . $thumbnail_filename;
+
+            // Remove already existing thumbnail
+            if($workshop_item->getThumbnail() !== null){
+                $current_thumbnail_path = $workshop_item_dir . '/' . $workshop_item->getThumbnail();
+                if(\file_exists($current_thumbnail_path)){
+                    \unlink($current_thumbnail_path);
+                }
+            }
+
+            $thumbnail_file->moveTo($thumbnail_path);
+
+            if(\file_exists($thumbnail_path)){
+                $workshop_item->setThumbnail($thumbnail_filename);
+            }
+        }
+
         // Write changes to DB
         $em->flush();
 
         $flash->success('Workshop item updated!');
         $response = $response->withHeader('Location', '/admin/workshop/' . $workshop_item->getId())->withStatus(302);
         return $response;
-
     }
 
     public function deleteScreenshot(

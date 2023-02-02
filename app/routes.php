@@ -80,20 +80,34 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
 // Workshop
 $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
+
+    // Public view and download
     $group->get('/item/{id:\d+}[/{slug}]', [WorkshopController::class, 'itemIndex']);
     $group->get('/download/{id:\d+}/{filename}', [WorkshopController::class, 'download']);
-    $group->get('/screenshot/{id:\d+}/{filename}', [WorkshopController::class, 'outputScreenshot']); // fallback
-    $group->get('/thumbnail/{id:\d+}/{filename}', [WorkshopController::class, 'outputThumbnail']); // fallback
 
-    // Workshop upload (LOGGED IN)
+    // Screenshot & thumbnail fallbacks
+    // These should be served by the webserver
+    $group->get('/screenshot/{id:\d+}/{filename}', [WorkshopController::class, 'outputScreenshot']);
+    $group->get('/thumbnail/{id:\d+}/{filename}', [WorkshopController::class, 'outputThumbnail']);
+
+    // Workshop item upload (LOGGED IN)
     $group->get('/upload', [WorkshopController::class, 'uploadIndex'])->add(LoggedInMiddleware::class);
     $group->post('/upload', [WorkshopController::class, 'upload'])->add(LoggedInMiddleware::class);
+
+    // Workshop item edit (LOGGED IN)
+    $group->get('/edit/{id:\d+}', [WorkshopController::class, 'editIndex'])->add(LoggedInMiddleware::class);
+    $group->post('/edit/{id:\d+}', [WorkshopController::class, 'edit'])->add(LoggedInMiddleware::class);
+
+    // Browse routes
+    $group->get('/latest', [WorkshopController::class, 'browseLatestIndex']);
+    // $group->get('/highest-rated', [WorkshopController::class, 'browseLatestIndex']);
+    // $group->get('/most-downloaded', [WorkshopController::class, 'browseLatestIndex']);
+    // $group->get('/staff-picks', [WorkshopController::class, 'browseLatestIndex']);
 
     // Redirect '/workshop' to '/workshop/latest'
     $group->get('', function (Request $request, Response $response){
         return $response->withStatus(302)->withHeader('Location', '/workshop/latest');
     });
-    $group->get('/latest', [WorkshopController::class, 'browseLatestIndex']);
 });
 
 // RSS

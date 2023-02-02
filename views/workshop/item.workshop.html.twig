@@ -29,6 +29,15 @@
                             Download
                     </a>
 
+                    {% if item.submitter.id == account.id %}
+                        <a
+                            href="/workshop/edit/{{ item.id }}"
+                            class="btn btn-medieval btn-medieval-gray"
+                            style="margin-top: 15px; width: 100%;">
+                                Edit this workshop item
+                        </a>
+                    {% endif %}
+
                 </div>
 
                 <div class="col-md-7">
@@ -42,6 +51,10 @@
                             Submitted by: {{ item.submitter.username }}
                             <br /><br />
                             Date: {{ item.createdTimestamp|date('Y-m-d') }}
+                            <br /><br />
+                            {% if item.minGameBuild is not null %}
+                                Minimum game version: {{ item.minGameBuild.name }}
+                            {% endif %}
                         </div>
                         <div class="col-md-6">
                             Downloads: {{ item.downloadCount }}
@@ -53,13 +66,17 @@
                     {# Description  #}
                     {% if item.description is not empty %}
                         <h5 style="margin-top: 50px;">Description</h5>
-                        <pre class="workshop-item-description force-wordwrap">{{ item.description }}</pre>
+                        <div class="workshop-item-text-content">
+                            {{ item.description|escape|markdown_to_html }}
+                        </div>
                     {% endif %}
 
                     {# Install Instructions #}
                     {% if item.installInstructions is not empty %}
                         <h5 style="margin-top: 50px;">Installation Intructions</h5>
-                        <pre class="workshop-item-description">{{ item.installInstructions }}</pre>
+                        <div class="workshop-item-text-content">
+                            {{ item.installInstructions|escape|markdown_to_html }}
+                        </div>
                     {% endif %}
 
                 </div>

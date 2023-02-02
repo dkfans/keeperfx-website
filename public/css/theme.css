@@ -543,11 +543,9 @@ a.workshop-widget-title:hover {
     height: 100%;
 }
 
-.workshop-item-description {
-    border: 2px solid rgba(0, 0, 0, 0.8);
-    background-color: rgba(0, 0, 0, 0.4);
-    max-width: 100%;
-    padding: 10px;
+.workshop-item-text-content {
+    background-color: rgba(247, 204, 138, 0.1);
+    padding-top: 10px;
+    display: inline-block;
+    width: 100%;
 }
-
-.workshop-item-title {}

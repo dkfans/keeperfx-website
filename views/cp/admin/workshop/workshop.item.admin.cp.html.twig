@@ -111,7 +111,7 @@
                 <div class="form-group row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="file">Thumbnail</label>
+                            <label>Thumbnail</label>
                             {% if workshop_item.thumbnail is null %}
                                 <p>
                                     No thumbnail
@@ -125,8 +125,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="file">Update thumbnail</label>
-                            <input type="file" class="form-control" id="file" name="file">
+                            <label for="thumbnail">Update thumbnail</label>
+                            <input type="file" class="form-control" id="thumbnail" name="thumbnail">
                         </div>
                         {% if workshop_item.thumbnail is not null %}
                             <p style="margin-top: 15px;">

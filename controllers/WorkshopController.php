@@ -4,23 +4,28 @@ namespace App\Controller;
 
 use App\Account;
 use App\FlashMessage;
-use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-use Slim\Psr7\UploadedFile;
-
-use App\Enum\WorkshopType;
 
 use App\Entity\GithubRelease;
 use App\Entity\WorkshopItem;
 use App\Entity\WorkshopTag;
+
 use App\Enum\UserRole;
+use App\Enum\WorkshopType;
+
+use URLify;
+use Slim\Csrf\Guard;
+use Doctrine\ORM\EntityManager;
+use Twig\Environment as TwigEnvironment;
+
+use Slim\Psr7\UploadedFile;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\UploadedFileInterface;
-use Slim\Csrf\Guard;
-use Slim\Exception\HttpNotFoundException;
+
 use Xenokore\Utility\Helper\DirectoryHelper;
-use URLify;
+
+use Slim\Exception\HttpNotFoundException;
+use Slim\Psr7\Factory\ResponseFactory;
 
 class WorkshopController {
 
@@ -32,6 +37,7 @@ class WorkshopController {
 
     private function getWorkshopOptions(): array
     {
+        // TODO: improve the name of this function
         return [
             'types'  => WorkshopType::cases(),
             'tags'   => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
@@ -72,7 +78,7 @@ class WorkshopController {
             return $response;
         }
 
-        // Make sure title slug is in URL
+        // Make sure title slug is in URL and matches
         if(URLify::slug($workshop_item->getName()) !== $slug){
             $response = $response->withHeader('Location',
                 '/workshop/item/' . $workshop_item->getId() . '/' . URLify::slug($workshop_item->getName())
@@ -272,7 +278,7 @@ class WorkshopController {
             $workshop_item->setThumbnail($thumbnail_filename);
         }
 
-        // Flush again so files are added to DB entity
+        // Flush again so filenames are added to DB entity
         $em->flush();
 
         $flash->success(
@@ -285,6 +291,73 @@ class WorkshopController {
         );
 
         return $response;
+    }
+
+    public function editIndex(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        TwigEnvironment $twig,
+        Account $account,
+        EntityManager $em,
+        $id
+    ){
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            $flash->warning('The requested workshop item could not be found.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+
+        // Check if user is workshop item submitter
+        if($workshop_item->getSubmitter() !== $account->getUser()){
+            $flash->warning('You can not edit this workshop item because you did not submit it.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+
+        // Show edit page
+        $response->getBody()->write(
+            $twig->render('workshop/edit.workshop.html.twig', $this->getWorkshopOptions() + [
+                'workshop_item' => $workshop_item
+            ])
+        );
+        return $response;
+    }
+
+    public function edit(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        TwigEnvironment $twig,
+        Account $account,
+        EntityManager $em,
+        $id
+    ){
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            $flash->warning('The requested workshop item could not be found.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+
+        // Check if user is workshop item submitter
+        if($workshop_item->getSubmitter() !== $account->getUser()){
+            $flash->warning('You can not edit this workshop item because you did not submit it.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+
     }
 
     public function download(

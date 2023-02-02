@@ -1,0 +1,27 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% block title %}Edit workshop item - {{ workshop_item.name }} -Workshop{% endblock %}
+
+{% block workshop_content %}
+
+    <div class="alert alert-info">
+        Updating your workshop item will unlist it until the new version has been accepted by the KeeperFX team.
+    </div>
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Workshop Item: {{ workshop_item.name }}</h2>
+        </div>
+
+        <div class="content-body">
+
+            <form action="/workshop/edit/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data">
+
+                <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+                <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
