@@ -32,6 +32,26 @@ class FetchAlphaCommand extends Command
     {
         $output->writeln("[>] Fetching latest alpha releases...");
 
+        // Make sure a Github token is set
+        if(
+            !isset($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOADER_TOKEN'])
+            || empty($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOADER_TOKEN'])
+        ){
+            $output->writeln("[-] Github token not set");
+            $output->writeln("[>] ENV VAR: 'KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOADER_TOKEN'");
+            return Command::FAILURE;
+        }
+
+        // Make sure an output directory is set
+        if(
+            !isset($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])
+            || empty($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])
+        ){
+            $output->writeln("[-] Alpha build download directory is not set");
+            $output->writeln("[>] ENV VAR: 'KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'");
+            return Command::FAILURE;
+        }
+
         // Create output directory if it does not exist
         if(!\is_dir($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])){
             if(!\mkdir($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])){
