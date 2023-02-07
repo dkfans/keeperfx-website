@@ -46,20 +46,6 @@ class WorkshopController {
         ];
     }
 
-    public function browseLatestIndex(
-        Request $request,
-        Response $response,
-        TwigEnvironment $twig,
-        EntityManager $em
-    ){
-        $response->getBody()->write(
-            $twig->render('workshop/browse.latest.workshop.html.twig', $this->getWorkshopOptions() + [
-                'workshop_items' => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => true])
-            ])
-        );
-        return $response;
-    }
-
     public function itemIndex(
         Request $request,
         Response $response,

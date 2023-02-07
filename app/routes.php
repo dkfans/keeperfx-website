@@ -102,14 +102,16 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     $group->post('/rate/{id:\d+}', [WorkshopController::class, 'rate'])->add(LoggedInMiddleware::class);
 
     // Browse routes
-    $group->get('/latest', [WorkshopController::class, 'browseLatestIndex']);
-    // $group->get('/highest-rated', [WorkshopController::class, 'browseLatestIndex']);
-    // $group->get('/most-downloaded', [WorkshopController::class, 'browseLatestIndex']);
-    // $group->get('/staff-picks', [WorkshopController::class, 'browseLatestIndex']);
+    $group->group('/browse', function (RouteCollectorProxy $group) use ($container) {
+        $group->get('/latest', [WorkshopBrowseController::class, 'browseLatestIndex']);
+        // $group->get('/most-downloaded', [WorkshopBrowseController::class, 'browseLatestIndex']);
+        // $group->get('/highest-rated', [WorkshopBrowseController::class, 'browseLatestIndex']);
+        // $group->get('/staff-picks', [WorkshopBrowseController::class, 'browseLatestIndex']);
+    });
 
-    // Redirect '/workshop' to '/workshop/latest'
+    // Redirect '/workshop' to '/workshop/browse/latest'
     $group->get('', function (Request $request, Response $response){
-        return $response->withStatus(302)->withHeader('Location', '/workshop/latest');
+        return $response->withStatus(302)->withHeader('Location', '/workshop/browse/latest');
     });
 });
 
