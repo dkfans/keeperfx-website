@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class WorkshopRating {
 
     #[ORM\Id]
@@ -20,6 +21,25 @@ class WorkshopRating {
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     private User $user;
+
+    #[ORM\Column]
+    private \DateTime $created_timestamp;
+
+    #[ORM\Column]
+    private \DateTime $updated_timestamp;
+
+    #[ORM\PrePersist]
+    public function onPrePersist()
+    {
+        $this->created_timestamp = new \DateTime("now");
+        $this->updated_timestamp = new \DateTime("now");
+    }
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate()
+    {
+        $this->updated_timestamp = new \DateTime("now");
+    }
 
 
     /**
@@ -92,5 +112,21 @@ class WorkshopRating {
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * Get the value of created_timestamp
+     */
+    public function getCreatedTimestamp(): \DateTime
+    {
+        return $this->created_timestamp;
+    }
+
+    /**
+     * Get the value of updated_timestamp
+     */
+    public function getUpdatedTimestamp(): \DateTime
+    {
+        return $this->updated_timestamp;
     }
 }
