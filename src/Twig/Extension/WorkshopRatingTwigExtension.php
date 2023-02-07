@@ -4,9 +4,11 @@ namespace App\Twig\Extension;
 
 class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
 {
-    protected const STAR_FULL = '<img src="/img/star-full.png" />';
-    protected const STAR_HALF = '<img src="/img/star-half.png" />';
-    protected const STAR_NONE = '<img src="/img/star-none.png" />';
+    protected const STAR_FULL  = '<img src="/img/star-full.png" data-rating="%s" />';
+    protected const STAR_HALF  = '<img src="/img/star-half.png" data-rating="%s" />';
+    protected const STAR_EMPTY = '<img src="/img/star-none.png" data-rating="%s" />';
+
+    protected const SPAN_STYLE = 'width: 100px; height: 20px; display: inline-block';
 
     public function getName(): string
     {
@@ -30,41 +32,36 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
      * @param float|int $rating
      * @return string
      */
-    public function renderWorkshopRating(float|int|null $rating): string
+    public function renderWorkshopRating(int $item_id, float|int|null $rating) : string
     {
-        $str = '<span style="width: 100px; height: 20px; display: inline-block">';
+        $output = '<span style="' . self::SPAN_STYLE . '" data-workshop-item-id="' . $item_id . '">%s</span>';
 
         if($rating === null){
-            $str .= 'N/A';
-        } else {
-            if($rating < 0.25){
-                $str .= self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
-            } elseif($rating < 0.75){
-                $str .= self::STAR_HALF . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
-            } elseif($rating < 1.25){
-                $str .= self::STAR_FULL . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
-            } elseif($rating < 1.75){
-                $str .= self::STAR_FULL . self::STAR_HALF . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
-            } elseif($rating < 2.25){
-                $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_NONE . self::STAR_NONE . self::STAR_NONE;
-            } elseif($rating < 2.75){
-                $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_HALF . self::STAR_NONE . self::STAR_NONE;
-            } elseif($rating < 3.25){
-                $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_NONE . self::STAR_NONE;
-            } elseif($rating < 3.75){
-                $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_HALF . self::STAR_NONE;
-            } elseif($rating < 4.25){
-                $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_NONE;
-            } elseif($rating < 4.75){
-                $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_HALF;
-            } else {
-                $str .= self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL . self::STAR_FULL;
-            }
+            return \sprintf($output, 'N/A');
         }
 
+        $full_stars  = \floor($rating);
+        $half_stars  = \floor(($rating - $full_stars) / 0.5);
+        $empty_stars = 5 - $full_stars - $half_stars;
 
-        $str .= '</span>';
+        $r = 1;
+        $images_string = '';
 
-        return $str;
+        for($i = 0; $i < $full_stars; $i++){
+            $images_string .= \sprintf(self::STAR_FULL, $r);
+            $r++;
+        }
+
+        for($i = 0; $i < $half_stars; $i++){
+            $images_string .= \sprintf(self::STAR_HALF, $r);
+            $r++;
+        }
+
+        for($i = 0; $i < $empty_stars; $i++){
+            $images_string .= \sprintf(self::STAR_EMPTY, $r);
+            $r++;
+        }
+
+        return \sprintf($output, $images_string);
     }
 }
