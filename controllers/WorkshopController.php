@@ -7,6 +7,7 @@ use App\FlashMessage;
 
 use App\Entity\GithubRelease;
 use App\Entity\WorkshopItem;
+use App\Entity\WorkshopRating;
 use App\Entity\WorkshopTag;
 
 use App\Enum\UserRole;
@@ -358,6 +359,66 @@ class WorkshopController {
             return $response;
         }
 
+    }
+
+    public function rate(
+        Request $request,
+        Response $response,
+        Account $account,
+        EntityManager $em,
+        $id
+    )
+    {
+        $post = $request->getParsedBody();
+        $score = (int) ($post['score'] ?? 0);
+
+        // Check valid score
+        if($score < 1 || $score > 5){
+            // TODO: json alert
+            return $response;
+        }
+
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            // TODO: json alert
+            return $response;
+        }
+
+        // Check if workshop item has been accepted
+        if($workshop_item->getIsAccepted() !== true){
+            // TODO: json alert
+            return $response;
+        }
+
+        // Get possible already existing rating
+        $rating = $em->getRepository(WorkshopRating::class)->findOneBy([
+            'item' => $workshop_item,
+            'user' => $account->getUser()
+        ]);
+
+        // Set rating or create a new one
+        if($rating !== null){
+            $rating->setScore($score);
+        } else {
+            $rating = new WorkshopRating();
+            $rating->setItem($workshop_item);
+            $rating->setUser($account->getUser());
+            $rating->setScore($score);
+            $em->persist($rating);
+        }
+
+        // Save changes to DB
+        $em->flush();
+
+        // Return
+        $response->getBody()->write(
+            \json_encode([
+                'success' => true
+            ])
+        );
+
+        return $response;
     }
 
     public function download(

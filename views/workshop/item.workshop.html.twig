@@ -29,7 +29,7 @@
                             Download
                     </a>
 
-                    {% if item.submitter.id == account.id %}
+                    {% if account != null and item.submitter.id == account.id %}
                         <a
                             href="/workshop/edit/{{ item.id }}"
                             class="btn btn-medieval btn-medieval-gray"
@@ -103,4 +103,58 @@
         </div>
     </div>
 
+{% endblock %}
+
+
+
+{% block body_javascript %}
+<script>
+    $(function(e){
+
+        if(app_store.account === null){
+            return;
+        }
+
+        $.each($('[data-workshop-item-id]'), function(i, el){
+
+            var workshopItemId = $(el).attr('data-workshop-item-id');
+
+            $.each($(el).find('img'), function(index, element){
+
+                var ratingScore = parseInt($(element).attr('data-rating-score'));
+
+                $(element).css('cursor', 'pointer');
+
+                $(element).on('click', function(e){
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/workshop/rate/' + workshopItemId,
+                        data: {
+                            score: ratingScore,
+                            [app_store.csrf.keys.name]: app_store.csrf.name,
+                            [app_store.csrf.keys.value]: app_store.csrf.value
+                        },
+                        /*data: JSON.stringify({
+                            score: ratingScore,
+                            [app_store.csrf.keys.name]: app_store.csrf.name,
+                            [app_store.csrf.keys.value]: app_store.csrf.value
+                        }),
+                        contentType: 'application/json; charset=utf-8',*/
+                        dataType: 'json', // return type data
+                        success: function(data){
+                            toastr.success('You have succesfuly rated this workshop item!');
+                        },
+                    });
+                });
+
+                new bootstrap.Popover(element, {
+                    'placement': 'top',
+                    'trigger': 'hover',
+                    'content': 'Rate this item ' + ratingScore + ' out of 5'
+                });
+            });
+        });
+    });
+</script>
 {% endblock %}

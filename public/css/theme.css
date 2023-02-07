@@ -29,6 +29,11 @@ body {
     --bs-danger-bg-subtle: #930916;
     --bs-danger-border-subtle: #ff001b;
     --bs-danger-text: #ffffff;
+
+    --bs-popover-border-color: #090909 !important;
+    --bs-popover-bg: #090909 !important;
+    --bs-popover-body-color: #fff;
+    --bs-popover-border-radius: 0 !important;
 }
 
 ul {
@@ -549,3 +554,53 @@ a.workshop-widget-title:hover {
     display: inline-block;
     width: 100%;
 }
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+#toast-container>div {
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+
+    opacity: 1;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+    filter: alpha(opacity=100);
+}
+
+#toast-container>div:hover {
+    -moz-box-shadow: 0 0 12px #000000;
+    -webkit-box-shadow: 0 0 12px #000000;
+    box-shadow: 0 0 12px #000000;
+
+    opacity: 0.6;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+    filter: alpha(opacity=60);
+
+    cursor: pointer;
+}
+
+.toast-message {
+    color: #fff;
+}
+
+.toast-info {
+    background-color: var(--bs-info-bg-subtle);
+}
+
+.toast-success {
+    background-color: var(--bs-success-bg-subtle);
+}
+
+.toast-warning {
+    background-color: #F89406;
+}
+
+.toast-error {
+    background-color: #BD362F;
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/

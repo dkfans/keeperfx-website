@@ -4,9 +4,9 @@ namespace App\Twig\Extension;
 
 class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
 {
-    protected const STAR_FULL  = '<img src="/img/star-full.png" data-rating="%s" />';
-    protected const STAR_HALF  = '<img src="/img/star-half.png" data-rating="%s" />';
-    protected const STAR_EMPTY = '<img src="/img/star-none.png" data-rating="%s" />';
+    protected const STAR_FULL  = '<img src="/img/star-full.png" data-rating-score="%s" />';
+    protected const STAR_HALF  = '<img src="/img/star-half.png" data-rating-score="%s" />';
+    protected const STAR_EMPTY = '<img src="/img/star-empty.png" data-rating-score="%s" />';
 
     protected const SPAN_STYLE = 'width: 100px; height: 20px; display: inline-block';
 

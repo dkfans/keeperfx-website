@@ -98,6 +98,9 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     $group->get('/edit/{id:\d+}', [WorkshopController::class, 'editIndex'])->add(LoggedInMiddleware::class);
     $group->post('/edit/{id:\d+}', [WorkshopController::class, 'edit'])->add(LoggedInMiddleware::class);
 
+    // Workshop item rate
+    $group->post('/rate/{id:\d+}', [WorkshopController::class, 'rate'])->add(LoggedInMiddleware::class);
+
     // Browse routes
     $group->get('/latest', [WorkshopController::class, 'browseLatestIndex']);
     // $group->get('/highest-rated', [WorkshopController::class, 'browseLatestIndex']);
