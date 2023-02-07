@@ -9,7 +9,7 @@ All non static files should be routed trough `index.php`.
 ```nginx
 server {
 	listen       127.0.0.1:80;
-	server_name  shalbum.url;
+	server_name  keeperfx.local;
 	
 	root   /var/www/keeperfx-website/public;
 	index  index.php;
@@ -19,10 +19,16 @@ server {
 	}
 	
 	location ~ \.php$ {
-		fastcgi_pass   127.0.0.1:9000;
-		fastcgi_index  index.php;
-		fastcgi_param  SCRIPT_FILENAME  $document_root/$fastcgi_script_name;
-		include        fastcgi_params;
+        
+        # Linux
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+
+        # Windows
+		# fastcgi_pass   127.0.0.1:9000;
+		# fastcgi_index  index.php;
+		# fastcgi_param  SCRIPT_FILENAME  $document_root/$fastcgi_script_name;
+		# include        fastcgi_params;
 	}
 }
 ```
@@ -32,7 +38,7 @@ server {
 If you use the env var `KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH` you can setup nginx to serve those files using any chosen directory.
 
 ```nginx
-location /downloadds/ {
+location /downloads/ {
     alias /var/www/keeperfx-website/keeperfx-alpha-builds/;
 }
 ```

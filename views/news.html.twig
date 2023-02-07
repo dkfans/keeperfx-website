@@ -10,10 +10,8 @@
             <h2>{{ article.title }}</h2>
         </div>
         <div class="content-body">
-            <p class="news-content">{{ article.text|markdown_to_html }}</p>
-            <p>
-                <a href="/">Go back</a>
-            </p>
+            <p>{{ article.text|markdown_to_html }}</p>
+            <p class="text-muted">- KeeperFX Team</p>
         </div>
     </div>
 

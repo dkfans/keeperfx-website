@@ -37,6 +37,7 @@ class HandleCommitsCommand extends Command
         // Make sure project directory exists
         if(!DirectoryHelper::isAccessible(self::PROJECT_DIR)){
             $output->writeln("[-] Directory does not exist: " . self::PROJECT_DIR);
+            $output->writeln("[>] Run the 'kfx:pull-repo' command first");
             return Command::FAILURE;
         }
 
