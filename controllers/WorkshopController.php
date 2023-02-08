@@ -308,10 +308,25 @@ class WorkshopController {
             return $response;
         }
 
+        // Get screenshots
+        $screenshots = [];
+        $screenshot_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/screenshots';
+        if(\is_dir($screenshot_dir)){
+            foreach(\glob($screenshot_dir . '/*') as $screenshot_file){
+                $size = \getimagesize($screenshot_file);
+                $screenshots[] = [
+                    'filename' => \basename($screenshot_file),
+                    'width'    => $size[0],
+                    'height'   => $size[1],
+                ];
+            }
+        }
+
         // Show edit page
         $response->getBody()->write(
             $twig->render('workshop/edit.workshop.html.twig', $this->getWorkshopOptions() + [
-                'workshop_item' => $workshop_item
+                'workshop_item' => $workshop_item,
+                'screenshots'   => $screenshots,
             ])
         );
         return $response;
@@ -345,6 +360,103 @@ class WorkshopController {
             return $response;
         }
 
+        $uploaded_files = $request->getUploadedFiles();
+        $post           = $request->getParsedBody();
+
+        $name                  = (string) ($post['name'] ?? null);
+        $description           = (string) ($post['description'] ?? null);
+        $install_instructions  = (string) ($post['install_instructions'] ?? null);
+
+        $workshop_item->setName($name);
+        $workshop_item->setDescription($description);
+        $workshop_item->setInstallInstructions($install_instructions);
+        $workshop_item->setIsAccepted(isset($post['is_accepted']));
+
+        // Set workshop item type
+        $type = WorkshopType::tryFrom((int) ($post['type'] ?? null));
+        $workshop_item->setType($type);
+
+        // Set minimum game build
+        $min_game_build = $em->getRepository(GithubRelease::class)->find((int) ($post['min_game_build'] ?? null));
+        $workshop_item->setMinGameBuild($min_game_build ?? null);
+
+        // Set directories for files
+        $workshop_item_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
+        $workshop_item_screenshots_dir = $workshop_item_dir . '/screenshots';
+
+        // Update workshop file
+        if(!empty($uploaded_files['file']) && $uploaded_files['file']->getError() !== UPLOAD_ERR_NO_FILE){
+
+            $file     = $uploaded_files['file'];
+            $filename = $file->getClientFilename();
+            $path     = $workshop_item_dir . '/' . $filename;
+
+            $workshop_item->setFilename($filename);
+
+            $file->moveTo($path);
+            if(!\file_exists($path)){
+                throw new \Exception('Failed to move workshop item file');
+            }
+        }
+
+        // Store any uploaded screenshots
+        foreach($uploaded_files['screenshots'] as $screenshot_file){
+            // NO screenshots were added
+            if ($screenshot_file->getError() === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+
+            // Generate screenshot output path
+            $ext = \strtolower(\pathinfo($screenshot_file->getClientFilename(), \PATHINFO_EXTENSION));
+            $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
+            $screenshot_filename = $str . '.' . $ext;
+            $path = $workshop_item_screenshots_dir . '/' . $screenshot_filename;
+
+            // Move screenshot
+            $screenshot_file->moveTo($path);
+            if(!\file_exists($path)){
+                throw new \Exception('Failed to move workshop item screenshot');
+            }
+        }
+
+        // Update or set thumbnail
+        if(!empty($uploaded_files['thumbnail']) && $uploaded_files['thumbnail']->getError() !== UPLOAD_ERR_NO_FILE){
+
+            $thumbnail_file     = $uploaded_files['thumbnail'];
+            $thumbnail_filename = $thumbnail_file->getClientFilename();
+            $thumbnail_path     = $workshop_item_dir . '/' . $thumbnail_filename;
+
+            // Remove already existing thumbnail
+            if($workshop_item->getThumbnail() !== null){
+                $current_thumbnail_path = $workshop_item_dir . '/' . $workshop_item->getThumbnail();
+                if(\file_exists($current_thumbnail_path)){
+                    \unlink($current_thumbnail_path);
+                }
+            }
+
+            $thumbnail_file->moveTo($thumbnail_path);
+
+            if(\file_exists($thumbnail_path)){
+                $workshop_item->setThumbnail($thumbnail_filename);
+            }
+        }
+
+        // Force the workshop item to be accepted again
+        $workshop_item->setIsAccepted(false);
+
+        // Write changes to DB
+        $em->flush();
+
+        $flash->success(
+            'Your workshop item has been updated and has been temporary removed from the workshop. ' .
+            'After it has been reviewed by the KeeperFX team it will be available in the workshop again.'
+        );
+
+        $response->getBody()->write(
+            $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+        );
+
+        return $response;
     }
 
     public function rate(
