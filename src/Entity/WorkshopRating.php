@@ -13,7 +13,7 @@ class WorkshopRating {
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: 'WorkshopItem')]
+    #[ORM\ManyToOne(targetEntity: WorkshopItem::class, inversedBy: 'ratings')]
     private WorkshopItem $item;
 
     #[ORM\Column(type: 'integer')]

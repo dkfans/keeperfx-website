@@ -38,13 +38,35 @@ class WorkshopBrowseController {
         TwigEnvironment $twig,
         EntityManager $em
     ){
+        // Get workshop items
+        $workshop_items = $em->getRepository(WorkshopItem::class)->findBy(
+            ['is_accepted' => true],
+            ['created_timestamp' => 'DESC']
+        );
+
+        // Get workshop item ratings
+        $workshop_ratings = [];
+        if($workshop_items){
+            foreach($workshop_items as $item){
+                $workshop_ratings[$item->getId()] = null;
+                $ratings = $item->getRatings();
+                if($ratings){
+                    $rating_scores = [];
+                    foreach($ratings as $rating){
+                        $rating_scores[] = $rating->getScore();
+                    }
+                    $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
+                    $workshop_ratings[$item->getId()] = $rating_average;
+                }
+            }
+        }
+
+        // Render view
         $response->getBody()->write(
             $twig->render('workshop/browse.workshop.html.twig', $this->getWorkshopOptions() + [
-                'browse_type'    => 'latest',
-                'workshop_items' => $em->getRepository(WorkshopItem::class)->findBy(
-                    ['is_accepted' => true],
-                    ['created_timestamp' => 'DESC']
-                ),
+                'browse_type'      => 'latest',
+                'workshop_items'   => $workshop_items,
+                'workshop_ratings' => $workshop_ratings,
             ])
         );
         return $response;

@@ -73,9 +73,22 @@ class WorkshopController {
             return $response;
         }
 
+        // Get workshop item rating
+        $workshop_item_rating = null;
+        $ratings = $workshop_item->getRatings();
+        if($ratings){
+            $rating_scores = [];
+            foreach($ratings as $rating){
+                $rating_scores[] = $rating->getScore();
+            }
+            $workshop_item_rating = \array_sum($rating_scores) / \count($rating_scores);
+        }
+
+        // Render view
         $response->getBody()->write(
             $twig->render('workshop/item.workshop.html.twig', $this->getWorkshopOptions() + [
-                'item' => $workshop_item
+                'item'        => $workshop_item,
+                'item_rating' => $workshop_item_rating
             ])
         );
 

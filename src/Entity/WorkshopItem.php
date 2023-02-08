@@ -3,7 +3,11 @@
 namespace App\Entity;
 
 use App\Enum\WorkshopType;
+use App\Entity\WorkshopRating;
 use Doctrine\ORM\Mapping as ORM;
+
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
@@ -55,6 +59,13 @@ class WorkshopItem {
 
     #[ORM\Column(type: 'integer')]
     private int $download_count = 0;
+
+    #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'item')]
+    private Collection $ratings;
+
+    public function __construct() {
+        $this->ratings = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function onPrePersist()
@@ -327,5 +338,13 @@ class WorkshopItem {
         $this->thumbnail = $thumbnail;
 
         return $this;
+    }
+
+    /**
+     * Get the value of ratings
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
     }
 }
