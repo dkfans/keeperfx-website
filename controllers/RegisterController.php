@@ -19,11 +19,13 @@ class RegisterController {
         TwigEnvironment $twig,
         Account $account
     ){
+        // Only logged-out guests allowed
         if($account->isLoggedIn()){
             $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
         }
 
+        // Render view
         $response->getBody()->write(
             $twig->render('register.html.twig')
         );
@@ -40,7 +42,7 @@ class RegisterController {
         EntityManager $em,
         Session $session
     ){
-        // Only logged out users allowed
+        // Only logged-out guests allowed
         if($account->isLoggedIn()){
             $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
@@ -55,61 +57,93 @@ class RegisterController {
 
         $success = true;
 
-        if(strlen($username) < 3 || strlen($username) > 32){
+        // Validate username length
+        if($username === null || strlen($username) < 2 || strlen($username) > 32){
             $success = false;
-            $flash->warning('Username has to be between 3');
+            $flash->warning('Username has must be at least 2 characters long and can not exceed 32 characters.');
         }
 
-        // Make sure passwords match
-        if($password !== $repeat_password){
-            $success = false;
-            $flash->warning('The given passwords did not match.');
+        if($username !== null){
+
+            // Validate username charset
+            if(!preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9\.\_\-]+$/', $username)){
+                $success = false;
+                $flash->warning(
+                    'Username can only contain the following characters: <strong>a-z A-Z 0-9 _ . -</strong>' .
+                    '<br />It also must start with a letter or number.'
+                );
+            }
+
+            // Check if username already exists
+            $user = $em->getRepository(User::class)->findBy(['username' => $username]);
+            if($user){
+                $success = false;
+                $flash->warning('Username already in use.');
+            }
         }
 
-        // Check if username already exists
-        $user = $em->getRepository(User::class)->findBy(['username' => $username]);
-        if($user){
-            $success = false;
-            $flash->warning('Username already in use.');
+        // Check if user wants to add an email address
+        if($email !== null){
+
+            // Validate email address
+            if(!filter_var($email, \FILTER_VALIDATE_EMAIL)){
+                $success = false;
+                $flash->warning('Invalid email address.');
+            }
+
+            // Check if email address already exists
+            $user_with_email = $em->getRepository(User::class)->findBy(['email' => $email]);
+            if($user_with_email){
+                $success = false;
+                $flash->warning('This email address is already in use.');
+            }
         }
 
-        // Check if email address already exists
-        $user = $em->getRepository(User::class)->findBy(['email' => $email]);
-        if($user){
+        // Make sure a password is given
+        if($password === null){
             $success = false;
-            $flash->warning('This email address is already in use.');
+            $flash->warning('You must enter a password.');
+        } else {
+
+            // Make sure passwords match
+            if($password !== $repeat_password){
+                $success = false;
+                $flash->warning('The given passwords did not match.');
+            }
         }
 
-        // If user registration is valid
-        if($success){
+        // Given details must be valid before creating a user
+        if(!$success){
 
-            // Create new user
-            $user = new User();
-            $user->setUsername($username);
-            $user->setPassword($password);
-            $user->setEmail($email);
-            $em->persist($user);
-            $em->flush();
+            // Render register page
+            $response->getBody()->write(
+                $twig->render('register.html.twig', [
+                    'username'        => $username,
+                    'email'           => $email,
+                    'password'        => $password,
+                    'repeat_password' => $repeat_password,
+                ])
+            );
 
-            $flash->success('Successfully registered. You are now logged in.');
-
-            // Log in the user
-            $session['uid'] = $user->getId();
-
-            // Navigate to dashboard
-            $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
         }
 
-        $response->getBody()->write(
-            $twig->render('register.html.twig', [
-                'username'        => $username,
-                'email'           => $email,
-                'password'        => $password,
-                'repeat_password' => $repeat_password,
-            ])
-        );
+        // Create new user
+        $user = new User();
+        $user->setUsername($username);
+        $user->setPassword($password);
+        $user->setEmail($email);
 
+        $em->persist($user);
+        $em->flush();
+
+        $flash->success('Successfully registered. You are now logged in.');
+
+        // Immediately log in the user
+        $session['uid'] = $user->getId();
+
+        // Navigate to dashboard
+        $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
         return $response;
     }
 
