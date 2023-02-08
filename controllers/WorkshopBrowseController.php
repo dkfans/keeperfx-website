@@ -50,7 +50,7 @@ class WorkshopBrowseController {
             foreach($workshop_items as $item){
                 $workshop_ratings[$item->getId()] = null;
                 $ratings = $item->getRatings();
-                if($ratings){
+                if($ratings && \count($ratings) > 0){
                     $rating_scores = [];
                     foreach($ratings as $rating){
                         $rating_scores[] = $rating->getScore();

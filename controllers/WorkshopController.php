@@ -76,7 +76,7 @@ class WorkshopController {
         // Get workshop item rating
         $workshop_item_rating = null;
         $ratings = $workshop_item->getRatings();
-        if($ratings){
+        if($ratings && \count($ratings) > 0){
             $rating_scores = [];
             foreach($ratings as $rating){
                 $rating_scores[] = $rating->getScore();
