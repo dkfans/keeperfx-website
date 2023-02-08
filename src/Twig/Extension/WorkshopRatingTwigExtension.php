@@ -37,7 +37,7 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
         $output = '<span style="' . self::SPAN_STYLE . '" data-workshop-item-id="' . $item_id . '">%s</span>';
 
         if($rating === null){
-            return \sprintf($output, 'N/A');
+            return \sprintf($output, 'No rating yet');
         }
 
         $full_stars  = \floor($rating);
