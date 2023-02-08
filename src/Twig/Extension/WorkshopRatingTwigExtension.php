@@ -4,9 +4,10 @@ namespace App\Twig\Extension;
 
 class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
 {
-    protected const STAR_FULL  = '<img src="/img/star-full.png" data-rating-score="%s" />';
-    protected const STAR_HALF  = '<img src="/img/star-half.png" data-rating-score="%s" />';
-    protected const STAR_EMPTY = '<img src="/img/star-empty.png" data-rating-score="%s" />';
+    protected const STAR_FULL    = '<img src="/img/star-full.png" data-rating-score="%s" />';
+    protected const STAR_HALF    = '<img src="/img/star-half.png" data-rating-score="%s" />';
+    protected const STAR_EMPTY   = '<img src="/img/star-empty.png" data-rating-score="%s" />';
+    protected const STAR_UNRATED = '<img src="/img/star-unrated.png" data-rating-score="%s" />';
 
     protected const SPAN_STYLE = 'width: 100px; height: 20px; display: inline-block';
 
@@ -37,7 +38,10 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
         $output = '<span style="' . self::SPAN_STYLE . '" data-workshop-item-id="' . $item_id . '">%s</span>';
 
         if($rating === null){
-            return \sprintf($output, 'No rating yet');
+            return \sprintf($output, \sprintf(
+                \str_repeat(self::STAR_UNRATED, 5),
+                1, 2, 3, 4, 5
+            ));
         }
 
         $full_stars  = \floor($rating);
