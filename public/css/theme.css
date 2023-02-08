@@ -500,6 +500,7 @@ footer {
     height: 120px;
     flex-grow: 0;
     flex-shrink: 0;
+    background-image: url(/img/bg-black.png);
 }
 
 .workshop-screenshot img,
@@ -541,6 +542,10 @@ a.workshop-widget-title {
 
 a.workshop-widget-title:hover {
     text-decoration: underline;
+}
+
+.workshop-item-thumbnail {
+    background-image: url(/img/bg-black.png);
 }
 
 .workshop-item-thumbnail img {
