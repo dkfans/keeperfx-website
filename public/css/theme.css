@@ -10,7 +10,7 @@ body {
     color: rgb(215, 197, 182);
     box-sizing: border-box;
 
-    --bs-secondary-color: rgba(148, 66, 0, 0.75);
+    --bs-secondary-color: #616161;
     --special-text-color: #dd4a29;
     --footer-text-color: #777;
 
@@ -103,9 +103,11 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Outgoing URL icon */
-a ion-icon[name="log-out-outline"] {
-    opacity: 0.5;
+ion-icon[name=open-outline].outgoing {
+    color: var(--bs-secondary-color);
+    position: relative;
+    top: 2px;
+    font-size: 15px;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -242,7 +244,6 @@ nav {
 }
 
 .news-title {
-    color: var(--special-text-color);
     font-size: 20px;
     display: inline-block;
     font-family: 'Cinzel', serif;
@@ -623,16 +624,22 @@ a.workshop-widget-title:hover {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-.nav-link {
+.nav-link,
+.nav-link:focus {
     color: #eee;
     text-decoration: none;
     background-color: rgba(50, 48, 47, 0.57);
+    padding: 8px 14px;
 }
 
 .nav-link:hover {
     color: var(--special-text-color);
     text-decoration: none;
     background-color: rgba(50, 48, 47, 0.69);
+}
+
+.nav-link.active {
+    background-color: rgba(150, 150, 150, 0.4);
 }
 
 .nav-link+.nav-link {
@@ -645,3 +652,7 @@ a.workshop-widget-title:hover {
     top: 5px;
     margin-right: 7px;
 }
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
