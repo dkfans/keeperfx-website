@@ -171,7 +171,12 @@ nav {
     padding: 20px 0px 5px 0px;
 }
 
-.content-header h2 {
+.content-header-box {
+    padding: 15px 20px 8px 20px;
+}
+
+.content-header h2,
+.content-header-box h2 {
     font-size: 22px;
 }
 
