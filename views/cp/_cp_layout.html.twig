@@ -9,36 +9,21 @@
     {# Sidebar #}
     <div class="col-3">
         <div class="content-box bg-keeper bd-keeper">
-        <div class="content-body wiki-menu">
-
-            <p>Welcome, {{ account.username }}</p>
-
-            <ul class="cp-menu">
-                <li>
-                    <a href="/dashboard">Dashboard</a>
-                </li>
-                {% if account.role >= roles.developer %}
-                    {# <li>
-                        <a href="/dashboard">Alpha Builds</a>
-                    </li> #}
-                {% endif %}
-                {% if account.role == roles.admin %}
-                    <li>
-                        <a href="/admin/workshop/list">Workshop</a> (Admin)
-                    </li>
-                    <li>
-                        <a href="/admin/news/list">News</a> (Admin)
-                    </li>
-                    <li>
-                        <a href="/admin/user/list">Users</a> (Admin)
-                    </li>
-                {% endif %}
-                <li>
-                    <a href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">Logout</a>
-                </li>
-            </ul>
-
-        </div>
+            <div class="content-header">
+                <h2>Dashboard</h2>
+            </div>
+            <div class="content-body">
+                <p>Welcome, {{ account.username }}</p>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="/dashboard"><ion-icon name="home-outline"></ion-icon> Dashboard</a>
+                    {% if account.role == roles.admin %}
+                        <a class="nav-link" href="/admin/workshop/list"><ion-icon name="cube-outline"></ion-icon> Manage Workshop</a>
+                        <a class="nav-link" href="/admin/news/list"><ion-icon name="newspaper-outline"></ion-icon> Manage News</a>
+                        <a class="nav-link" href="/admin/user/list"><ion-icon name="people-outline"></ion-icon> Manage Users</a>
+                    {% endif %}
+                    <a class="nav-link" href="//logout/{{ csrf.name }}/{{ csrf.value|url_encode }}"><ion-icon name="log-out-outline"></ion-icon> Logout</a>
+                </nav>
+            </div>
         </div>
     </div>
 
