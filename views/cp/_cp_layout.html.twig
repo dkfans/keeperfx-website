@@ -15,15 +15,30 @@
             <div class="content-body">
                 <p>Welcome, {{ account.username }}</p>
                 <nav class="nav flex-column">
-                    <a class="nav-link active" href="/dashboard"><ion-icon name="home-outline"></ion-icon> Dashboard</a>
+                    <a class="nav-link {% if path_equals('/dashboard') %}active{% endif %}" href="/dashboard">
+                        <ion-icon name="home-outline"></ion-icon>
+                        Dashboard
+                    </a>
                     {% if account.role >= roles.workshop_moderator %}
-                        <a class="nav-link" href="/workshop-mod/workshop/list"><ion-icon name="cube-outline"></ion-icon> Manage Workshop</a>
+                        <a class="nav-link {% if path_equals('/workshop-mod/workshop/*') %}active{% endif %}" href="/workshop-mod/workshop/list">
+                            <ion-icon name="cube-outline"></ion-icon>
+                            Manage Workshop
+                        </a>
                     {% endif %}
                     {% if account.role >= roles.admin %}
-                        <a class="nav-link" href="/admin/news/list"><ion-icon name="newspaper-outline"></ion-icon> Manage News</a>
-                        <a class="nav-link" href="/admin/user/list"><ion-icon name="people-outline"></ion-icon> Manage Users</a>
+                        <a class="nav-link {% if path_equals('/admin/news/*') %}active{% endif %}" href="/admin/news/list">
+                            <ion-icon name="newspaper-outline"></ion-icon>
+                            Manage News
+                        </a>
+                        <a class="nav-link {% if path_equals('/admin/user/*') %}active{% endif %}" href="/admin/user/list">
+                            <ion-icon name="people-outline"></ion-icon>
+                            Manage Users
+                        </a>
                     {% endif %}
-                    <a class="nav-link" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}"><ion-icon name="log-out-outline"></ion-icon> Logout</a>
+                    <a class="nav-link" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                        Logout
+                    </a>
                 </nav>
             </div>
         </div>
