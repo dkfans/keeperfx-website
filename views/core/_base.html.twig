@@ -5,17 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         {# Page title #}
-        <title>
-            {% if get_env('APP_ENV') == 'dev' %}[*dev*]{% endif %}
-            {% if block('full_title') is empty %}
-                {% if block('title') is not empty %}
-                    {% block title %}{% endblock %} -
-                {% endif %}
-                KeeperFX
-            {% else %}
-                {% block full_title %}{% endblock %}
-            {% endif %}
-        </title>
+        <title>{% if block('full_title') is empty %}{% if block('title') is not empty %}{% block title %}{% endblock %} - {% endif %}KeeperFX{% else %}{% block full_title %}{% endblock %}{% endif %}</title>
 
         {# SEO stuff #}
         {% if block('meta_description') is not empty %}
