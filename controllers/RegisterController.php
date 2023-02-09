@@ -50,23 +50,21 @@ class RegisterController {
 
         // Get POST vars
         $post            = $request->getParsedBody();
-        $username        = (string) ($post['username'] ?? null);
-        $password        = (string) ($post['password'] ?? null);
-        $repeat_password = (string) ($post['repeat_password'] ?? null);
-        $email           = (string) ($post['email'] ?? null);
+        $username        = (string) $post['username'] ?? '';
+        $password        = (string) $post['password'] ?? '';
+        $repeat_password = (string) $post['repeat_password'] ?? '';
+        $email           = (string) $post['email'] ?? '';
 
         $success = true;
 
         // Validate username length
-        if($username === null || strlen($username) < 2 || strlen($username) > 32){
+        if(\strlen($username) < 2 || \strlen($username) > 32){
             $success = false;
             $flash->warning('Username has must be at least 2 characters long and can not exceed 32 characters.');
-        }
-
-        if($username !== null){
+        } else {
 
             // Validate username charset
-            if(!preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9\.\_\-]+$/', $username)){
+            if(!\preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9\.\_\-]+$/', $username)){
                 $success = false;
                 $flash->warning(
                     'Username can only contain the following characters: <strong>a-z A-Z 0-9 _ . -</strong>' .
@@ -80,10 +78,11 @@ class RegisterController {
                 $success = false;
                 $flash->warning('Username already in use.');
             }
+
         }
 
         // Check if user wants to add an email address
-        if($email !== null){
+        if(!empty($email)){
 
             // Validate email address
             if(!filter_var($email, \FILTER_VALIDATE_EMAIL)){
@@ -100,7 +99,7 @@ class RegisterController {
         }
 
         // Make sure a password is given
-        if($password === null){
+        if(empty($password)){
             $success = false;
             $flash->warning('You must enter a password.');
         } else {
