@@ -32,16 +32,19 @@ class WorkshopBrowseController {
         ];
     }
 
-    public function browseLatestIndex(
-        Request $request,
-        Response $response,
-        TwigEnvironment $twig,
-        EntityManager $em
-    ){
+    private function getWorkshopItemsAndRating(
+        array $criteria,
+        ?array $orderBy = null,
+        ?int $limit = null,
+        ?int $offset = null
+    ):array {
+
         // Get workshop items
-        $workshop_items = $em->getRepository(WorkshopItem::class)->findBy(
-            ['is_accepted' => true],
-            ['created_timestamp' => 'DESC']
+        $workshop_items = $this->em->getRepository(WorkshopItem::class)->findBy(
+            $criteria,
+            $orderBy,
+            $limit,
+            $offset
         );
 
         // Get workshop item ratings
@@ -61,14 +64,53 @@ class WorkshopBrowseController {
             }
         }
 
+        return [
+            'workshop_items'   => $workshop_items,
+            'workshop_ratings' => $workshop_ratings,
+        ];
+    }
+
+    public function browseLatestIndex(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+    ){
+
         // Render view
         $response->getBody()->write(
-            $twig->render('workshop/browse.workshop.html.twig', $this->getWorkshopOptions() + [
-                'browse_type'      => 'latest',
-                'workshop_items'   => $workshop_items,
-                'workshop_ratings' => $workshop_ratings,
-            ])
+            $twig->render('workshop/browse.workshop.html.twig', [
+                    'browse_type' => 'latest',
+                ] +
+                $this->getWorkshopItemsAndRating(
+                    ['is_accepted' => true],
+                    ['created_timestamp' => 'DESC']
+                ) +
+                $this->getWorkshopOptions()
+            )
         );
+
+        return $response;
+    }
+
+    public function browseMostDownloadedIndex(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+    ){
+
+        // Render view
+        $response->getBody()->write(
+            $twig->render('workshop/browse.workshop.html.twig', [
+                    'browse_type' => 'latest',
+                ] +
+                $this->getWorkshopItemsAndRating(
+                    ['is_accepted' => true],
+                    ['created_timestamp' => 'DESC']
+                ) +
+                $this->getWorkshopOptions()
+            )
+        );
+
         return $response;
     }
 }

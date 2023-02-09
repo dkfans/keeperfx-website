@@ -104,9 +104,14 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     // Browse routes
     $group->group('/browse', function (RouteCollectorProxy $group) use ($container) {
         $group->get('/latest', [WorkshopBrowseController::class, 'browseLatestIndex']);
-        // $group->get('/most-downloaded', [WorkshopBrowseController::class, 'browseLatestIndex']);
+        $group->get('/most-downloaded', [WorkshopBrowseController::class, 'browseLatestIndex']);
         // $group->get('/highest-rated', [WorkshopBrowseController::class, 'browseLatestIndex']);
         // $group->get('/staff-picks', [WorkshopBrowseController::class, 'browseLatestIndex']);
+
+        // Redirect '/workshop/browse' to '/workshop/browse/latest'
+        $group->get('', function (Request $request, Response $response){
+            return $response->withStatus(302)->withHeader('Location', '/workshop/browse/latest');
+        });
     });
 
     // Redirect '/workshop' to '/workshop/browse/latest'
