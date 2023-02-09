@@ -43,7 +43,7 @@
 
         <div class="content-body">
 
-            <form action="/admin/workshop/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data">
+            <form action="/workshop-mod/workshop/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data">
 
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
@@ -158,7 +158,7 @@
                                                     <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
                                             </a>
                                             <a
-                                                href="/admin/workshop/screenshot/delete/{{ workshop_item.id }}/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
+                                                href="/workshop-mod/workshop/screenshot/delete/{{ workshop_item.id }}/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
                                                 onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
                                                 class="btn-medieval"
                                                 style="display: inline-block; position: relative; top: -98px; right: -78px;  width: 20px; height: 20px;"

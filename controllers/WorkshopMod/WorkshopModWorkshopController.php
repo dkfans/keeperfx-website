@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\WorkshopMod;
 
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
@@ -17,7 +17,7 @@ use App\Account;
 use Slim\Csrf\Guard;
 use Slim\Exception\HttpNotFoundException;
 
-class AdminWorkshopController {
+class WorkshopModWorkshopController {
 
     public function listIndex(
         Request $request,
@@ -26,7 +26,7 @@ class AdminWorkshopController {
         EntityManager $em
     ){
         $response->getBody()->write(
-            $twig->render('cp/admin/workshop/workshop.admin.cp.html.twig', [
+            $twig->render('cp/workshop-mod/workshop/workshop.workshop-mod.cp.html.twig', [
                 'workshop_items'   => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => true]),
                 'open_submissions' => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => false]),
             ])
@@ -64,7 +64,7 @@ class AdminWorkshopController {
         }
 
         $response->getBody()->write(
-            $twig->render('cp/admin/workshop/workshop.item.admin.cp.html.twig', [
+            $twig->render('cp/workshop-mod/workshop/workshop.item.workshop-mod.cp.html.twig', [
                 'workshop_item' => $workshop_item,
                 'types'         => WorkshopType::cases(),
                 'tags'          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
@@ -175,7 +175,7 @@ class AdminWorkshopController {
         $em->flush();
 
         $flash->success('Workshop item updated!');
-        $response = $response->withHeader('Location', '/admin/workshop/' . $workshop_item->getId())->withStatus(302);
+        $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
         return $response;
     }
 
@@ -218,7 +218,7 @@ class AdminWorkshopController {
                     }
 
                     $flash->success('Screenshot removed!');
-                    $response = $response->withHeader('Location', '/admin/workshop/' . $workshop_item->getId())->withStatus(302);
+                    $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
                     return $response;
                 }
             }
@@ -226,7 +226,7 @@ class AdminWorkshopController {
 
 
         $flash->warning('Failed to remove screenshot.');
-        $response = $response->withHeader('Location', '/admin/workshop/' . $workshop_item->getId())->withStatus(302);
+        $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
         return $response;
     }
 

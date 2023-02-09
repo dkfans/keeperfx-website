@@ -6,6 +6,7 @@ use Slim\Routing\RouteCollectorProxy;
 
 use App\Middleware\LoggedInMiddleware;
 use App\Middleware\AuthAdminMiddleware;
+use App\Middleware\AuthWorkshopModMiddleware;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -65,16 +66,21 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminUsersController::class, 'userDelete']);
         });
 
-        // Admin: WORKSHOP
+    })->add(AuthAdminMiddleware::class);
+
+    // AUTH: WORKSHOP MODERATOR
+    $group->group('/workshop-mod', function (RouteCollectorProxy $group) use ($container) {
+
+        // Workshop Moderator: WORKSHOP
         $group->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
-            $group->get('/list', [Admin\AdminWorkshopController::class, 'listIndex']);
-            $group->get('/{id:\d+}', [Admin\AdminWorkshopController::class, 'itemIndex']);
-            $group->post('/{id:\d+}', [Admin\AdminWorkshopController::class, 'itemUpdate']);
-            // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminWorkshopController::class, 'userDelete']);
-            $group->get('/screenshot/delete/{id:\d+}/{filename}/{token_name}/{token_value:.+}', [Admin\AdminWorkshopController::class, 'deleteScreenshot']);
+            $group->get('/list', [WorkshopMod\WorkshopModWorkshopController::class, 'listIndex']);
+            $group->get('/{id:\d+}', [WorkshopMod\WorkshopModWorkshopController::class, 'itemIndex']);
+            $group->post('/{id:\d+}', [WorkshopMod\WorkshopModWorkshopController::class, 'itemUpdate']);
+            // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [WorkshopMod\WorkshopModWorkshopController::class, 'userDelete']);
+            $group->get('/screenshot/delete/{id:\d+}/{filename}/{token_name}/{token_value:.+}', [WorkshopMod\WorkshopModWorkshopController::class, 'deleteScreenshot']);
         });
 
-    })->add(AuthAdminMiddleware::class);
+    })->add(AuthWorkshopModMiddleware::class);
 
 })->add(LoggedInMiddleware::class);
 

@@ -17,7 +17,7 @@
                 <nav class="nav flex-column">
                     <a class="nav-link active" href="/dashboard"><ion-icon name="home-outline"></ion-icon> Dashboard</a>
                     {% if account.role >= roles.workshop_moderator %}
-                        <a class="nav-link" href="/admin/workshop/list"><ion-icon name="cube-outline"></ion-icon> Manage Workshop</a>
+                        <a class="nav-link" href="/workshop-mod/workshop/list"><ion-icon name="cube-outline"></ion-icon> Manage Workshop</a>
                     {% endif %}
                     {% if account.role >= roles.admin %}
                         <a class="nav-link" href="/admin/news/list"><ion-icon name="newspaper-outline"></ion-icon> Manage News</a>

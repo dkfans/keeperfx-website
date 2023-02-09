@@ -28,7 +28,7 @@
                             <td>{{ workshop_item.name }}</td>
                             <td>{{ workshop_item.submitter.username }}</td>
                             <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:i') }}</td>
-                            <td><a href="/admin/workshop/{{ workshop_item.id }}">View</a></td>
+                            <td><a href="/workshop-mod/workshop/{{ workshop_item.id }}">Edit</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -66,7 +66,7 @@
                         <td>{{ workshop_item.name }}</td>
                         <td>{{ workshop_item.submitter.username }}</td>
                         <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:i') }}</td>
-                        <td><a href="/admin/workshop/{{ workshop_item.id }}">View</a></td>
+                        <td><a href="/workshop-mod/workshop/{{ workshop_item.id }}">Edit</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
