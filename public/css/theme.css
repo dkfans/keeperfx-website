@@ -506,6 +506,7 @@ footer {
     flex-grow: 0;
     flex-shrink: 0;
     background-image: url(/img/bg-black.png);
+    border: 2px solid #333;
 }
 
 .workshop-screenshot img,
@@ -520,7 +521,14 @@ footer {
     display: flex;
     flex-direction: row;
     padding: 5px;
+    background-image: url(/img/bg-gray2.png);
+    border: 2px solid #333;
 }
+
+/*.workshop-widget-item:hover {
+    transform: scale(1.02, 1.02);
+    transition-duration: 0.2s;
+}*/
 
 .workshop-widget-info {
     padding: 5px 15px;
@@ -614,3 +622,26 @@ a.workshop-widget-title:hover {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.nav-link {
+    color: #eee;
+    text-decoration: none;
+    background-color: rgba(50, 48, 47, 0.57);
+}
+
+.nav-link:hover {
+    color: var(--special-text-color);
+    text-decoration: none;
+    background-color: rgba(50, 48, 47, 0.69);
+}
+
+.nav-link+.nav-link {
+    margin-top: 5px;
+}
+
+.nav-link ion-icon {
+    font-size: 20px;
+    position: relative;
+    top: 5px;
+    margin-right: 7px;
+}

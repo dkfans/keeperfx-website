@@ -13,34 +13,17 @@
                 <h2>Workshop</h2>
             </div>
             <div class="content-body">
-
-                <ul style="margin-bottom: 15px;">
-                    {#<li>
-                        <a href="/workshop/browse/all">All</a>
-                    </li>#}
-                    <li>
-                        <a href="/workshop/browse/latest">Latest</a>
-                    </li>
-                    {#<li>
-                        <a href="/workshop/browse/highest-rated">Highest Rated</a>
-                    </li>#}
-                    <li>
-                        <a href="/workshop/browse/most-downloaded">Most Downloaded</a>
-                    </li>
-                    {# <li>
-                        <a href="/workshop/browse/staff-picks">Staff Picks</a>
-                    </li> #}
-                </ul>
-
-                {% if account != null %}
-                    <ul style="margin-top: 15px; margin-bottom: 15px;">
-                        <li>
-                            <a href="/workshop/browse/user/{{ account.id }}">My workshop items</a>
-                        </li>
-                    </ul>
-                    <a href="/workshop/upload" class="btn btn-lg btn-medieval" style="margin-top: 15px; width: 100%">
-                        Upload
-                    </a>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="/workshop/browse/latest"><ion-icon name="list-outline"></ion-icon> Browse</a>
+                    {% if account != null %}
+                        <a class="nav-link" href="/workshop/browse/user/{{ account.id }}"><ion-icon name="person-outline"></ion-icon> My workshop items</a>
+                        <a class="nav-link" href="/workshop/upload"><ion-icon name="cloud-upload-outline"></ion-icon> Upload</a>
+                    {% endif %}
+                </nav>
+                {% if account == null %}
+                    <p style="margin-top: 15px; margin-bottom: 0px;">
+                        <a href="/login">Login</a> or <a href="/login">register</a> to submit your own workshop items.
+                    </p>
                 {% endif %}
             </div>
         </div>

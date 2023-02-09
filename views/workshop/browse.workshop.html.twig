@@ -4,49 +4,58 @@
 
 {% block workshop_content %}
 
-    <div class="content-header-box bd-keeper bg-keeper" style="margin-bottom: 15px;">
-        <h2 style="border-bottom: 0;">Latest workshop items</h2>
-    </div>
+    <div class="content-box bd-keeper bg-keeper">
+        <div class="content-header">
+            <h2>Workshop items</h2>
+        </div>
 
-    <div style="
-    display: grid;
-    gap: 15px;
-    grid-template-columns: 1fr 1fr;
-    ">
-        {% for item in workshop_items %}
-            <div class="bg-keeper bd-keeper workshop-widget-item">
+        <div class="content-body">
 
-                <div class="workshop-widget-image-container bd-keeper">
-                    {% if item.thumbnail is not null %}
-                        <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
-                    {% else %}
-                        <img src="/img/horny-face.png" />
-                    {% endif %}
-                </div>
-                <div class="workshop-widget-info">
-                    <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}"  class="workshop-widget-title">
-                        {{ item.name }}
-                    </a>
-                    <div class="row">
-                        <div class="col-6">
-                            {{ item.type.name|enum_beautify }} <br />
-                            By: {{ item.submitter.username }}
+            <div style="
+                display: grid;
+                gap: 15px;
+                grid-template-columns: 1fr 1fr;
+            ">
+                {% for item in workshop_items %}
+                    <div class="workshop-widget-item">
+
+                        <div class="workshop-widget-image-container">
+                            <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                {% if item.thumbnail is not null %}
+                                    <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
+                                {% else %}
+                                    <img src="/img/horny-face.png" />
+                                {% endif %}
+                            </a>
                         </div>
-                        <div class="col-6" style="text-align: right;">
-                            {{ item.downloadCount }}
-                            {% if item.downloadCount == 1 %}
-                                download
-                            {% else %}
-                                downloads
-                            {% endif %}
-                            <br />
-                            {{ workshop_rating(item.id, workshop_ratings[item.id]) }}
+                        <div class="workshop-widget-info">
+                            <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}"  class="workshop-widget-title">
+                                {{ item.name }}
+                            </a>
+                            <div class="row">
+                                <div class="col-6">
+                                    {{ item.type.name|enum_beautify }} <br />
+                                    By: {{ item.submitter.username }}
+                                </div>
+                                <div class="col-6" style="text-align: right;">
+                                    {{ item.downloadCount }}
+                                    {% if item.downloadCount == 1 %}
+                                        download
+                                    {% else %}
+                                        downloads
+                                    {% endif %}
+                                    <br />
+                                    {{ workshop_rating(item.id, workshop_ratings[item.id]) }}
+                                </div>
+                            </div>
                         </div>
+
                     </div>
-                </div>
-
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
     </div>
+
+
 
 {% endblock %}
