@@ -29,13 +29,23 @@
                             Download
                     </a>
 
-                    {% if account != null and item.submitter.id == account.id %}
-                        <a
-                            href="/workshop/edit/{{ item.id }}"
-                            class="btn btn-medieval btn-medieval-gray"
-                            style="margin-top: 15px; width: 100%;">
-                                Edit this workshop item
-                        </a>
+                    {% if account != null %}
+                        {% if item.submitter.id == account.id != null %}
+                            <a
+                                href="/workshop/edit/{{ item.id }}"
+                                class="btn btn-medieval btn-medieval-gray"
+                                style="margin-top: 15px; width: 100%;">
+                                    Edit this workshop item
+                            </a>
+                        {% endif %}
+                        {% if account.role >= roles.admin %}
+                            <a
+                                href="/workshop/edit/{{ item.id }}"
+                                class="btn btn-medieval btn-medieval-gray"
+                                style="margin-top: 15px; width: 100%;">
+                                    Edit item as workshop moderator
+                            </a>
+                        {% endif %}
                     {% endif %}
 
                 </div>
