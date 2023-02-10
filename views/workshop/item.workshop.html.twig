@@ -58,7 +58,7 @@
                     {# Info #}
                     <div class="row" style="margin: 30px 20px 50px 20px;">
                         <div class="col-md-6">
-                            Submitted by: {{ item.submitter.username }}
+                            Submitted by: <a href="/workshop/browse/user/{{ item.submitter.username }}" title="Browse {{ item.submitter.username }}'s Workshop Items">{{ item.submitter.username }}</a>
                             <br /><br />
                             Date: {{ item.createdTimestamp|date('Y-m-d') }}
                             <br /><br />

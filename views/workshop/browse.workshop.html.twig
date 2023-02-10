@@ -35,7 +35,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     {{ item.type.name|enum_beautify }} <br />
-                                    By: {{ item.submitter.username }}
+                                    By: <a href="/workshop/browse/user/{{ item.submitter.username }}" title="Browse {{ item.submitter.username }}'s Workshop Items">{{ item.submitter.username }}</a>
                                 </div>
                                 <div class="col-6" style="text-align: right;">
                                     {{ item.downloadCount }}
