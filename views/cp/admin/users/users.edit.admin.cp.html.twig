@@ -28,9 +28,10 @@
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Role</label>
                 <select class="form-control" id="role" name="role">
-                    <option value="1" {% if user.role.value == 1 %}selected{% endif %}>User</option>
-                    <option value="5" {% if user.role.value == 5 %}selected{% endif %}>Developer</option>
-                    <option value="9" {% if user.role.value == 9 %}selected{% endif %}>Admin</option>
+                    <option value="{{ roles.user }}" {% if user.role.value == roles.user %}selected{% endif %}>User</option>
+                    <option value="{{ roles.workshop_moderator }}" {% if user.role.value == roles.workshop_moderator %}selected{% endif %}>Workshop Moderator</option>
+                    <option value="{{ roles.developer }}" {% if user.role.value == roles.developer %}selected{% endif %}>Developer</option>
+                    <option value="{{ roles.admin }}" {% if user.role.value == roles.admin %}selected{% endif %}>Admin</option>
                 </select>
             </div>
 

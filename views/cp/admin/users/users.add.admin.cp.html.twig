@@ -28,10 +28,10 @@
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Role</label>
                 <select class="form-control" id="role" name="role">
-                    <option value="1">User</option>
-                    <option value="5">Workshop Moderator</option>
-                    <option value="7">Developer</option>
-                    <option value="10">Admin</option>
+                    <option value="{{ roles.user }}">User</option>
+                    <option value="{{ roles.workshop_moderator }}">Workshop Moderator</option>
+                    <option value="{{ roles.developer }}">Developer</option>
+                    <option value="{{ roles.admin }}">Admin</option>
                 </select>
             </div>
 
