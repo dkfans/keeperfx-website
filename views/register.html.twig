@@ -21,22 +21,22 @@
 
                 <div class="form-group">
                     <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" autofocus value="{% if username is defined %}{{ username }}{% endif %}">
+                <input type="text" class="form-control" id="username" name="username" autofocus value="{{ get_post_var('username') }}">
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email address <span class="text-muted">(Optional)</span></label>
-                    <input type="email" class="form-control" id="email" name="email" value="{% if email is defined %}{{ email }}{% endif %}">
+                    <input type="email" class="form-control" id="email" name="email" value="{{ get_post_var('email') }}">
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" value="{% if password is defined %}{{ password }}{% endif %}">
+                    <input type="password" class="form-control" id="password" name="password" value="">
                 </div>
 
                 <div class="form-group">
                     <label for="repeat_password">Repeat Password</label>
-                    <input type="password" class="form-control" id="repeat_password" name="repeat_password" value="{% if repeat_password is defined %}{{ repeat_password }}{% endif %}">
+                    <input type="password" class="form-control" id="repeat_password" name="repeat_password" value="">
                 </div>
 
                 <div class="form-group">

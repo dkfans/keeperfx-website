@@ -46,6 +46,7 @@ return [
         \App\Twig\Extension\EnumTwigExtension::class,
         \App\Twig\Extension\SlugifyTwigExtension::class,
         \App\Twig\Extension\PathTwigExtension::class,
+        \App\Twig\Extension\RequestVarTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class
     ],

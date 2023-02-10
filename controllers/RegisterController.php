@@ -116,12 +116,7 @@ class RegisterController {
 
             // Render register page
             $response->getBody()->write(
-                $twig->render('register.html.twig', [
-                    'username'        => $username,
-                    'email'           => $email,
-                    'password'        => $password,
-                    'repeat_password' => $repeat_password,
-                ])
+                $twig->render('register.html.twig')
             );
 
             return $response;
