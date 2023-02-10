@@ -44,8 +44,9 @@ class LoginController {
     ){
 
         $post = $request->getParsedBody();
-        $username = (string) ($post['username'] ?? null);
-        $password = (string) ($post['password'] ?? null);
+        $username = (string) ($post['username'] ?? '');
+        $password = (string) ($post['password'] ?? '');
+        $redirect = (string) ($post['redirect'] ?? '');
 
         if($username && $password){
 
@@ -54,11 +55,20 @@ class LoginController {
 
                 if(\password_verify($password, $user->getPassword())){
 
+                    // Log user in (session)
                     $session['uid'] = $user->getId();
 
-                    $flash->success('Successfuly logged in!');
+                    // Show flash message
+                    $flash->success('Successfully logged in!');
 
-                    $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
+                    // Determine redirect location
+                    $redirect_location = '/dashboard';
+                    if($redirect && \preg_match('/^\/[a-zA-Z]/', $redirect)){
+                        $redirect_location = $redirect;
+                    }
+
+                    // Redirect
+                    $response = $response->withHeader('Location', $redirect_location)->withStatus(302);
                     return $response;
 
                 }

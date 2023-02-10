@@ -12,10 +12,12 @@
 
         {{ render_flash_messages() }}
 
-        <form action="/login" method="POST">
+        <form method="POST">
 
-            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
-            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            <input type="hidden" name="redirect" value="{{ get_query_param('redirect') }}" />
 
             <div class="row g-3">
 
