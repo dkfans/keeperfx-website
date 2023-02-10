@@ -119,11 +119,13 @@
 
 {% block body_javascript %}
 <script>
+    const workshop_item = {
+        id: {{ item.id }},
+        slug: '{{ item.name|slugify }}'
+    }
+</script>
+<script>
     $(function(e){
-
-        if(app_store.account === null){
-            return;
-        }
 
         $.each($('[data-workshop-item-id]'), function(i, el){
 
@@ -136,6 +138,13 @@
                 $(element).css('cursor', 'pointer');
 
                 $(element).on('click', function(e){
+
+                    if(app_store.account === null){
+                        window.location = '/login'
+                            + '?redirect=/workshop/item/' + workshop_item.id + '/' + workshop_item.slug
+                            + '&msg=workshop-rate';
+                        return;
+                    }
 
                     $.ajax({
                         type: 'POST',

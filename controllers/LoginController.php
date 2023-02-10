@@ -26,6 +26,16 @@ class LoginController {
             return $response;
         }
 
+        $params = $request->getQueryParams();
+
+        if(isset($params['msg'])){
+            switch((string)$params['msg']){
+                case 'workshop-rate':
+                    $flash->info('You need to be logged in to rate workshop items.');
+                    break;
+            }
+        }
+
         $response->getBody()->write(
             $twig->render('login.html.twig')
         );
@@ -42,7 +52,6 @@ class LoginController {
         Session $session,
         FlashMessage $flash
     ){
-
         $post = $request->getParsedBody();
         $username = (string) ($post['username'] ?? '');
         $password = (string) ($post['password'] ?? '');
