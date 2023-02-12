@@ -109,7 +109,7 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
 
     // Browse routes
     $group->group('/browse', function (RouteCollectorProxy $group) use ($container) {
-        $group->get('/latest', [WorkshopBrowseController::class, 'browseLatestIndex']);
+        $group->get('/latest', [WorkshopBrowseController::class, 'browseIndex']);
         $group->get('/most-downloaded', [WorkshopBrowseController::class, 'browseLatestIndex']);
         // $group->get('/highest-rated', [WorkshopBrowseController::class, 'browseLatestIndex']);
         // $group->get('/staff-picks', [WorkshopBrowseController::class, 'browseLatestIndex']);

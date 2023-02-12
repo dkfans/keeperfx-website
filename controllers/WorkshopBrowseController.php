@@ -70,16 +70,17 @@ class WorkshopBrowseController {
         ];
     }
 
-    public function browseLatestIndex(
+    public function browseIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
     ){
+        $order_by = 'latest';
 
         // Render view
         $response->getBody()->write(
             $twig->render('workshop/browse.workshop.html.twig', [
-                    'browse_type' => 'latest',
+                    'order_by' => $order_by,
                 ] +
                 $this->getWorkshopItemsAndRating(
                     ['is_accepted' => true],

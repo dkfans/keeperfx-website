@@ -8,18 +8,27 @@
         <div class="content-header">
             <h2>Workshop items</h2>
         </div>
+        {# <div class="content-header">
+            <div class="pull-right">
+                Order by:
+                <select class="form-control" id="order-by" name="order_by" style="display: inline-block">
+                    <option value="date">Date</option>
+                    <option value="most-downloaded">Most Downloaded</option>
+                    <option value="highest-rated">Highest Rated</option>
+                    <option value="name">Name</option>
+                </select>
+            </div>
+        </div> #}
 
         <div class="content-body">
 
-            <div style="
-                display: grid;
-                gap: 15px;
-                grid-template-columns: 1fr 1fr;
-            ">
-                {% for item in workshop_items %}
-                    <div class="workshop-widget-item">
+            <div class="workshop-grid">
 
-                        <div class="workshop-widget-image-container">
+                {% for item in workshop_items %}
+                    <div class="workshop-grid-item">
+
+                        {# Thumbnail #}
+                        <div class="workshop-grid-item-image-container">
                             <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
                                 {% if item.thumbnail is not null %}
                                     <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
@@ -28,15 +37,24 @@
                                 {% endif %}
                             </a>
                         </div>
-                        <div class="workshop-widget-info">
-                            <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}"  class="workshop-widget-title">
-                                {{ item.name }}
-                            </a>
+
+                        <div class="workshop-grid-item-info">
+
+                            {# Title #}
+                            <div class="workshop-grid-item-title">
+                                <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                    {{ item.name }}
+                                </a>
+                            </div>
+
+                            {# Info #}
                             <div class="row">
+
                                 <div class="col-6">
                                     {{ item.type.name|enum_beautify }} <br />
                                     By: <a href="/workshop/browse/user/{{ item.submitter.username }}" title="Browse {{ item.submitter.username }}'s Workshop Items">{{ item.submitter.username }}</a>
                                 </div>
+
                                 <div class="col-6" style="text-align: right;">
                                     {{ item.downloadCount }}
                                     {% if item.downloadCount == 1 %}
@@ -47,15 +65,16 @@
                                     <br />
                                     {{ workshop_rating(item.id, workshop_ratings[item.id]) }}
                                 </div>
+
                             </div>
+
                         </div>
 
                     </div>
                 {% endfor %}
+
             </div>
         </div>
     </div>
-
-
 
 {% endblock %}

@@ -5,7 +5,7 @@
 <div class="row" style="margin-top: 30px;">
 
     {# Sidebar #}
-    <div class="col-3">
+    <div class="col-md-3">
 
         {# Search and filter box #}
         <div class="content-box bg-keeper bd-keeper">
@@ -17,6 +17,14 @@
                     <a class="nav-link {% if path_equals('/workshop/browse/*') %}active{% endif %}" href="/workshop/browse/latest">
                         <ion-icon name="list-outline"></ion-icon>
                         Browse
+                    </a>
+                    <a class="nav-link" href="/workshop/random/map">
+                        <ion-icon name="dice-outline"></ion-icon>
+                        Random Map
+                    </a>
+                    <a class="nav-link" href="/workshop/random/campaign">
+                        <ion-icon name="dice-outline"></ion-icon>
+                        Random Campaign
                     </a>
                     {% if account != null %}
                         <a class="nav-link {% if path_equals('/workshop/browse/user/' ~ account.id) %}active{% endif %}" href="/workshop/browse/user/{{ account.id }}">
@@ -109,7 +117,7 @@
     </div>
 
     {# Workshop content #}
-    <div class="col-9">
+    <div class="col-md-9">
 
         {{ render_flash_messages() }}
 
