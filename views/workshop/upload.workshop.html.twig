@@ -23,7 +23,7 @@
                                     <label for="name">
                                         Name
                                     </label>
-                                    <input type="text" class="form-control" id="name" name="name">
+                                    <input type="text" class="form-control" id="name" name="name" required>
                                 </div>
                             </div>
 
@@ -32,7 +32,8 @@
                                     <label for="type">
                                         Type
                                     </label>
-                                    <select class="form-control" id="type" name="type">
+                                    <select class="form-control form-select" id="type" name="type" required>
+                                        <option value="" disabled selected hidden>Choose the type of this item</option>
                                         {% if types|length > 0 %}
                                             {% for type in types %}
                                                 <option value="{{ type.value }}">
@@ -52,7 +53,7 @@
                                     <label for="file">
                                         File
                                     </label>
-                                    <input type="file" class="form-control" id="file" name="file">
+                                    <input type="file" class="form-control" id="file" name="file" required>
                                 </div>
                             </div>
 
@@ -64,7 +65,7 @@
                                             (Optional)
                                         </span>
                                     </label>
-                                    <select class="form-control" id="min_game_build" name="min_game_build">
+                                    <select class="form-control form-select" id="min_game_build" name="min_game_build">
                                         <option selected="selected"></option>
                                         {% if builds|length > 0 %}
                                             {% for build in builds %}

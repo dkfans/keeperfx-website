@@ -21,16 +21,17 @@
 
             <div class="row g-3">
 
-                <div class="col-12">
-                    <input type="text" class="form-control" name="username" placeholder="Username" autofocus />
+                <div class="form-group">
+                    <input type="text" class="form-control" id="username" name="username" value="{{ get_post_var('username') }}" placeholder="Username">
                 </div>
 
-                <div class="col-12">
-                    <input type="password" class="form-control" name="password" placeholder="Password" />
+
+                <div class="form-group">
+                    <input type="password" class="form-control" id="password" name="password" value="" placeholder="Password">
                 </div>
 
-                <div class="col-12">
-                    <input type="submit" class="btn btn-lg btn-medieval" style="width: 100%" value="Sign In" />
+                <div class="form-group" style="margin-top: 30px;">
+                    <input type="submit" class="btn btn-lg btn-medieval" style="width: 100%;" value="Sign In" />
                 </div>
 
                 <p class="text-muted text-center">

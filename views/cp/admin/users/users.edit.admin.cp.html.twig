@@ -27,7 +27,7 @@
 
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Role</label>
-                <select class="form-control" id="role" name="role">
+                <select class="form-control form-select" id="role" name="role">
                     <option value="{{ roles.user }}" {% if user.role.value == roles.user %}selected{% endif %}>User</option>
                     <option value="{{ roles.workshop_moderator }}" {% if user.role.value == roles.workshop_moderator %}selected{% endif %}>Workshop Moderator</option>
                     <option value="{{ roles.developer }}" {% if user.role.value == roles.developer %}selected{% endif %}>Developer</option>

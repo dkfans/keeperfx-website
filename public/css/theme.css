@@ -17,19 +17,15 @@ body {
     --bs-info-text: #ffffff;
     --bs-info-bg-subtle: #1367af;
     --bs-info-border-subtle: #00d5ff;
-
     --bs-success-text: #ffffff;
     --bs-success-bg-subtle: #41af2c;
     --bs-success-border-subtle: #00ff94;
-
     --bs-warning-text: #ffffff;
     --bs-warning-bg-subtle: #cd8e00;
     --bs-warning-border-subtle: #ff8100;
-
     --bs-danger-bg-subtle: #930916;
     --bs-danger-border-subtle: #ff001b;
     --bs-danger-text: #ffffff;
-
     --bs-popover-border-color: #090909 !important;
     --bs-popover-bg: #090909 !important;
     --bs-popover-body-color: #fff;
@@ -392,17 +388,21 @@ input:focus {
 }
 
 .form-control {
-    background-color: rgba(30, 30, 30, 0.7);
+    /* background-color: rgba(30, 30, 30, 0.7); */
     /* background-color: #1f1d1e; */
-    border: 1px solid #000000;
-    color: rgb(215, 197, 182);
+    background-color: #151515;
+    border: 1px solid #424242;
+    /* border: 1px solid #000000; */
+    color: #d7c5b6;
     padding: 10px;
 }
 
 .form-control:focus {
-    background-color: rgba(30, 30, 30, 0.7);
+    /* background-color: rgba(30, 30, 30, 0.7); */
+    /* background-color: #1f1d1e; */
+    background-color: #151515;
     border: 1px solid rgb(172, 144, 124);
-    color: rgb(255, 222, 196);
+    color: #ffdec4;
     box-shadow: none;
 }
 
