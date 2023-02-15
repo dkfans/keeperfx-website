@@ -1,0 +1,179 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% block title %}{{ item.name }} - Workshop{% endblock %}
+
+{% block workshop_content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        {# <div class="content-header workshop-item-title">
+            <h2 class="workshop-item-title">{{ item.name }}</h2>
+        </div> #}
+        <div class="content-body">
+
+            <div class="row">
+
+                <div class="col-md-5">
+                    <div class="workshop-item-thumbnail bd-keeper">
+                        {% if item.thumbnail is not null %}
+                            <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
+                        {% else %}
+                            <img src="/img/horny-face.png" />
+                        {% endif %}
+                    </div>
+
+                    <a
+                        href="/workshop/download/{{ item.id }}/{{ item.filename|url_encode }}"
+                        class="btn btn-lg btn-medieval"
+                        style="margin-top: 30px; width: 100%;"
+                        download>
+                            Download
+                    </a>
+
+                    {% if account != null %}
+                        {% if item.submitter.id == account.id != null %}
+                            <a
+                                href="/workshop/edit/{{ item.id }}"
+                                class="btn btn-medieval btn-medieval-gray"
+                                style="margin-top: 15px; width: 100%;">
+                                    Edit this workshop item
+                            </a>
+                        {% endif %}
+                        {% if account.role >= roles.admin %}
+                            <a
+                                href="/workshop-mod/workshop/{{ item.id }}"
+                                class="btn btn-medieval btn-medieval-gray"
+                                style="margin-top: 15px; width: 100%;">
+                                    Edit item as workshop moderator
+                            </a>
+                        {% endif %}
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-7">
+
+                    {# Title  #}
+                    <h2 class="workshop-item-title">{{ item.name }}</h2>
+
+                    {# Info #}
+                    <div class="row" style="margin: 30px 20px 50px 20px;">
+                        <div class="col-md-6">
+                            Submitted by: <a href="/workshop/browse/user/{{ item.submitter.username }}" title="Browse {{ item.submitter.username }}'s Workshop Items">{{ item.submitter.username }}</a>
+                            <br /><br />
+                            Date: {{ item.createdTimestamp|date('Y-m-d') }}
+                            <br /><br />
+                            {% if item.minGameBuild is not null %}
+                                Minimum game version: {{ item.minGameBuild.name }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            Downloads: {{ item.downloadCount }}
+                            <br /><br />
+                            Rating: {{ workshop_rating(item.id, item_rating) }}
+                        </div>
+                    </div>
+
+                    {# Description  #}
+                    {% if item.description is not empty %}
+                        <h5 style="margin-top: 50px;">Description</h5>
+                        <div class="workshop-item-text-content">
+                            {{ item.description|escape|markdown_to_html }}
+                        </div>
+                    {% endif %}
+
+                    {# Install Instructions #}
+                    {% if item.installInstructions is not empty %}
+                        <h5 style="margin-top: 50px;">Installation Intructions</h5>
+                        <div class="workshop-item-text-content">
+                            {{ item.installInstructions|escape|markdown_to_html }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {# Comments #}
+    {# <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Comments</h2>
+        </div>
+        <div class="content-body">
+            <p>
+                No comments yet.
+            </p>
+            <div class="form-group">
+                <textarea class="form-control" name="comment" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-medieval" value="Submit" />
+            </div>
+        </div>
+    </div> #}
+
+{% endblock %}
+
+
+
+{% block body_javascript %}
+<script>
+    const workshop_item = {
+        id: {{ item.id }},
+        slug: '{{ item.name|slugify }}'
+    }
+</script>
+<script>
+    $(function(e){
+
+        $.each($('[data-workshop-item-id]'), function(i, el){
+
+            var workshopItemId = $(el).attr('data-workshop-item-id');
+
+            $.each($(el).find('img'), function(index, element){
+
+                var ratingScore = parseInt($(element).attr('data-rating-score'));
+
+                $(element).css('cursor', 'pointer');
+
+                $(element).on('click', function(e){
+
+                    if(app_store.account === null){
+                        window.location = '/login'
+                            + '?redirect=/workshop/item/' + workshop_item.id + '/' + workshop_item.slug
+                            + '&msg=workshop-rate';
+                        return;
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/workshop/rate/' + workshopItemId,
+                        data: {
+                            score: ratingScore,
+                            [app_store.csrf.keys.name]: app_store.csrf.name,
+                            [app_store.csrf.keys.value]: app_store.csrf.value
+                        },
+                        /*data: JSON.stringify({
+                            score: ratingScore,
+                            [app_store.csrf.keys.name]: app_store.csrf.name,
+                            [app_store.csrf.keys.value]: app_store.csrf.value
+                        }),
+                        contentType: 'application/json; charset=utf-8',*/
+                        dataType: 'json', // return type data
+                        success: function(data){
+                            toastr.success('You have succesfuly rated this workshop item!');
+                        },
+                    });
+                });
+
+                new bootstrap.Popover(element, {
+                    'placement': 'top',
+                    'trigger': 'hover',
+                    'content': 'Rate this item ' + ratingScore + ' out of 5'
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
