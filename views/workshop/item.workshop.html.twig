@@ -6,13 +6,15 @@
 
     <div class="content-box bg-keeper bd-keeper">
         {# <div class="content-header workshop-item-title">
-            <h2>{{ item.name }}</h2>
+
         </div> #}
         <div class="content-body">
 
             <div class="row">
 
                 <div class="col-md-5">
+
+                    {# Thumbnail #}
                     <div class="workshop-item-thumbnail bd-keeper">
                         {% if item.thumbnail is not null %}
                             <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
@@ -21,6 +23,8 @@
                         {% endif %}
                     </div>
 
+
+                    {# Download button #}
                     <a
                         href="/workshop/download/{{ item.id }}/{{ item.filename|url_encode }}"
                         class="btn btn-lg btn-medieval"
@@ -29,6 +33,7 @@
                             Download
                     </a>
 
+                    {# Edit buttons #}
                     {% if account != null %}
                         {% if item.submitter.id == account.id != null %}
                             <a
@@ -52,13 +57,33 @@
 
                 <div class="col-md-7">
 
-                    {# Title  #}
+                    {# Title #}
                     <h2 class="workshop-item-title">{{ item.name }}</h2>
 
+                    <hr />
+
+
+                Submitted by: <a href="/workshop/browse/user/{{ item.submitter.username }}" title="Browse {{ item.submitter.username }}'s Workshop Items">{{ item.submitter.username }}</a>
+
+                    {% if item.description is not empty %}
+                        <h5 style="margin-top: 30px;">Description</h5>
+                        <div class="workshop-item-text-content" style="margin-top: 30px;">
+                            {{ item.description|escape|markdown_to_html }}
+                        </div>
+                    {% endif %}
+
+                    {# Description
+                    {% if item.description is not empty %}
+                        <h5 style="margin-top: 30px;">Description</h5>
+                        <div class="workshop-item-text-content">
+                            {{ item.description|escape|markdown_to_html }}
+                        </div>
+                    {% endif %} #}
+
                     {# Info #}
+                    <h5 style="margin-top: 50px;">Information</h5>
                     <div class="row" style="margin: 30px 20px 50px 20px;">
                         <div class="col-md-6">
-                            Submitted by: <a href="/workshop/browse/user/{{ item.submitter.username }}" title="Browse {{ item.submitter.username }}'s Workshop Items">{{ item.submitter.username }}</a>
                             <br /><br />
                             Date: {{ item.createdTimestamp|date('Y-m-d') }}
                             <br /><br />
@@ -72,14 +97,6 @@
                             Rating: {{ workshop_rating(item.id, item_rating) }}
                         </div>
                     </div>
-
-                    {# Description  #}
-                    {% if item.description is not empty %}
-                        <h5 style="margin-top: 50px;">Description</h5>
-                        <div class="workshop-item-text-content">
-                            {{ item.description|escape|markdown_to_html }}
-                        </div>
-                    {% endif %}
 
                     {# Install Instructions #}
                     {% if item.installInstructions is not empty %}
