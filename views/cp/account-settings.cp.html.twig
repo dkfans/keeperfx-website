@@ -14,17 +14,21 @@
 {# Change Avatar #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">
-        <h2>Change Avatar</h2>
+        <h2>Avatar</h2>
     </div>
     <div class="content-body">
 
         <div class="d-flex">
 
+            {% if user.avatar %}
+
             <div class="account-settings-avatar">
-                <img src="{{ user.avatar }}" />
+                <img src="/avatar/{{ user.avatar }}" />
             </div>
 
-            <div style="margin-left: 30px;">
+            {% endif %}
+
+            <div>
 
                 <form action="/account/avatar" method="POST" enctype="multipart/form-data" style="margin-bottom: 20px;">
 
@@ -56,7 +60,7 @@
 {# Change Email Address #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">
-        <h2>Change Email Address</h2>
+        <h2>Email Address</h2>
     </div>
     <div class="content-body">
 
@@ -93,7 +97,7 @@
 {# Change Password #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">
-        <h2>Change Password</h2>
+        <h2>Password</h2>
     </div>
     <div class="content-body">
 

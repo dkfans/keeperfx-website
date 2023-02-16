@@ -38,6 +38,9 @@ $app->post('/login', [LoginController::class, 'login']);
 $app->get('/register', [RegisterController::class, 'registerIndex']);
 $app->post('/register', [RegisterController::class, 'register']);
 
+// Avatar fallback
+$app->get('/avatar/{filename:[\w\d\-\.]+}', [AvatarController::class, 'outputAvatar']);
+
 // LOGGED IN USERS
 $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
@@ -53,6 +56,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->post('/password', [ControlPanel\AccountController::class, 'updatePassword']);
         $group->post('/avatar', [ControlPanel\AccountController::class, 'updateAvatar']);
         $group->get('/remove-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeEmail']);
+        $group->get('/remove-avatar/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeAvatar']);
     });
 
     // AUTH: ADMIN

@@ -54,3 +54,11 @@ location ~ /workshop/screenshot/([0-9]+)/(.+)$ {
     alias /var/www/keeperfx-website/workshop/$1/screenshots/$2;
 }
 ```
+
+## User avatars
+
+```
+location ~ /avatar/(.+)$ {
+    alias /var/www/keeperfx-website/avatars/$1;
+}
+```
