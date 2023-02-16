@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Account;
-use App\Entity\User;
 use App\FlashMessage;
-use Compwright\PhpSession\Session;
+use App\Config\Config;
 use Doctrine\ORM\EntityManager;
+use Compwright\PhpSession\Session;
+
+use App\Entity\User;
+
 use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -79,6 +82,15 @@ class RegisterController {
                 $flash->warning('Username already in use.');
             }
 
+        }
+
+        // Check if username contains disallowed words
+        foreach(Config::get('app.disallowed_username_words') as $word){
+            if(strpos($username, $word) !== false){
+                $success = false;
+                $flash->warning("Username contains a disallowed word: {$word}");
+                break;
+            }
         }
 
         // Check if user wants to add an email address

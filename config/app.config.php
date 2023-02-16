@@ -21,4 +21,13 @@ return [
         'item_max_filesize_bytes' => 20971520, // 20 MiB
     ],
 
+    'disallowed_username_words' => [
+        'keeperfx',
+        'kfx',
+        'admin',
+        'moderator',
+        'developer',
+        'workshop',
+    ],
+
 ];
