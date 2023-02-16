@@ -716,3 +716,7 @@ a.dropdown-item {
 a.dropdown-item:active {
     background: inherit;
 }
+
+.dropdown-menu {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
