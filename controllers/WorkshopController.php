@@ -84,11 +84,26 @@ class WorkshopController {
             $workshop_item_rating = \array_sum($rating_scores) / \count($rating_scores);
         }
 
+        // Get screenshots
+        $screenshots = [];
+        $screenshot_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/screenshots';
+        if(\is_dir($screenshot_dir)){
+            foreach(\glob($screenshot_dir . '/*') as $screenshot_file){
+                $size = \getimagesize($screenshot_file);
+                $screenshots[] = [
+                    'filename' => \basename($screenshot_file),
+                    'width'    => $size[0],
+                    'height'   => $size[1],
+                ];
+            }
+        }
+
         // Render view
         $response->getBody()->write(
             $twig->render('workshop/item.workshop.html.twig', $this->getWorkshopOptions() + [
                 'item'        => $workshop_item,
-                'item_rating' => $workshop_item_rating
+                'item_rating' => $workshop_item_rating,
+                'screenshots' => $screenshots,
             ])
         );
 

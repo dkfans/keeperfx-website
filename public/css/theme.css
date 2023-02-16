@@ -511,6 +511,7 @@ footer {
     width: 100px;
     margin: 3px;
     border: 1px solid black;
+    background-image: url(/img/bg-black.png);
 }
 
 .workshop-screenshot img {
