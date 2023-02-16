@@ -35,6 +35,7 @@ class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements 
                 'id'       => $this->account->getUser()->getId(),
                 'username' => $this->account->getUser()->getUsername(),
                 'role'     => $this->account->getUser()->getRole()->value,
+                'avatar'   => $this->account->getUser()->getAvatar(),
             ]
         ];
     }

@@ -21,11 +21,9 @@
         <div class="d-flex">
 
             {% if user.avatar %}
-
-            <div class="account-settings-avatar">
-                <img src="/avatar/{{ user.avatar }}" />
-            </div>
-
+                <div class="account-settings-avatar">
+                    <img src="/avatar/{{ user.avatar }}" />
+                </div>
             {% endif %}
 
             <div>
@@ -48,7 +46,9 @@
 
                 </form>
 
-            <a href="/account/remove-avatar/{{ csrf.name }}/{{ csrf.value }}">Remove current avatar</a>
+                {% if user.avatar %}
+                    <a href="/account/remove-avatar/{{ csrf.name }}/{{ csrf.value }}">Remove current avatar</a>
+                {% endif %}
 
             </div>
 
