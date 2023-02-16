@@ -47,7 +47,7 @@
                 </form>
 
                 {% if user.avatar %}
-                    <a href="/account/remove-avatar/{{ csrf.name }}/{{ csrf.value }}">Remove current avatar</a>
+                    <a href="/account/remove-avatar/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove current avatar</a>
                 {% endif %}
 
             </div>
@@ -73,7 +73,7 @@
                 {% if user.email %}
                     Email address:
                     <strong style="margin-left: 20px;">{{ user.email }}</strong>
-                    <a style="margin-left: 15px;" href="/account/remove-email/{{ csrf.name }}/{{ csrf.value }}">Remove</a>
+                    <a style="margin-left: 15px;" href="/account/remove-email/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove</a>
                 {% else %}
                     There is no email address linked to this account.
                 {% endif %}
