@@ -20,11 +20,13 @@
 
         <div class="d-flex">
 
-            {% if user.avatar %}
                 <div class="account-settings-avatar">
+                {% if user.avatar %}
                     <img src="/avatar/{{ user.avatar }}" />
+                    {% else %}
+                    <img src="/img/default-avatar.png" />
+                {% endif %}
                 </div>
-            {% endif %}
 
             <div>
 

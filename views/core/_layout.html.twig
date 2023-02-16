@@ -51,25 +51,39 @@
 
                     <div class="dropdown">
                         <a class="dropdown-toggle" href="/dashboard" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
                             {% if account.avatar %}
                                 <img src="/avatar/{{ account.avatar }}" class="user-avatar" />
+                            {% else %}
+                                <img src="/img/default-avatar.png" class="user-avatar" />
                             {% endif %}
+
                             {{ account.username }}
                         </a>
+
                         <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarDropdown">
+
                             <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
                             <li><a class="dropdown-item" href="/account">Account Settings</a></li>
+
                             <li><hr class="dropdown-divider"></li>
+
                             {% if account.role >= roles.workshop_moderator %}
                                 <li><a class="dropdown-item" href="/workshop-mod/workshop/list">Manage Workshop</a></li>
+
                                 {% if account.role >= roles.admin %}
                                     <li><a class="dropdown-item" href="/admin/news/list">Manage News</a></li>
                                     <li><a class="dropdown-item" href="/admin/users/list">Manage Users</a></li>
                                 {% endif %}
+
                                 <li><hr class="dropdown-divider"></li>
+
                             {% endif %}
+
                             <li><a class="dropdown-item" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">Logout</a></li>
+
                         </ul>
+
                     </div>
                 {% else %}
                     <a href="/register">
