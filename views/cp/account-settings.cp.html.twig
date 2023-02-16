@@ -1,0 +1,135 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% block title %}Account Settings{% endblock %}
+
+{% block page %}
+
+{# Header #}
+{# <div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="border-bottom: 0; margin-bottom: 8px;">
+        <h2>Account Settings</h2>
+    </div>
+</div> #}
+
+{# Change Avatar #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Change Avatar</h2>
+    </div>
+    <div class="content-body">
+
+        <div class="d-flex">
+
+            <div class="account-settings-avatar">
+                <img src="{{ user.avatar }}" />
+            </div>
+
+            <div style="margin-left: 30px;">
+
+                <form action="/account/avatar" method="POST" enctype="multipart/form-data" style="margin-bottom: 20px;">
+
+                    <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+                    <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+                    <div class="form-group">
+                        <label for="avatar">
+                            New avatar
+                        </label>
+                        <input type="file" class="form-control" id="avatar" name="avatar">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-medieval" value="Submit" />
+                    </div>
+
+                </form>
+
+            <a href="/account/remove-avatar/{{ csrf.name }}/{{ csrf.value }}">Remove current avatar</a>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{# Change Email Address #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Change Email Address</h2>
+    </div>
+    <div class="content-body">
+
+        <form action="/account/email" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            <p>
+                {% if user.email %}
+                    Email address:
+                    <strong style="margin-left: 20px;">{{ user.email }}</strong>
+                    <a style="margin-left: 15px;" href="/account/remove-email/{{ csrf.name }}/{{ csrf.value }}">Remove</a>
+                {% else %}
+                    There is no email address linked to this account.
+                {% endif %}
+            </p>
+
+            <div class="form-group" style="max-width: 400px;">
+                <label for="new_email_address">
+                    New email address
+                </label>
+                <input type="email" class="form-control" id="new_email_address" name="new_email_address" required />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" class="btn btn-medieval" value="Update Email Address" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{# Change Password #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Change Password</h2>
+    </div>
+    <div class="content-body">
+
+        <form action="/account/password" method="POST" style="max-width: 400px;">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            <div class="form-group">
+                <label for="current_password">
+                    Current Password
+                </label>
+                <input type="password" class="form-control" id="current_password" name="current_password" required />
+            </div>
+
+            <div class="form-group">
+                <label for="new_password">
+                    New Password
+                </label>
+                <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="off" required />
+            </div>
+
+            <div class="form-group">
+                <label for="repeat_password">
+                    Repeat new Password
+                </label>
+                <input type="password" class="form-control" id="repeat_password" name="repeat_password" autocomplete="off" required />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" class="btn btn-medieval" value="Update Password" />
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

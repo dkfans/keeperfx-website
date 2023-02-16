@@ -40,8 +40,20 @@ $app->post('/register', [RegisterController::class, 'register']);
 
 // LOGGED IN USERS
 $app->group('', function (RouteCollectorProxy $group) use ($container) {
-    $group->get('/dashboard', [DashboardController::class, 'dashboardIndex']);
-    $group->get('/logout/{token_name}/{token_value:.+}', [AccountController::class, 'logout']);
+
+    $group->get('/dashboard', [ControlPanel\DashboardController::class, 'dashboardIndex']);
+    $group->get('/logout/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'logout']);
+
+    // Users: Control Panel
+    $group->group('/account', function (RouteCollectorProxy $group) use ($container) {
+
+        $group->get('', [ControlPanel\AccountController::class, 'accountSettingsIndex']);
+
+        $group->post('/email', [ControlPanel\AccountController::class, 'updateEmail']);
+        $group->post('/password', [ControlPanel\AccountController::class, 'updatePassword']);
+        $group->post('/avatar', [ControlPanel\AccountController::class, 'updateAvatar']);
+        $group->get('/remove-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeEmail']);
+    });
 
     // AUTH: ADMIN
     $group->group('/admin', function (RouteCollectorProxy $group) use ($container) {
