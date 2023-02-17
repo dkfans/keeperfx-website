@@ -68,7 +68,7 @@
 
                         {# Rating #}
                         <div class="">
-                            {{ workshop_rating(item.id, item_rating) }}
+                            {{ workshop_rating(item.id, rating.score) }}
                         </div>
                     </div>
 
@@ -76,7 +76,7 @@
                     <hr />
 
                     {# Information fields #}
-                    <table>
+                    <table style="margin: 15px;">
                         <tr>
                             <td>Type</td>
                             <td class="text-stand-out" style="padding-left: 25px;">
@@ -109,9 +109,9 @@
                         <tr>
                             <td>Rating</td>
                             <td class="text-stand-out" style="padding-left: 25px;">
-                                {% if item_rating is not null %}
-                                    {{ item_rating|round(2, 'floor') }} / 5
-                                    <span class="text-muted" style="margin-left: 5px;">(10 ratings)</span>
+                                {% if rating.score is not null %}
+                                    {{ rating.score|round(2, 'floor') }} / 5
+                                    <span class="text-muted" style="margin-left: 5px;">({{ rating.amount }} ratings)</span>
                                 {% else %}
                                     Not rated yet
                                 {% endif %}
@@ -130,7 +130,7 @@
                         {% endif %}
                         <tr>
                             <td>Filesize</td>
-                            <td class="text-stand-out" style="padding-left: 25px;">405KiB</td>
+                            <td class="text-stand-out" style="padding-left: 25px;">{{ filesize|format_bytes }}</td>
                         </tr>
                     </table>
 

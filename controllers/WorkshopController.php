@@ -73,15 +73,27 @@ class WorkshopController {
             return $response;
         }
 
+        // Get item filesize
+        $filepath = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/' . $workshop_item->getFilename();
+        if(!\file_exists($filepath)){
+            $flash->warning('The requested file of this workshop item could not be found.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+        $filesize = \filesize($filepath);
+
         // Get workshop item rating
-        $workshop_item_rating = null;
+        $rating_score = null;
         $ratings = $workshop_item->getRatings();
-        if($ratings && \count($ratings) > 0){
+        $rating_count = \count($ratings);
+        if($rating_count > 0){
             $rating_scores = [];
             foreach($ratings as $rating){
                 $rating_scores[] = $rating->getScore();
             }
-            $workshop_item_rating = \array_sum($rating_scores) / \count($rating_scores);
+            $rating_score = \array_sum($rating_scores) / \count($rating_scores);
         }
 
         // Get screenshots
@@ -102,8 +114,12 @@ class WorkshopController {
         $response->getBody()->write(
             $twig->render('workshop/item.workshop.html.twig', $this->getWorkshopOptions() + [
                 'item'        => $workshop_item,
-                'item_rating' => $workshop_item_rating,
                 'screenshots' => $screenshots,
+                'rating' => [
+                    'score'  => $rating_score,
+                    'amount' => $rating_count,
+                ],
+                'filesize' => $filesize,
             ])
         );
 
