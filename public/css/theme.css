@@ -13,8 +13,12 @@ body {
     --title-link-color: #eee;
 
     --bs-secondary-color: #616161;
+
+    /* TODO: orangered for better contrast */
     --special-text-color: #dd4a29;
     --footer-text-color: #777;
+
+    --stand-out-text-color: #efefef;
 
     --bs-info-text: #ffffff;
     --bs-info-bg-subtle: #1367af;
@@ -90,6 +94,11 @@ hr {
 
 .text-special {
     color: var(--special-text-color);
+}
+
+.text-stand-out {
+    color: var(--stand-out-text-color);
+    font-weight: 600;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -691,10 +700,10 @@ footer {
 
 .user-avatar {
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    border: 1px solid rgba(215, 197, 182, 0.65);
-    padding: 1px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(55, 55, 55, 0.65);
+    padding: 0px;
 }
 
 nav .user-avatar {
@@ -703,6 +712,7 @@ nav .user-avatar {
     margin-right: 6px;
     bottom: 2px;
     position: relative;
+    border: 1px solid rgba(215, 197, 182, 0.65);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -720,4 +730,25 @@ a.dropdown-item:active {
 
 .dropdown-menu {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+a.user-link {
+    text-decoration: none;
+}
+
+a.user-link:hover {
+    text-decoration: none;
+}
+
+a.user-link span {
+    color: orangered;
+}
+
+a.user-link:hover span {
+    text-decoration: underline;
+    /* color: red; */
 }
