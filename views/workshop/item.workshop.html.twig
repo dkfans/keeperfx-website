@@ -78,17 +78,25 @@
                     {# Information fields #}
                     <table>
                         <tr>
-                            <td>Submission date</td>
+                            <td>Type</td>
                             <td class="text-stand-out" style="padding-left: 25px;">
+                                {{ item.type.name|enum_beautify }}
+                            </td>
+                        </tr>
+                        <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                        <tr>
+                            <td>Submission date</td>
+                            <td class="text-stand-out time-ago" style="padding-left: 25px;">
                                 {{ item.createdTimestamp|date('Y-m-d') }}
                             </td>
                         </tr>
                         <tr>
                             <td>Last updated</td>
                             <td class="text-stand-out" style="padding-left: 25px;">
-                                {{ item.updatedTimestamp|date('Y-m-d') }}
+                                    {{ item.updatedTimestamp|date('Y-m-d') }}
                             </td>
                         </tr>
+                        <tr style="height: 15px;"><!-- Spacer row --></tr>
                         {# <tr>
                             <td>Original author</td>
                             <td class="text-stand-out" style="padding-left: 25px;">Andrew Gower</td>
@@ -97,6 +105,23 @@
                             <td>Original creation date</td>
                             <td class="text-stand-out" style="padding-left: 25px;">1998-02-09</td>
                         </tr> #}
+                        {# <tr style="height: 15px;"><!-- Spacer row --></tr> #}
+                        <tr>
+                            <td>Rating</td>
+                            <td class="text-stand-out" style="padding-left: 25px;">
+                                {% if item_rating is not null %}
+                                    {{ item_rating|round(2, 'floor') }} / 5
+                                    <span class="text-muted" style="margin-left: 5px;">(10 ratings)</span>
+                                {% else %}
+                                    Not rated yet
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Downloads</td>
+                            <td class="text-stand-out" style="padding-left: 25px;">{{ item.downloadCount }}</td>
+                        </tr>
+                        <tr style="height: 15px;"><!-- Spacer row --></tr>
                         {% if item.minGameBuild is not null %}
                             <tr>
                                 <td>Minimum game version</td>
@@ -104,8 +129,8 @@
                             </tr>
                         {% endif %}
                         <tr>
-                            <td>Downloads</td>
-                            <td class="text-stand-out" style="padding-left: 25px;">{{ item.downloadCount }}</td>
+                            <td>Filesize</td>
+                            <td class="text-stand-out" style="padding-left: 25px;">405KiB</td>
                         </tr>
                     </table>
 
