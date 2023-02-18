@@ -24,7 +24,8 @@ class RegisterController {
     ){
         // Only logged-out guests allowed
         if($account->isLoggedIn()){
-            $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
+            $response = $response->withHeader('Location', '/')->withStatus(302);
+            // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
         }
 
@@ -47,7 +48,8 @@ class RegisterController {
     ){
         // Only logged-out guests allowed
         if($account->isLoggedIn()){
-            $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
+            $response = $response->withHeader('Location', '/')->withStatus(302);
+            // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
         }
 
@@ -149,7 +151,8 @@ class RegisterController {
         $session['uid'] = $user->getId();
 
         // Navigate to dashboard
-        $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
+        $response = $response->withHeader('Location', '/account')->withStatus(302);
+        // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
         return $response;
     }
 

@@ -15,10 +15,10 @@
             <div class="content-body">
                 <p>Welcome, {{ account.username }}</p>
                 <nav class="nav flex-column">
-                    <a class="nav-link {% if path_equals('/dashboard') %}active{% endif %}" href="/dashboard">
+                    {# <a class="nav-link {% if path_equals('/dashboard') %}active{% endif %}" href="/dashboard">
                         <ion-icon name="home-outline"></ion-icon>
                         Dashboard
-                    </a>
+                    </a> #}
                     <a class="nav-link {% if path_equals('/account') %}active{% endif %}" href="/account">
                         <ion-icon name="person-outline"></ion-icon>
                         Account Settings

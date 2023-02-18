@@ -22,7 +22,8 @@ class LoginController {
     ){
 
         if($account->isLoggedIn()){
-            $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
+            $response = $response->withHeader('Location', '/')->withStatus(302);
+            // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
         }
 
@@ -67,14 +68,15 @@ class LoginController {
                     // Log user in (session)
                     $session['uid'] = $user->getId();
 
-                    // Show flash message
-                    $flash->success('Successfully logged in!');
-
                     // Determine redirect location
-                    $redirect_location = '/dashboard';
+                    $redirect_location = '/';
+                    // $redirect_location = '/dashboard';
                     if($redirect && \preg_match('/^\/[a-zA-Z]/', $redirect)){
                         $redirect_location = $redirect;
                     }
+
+                    // Show flash message
+                    $flash->success('You have successfully logged in!');
 
                     // Redirect
                     $response = $response->withHeader('Location', $redirect_location)->withStatus(302);

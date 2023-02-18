@@ -52,7 +52,8 @@ class AuthWorkshopModMiddleware implements MiddlewareInterface {
             $this->flash->warning('You do not have the rights to access this resource.');
 
             return $this->response_factory->createResponse()
-                ->withHeader('Location', '/dashboard')
+                ->withHeader('Location', '/')
+                // ->withHeader('Location', '/dashboard')
                 ->withStatus(302);
         }
 

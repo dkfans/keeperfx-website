@@ -50,7 +50,8 @@
                 {% if account %}
 
                     <div class="dropdown">
-                        <a class="dropdown-toggle" href="/dashboard" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="dropdown-toggle" href="/account" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {# <a class="dropdown-toggle" href="/dashboard" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> #}
 
                             {% if account.avatar %}
                                 <img src="/avatar/{{ account.avatar }}" class="user-avatar" />
@@ -63,7 +64,7 @@
 
                         <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarDropdown">
 
-                            <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
+                            {# <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li> #}
                             <li><a class="dropdown-item" href="/account">Account Settings</a></li>
 
                             <li><hr class="dropdown-divider"></li>
