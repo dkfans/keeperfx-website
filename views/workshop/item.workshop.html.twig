@@ -124,8 +124,11 @@
                         <tr style="height: 15px;"><!-- Spacer row --></tr>
                         {% if item.minGameBuild is not null %}
                             <tr>
-                                <td>Minimum game version</td>
-                                <td class="text-stand-out" style="padding-left: 25px;">{{ item.minGameBuild.name }}</td>
+                                <td>Min. game version</td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ item.minGameBuild.name }}
+                                    {# <span class="text-muted" style="margin-left: 5px;">(and up)</span> #}
+                                </td>
                             </tr>
                         {% endif %}
                         <tr>
@@ -141,7 +144,7 @@
                         <a
                             href="/workshop/download/{{ item.id }}/{{ item.filename|url_encode }}"
                             class="btn btn-lg btn-medieval"
-                            style="margin-top: 30px; width: 100%; max-width: 300px;"
+                            style="margin-top: 20px; width: 100%; max-width: 300px;"
                             download>
                                 Download
                         </a>
