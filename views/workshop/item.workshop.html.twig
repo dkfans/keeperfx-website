@@ -97,15 +97,21 @@
                             </td>
                         </tr>
                         <tr style="height: 15px;"><!-- Spacer row --></tr>
-                        {# <tr>
-                            <td>Original author</td>
-                            <td class="text-stand-out" style="padding-left: 25px;">Andrew Gower</td>
-                        </tr>
-                        <tr>
-                            <td>Original creation date</td>
-                            <td class="text-stand-out" style="padding-left: 25px;">1998-02-09</td>
-                        </tr> #}
-                        {# <tr style="height: 15px;"><!-- Spacer row --></tr> #}
+                        {% if item.originalAuthor is not empty or item.originalCreationDate is not empty %}
+                            {% if item.originalAuthor is not empty %}
+                                <tr>
+                                    <td>Original author</td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">{{ item.originalAuthor }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if item.originalCreationDate %}
+                                <tr>
+                                    <td>Original creation date</td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">{{ item.originalCreationDate|date('Y-m-d') }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr style="height: 15px;"><!-- Spacer row --></tr>
+                        {% endif %}
                         <tr>
                             <td>Rating</td>
                             <td class="text-stand-out" style="padding-left: 25px;">

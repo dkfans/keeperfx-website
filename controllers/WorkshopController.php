@@ -156,6 +156,9 @@ class WorkshopController {
         $description           = (string) ($post['description'] ?? null);
         $install_instructions  = (string) ($post['install_instructions'] ?? null);
 
+        $original_author        = $post['original_author'] ?? null;
+        $original_creation_date = $post['original_creation_date'] ?? null;
+
         // Check if name is valid
         if(!$name){
             $success = false;
@@ -232,6 +235,19 @@ class WorkshopController {
 
         if(!empty($install_instructions)){
             $workshop_item->setInstallInstructions($install_instructions);
+        }
+
+        if(\is_string($original_author) && !empty($original_author)){
+            $workshop_item->setOriginalAuthor($original_author);
+        }
+
+        if(\is_string($original_creation_date) && !empty($original_creation_date)){
+            try {
+                $datetime = new \DateTime($original_creation_date);
+                if($datetime){
+                    $workshop_item->setOriginalCreationDate($datetime);
+                }
+            } catch (\Exception $ex){}
         }
 
         // Set optional minimum game build
@@ -411,6 +427,9 @@ class WorkshopController {
         $description           = (string) ($post['description'] ?? null);
         $install_instructions  = (string) ($post['install_instructions'] ?? null);
 
+        $original_author        = $post['original_author'] ?? null;
+        $original_creation_date = $post['original_creation_date'] ?? null;
+
         $workshop_item->setName($name);
         $workshop_item->setDescription($description);
         $workshop_item->setInstallInstructions($install_instructions);
@@ -483,6 +502,25 @@ class WorkshopController {
             if(\file_exists($thumbnail_path)){
                 $workshop_item->setThumbnail($thumbnail_filename);
             }
+        }
+
+        // Update original author
+        if(\is_string($original_author) && !empty($original_author)){
+            $workshop_item->setOriginalAuthor($original_author);
+        } else {
+            $workshop_item->setOriginalAuthor(null);
+        }
+
+        // Update original creation date
+        if(\is_string($original_creation_date) && !empty($original_creation_date)){
+            try {
+                $datetime = new \DateTime($original_creation_date);
+                if($datetime){
+                    $workshop_item->setOriginalCreationDate($datetime);
+                }
+            } catch (\Exception $ex){}
+        } else {
+            $workshop_item->setOriginalCreationDate(null);
         }
 
         // Force the workshop item to be accepted again

@@ -33,9 +33,6 @@ class WorkshopItem {
     #[ORM\ManyToOne(targetEntity: GithubRelease::class)]
     private GithubRelease|null $min_game_build = null;
 
-    #[ORM\Column(nullable: true)]
-    private \DateTime|null $original_creation_date = null;
-
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
@@ -62,6 +59,12 @@ class WorkshopItem {
 
     #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'item')]
     private Collection $ratings;
+
+    #[ORM\Column(nullable: true)]
+    private string|null $original_author = null;
+
+    #[ORM\Column(nullable: true)]
+    private \DateTime|null $original_creation_date = null;
 
     public function __construct() {
         $this->ratings = new ArrayCollection();
@@ -215,24 +218,6 @@ class WorkshopItem {
     }
 
     /**
-     * Get the value of original_creation_date
-     */
-    public function getOriginalCreationDate(): \DateTime|null
-    {
-        return $this->original_creation_date;
-    }
-
-    /**
-     * Set the value of original_creation_date
-     */
-    public function setOriginalCreationDate(\DateTime $original_creation_date): self
-    {
-        $this->original_creation_date = $original_creation_date;
-
-        return $this;
-    }
-
-    /**
      * Get the value of install_instructions
      */
     public function getInstallInstructions(): string
@@ -346,5 +331,41 @@ class WorkshopItem {
     public function getRatings(): Collection
     {
         return $this->ratings;
+    }
+
+    /**
+     * Get the value of original_author
+     */
+    public function getOriginalAuthor(): ?string
+    {
+        return $this->original_author;
+    }
+
+    /**
+     * Set the value of original_author
+     */
+    public function setOriginalAuthor(?string $original_author): self
+    {
+        $this->original_author = $original_author;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of original_creation_date
+     */
+    public function getOriginalCreationDate(): \DateTime|null
+    {
+        return $this->original_creation_date;
+    }
+
+    /**
+     * Set the value of original_creation_date
+     */
+    public function setOriginalCreationDate(?\DateTime $original_creation_date): self
+    {
+        $this->original_creation_date = $original_creation_date;
+
+        return $this;
     }
 }

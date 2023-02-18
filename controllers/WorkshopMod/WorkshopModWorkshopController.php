@@ -97,6 +97,9 @@ class WorkshopModWorkshopController {
         $description           = (string) ($post['description'] ?? null);
         $install_instructions  = (string) ($post['install_instructions'] ?? null);
 
+        $original_author        = $post['original_author'] ?? null;
+        $original_creation_date = $post['original_creation_date'] ?? null;
+
         $workshop_item->setName($name);
         $workshop_item->setDescription($description);
         $workshop_item->setInstallInstructions($install_instructions);
@@ -109,6 +112,25 @@ class WorkshopModWorkshopController {
         // Set minimum game build
         $min_game_build = $em->getRepository(GithubRelease::class)->find((int) ($post['min_game_build'] ?? null));
         $workshop_item->setMinGameBuild($min_game_build ?? null);
+
+        // Update original author
+        if(\is_string($original_author) && !empty($original_author)){
+            $workshop_item->setOriginalAuthor($original_author);
+        } else {
+            $workshop_item->setOriginalAuthor(null);
+        }
+
+        // Update original creation date
+        if(\is_string($original_creation_date) && !empty($original_creation_date)){
+            try {
+                $datetime = new \DateTime($original_creation_date);
+                if($datetime){
+                    $workshop_item->setOriginalCreationDate($datetime);
+                }
+            } catch (\Exception $ex){}
+        } else {
+            $workshop_item->setOriginalCreationDate(null);
+        }
 
         // Set directories for files
         $workshop_item_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();

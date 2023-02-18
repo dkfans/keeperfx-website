@@ -20,20 +20,58 @@
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
 
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ workshop_item.name }}">
+                <div class="row" style="margin-bottom: 25px;">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">
+                                Name
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ workshop_item.name }}" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="type">
+                                Type
+                            </label>
+                            <select class="form-control form-select" id="type" name="type" required>
+                                <option value="" disabled hidden>Choose the type of this item</option>
+                                {% if types|length > 0 %}
+                                    {% for type in types %}
+                                        <option value="{{ type.value }}" {% if type.value == workshop_item.type.value %}selected=selected{% endif %}>
+                                            {{ type.name|enum_beautify }}
+                                        </option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="type">Type</label>
-                    <select class="form-control form-select" id="type" name="type">
-                        {% if types|length > 0 %}
-                            {% for type in types %}
-                                <option value="{{ type.value }}" {% if type.value == workshop_item.type.value %}selected=selected{% endif %}>{{ type.name }}</option>
-                            {% endfor %}
-                        {% endif %}
-                    </select>
+                <div class="row" style="margin-bottom: 25px;">
+
+                    <div class="col-md-6"></div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="min_game_build">
+                                Minimum game version
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <select class="form-control form-select" id="min_game_build" name="min_game_build">
+                                <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="-1"></option>
+                                {% if builds|length > 0 %}
+                                    {% for build in builds %}
+                                        <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild.id == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group row">
@@ -47,7 +85,9 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="file">Update file</label>
+                            <label for="file">
+                                Update file
+                            </label>
                             <input type="file" class="form-control" id="file" name="file">
                         </div>
                     </div>
@@ -70,7 +110,9 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="thumbnail">Update thumbnail</label>
+                            <label for="thumbnail">
+                                Update thumbnail
+                            </label>
                             <input type="file" class="form-control" id="thumbnail" name="thumbnail">
                         </div>
                         {% if workshop_item.thumbnail is not null %}
@@ -119,32 +161,63 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="file">Add screenshot(s)</label>
+                            <label for="file">
+                                Add screenshot(s)
+                            </label>
                             <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description</label>
+                    <label for="description">
+                        Description
+                        <span class="text-muted">
+                            (Optional)
+                        </span>
+                    </label>
                     <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="install_instructions">Installation instructions</label>
+                    <label for="install_instructions">
+                        Installation instructions
+                        <span class="text-muted">
+                            (Optional)
+                        </span>
+                    </label>
                     <textarea class="form-control" name="install_instructions" rows="4">{{ workshop_item.installInstructions }}</textarea>
                 </div>
 
-                <div class="form-group">
-                    <label for="min_game_build">Minimum game version</label>
-                    <select class="form-control form-select" id="min_game_build" name="min_game_build">
-                        <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="-1"></option>
-                        {% if builds|length > 0 %}
-                            {% for build in builds %}
-                                <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild.id == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
-                            {% endfor %}
-                        {% endif %}
-                    </select>
+                <div class="row" style="margin-top: 25px; margin-bottom: 30px;">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="original_author">
+                                Original Author
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" id="original_author" name="original_author" value="{{ workshop_item.originalAuthor }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="original_creation_date">
+                                Original Creation Date
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <div class="input-group mb-3">
+                                <input type="date" class="form-control" id="original_creation_date" name="original_creation_date"
+                                    value="{% if workshop_item.originalCreationDate %}{{ workshop_item.originalCreationDate|date('Y-m-d') }}{% endif %}">
+                                <button class="btn btn-outline-secondary" type="button" onclick="javascript:original_creation_date.value=''">Clear</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
