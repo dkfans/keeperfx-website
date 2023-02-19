@@ -73,6 +73,11 @@
                     </div>
                 {% endfor %}
 
+                {# Fix the grid having only 1 column when there is only 1 workshop item #}
+                {% if workshop_items|length == 1 %}
+                    <div></div>
+                {% endif %}
+
             </div>
         </div>
     </div>
