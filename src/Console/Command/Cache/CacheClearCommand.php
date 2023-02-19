@@ -5,6 +5,7 @@ namespace App\Console\Command\Cache;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class CacheClearCommand extends Command
 {
@@ -18,6 +19,21 @@ class CacheClearCommand extends Command
 
     protected function execute(Input $input, Output $output)
     {
+        $current_user = \exec('whoami');
+        $owning_user  = \get_current_user();
+
+        if($current_user !== $owning_user){
+            $output->writeln('[!] <error>Current user and script owner do not match!</error>');
+            $output->writeln('[>] User executing the command: ' . $current_user);
+            $output->writeln('[>] Script owner: ' . $owning_user);
+            $output->writeln('[!] Running this command might result in permission errors.');
+            $helper = $this->getHelper('question');
+            $question = new ConfirmationQuestion('[?] Continue? [y/n] ', false);
+            if (!$helper->ask($input, $output, $question)) {
+                return Command::SUCCESS;
+            }
+        }
+
         $output->writeln('[>] Clearing cache directory: ' . self::CACHE_DIR);
 
         $iterator = new \RecursiveDirectoryIterator(self::CACHE_DIR, \RecursiveDirectoryIterator::SKIP_DOTS);
@@ -38,7 +54,7 @@ class CacheClearCommand extends Command
 
             if ($file->isDir()){
                 $dir_count++;
-                if(\rmdir($path)){
+                if(@\rmdir($path)){
                     $dir_count_deleted++;
                     $output->writeln("[+] DIR: <info>{$path}</info> DELETED");
                 } else {
@@ -46,7 +62,7 @@ class CacheClearCommand extends Command
                 }
             } else {
                 $file_count++;
-                if(\unlink($path)){
+                if(@\unlink($path)){
                     $file_count_deleted++;
                     $output->writeln("[+] FILE: <info>{$path}</info> DELETED");
                 } else {

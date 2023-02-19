@@ -4,11 +4,13 @@ namespace App\Console\Command\Cache;
 
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
+use Twig\Environment as TwigEnvironment;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-use Twig\Environment as TwigEnvironment;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+
 use Xenokore\Utility\Helper\DirectoryHelper;
 
 class CacheWarmCommand extends Command
@@ -34,6 +36,21 @@ class CacheWarmCommand extends Command
 
     protected function execute(Input $input, Output $output)
     {
+        $current_user = \exec('whoami');
+        $owning_user  = \get_current_user();
+
+        if($current_user !== $owning_user){
+            $output->writeln('[!] <error>Current user and script owner do not match!</error>');
+            $output->writeln('[>] User executing the command: ' . $current_user);
+            $output->writeln('[>] Script owner: ' . $owning_user);
+            $output->writeln('[!] Running this command might result in permission errors.');
+            $helper = $this->getHelper('question');
+            $question = new ConfirmationQuestion('[?] Continue? [y/n] ', false);
+            if (!$helper->ask($input, $output, $question)) {
+                return Command::SUCCESS;
+            }
+        }
+
         $output->writeln('[>] Warming the cache...');
 
         // Auto generate Doctrine proxy classes
