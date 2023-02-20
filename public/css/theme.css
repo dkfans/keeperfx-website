@@ -590,17 +590,18 @@ footer {
 }
 
 .workshop-grid-item-info {
-    padding: 5px 15px;
+    padding: 7px 12px 5px 15px;
     width: 100%;
     overflow: hidden;
 }
 
 .workshop-grid-item-title {
     width: 100%;
-    font-size: 19px;
+    font-size: 20px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 6px;
 }
 
 .workshop-grid-item-title a {
