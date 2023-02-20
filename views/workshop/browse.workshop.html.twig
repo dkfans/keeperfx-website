@@ -85,21 +85,7 @@
                                 <div class="col-6">
 
                                     {# User or Original Author #}
-                                    {% if item.originalAuthor %}
-                                        <strong>{{ item.originalAuthor }}</strong>
-                                    {% else %}
-                                        <a
-                                        href="/workshop/browse/user/{{ item.submitter.username }}"
-                                        title="Browse {{ item.submitter.username }}'s Workshop Items"
-                                        class="user-link d-inline-block">
-                                            {% if item.submitter.avatar %}
-                                                <img src="/avatar/{{ item.submitter.avatar }}" class="user-avatar" />
-                                            {% else %}
-                                                <img src="/img/default-avatar.png" class="user-avatar" />
-                                            {% endif %}
-                                            <span class="user-username">{{ item.submitter.username }}</span>
-                                        </a>
-                                    {% endif %}
+                                    {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, preferOriginalAuthor: true} %}
                                 </div>
 
                                 <div class="col-6" style="text-align: right;">
