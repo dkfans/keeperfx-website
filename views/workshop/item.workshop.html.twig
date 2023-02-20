@@ -56,7 +56,7 @@
                             <a
                                 href="/workshop/browse/user/{{ item.submitter.username }}"
                                 title="Browse {{ item.submitter.username }}'s Workshop Items"
-                                class="user-link d-inline-block" style="margin-left: 4px;">
+                                class="user-link d-inline-block" style="margin-left: 3px;">
                                     {% if item.submitter.avatar %}
                                         <img src="/avatar/{{ item.submitter.avatar }}" class="user-avatar" />
                                     {% else %}
@@ -117,7 +117,14 @@
                             <td class="text-stand-out" style="padding-left: 25px;">
                                 {% if rating.score is not null %}
                                     {{ rating.score|round(2, 'floor') }} / 5
-                                    <span class="text-muted" style="margin-left: 5px;">({{ rating.amount }} ratings)</span>
+
+                                    <span class="text-muted" style="margin-left: 5px;">
+                                        {% if rating.amount == 1 %}
+                                            (1 rating)
+                                        {% else %}
+                                            ({{ rating.amount }} ratings)
+                                        {% endif %}
+                                    </span>
                                 {% else %}
                                     Not rated yet
                                 {% endif %}
