@@ -22,7 +22,7 @@ class WorkshopItem {
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    private User $submitter;
+    private User|null $submitter = null;
 
     #[ORM\Column(nullable: true)]
     private int|null $map_number = null;
@@ -274,7 +274,7 @@ class WorkshopItem {
     /**
      * Get the value of submitter
      */
-    public function getSubmitter(): User
+    public function getSubmitter(): User|null
     {
         return $this->submitter;
     }
@@ -282,7 +282,7 @@ class WorkshopItem {
     /**
      * Set the value of submitter
      */
-    public function setSubmitter(User $submitter): self
+    public function setSubmitter(User|null $submitter): self
     {
         $this->submitter = $submitter;
 

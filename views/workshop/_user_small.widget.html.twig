@@ -1,15 +1,32 @@
+
+{# Original Author #}
 {% if preferOriginalAuthor is defined and preferOriginalAuthor == true and workshop_item.originalAuthor is defined and workshop_item.originalAuthor != null %}
     <strong>{{ workshop_item.originalAuthor }}</strong>
 {% else %}
-    <a
-    href="/workshop/browse/user/{{ workshop_item.submitter.username }}"
-    title="Browse {{ workshop_item.submitter.username }}'s Workshop Items"
-    class="user-link d-inline-block">
-        {% if workshop_item.submitter.avatar %}
-            <img src="/avatar/{{ workshop_item.submitter.avatar }}" class="user-avatar" />
-        {% else %}
-            <img src="/img/default-avatar.png" class="user-avatar" />
-        {% endif %}
-        <span class="user-username">{{ workshop_item.submitter.username }}</span>
-    </a>
+
+    {% if workshop_item.submitter == null %}
+
+        {# KeeperFX Team #}
+        <a
+        href="/workshop/browse/user/keeperfx-team"
+        title="Browse the KeeperFX Team Workshop Items"
+        class="user-link d-inline-block">
+            <span class="user-username">KeeperFX Team</span>
+        </a>
+
+    {% else %}
+
+        {# Normal User #}
+        <a
+        href="/workshop/browse/user/{{ workshop_item.submitter.username }}"
+        title="Browse {{ workshop_item.submitter.username }}'s Workshop Items"
+        class="user-link d-inline-block">
+            {% if workshop_item.submitter.avatar %}
+                <img src="/avatar/{{ workshop_item.submitter.avatar }}" class="user-avatar" />
+            {% else %}
+                <img src="/img/default-avatar.png" class="user-avatar" />
+            {% endif %}
+            <span class="user-username">{{ workshop_item.submitter.username }}</span>
+        </a>
+    {% endif %}
 {% endif %}

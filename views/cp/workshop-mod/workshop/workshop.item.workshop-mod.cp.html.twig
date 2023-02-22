@@ -47,9 +47,13 @@
                         <div class="form-group">
                             <label for="submitter">Submitter</label>
                             <p id="submitter">
-                                <a href="/admin/user/{{ workshop_item.submitter.id }}">
-                                    {{ workshop_item.submitter.username }}
-                                </a>
+                                {% if workshop_item.submitter is not null %}
+                                    <a href="/admin/user/{{ workshop_item.submitter.id }}">
+                                        {{ workshop_item.submitter.username }}
+                                    </a>
+                                {% else %}
+                                    KeeperFX Team
+                                {% endif %}
                             </p>
                         </div>
                         <div class="form-group">

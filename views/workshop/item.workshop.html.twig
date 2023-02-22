@@ -156,7 +156,7 @@
 
                         {# Edit buttons #}
                         {% if account != null %}
-                            {% if item.submitter.id == account.id != null %}
+                            {% if item.submitter != null and item.submitter.id == account.id %}
                                 <a
                                     href="/workshop/edit/{{ item.id }}"
                                     class="btn btn-medieval btn-medieval-gray"
