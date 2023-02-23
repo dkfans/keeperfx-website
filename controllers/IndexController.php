@@ -33,7 +33,7 @@ class IndexController {
         $release = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
 
         // Show a notice to users with a workshop moderator role or higher if there's new workshop items
-        if($account->getUser()->getRole()->value >= UserRole::WorkshopModerator->value){
+        if($account->isLoggedIn() && $account->getUser()->getRole()->value >= UserRole::WorkshopModerator->value){
             $open_workshop_submissions = $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => false]);
             if($open_workshop_submissions && \count($open_workshop_submissions) > 0){
                 $flash->info('There are open workshop submissions. Click <a href="/workshop-mod/workshop/list">here</a> to view them.');
