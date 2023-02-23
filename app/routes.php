@@ -90,9 +90,11 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         // Workshop Moderator: WORKSHOP
         $group->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
             $group->get('/list', [WorkshopMod\WorkshopModWorkshopController::class, 'listIndex']);
+            $group->get('/add', [WorkshopMod\WorkshopModWorkshopController::class, 'itemAddIndex']);
+            $group->post('/add', [WorkshopMod\WorkshopModWorkshopController::class, 'itemAdd']);
             $group->get('/{id:\d+}', [WorkshopMod\WorkshopModWorkshopController::class, 'itemIndex']);
             $group->post('/{id:\d+}', [WorkshopMod\WorkshopModWorkshopController::class, 'itemUpdate']);
-            // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [WorkshopMod\WorkshopModWorkshopController::class, 'userDelete']);
+            // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [WorkshopMod\WorkshopModWorkshopController::class, 'itemDelete']);
             $group->get('/screenshot/delete/{id:\d+}/{filename}/{token_name}/{token_value:.+}', [WorkshopMod\WorkshopModWorkshopController::class, 'deleteScreenshot']);
         });
 
