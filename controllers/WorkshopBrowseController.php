@@ -16,100 +16,169 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class WorkshopBrowseController {
 
-    private EntityManager $em;
-
-    public function __construct(EntityManager $em){
-        $this->em = $em;
-    }
-
-    private function getWorkshopOptions(): array
-    {
-        // TODO: improve the name of this function
-        return [
-            'types'  => WorkshopType::cases(),
-            'tags'   => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-            'builds' => $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
-        ];
-    }
-
-    private function getWorkshopItemsAndRating(
-        array $criteria,
-        ?array $orderBy = null,
-        ?int $limit = null,
-        ?int $offset = null
-    ):array {
-
-        // Get workshop items
-        $workshop_items = $this->em->getRepository(WorkshopItem::class)->findBy(
-            $criteria,
-            $orderBy,
-            $limit,
-            $offset
-        );
-
-        // Get workshop item ratings
-        $workshop_ratings = [];
-        if($workshop_items){
-            foreach($workshop_items as $item){
-                $workshop_ratings[$item->getId()] = null;
-                $ratings = $item->getRatings();
-                if($ratings && \count($ratings) > 0){
-                    $rating_scores = [];
-                    foreach($ratings as $rating){
-                        $rating_scores[] = $rating->getScore();
-                    }
-                    $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
-                    $workshop_ratings[$item->getId()] = $rating_average;
-                }
-            }
-        }
-
-        return [
-            'workshop_items'   => $workshop_items,
-            'workshop_ratings' => $workshop_ratings,
-        ];
-    }
-
     public function browseIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ){
-        $order_by = 'latest';
+        EntityManager $em,
 
-        // Render view
-        $response->getBody()->write(
-            $twig->render('workshop/browse.workshop.html.twig', [
-                    'order_by' => $order_by,
-                ] +
-                $this->getWorkshopItemsAndRating(
-                    ['is_accepted' => true],
-                    ['created_timestamp' => 'DESC']
-                ) +
-                $this->getWorkshopOptions()
-            )
+    ){
+        $q = $request->getQueryParams();
+
+        $url_params = [];
+
+        $criteria = ['is_accepted' => true];
+        $order_by = null;
+        $offset   = 0;
+        $limit    = 40;
+        $page     = (int)($q['page'] ?? 1);
+
+        // Decide 'ORDER BY'
+        switch(\strtolower((string)($q['order_by'] ?? ''))){
+            case 'name':
+                $order_by = ['name' => 'ASC'];
+                $url_params['order_by'] = 'name';
+                break;
+            case 'most-downloaded':
+                $order_by = ['download_count' => 'DESC'];
+                $url_params['order_by'] = 'most-downloaded';
+                break;
+            case 'highest-rated':
+                $order_by  = ['rating_score' => 'DESC'];
+                $url_params['order_by'] = 'highest-rated';
+                break;
+            default:
+            case 'latest':
+                $order_by = ['updated_timestamp' => 'DESC'];
+                $url_params['order_by'] = 'latest';
+                break;
+        }
+
+        // Get total workshop item count
+        $workshop_item_count = $em->getRepository(WorkshopItem::class)->createQueryBuilder('a')
+            ->where('a.is_accepted = 1')
+            ->select('count(a.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Get total pages
+        $total_pages = \intval(\ceil($workshop_item_count / $limit));
+
+        // Calculate offset
+        $offset = $limit * ($page - 1);
+
+        // Make sure offset (page) is valid
+        if($page <= 0 || $offset > $workshop_item_count){
+            $response = $response->withHeader('Location',
+                '/workshop/browse?' . \http_build_query($url_params + ['page' => 1]),
+            )->withStatus(302);
+            return $response;
+        }
+
+        // Create pagination
+        $pagination = [];
+        if($total_pages <= 5){
+            for($i = 1; $i <= $total_pages; $i++){
+                $pagination[] = [
+                    'label' => (string) $i,
+                    'active' => $page === $i,
+                    'disabled' => false,
+                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $i]),
+                ];
+            }
+        } else {
+
+            if($page >= 3){
+
+                $pagination[] = [
+                    'label' => '1',
+                    'active' => $page === 1,
+                    'disabled' => false,
+                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => 1]),
+                ];
+
+                if($page > 3){
+                    $pagination[] = [
+                        'label' => '...',
+                        'active' => false,
+                        'disabled' => true,
+                        'url'    => null,
+                    ];
+                }
+            }
+
+            if($page !== 1){
+                $pagination[] = [
+                    'label' => (string) ($page - 1),
+                    'active' => false,
+                    'disabled' => false,
+                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page - 1]),
+                ];
+            }
+
+            if($page !== $total_pages){
+                $pagination[] = [
+                    'label' => (string) $page,
+                    'active' => true,
+                    'disabled' => false,
+                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page]),
+                ];
+            }
+
+            if($page < $total_pages - 1){
+                $pagination[] = [
+                    'label' => (string) ($page + 1),
+                    'active' => false,
+                    'disabled' => false,
+                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page + 1]),
+                ];
+            }
+
+            if($page === 1){
+                $pagination[] = [
+                    'label' => (string) ($page + 2),
+                    'active' => false,
+                    'disabled' => false,
+                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page + 2]),
+                ];
+            }
+
+            if($page < $total_pages - 2)
+            {
+                $pagination[] = [
+                    'label' => '...',
+                    'active' => false,
+                    'disabled' => true,
+                    'url'    => null,
+                ];
+            }
+
+            $pagination[] = [
+                'label' => (string) $total_pages,
+                'active' => $page === $total_pages,
+                'disabled' => false,
+                'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $total_pages]),
+            ];
+
+        }
+
+        // Get workshop items
+        $workshop_items = $em->getRepository(WorkshopItem::class)->findBy(
+            $criteria,
+            $order_by,
+            $limit,
+            $offset
         );
 
-        return $response;
-    }
-
-    public function browseMostDownloadedIndex(
-        Request $request,
-        Response $response,
-        TwigEnvironment $twig,
-    ){
-
         // Render view
         $response->getBody()->write(
             $twig->render('workshop/browse.workshop.html.twig', [
-                    'browse_type' => 'latest',
-                ] +
-                $this->getWorkshopItemsAndRating(
-                    ['is_accepted' => true],
-                    ['created_timestamp' => 'DESC']
-                ) +
-                $this->getWorkshopOptions()
-            )
+                'workshop_items' => $workshop_items,
+                'types'          => WorkshopType::cases(),
+                'tags'           => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+                'builds'         => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
+                'pagination'     => $pagination,
+            ])
         );
 
         return $response;

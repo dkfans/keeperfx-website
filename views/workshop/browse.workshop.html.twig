@@ -8,19 +8,32 @@
         <div class="content-header">
             <h2>Workshop items</h2>
         </div>
-        {# <div class="content-header">
-            <div class="pull-right">
-                Order by:
-                <select class="form-control form-select" id="order-by" name="order_by" style="display: inline-block">
-                    <option value="date">Date</option>
-                    <option value="most-downloaded">Most Downloaded</option>
-                    <option value="highest-rated">Highest Rated</option>
-                    <option value="name">Name</option>
-                </select>
-            </div>
-        </div> #}
 
-        <div class="content-body">
+        <div class="content-menu d-flex justify-content-between">
+
+            <div class="">
+
+                {# Order by #}
+                <span>Order by:</span>
+                <select class="form-control form-select" id="order-by" name="order_by" style="width: inherit; display: inline-block;">
+                    <option value="latest" {% if get_query_param('order_by') == 'latest' %}selected=selected{% endif %}>Latest</option>
+                    <option value="most-downloaded" {% if get_query_param('order_by') == 'most-downloaded' %}selected=selected{% endif %}>Most Downloaded</option>
+                    <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
+                    <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
+                </select>
+
+            </div>
+
+            <div class="" style="margin-top: 4px;">
+
+                {# Pagination #}
+                {% include 'workshop/_workshop_browse_pagination.html.twig' %}
+
+            </div>
+
+        </div>
+
+        <div class="content-body" style="padding-top: 0px; padding-bottom: 0px;">
 
             <div class="workshop-grid">
 
@@ -64,7 +77,7 @@
 
 
                                     {# Rating #}
-                                    {{ workshop_rating(item.id, workshop_ratings[item.id]) }}
+                                    {{ workshop_rating(item.id, item.ratingScore) }}
 
                                     {# Downloads #}
                                     {# <span style="margin-top: 7px; display: inline-block;">
@@ -115,6 +128,30 @@
 
             </div>
         </div>
+
+
+
+        <div class="content-menu d-flex justify-content-end">
+
+            <div class="" style="margin-top: 4px;">
+
+                {# Pagination #}
+                {% include 'workshop/_workshop_browse_pagination.html.twig' %}
+
+            </div>
+
+        </div>
+
     </div>
+
+<script>
+    $(function(){
+
+        $('#order-by').on('change', function(e){
+            window.location.href = '/workshop/browse?order_by=' + $(this).val();
+        });
+
+    });
+</script>
 
 {% endblock %}
