@@ -85,16 +85,8 @@ class WorkshopController {
         $filesize = \filesize($filepath);
 
         // Get workshop item rating
-        $rating_score = null;
-        $ratings = $workshop_item->getRatings();
-        $rating_count = \count($ratings);
-        if($rating_count > 0){
-            $rating_scores = [];
-            foreach($ratings as $rating){
-                $rating_scores[] = $rating->getScore();
-            }
-            $rating_score = \array_sum($rating_scores) / \count($rating_scores);
-        }
+        $rating_score = $workshop_item->getRatingScore();
+        $rating_count = \count($workshop_item->getRatings());
 
         // Get screenshots
         $screenshots = [];
@@ -589,6 +581,24 @@ class WorkshopController {
         }
 
         // Save changes to DB
+        $em->flush();
+
+        // Get updated rating
+        $rating_score = null;
+        $ratings = $workshop_item->getRatings();
+        if($ratings && \count($ratings) > 0){
+            $rating_scores = [];
+            foreach($ratings as $rating){
+                $rating_scores[] = $rating->getScore();
+            }
+            $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
+            $rating_score  = \round($rating_average, 2);
+        }
+
+        // Set updated rating in item
+        // This way we don't always have to calculate the rating when doing stuff like
+        //   ordering workshop items by rating score
+        $workshop_item->setRatingScore($rating_score);
         $em->flush();
 
         // Return

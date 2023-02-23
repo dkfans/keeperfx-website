@@ -66,6 +66,9 @@ class WorkshopItem {
     #[ORM\Column(nullable: true)]
     private \DateTime|null $original_creation_date = null;
 
+    #[ORM\Column(type: "decimal", precision: 3, scale: 2)]
+    private float|null $rating_score = null;
+
     public function __construct() {
         $this->ratings = new ArrayCollection();
     }
@@ -365,6 +368,24 @@ class WorkshopItem {
     public function setOriginalCreationDate(?\DateTime $original_creation_date): self
     {
         $this->original_creation_date = $original_creation_date;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of rating_score
+     */
+    public function getRatingScore(): ?float
+    {
+        return $this->rating_score;
+    }
+
+    /**
+     * Set the value of rating_score
+     */
+    public function setRatingScore(?float $rating_score): self
+    {
+        $this->rating_score = $rating_score;
 
         return $this;
     }
