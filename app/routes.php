@@ -128,6 +128,9 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     // Browse items
     $group->get('/browse', [WorkshopBrowseController::class, 'browseIndex']);
 
+    // Random workshop item
+    $group->get('/random/{item_type}', [WorkshopRandomController::class, 'navRandomItem']);
+
     // Redirect '/workshop' to '/workshop/browse'
     $group->get('', function (Request $request, Response $response){
         return $response->withStatus(302)->withHeader('Location', '/workshop/browse');
