@@ -151,6 +151,9 @@ class WorkshopController {
         $original_author        = $post['original_author'] ?? null;
         $original_creation_date = $post['original_creation_date'] ?? null;
 
+        // Filter name (remove extra spaces)
+        $name = \preg_replace('/\s+/', ' ', \trim($name));
+
         // Check if name is valid
         if(!$name){
             $success = false;
