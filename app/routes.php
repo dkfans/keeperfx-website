@@ -82,6 +82,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminUsersController::class, 'userDelete']);
         });
 
+
+        $group->get('/server-info', [Admin\AdminServerInfoController::class, 'serverInfoIndex']);
+
     })->add(AuthAdminMiddleware::class);
 
     // AUTH: WORKSHOP MODERATOR

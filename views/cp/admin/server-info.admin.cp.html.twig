@@ -1,0 +1,74 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% block title %}Account Settings{% endblock %}
+
+{% block page %}
+
+{# Server Info #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Server Information</h2>
+    </div>
+    <div class="content-body">
+
+        {# Alpha build info #}
+        <table class="table">
+            <tr>
+                <td>
+                    Alpha Build count
+                </td>
+                <td class="text-info">
+                    {{ alpha_build_count }}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Alpha Build total storage size
+                </td>
+                <td class="text-info">
+                    {{ alpha_build_storage_size|format_bytes }}
+                </td>
+            </tr>
+        </table>
+
+        {# PHP info #}
+        <table class="table">
+            <tr>
+                <td>
+                    php.ini - <code>upload_max_filesize</code>
+                </td>
+                <td class="text-info">
+                    {{ php_max_upload|format_bytes }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    php.ini - <code>post_max_size</code>
+                </td>
+                <td class="text-info">
+                    {{ php_max_post|format_bytes }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    php.ini - <code>memory_limit</code>
+                </td>
+                <td class="text-info">
+                    {{ php_memory_limit|format_bytes }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Maximum upload size
+                </td>
+                <td class="text-info">
+                    {{ upload_calculated_minimum|format_bytes }}
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

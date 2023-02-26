@@ -38,6 +38,10 @@
                             <ion-icon name="people-outline"></ion-icon>
                             Manage Users
                         </a>
+                        <a class="nav-link {% if path_equals('/admin/server-info') %}active{% endif %}" href="/admin/server-info">
+                            <ion-icon name="server-outline"></ion-icon>
+                            Server Info
+                        </a>
                     {% endif %}
                     <a class="nav-link" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">
                         <ion-icon name="log-out-outline"></ion-icon>
