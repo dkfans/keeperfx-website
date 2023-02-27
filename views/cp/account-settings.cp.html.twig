@@ -24,7 +24,7 @@
                 {% if user.avatar %}
                     <img src="/avatar/{{ user.avatar }}" />
                     {% else %}
-                    <img src="/img/default-avatar.png" />
+                    <img src="{{ avatar(user.username, 'circle', 256) }}" />
                 {% endif %}
                 </div>
 

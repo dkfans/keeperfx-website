@@ -56,7 +56,7 @@
                             {% if account.avatar %}
                                 <img src="/avatar/{{ account.avatar }}" class="user-avatar" />
                             {% else %}
-                                <img src="/img/default-avatar.png" class="user-avatar" />
+                                <img src="{{ avatar(account.username, 'circle', 128) }}" class="user-avatar" />
                             {% endif %}
 
                             {{ account.username }}

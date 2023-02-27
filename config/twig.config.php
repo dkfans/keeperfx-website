@@ -48,7 +48,9 @@ return [
         \App\Twig\Extension\PathTwigExtension::class,
         \App\Twig\Extension\RequestVarTwigExtension::class,
 
-        \Twig\Extra\Markdown\MarkdownExtension::class
+        \Twig\Extra\Markdown\MarkdownExtension::class,
+
+        \olivers\Twig\Extension\AvatarExtension::class,
     ],
 
     /**

@@ -24,7 +24,7 @@
             {% if workshop_item.submitter.avatar %}
                 <img src="/avatar/{{ workshop_item.submitter.avatar }}" class="user-avatar" />
             {% else %}
-                <img src="/img/default-avatar.png" class="user-avatar" />
+                <img src="{{ avatar(workshop_item.submitter.username, 'circle', 128) }}" class="user-avatar" />
             {% endif %}
             <span class="user-username">{{ workshop_item.submitter.username }}</span>
         </a>
