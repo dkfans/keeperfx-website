@@ -66,7 +66,7 @@ class WorkshopItem {
     #[ORM\Column(nullable: true)]
     private \DateTime|null $original_creation_date = null;
 
-    #[ORM\Column(type: "decimal", precision: 3, scale: 2)]
+    #[ORM\Column(type: "decimal", precision: 3, scale: 2, nullable: true)]
     private float|null $rating_score = null;
 
     public function __construct() {
