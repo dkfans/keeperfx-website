@@ -32,7 +32,35 @@
             </tr>
         </table>
 
-        {# PHP info #}
+        {# Upload info #}
+        <table class="table">
+            <tr>
+                <td>
+                    Max Avatar upload filesize
+                </td>
+                <td class="text-info">
+                    {{ globals.avatar_max_upload_size|format_bytes }}
+                    {% if get_env('APP_AVATAR_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_AVATAR_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
+                        <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
+                        <span class="text-muted" style="margin-left: 10px; font-weight: 800;">(Original: {{ get_env('APP_AVATAR_MAX_UPLOAD_SIZE')|format_bytes }})</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Max Workshop upload filesize
+                </td>
+                <td class="text-info">
+                    {{ globals.workshop_max_upload_size|format_bytes }}
+                    {% if get_env('APP_WORKSHOP_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_WORKSHOP_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
+                        <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
+                        <span class="text-muted" style="margin-left: 10px; font-weight: 800;">(Original: {{ get_env('APP_WORKSHOP_MAX_UPLOAD_SIZE')|format_bytes }})</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        {# PHP upload info #}
         <table class="table">
             <tr>
                 <td>
@@ -60,7 +88,7 @@
             </tr>
             <tr>
                 <td>
-                    Maximum upload size
+                    Maximum PHP upload filesize
                 </td>
                 <td class="text-info">
                     {{ upload_calculated_minimum|format_bytes }}

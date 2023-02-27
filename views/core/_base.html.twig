@@ -39,7 +39,13 @@
         <script>
             const app_store = {
                 account: {{ account|json_encode()|raw }},
-                csrf: {{ csrf|json_encode()|raw }}
+                csrf: {{ csrf|json_encode()|raw }},
+                avatar: {
+                    max_upload_size: {{ globals.avatar_max_upload_size|json_encode()|raw }}
+                },
+                workshop: {
+                    max_upload_size: {{ globals.workshop_max_upload_size|json_encode()|raw }}
+                }
             };
         </script>
 

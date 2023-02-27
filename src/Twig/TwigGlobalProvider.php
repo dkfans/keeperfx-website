@@ -2,6 +2,8 @@
 
 namespace App\Twig;
 
+use App\UploadSizeHelper;
+
 use Psr\Container\ContainerInterface;
 
 class TwigGlobalProvider {
@@ -15,6 +17,11 @@ class TwigGlobalProvider {
 
     public function getGlobals()
     {
-        return [];
+        return [
+            'globals' => [
+                'avatar_max_upload_size'   => $this->container->get(UploadSizeHelper::class)->getFinalAvatarUploadSize(),
+                'workshop_max_upload_size' => $this->container->get(UploadSizeHelper::class)->getFinalWorkshopUploadSize(),
+            ]
+        ];
     }
 }
