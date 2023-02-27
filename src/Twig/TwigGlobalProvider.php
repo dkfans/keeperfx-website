@@ -13,7 +13,7 @@ class TwigGlobalProvider {
         $this->container = $container;
     }
 
-    public static function getGlobals()
+    public function getGlobals()
     {
         return [];
     }
