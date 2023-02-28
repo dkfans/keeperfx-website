@@ -552,20 +552,21 @@ class WorkshopController {
 
         // Check valid score
         if($score < 1 || $score > 5){
-            // TODO: json alert
             return $response;
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
         if(!$workshop_item){
-            // TODO: json alert
             return $response;
         }
 
         // Check if workshop item has been accepted
         if($workshop_item->getIsAccepted() !== true){
-            // TODO: json alert
+            return $response;
+        }
+
+        if($workshop_item->getSubmitter() === $account->getUser()){
             return $response;
         }
 
