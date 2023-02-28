@@ -455,10 +455,12 @@ footer {
 
 .btn-medieval,
 .form-group .btn-medieval {
+    border: 0 !important;
     border-radius: 0px;
     background-color: #1c1c1c;
     color: rgb(238, 231, 224);
-    box-shadow: inset 0 0 5px rgba(247, 219, 219, 0.5);
+    /* box-shadow: inset 0 0 5px rgba(247, 219, 219, 0.5); */
+    box-shadow: inset 0 0 3px rgba(247, 219, 219, 0.25);
     background: url(../img/bg-button-red.png) repeat;
     text-shadow: 2px 2px 4px black;
     font-family: 'Cinzel', serif;
@@ -474,7 +476,7 @@ footer {
 
 .btn-medieval-gray,
 .form-group .btn-medieval-gray {
-    box-shadow: inset 0 0 7px rgba(255, 241, 241, 0.25);
+    box-shadow: inset 0 0 5px rgba(255, 241, 241, 0.2);
     background: url(../img/bg-button.png) repeat;
 }
 
