@@ -11,6 +11,13 @@
 
         <div class="content-menu d-flex justify-content-between">
 
+            <div class="" style="margin-top: 4px;">
+
+                {# Pagination #}
+                {% include 'workshop/_workshop_browse_pagination.html.twig' %}
+
+            </div>
+
             <div class="">
 
                 {# Order by #}
@@ -21,13 +28,6 @@
                     <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
                     <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
                 </select>
-
-            </div>
-
-            <div class="" style="margin-top: 4px;">
-
-                {# Pagination #}
-                {% include 'workshop/_workshop_browse_pagination.html.twig' %}
 
             </div>
 
@@ -131,7 +131,7 @@
 
 
 
-        <div class="content-menu d-flex justify-content-end">
+        <div class="content-menu d-flex justify-content-start">
 
             <div class="" style="margin-top: 4px;">
 
