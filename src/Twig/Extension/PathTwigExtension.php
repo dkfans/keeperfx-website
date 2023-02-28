@@ -6,6 +6,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class PathTwigExtension extends \Twig\Extension\AbstractExtension
 {
+
+    /**
+     * The current uri
+     * @var string
+     */
+    private $current_uri = '/';
+
     /**
      * The current path
      * @var string
@@ -15,6 +22,7 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
     public function __construct()
     {
         if(!empty($_SERVER["REQUEST_URI"])){
+            $this->current_uri  = $_SERVER["REQUEST_URI"];
             $this->current_path = \parse_url($_SERVER["REQUEST_URI"])['path'];
         }
     }
@@ -40,20 +48,23 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
      */
     public function pathEquals(string ...$paths): bool
     {
-        foreach ($paths as $path) {
-            if (strpos($path, '+') !== false || strpos($path, '[') !== false) {
-                $regex_path = str_replace('/', '\\/', addslashes($path));
-                $regex_path = '~^' . $regex_path . '$~';
+        foreach([$this->current_uri, $this->current_path] as $current){
 
-                if (preg_match($regex_path, $this->current_path)) {
+            foreach ($paths as $path) {
+                if (strpos($path, '+') !== false || strpos($path, '[') !== false) {
+                    $regex_path = str_replace('/', '\\/', addslashes($path));
+                    $regex_path = '~^' . $regex_path . '$~';
+
+                    if (preg_match($regex_path, $current)) {
+                        return true;
+                    }
+                }
+                if (fnmatch($path, $current)) {
                     return true;
                 }
-            }
-            if (fnmatch($path, $this->current_path)) {
-                return true;
-            }
-            if ($path === $this->current_path) {
-                return true;
+                if ($path === $current) {
+                    return true;
+                }
             }
         }
 
