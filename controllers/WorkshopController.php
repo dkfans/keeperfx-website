@@ -2,19 +2,21 @@
 
 namespace App\Controller;
 
-use App\Account;
-use App\FlashMessage;
+
+use App\Enum\UserRole;
+use App\Enum\WorkshopType;
 
 use App\Entity\GithubRelease;
 use App\Entity\WorkshopItem;
 use App\Entity\WorkshopRating;
 use App\Entity\WorkshopTag;
 
-use App\Enum\UserRole;
-use App\Enum\WorkshopType;
-
 use URLify;
-use Slim\Csrf\Guard;
+use App\Account;
+use App\FlashMessage;
+use App\Twig\Extension\WorkshopRatingTwigExtension;
+
+use Slim\Csrf\Guard as CsrfGuard;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
@@ -26,7 +28,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
 use Slim\Exception\HttpNotFoundException;
-use Slim\Psr7\Factory\ResponseFactory;
 
 class WorkshopController {
 
@@ -541,6 +542,8 @@ class WorkshopController {
         Response $response,
         Account $account,
         EntityManager $em,
+        CsrfGuard $csrf_guard,
+        WorkshopRatingTwigExtension $workshop_rating_extension,
         $id
     )
     {
@@ -607,7 +610,18 @@ class WorkshopController {
         // Return
         $response->getBody()->write(
             \json_encode([
-                'success' => true
+                'success'      => true,
+                'rating_score' => $rating_score,
+                'rating_count' => \count($ratings),
+                'html'         => $workshop_rating_extension->renderWorkshopRating($id, $rating_score),
+                'csrf'         => [
+                    'keys' => [
+                        'name'  => $csrf_guard->getTokenNameKey(),
+                        'value' => $csrf_guard->getTokenValueKey(),
+                    ],
+                    'name'  => $csrf_guard->getTokenName(),
+                    'value' => $csrf_guard->getTokenValue()
+                ],
             ])
         );
 

@@ -108,9 +108,9 @@
                             <td>Rating</td>
                             <td class="text-stand-out" style="padding-left: 25px;">
                                 {% if rating.score is not null %}
-                                    {{ rating.score|round(2, 'floor') }} / 5
+                                    <span id="rating-score">{{ rating.score|round(2, 'floor') }}</span> / 5
 
-                                    <span class="text-muted" style="margin-left: 5px;">
+                                    <span class="text-muted" style="margin-left: 5px;" id="rating-count">
                                         {% if rating.amount == 1 %}
                                             (1 rating)
                                         {% else %}
@@ -225,7 +225,8 @@
 <script>
     const workshop_item = {
         id: {{ item.id }},
-        slug: '{{ item.name|slugify }}'
+        slug: '{{ item.name|slugify }}',
+        submitter_id: {{ item.submitter.id ?? 'null' }}
     }
 </script>
 <script type="module">
@@ -246,54 +247,96 @@
     lightbox.init();
 </script>
 <script>
+
+    function handleRatingHtml(el){
+
+        var $ratingBox     = $(el);
+        var workshopItemId = $ratingBox.attr('data-workshop-item-id');
+
+        $.each($(el).find('img'), function(index, element){
+
+            var ratingScore = parseInt($(element).attr('data-rating-score'));
+
+            $(element).css('cursor', 'pointer');
+
+            $(element).on('click', function(e){
+
+                // Hide open popover
+                $('.popover').hide();
+
+                // Make sure we are logged in
+                if(app_store.account === null){
+                    window.location = '/login'
+                        + '?redirect=/workshop/item/' + workshop_item.id + '/' + workshop_item.slug
+                        + '&msg=workshop-rate';
+                    return;
+                }
+
+                // Disable rating own account items
+                if(app_store.account.id === workshop_item.submitter_id){
+                    toastr.warning('You can not rate your own workshop items!');
+                    return;
+                }
+
+                // Rate the workshop item
+                $.ajax({
+                    type: 'POST',
+                    url: '/workshop/rate/' + workshopItemId,
+                    data: {
+                        score: ratingScore,
+                        [app_store.csrf.keys.name]: app_store.csrf.name,
+                        [app_store.csrf.keys.value]: app_store.csrf.value
+                    },
+                    dataType: 'json', // return type data,
+                    error: function(data){
+                        toastr.error('Something went wrong.');
+                    },
+                    success: function(data){
+
+                        // Make sure rating went successful
+                        if(typeof data.success === 'undefined' || data.success !== true){
+                            toastr.error('Something went wrong.');
+                            return;
+                        }
+
+                        // Update rating stars HTML
+                        $ratingBox.html(data.html);
+                        handleRatingHtml($ratingBox);
+
+                        // Update rating score in workshop item info
+                        $('#rating-score').text(data.rating_score);
+
+                        // Update rating count in workshop item info
+                        if(data.rating_count === 1){
+                            $('#rating-count').text('(1 rating)');
+                        } else {
+                            $('#rating-count').text('(' + data.rating_count + ' ratings)');
+                        }
+
+                        // Update CSRF tokens
+                        app_store.csrf.name = data.csrf.name;
+                        app_store.csrf.value = data.csrf.value;
+
+                        toastr.success('You have succesfuly rated this workshop item!');
+
+                    },
+                });
+            });
+
+            new bootstrap.Popover(element, {
+                'placement': 'top',
+                'trigger': 'hover',
+                'content': 'Rate this item ' + ratingScore + ' out of 5'
+            });
+        });
+    }
+
     $(function(e){
 
         $.each($('[data-workshop-item-id]'), function(i, el){
 
-            var workshopItemId = $(el).attr('data-workshop-item-id');
+            handleRatingHtml(el);
 
-            $.each($(el).find('img'), function(index, element){
-
-                var ratingScore = parseInt($(element).attr('data-rating-score'));
-
-                $(element).css('cursor', 'pointer');
-
-                $(element).on('click', function(e){
-
-                    if(app_store.account === null){
-                        window.location = '/login'
-                            + '?redirect=/workshop/item/' + workshop_item.id + '/' + workshop_item.slug
-                            + '&msg=workshop-rate';
-                        return;
-                    }
-
-                    $.ajax({
-                        type: 'POST',
-                        url: '/workshop/rate/' + workshopItemId,
-                        data: {
-                            score: ratingScore,
-                            [app_store.csrf.keys.name]: app_store.csrf.name,
-                            [app_store.csrf.keys.value]: app_store.csrf.value
-                        },
-                        /*data: JSON.stringify({
-                            score: ratingScore,
-                            [app_store.csrf.keys.name]: app_store.csrf.name,
-                            [app_store.csrf.keys.value]: app_store.csrf.value
-                        }),
-                        contentType: 'application/json; charset=utf-8',*/
-                        dataType: 'json', // return type data
-                        success: function(data){
-                            toastr.success('You have succesfuly rated this workshop item!');
-                        },
-                    });
-                });
-
-                new bootstrap.Popover(element, {
-                    'placement': 'top',
-                    'trigger': 'hover',
-                    'content': 'Rate this item ' + ratingScore + ' out of 5'
-                });
-            });
         });
     });
 </script>
