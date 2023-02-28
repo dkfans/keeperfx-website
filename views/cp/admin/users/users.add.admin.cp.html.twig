@@ -17,21 +17,31 @@
 
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username">
+                <input type="text" class="form-control" id="username" name="username"  value="{{ get_post_var('username') }}" required>
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="text" class="form-control" id="password" name="password">
+                <input type="text" class="form-control" id="password" name="password"  value="{{ get_post_var('password') }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    Email address
+                    <span class="text-muted">
+                        (Optional)
+                    </span>
+                </label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ get_post_var('email') }}" >
             </div>
 
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Role</label>
                 <select class="form-control form-select" id="role" name="role">
-                    <option value="{{ roles.user }}">User</option>
-                    <option value="{{ roles.workshop_moderator }}">Workshop Moderator</option>
-                    <option value="{{ roles.developer }}">Developer</option>
-                    <option value="{{ roles.admin }}">Admin</option>
+                    <option value="{{ roles.user }}" {% if get_post_var('role') == roles.user %}selected=selected{% endif %}>User</option>
+                    <option value="{{ roles.workshop_moderator }}" {% if get_post_var('role') == roles.workshop_moderator %}selected=selected{% endif %}>Workshop Moderator</option>
+                    <option value="{{ roles.developer }}" {% if get_post_var('role') == roles.developer %}selected=selected{% endif %}>Developer</option>
+                    <option value="{{ roles.admin }}" {% if get_post_var('role') == roles.admin %}selected=selected{% endif %}>Admin</option>
                 </select>
             </div>
 

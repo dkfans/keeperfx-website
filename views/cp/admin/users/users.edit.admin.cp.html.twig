@@ -26,6 +26,16 @@
             </div>
 
             <div class="form-group">
+                <label for="password">
+                    Email address
+                    <span class="text-muted">
+                        (Optional)
+                    </span>
+                </label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ user.email ?? '' }}" >
+            </div>
+
+            <div class="form-group">
                 <label for="exampleFormControlSelect1">Role</label>
                 <select class="form-control form-select" id="role" name="role">
                     <option value="{{ roles.user }}" {% if user.role.value == roles.user %}selected{% endif %}>User</option>
