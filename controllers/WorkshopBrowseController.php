@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\GithubRelease;
+use App\Entity\User;
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
 
 use App\Enum\WorkshopType;
-
+use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
@@ -21,17 +22,20 @@ class WorkshopBrowseController {
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
+        FlashMessage $flash
 
     ){
         $q = $request->getQueryParams();
 
         $url_params = [];
 
-        $criteria = ['is_accepted' => true];
-        $order_by = null;
-        $offset   = 0;
-        $limit    = 40;
-        $page     = (int)($q['page'] ?? 1);
+        $criteria  = ['is_accepted' => true];
+        $order_by  = null;
+        $offset    = 0;
+        $limit     = 40;
+        $submitter = null;
+
+        $page = (int)($q['page'] ?? 1);
 
         // Decide 'ORDER BY'
         switch(\strtolower((string)($q['order_by'] ?? ''))){
@@ -54,12 +58,45 @@ class WorkshopBrowseController {
                 break;
         }
 
+        // Create query for total workshop item count
+        $query = $em->getRepository(WorkshopItem::class)->createQueryBuilder('a')
+            ->where('a.is_accepted = 1');
+
+        // Add user criteria
+        if(isset($q['user']) && \is_string($q['user'])){
+            $username = $q['user'];
+
+            if($username === 'keeperfx-team'){
+
+                $criteria['submitter'] = null;
+                $query                 = $query->andWhere('a.submitter IS NULL');
+                $submitter             = 'KeeperFX Team';
+                $url_params['user']    = 'keeperfx-team';
+
+            } else {
+
+                $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
+                if(!$user){
+                    $flash->warning('User not found.');
+                    $response->getBody()->write(
+                        $twig->render('workshop/alert.workshop.html.twig', [
+                            'types'          => WorkshopType::cases(),
+                            'tags'           => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+                            'builds'         => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
+                        ])
+                    );
+                    return $response;
+                }
+
+                $criteria['submitter'] = $user;
+                $query                 = $query->andWhere('a.submitter = ' . $user->getId());
+                $submitter             = $user->getUsername();
+                $url_params['user']    = $user->getUsername();
+            }
+        }
+
         // Get total workshop item count
-        $workshop_item_count = $em->getRepository(WorkshopItem::class)->createQueryBuilder('a')
-            ->where('a.is_accepted = 1')
-            ->select('count(a.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
+        $workshop_item_count = $query->select('count(a.id)')->getQuery()->getSingleScalarResult();
 
         // Get total pages
         $total_pages = \intval(\ceil($workshop_item_count / $limit));
@@ -178,6 +215,7 @@ class WorkshopBrowseController {
                 'tags'           => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
                 'builds'         => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
                 'pagination'     => $pagination,
+                'submitter'      => $submitter,
             ])
         );
 

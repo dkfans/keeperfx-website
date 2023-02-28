@@ -6,7 +6,12 @@
 
     <div class="content-box bd-keeper bg-keeper">
         <div class="content-header">
-            <h2>Workshop items</h2>
+            <h2>
+                {% if submitter != null %}
+                    <span class="text-special">{{ submitter }}</span>'s
+                {% endif %}
+                Workshop items
+            </h2>
         </div>
 
         <div class="content-menu d-flex justify-content-between">
@@ -33,7 +38,7 @@
 
         </div>
 
-        <div class="content-body" style="padding-top: 0px; padding-bottom: 0px;">
+        <div class="content-body" style="padding-top: 0px;">
 
             <div class="workshop-grid">
 
@@ -74,7 +79,6 @@
                                 </div>
 
                                 <div class="col-6" style="text-align: right;">
-
 
                                     {# Rating #}
                                     {{ workshop_rating(item.id, item.ratingScore) }}
@@ -130,25 +134,26 @@
         </div>
 
 
-
-        <div class="content-menu d-flex justify-content-start">
-
-            <div class="" style="margin-top: 4px;">
-
-                {# Pagination #}
-                {% include 'workshop/_workshop_browse_pagination.html.twig' %}
-
+        {# Pagination (bottom) #}
+        {% if pagination|length > 1 %}
+            <div class="content-menu d-flex justify-content-start" style="padding-top: 0px;">
+                <div class="" style="margin-top: 4px;">
+                    {% include 'workshop/_workshop_browse_pagination.html.twig' %}
+                </div>
             </div>
-
-        </div>
+        {% endif %}
 
     </div>
 
 <script>
     $(function(){
 
+        var queryParams = new URLSearchParams(location.search);
+
         $('#order-by').on('change', function(e){
-            window.location.href = '/workshop/browse?order_by=' + $(this).val();
+            queryParams.set('order_by', $(this).val());
+            queryParams.delete('page');
+            window.location.href = '/workshop/browse?' + queryParams.toString();
         });
 
     });

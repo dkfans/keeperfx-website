@@ -14,7 +14,7 @@
             </div>
             <div class="content-body">
                 <nav class="nav flex-column">
-                    <a class="nav-link {% if path_equals('/workshop/browse*') %}active{% endif %}" href="/workshop/browse">
+                    <a class="nav-link {% if path_equals('/workshop/browse*') and (submitter is not defined or submitter != account.username) %}active{% endif %}" href="/workshop/browse">
                         <ion-icon name="list-outline"></ion-icon>
                         Browse
                     </a>
@@ -27,7 +27,7 @@
                         Random Campaign
                     </a>
                     {% if account != null %}
-                        <a class="nav-link {% if path_equals('/workshop/browse/user/' ~ account.id) %}active{% endif %}" href="/workshop/browse/user/{{ account.id }}">
+                        <a class="nav-link {% if path_equals('/workshop/browse?*user=' ~ account.username ~ '*') %}active{% endif %}" href="/workshop/browse?user={{ account.username }}">
                             <ion-icon name="person-outline"></ion-icon>
                             My workshop items
                         </a>

@@ -8,7 +8,7 @@
 
         {# KeeperFX Team #}
         <a
-        href="/workshop/browse/user/keeperfx-team"
+        href="/workshop/browse?user=keeperfx-team"
         title="Browse the KeeperFX Team Workshop Items"
         class="user-link d-inline-block">
             <span class="user-username">KeeperFX Team</span>
@@ -18,7 +18,7 @@
 
         {# Normal User #}
         <a
-        href="/workshop/browse/user/{{ workshop_item.submitter.username }}"
+        href="/workshop/browse?user={{ workshop_item.submitter.username }}"
         title="Browse {{ workshop_item.submitter.username }}'s Workshop Items"
         class="user-link d-inline-block">
             {% if workshop_item.submitter.avatar %}
