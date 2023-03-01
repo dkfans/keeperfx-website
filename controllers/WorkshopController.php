@@ -800,6 +800,62 @@ class WorkshopController {
         return $response;
     }
 
+    public function deleteThumbnail(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        Account $account,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        CsrfGuard $csrf_guard,
+        $id,
+        $token_name,
+        $token_value
+    ){
+        // Validate against CSRF
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            return $response;
+        }
+
+        // Get workshop item
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request, 'workshop item not found');
+        }
+
+        // Make sure current user owns this workshop item
+        if($account->getUser() !== $workshop_item->getSubmitter()){
+            return $response;
+        }
+
+        // Get thumbnail filename
+        $filename = $workshop_item->getThumbnail();
+        if(!$filename){
+            return $response;
+        }
+
+        // Get filepath
+        $filepath = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/' . $filename;
+        if(!\file_exists($filepath)){
+            return $response;
+        }
+
+        // Delete file
+        if(!@\unlink($filepath)){
+            throw new \Exception("failed to remove thumbnail: {$filepath}");
+        }
+
+        // Update workshop item
+        $workshop_item->setThumbnail(null);
+        $em->flush();
+
+        // Return view
+        $flash->success('Thumbnail successfully removed');
+        $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId())->withStatus(302);
+        return $response;
+    }
+
     // public function removeScreenshot(
     //     Request $request,
     //     Response $response,

@@ -123,7 +123,7 @@
                         </div>
                         {% if workshop_item.thumbnail is not null %}
                             <p style="margin-top: 15px;">
-                                <a href="#">Remove thumbnail (todo)</a>
+                                <a href="/workshop/edit/{{ workshop_item.id }}/thumbnail/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove thumbnail</a>
                             </p>
                         {% endif %}
                     </div>
