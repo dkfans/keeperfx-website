@@ -25,6 +25,8 @@
 
             <div class="">
 
+                <form method="GET">
+
                 {# Order by #}
                 <span>Order by:</span>
                 <select class="form-control form-select" id="order-by" name="order_by" style="width: inherit; display: inline-block;">
@@ -33,6 +35,12 @@
                     <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
                     <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
                 </select>
+
+                    <noscript>
+                        <input class="btn btn-primary" type="submit" value="Change" style="display: inline-block;" />
+                    </noscript>
+
+                </form>
 
             </div>
 
