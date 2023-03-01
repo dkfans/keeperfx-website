@@ -206,57 +206,6 @@ class WorkshopModWorkshopController {
         return $response;
     }
 
-    public function deleteScreenshot(
-        Request $request,
-        Response $response,
-        FlashMessage $flash,
-        Account $account,
-        TwigEnvironment $twig,
-        EntityManager $em,
-        Guard $csrf_guard,
-        $id,
-        $filename,
-        $token_name,
-        $token_value
-    ){
-        // Validate CSRF token
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            return $response;
-        }
-
-        // Get workshop item
-        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
-        if(!$workshop_item){
-            throw new HttpNotFoundException($request, 'workshop item not found');
-        }
-
-        // Get screenshots
-        $screenshot_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/screenshots';
-        if(\is_dir($screenshot_dir)){
-            foreach(\glob($screenshot_dir . '/*') as $screenshot_file){
-
-                // Check if filename matches
-                if(\basename($screenshot_file) === $filename){
-
-                    // Remove screenshot
-                    if(!\unlink($screenshot_file)){
-                        // TODO: notice on file delete error
-                    }
-
-                    $flash->success('Screenshot removed!');
-                    $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
-                    return $response;
-                }
-            }
-        }
-
-
-        $flash->warning('Failed to remove screenshot.');
-        $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
-        return $response;
-    }
-
     public function itemAddIndex(
         Request $request,
         Response $response,
@@ -566,6 +515,57 @@ class WorkshopModWorkshopController {
 
         // Return view
         $flash->success('Thumbnail successfully removed');
+        $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
+        return $response;
+    }
+
+    public function deleteScreenshot(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        Account $account,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        Guard $csrf_guard,
+        $id,
+        $filename,
+        $token_name,
+        $token_value
+    ){
+        // Validate CSRF token
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            return $response;
+        }
+
+        // Get workshop item
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request, 'workshop item not found');
+        }
+
+        // Get screenshots
+        $screenshot_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/screenshots';
+        if(\is_dir($screenshot_dir)){
+            foreach(\glob($screenshot_dir . '/*') as $screenshot_file){
+
+                // Check if filename matches
+                if(\basename($screenshot_file) === $filename){
+
+                    // Delete screenshot
+                    if(!@\unlink($screenshot_file)){
+                        throw new \Exception("failed to remove screenshot: {$screenshot_file}");
+                    }
+
+                    $flash->success('Screenshot removed!');
+                    $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
+                    return $response;
+                }
+            }
+        }
+
+
+        $flash->warning('Failed to remove screenshot.');
         $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
         return $response;
     }

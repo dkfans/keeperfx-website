@@ -856,33 +856,59 @@ class WorkshopController {
         return $response;
     }
 
-    // public function removeScreenshot(
-    //     Request $request,
-    //     Response $response,
-    //     FlashMessage $flash,
-    //     Account $account,
-    //     TwigEnvironment $twig,
-    //     EntityManager $em,
-    //     Guard $csrf_guard,
-    //     $id,
-    //     $filename,
-    //     $token_name,
-    //     $token_value
-    // ){
-    //     // Validate against CSRF
-    //     $valid = $csrf_guard->validateToken($token_name, $token_value);
-    //     if(!$valid){
-    //         return $response;
-    //     }
+    public function deleteScreenshot(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        Account $account,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        CsrfGuard $csrf_guard,
+        $id,
+        $filename,
+        $token_name,
+        $token_value
+    ){
+        // Validate CSRF token
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            return $response;
+        }
 
-    //     $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
-    //     if(!$workshop_item){
-    //         throw new HttpNotFoundException($request, 'workshop item not found');
-    //     }
+        // Get workshop item
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request, 'workshop item not found');
+        }
 
-    //     // TODO: implement this
+        // Make sure current user owns this workshop item
+        if($account->getUser() !== $workshop_item->getSubmitter()){
+            return $response;
+        }
 
-    //     return $response;
-    // }
+        // Get screenshots
+        $screenshot_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/screenshots';
+        if(\is_dir($screenshot_dir)){
+            foreach(\glob($screenshot_dir . '/*') as $screenshot_file){
+
+                // Check if filename matches
+                if(\basename($screenshot_file) === $filename){
+
+                    // Delete screenshot
+                    if(!@\unlink($screenshot_file)){
+                        throw new \Exception("failed to remove screenshot: {$screenshot_file}");
+                    }
+
+                    $flash->success('Screenshot removed!');
+                    $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId())->withStatus(302);
+                    return $response;
+                }
+            }
+        }
+
+        $flash->warning('Failed to remove screenshot.');
+        $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId())->withStatus(302);
+        return $response;
+    }
 
 }

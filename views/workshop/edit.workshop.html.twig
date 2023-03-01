@@ -150,15 +150,15 @@
                                                 target="_blank">
                                                     <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
                                             </a>
-                                            {# TODO: delete screenshot for user #}
-                                            {# <a
-                                                href="/workshop-mod/workshop/screenshot/delete/{{ workshop_item.id }}/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
+                                            {# Delete screenshot #}
+                                            <a
+                                                href="/workshop/edit/{{ workshop_item.id }}/screenshot/delete/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
                                                 onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
                                                 class="btn-medieval"
                                                 style="display: inline-block; position: relative; top: -98px; right: -78px;  width: 20px; height: 20px;"
-                                                alt="Remove" title="Remove">
+                                                alt="Remove screenshot" title="Remove screenshot">
                                                 <ion-icon name="close-outline" style="margin-left: 2px;" alt="Remove" title="Remove"></ion-icon>
-                                            </a> #}
+                                            </a>
                                         </div>
                                     {% endfor %}
                                 </div>
