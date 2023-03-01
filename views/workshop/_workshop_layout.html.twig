@@ -14,7 +14,12 @@
             </div>
             <div class="content-body">
                 <nav class="nav flex-column">
-                    <a class="nav-link {% if path_equals('/workshop/browse*') and (submitter is not defined or submitter != account.username) %}active{% endif %}" href="/workshop/browse">
+                    <a class="nav-link
+                            {# Do not make the browse menu item active if we are on 'My workshop items', which is also a '/browse' URL  #}
+                            {% if path_equals('/workshop/browse*') and (submitter is not defined or (account == null or submitter != account.username)) %}
+                                active
+                            {% endif %}
+                        " href="/workshop/browse">
                         <ion-icon name="list-outline"></ion-icon>
                         Browse
                     </a>
