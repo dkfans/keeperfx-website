@@ -744,7 +744,12 @@ class WorkshopController {
         \finfo_close($finfo);
 
         // Return screenshot
-        $response = $response->withHeader('Content-Type', $content_type);
+        $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
+        $response = $response
+            ->withHeader('Pragma', 'public')
+            ->withHeader('Cache-Control', 'max-age=' . $cache_time)
+            ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
+            ->withHeader('Content-Type', $content_type);
         $response->getBody()->write(
             \file_get_contents($screenshot_filepath)
         );
@@ -791,8 +796,13 @@ class WorkshopController {
         $content_type = \finfo_file($finfo, $thumbnail_filepath);
         \finfo_close($finfo);
 
-        // Return screenshot
-        $response = $response->withHeader('Content-Type', $content_type);
+        // Return thumbnail
+        $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
+        $response = $response
+            ->withHeader('Pragma', 'public')
+            ->withHeader('Cache-Control', 'max-age=' . $cache_time)
+            ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
+            ->withHeader('Content-Type', $content_type);
         $response->getBody()->write(
             \file_get_contents($thumbnail_filepath)
         );

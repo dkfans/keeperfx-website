@@ -13,7 +13,7 @@ class AvatarController {
         Response $response,
         $filename,
     ){
-        // Get thumbnail filepath
+        // Get avatar filepath
         $filepath = $_ENV['APP_AVATAR_STORAGE'] . '/' . $filename;
 
         // Check if file exists
@@ -26,8 +26,13 @@ class AvatarController {
         $content_type = \finfo_file($finfo, $filepath);
         \finfo_close($finfo);
 
-        // Return screenshot
-        $response = $response->withHeader('Content-Type', $content_type);
+        // Return avatar
+        $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
+        $response = $response
+            ->withHeader('Pragma', 'public')
+            ->withHeader('Cache-Control', 'max-age=' . $cache_time)
+            ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
+            ->withHeader('Content-Type', $content_type);
         $response->getBody()->write(
             \file_get_contents($filepath)
         );
