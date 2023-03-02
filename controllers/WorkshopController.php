@@ -254,6 +254,11 @@ class WorkshopController {
             }
         }
 
+        // Automatically accept item for accounts with a role higher than 'User'
+        if($account->getUser()->getRole()->value >= UserRole::WorkshopModerator->value){
+            $workshop_item->setIsAccepted(true);
+        }
+
         $em->persist($workshop_item);
         $em->flush(); // flush because we need ID for creating storage directory
 
@@ -324,6 +329,14 @@ class WorkshopController {
         // Flush again so filenames are added to DB entity
         $em->flush();
 
+        // Redirect accounts with a role higher than 'User' because their item is automatically accepted
+        if($account->getUser()->getRole()->value >= UserRole::WorkshopModerator->value){
+            $flash->success('Workshop item successfully created!');
+            $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
+            return $response;
+        }
+
+        // Show notice to normal user accounts
         $flash->success(
             'Your workshop item has been submitted and will be reviewed by the KeeperFX team. ' .
             'After it has been accepted it will be added to the workshop for others to download.'
@@ -429,7 +442,6 @@ class WorkshopController {
         $workshop_item->setName($name);
         $workshop_item->setDescription($description);
         $workshop_item->setInstallInstructions($install_instructions);
-        $workshop_item->setIsAccepted(isset($post['is_accepted']));
 
         // Set workshop item type
         $type = WorkshopType::tryFrom((int) ($post['type'] ?? null));
