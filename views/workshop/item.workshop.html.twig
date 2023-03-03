@@ -189,7 +189,7 @@
                     {% if item.description is not empty %}
                         <h5 style="margin-top: 50px;">Description</h5>
                         <div class="workshop-item-text-content" style="margin-top: 20px;">
-                            {{ item.description|escape|markdown_to_html }}
+                            {{ item.description|nl2br|markdown_to_html }}
                         </div>
                     {% endif %}
 
@@ -197,7 +197,7 @@
                     {% if item.installInstructions is not empty %}
                         <h5 style="margin-top: 50px;">Installation Intructions</h5>
                         <div class="workshop-item-text-content" style="margin-top: 20px;">
-                            {{ item.installInstructions|escape|markdown_to_html }}
+                            {{ item.installInstructions|nl2br|markdown_to_html }}
                         </div>
                     {% endif %}
 
