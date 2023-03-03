@@ -1,6 +1,6 @@
 {% extends "cp/_cp_layout.html.twig" %}
 
-{% block title %}{{ workshop_item.name }} - Admin{% endblock %}
+{% set page_title = workshop_item.name ~ ' - Admin' %}
 
 {% block body_javascript %}
     <script type="module">

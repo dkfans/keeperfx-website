@@ -5,14 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         {# Page title #}
-        <title>{% if block('full_title') is empty %}{% if block('title') is not empty %}{% block title %}{% endblock %} - {% endif %}KeeperFX{% else %}{% block full_title %}{% endblock %}{% endif %}</title>
+        <title>{% include 'core/_page_title.html.twig' %}</title>
 
-        {# SEO stuff #}
-        {% if block('meta_description') is not empty %}
-            <meta name="description" content="{% block meta_description %}{% endblock %}" />
-        {% endif %}
-        <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="keeperfx, dungeon keeper, opensource, open-source, remake, modern, windows, download" />
+        {# Meta Tags #}
+        {% include 'core/_meta_tags.html.twig' %}
 
         {# Favicon #}
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />

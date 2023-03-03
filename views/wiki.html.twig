@@ -1,27 +1,29 @@
 {% extends "core/_layout.html.twig" %}
 
+{% set page_title = wiki.page_title ~ ' - Wiki' %}
+
 {% block content %}
 
-<div class="row">
+    <div class="row">
 
-    {# Sidebar #}
-    <div class="col-3">
-        <div class="content-box bg-keeper bd-keeper">
-        <div class="content-body wiki-menu">
-            {{ sidebar_contents|markdown_to_html }}
-        </div>
-        </div>
-    </div>
-
-    {# Wiki Page content #}
-    <div class="col-9">
-        <div class="content-box bg-keeper bd-keeper">
-            <div class="content-body">
-                {{ page_contents|markdown_to_html }}
+        {# Sidebar #}
+        <div class="col-3">
+            <div class="content-box bg-keeper bd-keeper">
+                <div class="content-body wiki-menu">
+                    {{ wiki.sidebar_contents|markdown_to_html }}
+                </div>
             </div>
         </div>
-    </div>
 
-</div>
+        {# Wiki Page content #}
+        <div class="col-9">
+            <div class="content-box bg-keeper bd-keeper">
+                <div class="content-body">
+                    {{ wiki.page_contents|markdown_to_html }}
+                </div>
+            </div>
+        </div>
+
+    </div>
 
 {% endblock %}

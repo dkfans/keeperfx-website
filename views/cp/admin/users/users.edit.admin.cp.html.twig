@@ -1,6 +1,6 @@
 {% extends "cp/_cp_layout.html.twig" %}
 
-{% block title %}Edit user: {{ user.username }} - Admin{% endblock %}
+{% set page_title = 'Edit user: ' ~ user.username ~ ' - Admin' %}
 
 {% block page %}
 

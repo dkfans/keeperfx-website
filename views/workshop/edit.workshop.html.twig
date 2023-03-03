@@ -1,6 +1,6 @@
 {% extends "workshop/_workshop_layout.html.twig" %}
 
-{% block title %}Edit workshop item - {{ workshop_item.name }} -Workshop{% endblock %}
+{% set page_title = 'Edit workshop item - ' ~ workshop_item.name ~ ' - Workshop' %}
 
 {% block workshop_content %}
 

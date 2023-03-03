@@ -66,9 +66,11 @@ class WikiController {
         // Render
         $response->getBody()->write(
             $twig->render('wiki.html.twig', [
-                'page_title'       => $page_title,
-                'page_contents'    => $page_contents,
-                'sidebar_contents' => $sidebar_contents
+                'wiki' => [
+                    'page_title'       => $page_title,
+                    'page_contents'    => $page_contents,
+                    'sidebar_contents' => $sidebar_contents
+                ]
             ])
         );
         return $response;

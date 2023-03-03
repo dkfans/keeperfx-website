@@ -1,7 +1,10 @@
 {% extends "core/_layout.html.twig" %}
 
-{% block full_title %}KeeperFX - Dungeon Keeper Opensource Remake and Fan Expansion{% endblock %}
-{% block meta_description %}KeeperFX is an opensource remake of the game Dungeon Keeper. It also adds a ton of fan made content.{% endblock %}
+{% set full_page_title = 'KeeperFX - Dungeon Keeper Opensource Remake and Fan Expansion' %}
+
+{% set meta = {
+    description: 'KeeperFX is an opensource remake of the game Dungeon Keeper. It makes the game run on modern machines and adds a ton of fan made content.'
+} %}
 
 
 {% block content %}

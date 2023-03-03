@@ -1,6 +1,16 @@
 {% extends "workshop/_workshop_layout.html.twig" %}
 
-{% block title %}{{ item.name }} - Workshop{% endblock %}
+{% set page_title = item.name ~ ' - Workshop' %}
+
+{% set meta = {
+    title: item.title ?? '',
+    description: item.description ?? '',
+    og: {
+        image: item.thumbnail ?
+            '/workshop/thumbnail/' ~ item.id ~ '/' ~ item.thumbnail :
+            '/img/horny-face.png'
+    }
+} %}
 
 {% block workshop_content %}
 

@@ -1,6 +1,6 @@
 {% extends "cp/_cp_layout.html.twig" %}
 
-{% block title %}Edit news article: {{ article.title }} - Admin{% endblock %}
+{% set page_title = 'Edit news article: ' ~ article.title ~ ' - Admin' %}
 
 {% block page %}
 
