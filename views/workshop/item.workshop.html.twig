@@ -6,6 +6,7 @@
     title: item.title ?? '',
     description: item.description ?? '',
     og: {
+        url: '/workshop/item/' ~ item.id ~ '/' ~ item.name|slugify,
         image: item.thumbnail ?
             '/workshop/thumbnail/' ~ item.id ~ '/' ~ item.thumbnail :
             '/img/horny-face.png'
