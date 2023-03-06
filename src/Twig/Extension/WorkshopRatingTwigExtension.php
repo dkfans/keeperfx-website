@@ -27,32 +27,79 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
     {
         return [
             new \Twig\TwigFunction(
-                'workshop_rating',
-                [$this, 'renderWorkshopRating'],
+                'render_workshop_overall_rating',
+                [$this, 'renderWorkshopOverallRating'],
+                ['is_safe' => ['html']]
+            ),
+            new \Twig\TwigFunction(
+                'render_workshop_difficulty_rating',
+                [$this, 'renderWorkshopDifficultyRating'],
                 ['is_safe' => ['html']]
             ),
         ];
     }
 
+    /**
+     * Create an image element with the correct attributes.
+     *
+     * @param string $image_uri
+     * @return string
+     */
     private static function createImageElementString(string $image_uri): string
     {
         return '<img src="' . $image_uri . '" style="' . self::IMG_STYLE . '" data-rating-score="%s" />';
     }
 
     /**
-     * Retrieve workshop item rating 'stars'
+     * Retrieve a span with the overall rating for a workshop item.
      *
      * @param int $item_id
      * @param float|int|null $rating
      * @return string
      */
-    public function renderWorkshopRating(int $item_id, float|int|null $rating) : string
+    public function renderWorkshopOverallRating(int $item_id, float|int|null $rating) : string
     {
-        $output = '<span style="' . self::SPAN_STYLE . '" data-workshop-item-id="' . $item_id . '">%s</span>';
+        return self::createStarContainerSpan($item_id, $rating, $type = 'overall', [
+            'full'    => self::STAR_FULL,
+            'half'    => self::STAR_HALF,
+            'empty'   => self::STAR_EMPTY,
+            'unrated' => self::STAR_UNRATED
+        ]);
+    }
+
+    /**
+     * Retrieve a span with the difficulty rating for a workshop item.
+     *
+     * @param int $item_id
+     * @param float|int|null $rating
+     * @return string
+     */
+    public function renderWorkshopDifficultyRating(int $item_id, float|int|null $rating) : string
+    {
+        return self::createStarContainerSpan($item_id, $rating, $type = 'difficulty', [
+            'full'    => self::STAR_DIFFICULTY_FULL,
+            'half'    => self::STAR_DIFFICULTY_HALF,
+            'empty'   => self::STAR_DIFFICULTY_EMPTY,
+            'unrated' => self::STAR_DIFFICULTY_UNRATED
+        ]);
+    }
+
+    /**
+     * Render a workshop rating span.
+     *
+     * @param integer $item_id
+     * @param float|integer|null $rating
+     * @param array $stars
+     * @param string $type    Type
+     * @return string
+     */
+    private static function createStarContainerSpan(int $item_id, float|int|null $rating, string $type = 'overall', array $stars = [])
+    {
+        $output = '<span style="' . self::SPAN_STYLE . '" data-workshop-item-id="' . $item_id . '" data-workshop-rating-type=' . $type . '>%s</span>';
 
         if($rating === null){
             return \sprintf($output, \sprintf(
-                \str_repeat(self::createImageElementString(self::STAR_UNRATED), 5),
+                \str_repeat(self::createImageElementString($stars['unrated']), 5),
                 1, 2, 3, 4, 5
             ));
         }
@@ -65,17 +112,17 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
         $images_string = '';
 
         for($i = 0; $i < $full_stars; $i++){
-            $images_string .= \sprintf(self::createImageElementString(self::STAR_FULL), $r);
+            $images_string .= \sprintf(self::createImageElementString($stars['full']), $r);
             $r++;
         }
 
         for($i = 0; $i < $half_stars; $i++){
-            $images_string .= \sprintf(self::createImageElementString(self::STAR_HALF), $r);
+            $images_string .= \sprintf(self::createImageElementString($stars['half']), $r);
             $r++;
         }
 
         for($i = 0; $i < $empty_stars; $i++){
-            $images_string .= \sprintf(self::createImageElementString(self::STAR_EMPTY), $r);
+            $images_string .= \sprintf(self::createImageElementString($stars['empty']), $r);
             $r++;
         }
 

@@ -626,7 +626,7 @@ class WorkshopController {
                 'success'      => true,
                 'rating_score' => $rating_score,
                 'rating_count' => \count($ratings),
-                'html'         => $workshop_rating_extension->renderWorkshopRating($id, $rating_score),
+                'html'         => $workshop_rating_extension->renderWorkshopOverallRating($id, $rating_score),
                 'csrf'         => [
                     'keys' => [
                         'name'  => $csrf_guard->getTokenNameKey(),
