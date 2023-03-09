@@ -118,24 +118,62 @@
                         <tr>
                             <td>Rating</td>
                             <td class="text-stand-out" style="padding-left: 25px;">
+
+                                {{ render_workshop_overall_rating(item.id, rating.score) }}
+
+
                                 {% if rating.score is not null %}
                                     <span id="rating-score">{{ rating.score|round(2, 'floor') }}</span> / 5
 
                                     <span class="text-muted" style="margin-left: 5px;" id="rating-count">
+                                    {% if rating.amount == 1 %}
+                                        (1 rating, yours: 5)
+                                    {% else %}
+                                        ({{ rating.amount }} ratings)
+                                    {% endif %}
+                                </span>
+
+                                    {# <span class="text-muted" style="margin-left: 5px;" id="rating-count">
                                         {% if rating.amount == 1 %}
                                             (1 rating)
                                         {% else %}
                                             ({{ rating.amount }} ratings)
                                         {% endif %}
-                                    </span>
+                                    </span> #}
                                 {% else %}
                                     Not rated yet
                                 {% endif %}
                             </td>
                         </tr>
                         <tr>
-                            <td>Downloads</td>
-                            <td class="text-stand-out" style="padding-left: 25px;">{{ item.downloadCount }}</td>
+                            <td>Difficulty</td>
+                            <td class="text-stand-out" style="padding-left: 25px;">
+
+                                {{ render_workshop_difficulty_rating(item.id, rating.score) }}
+
+
+                                {% if rating.score is not null %}
+                                    <span id="rating-score">{{ rating.score|round(2, 'floor') }}</span> / 5
+
+                                    <span class="text-muted" style="margin-left: 5px;" id="rating-count">
+                                    {% if rating.amount == 1 %}
+                                        (1 rating, yours: 5)
+                                    {% else %}
+                                        ({{ rating.amount }} ratings)
+                                    {% endif %}
+                                </span>
+
+                                    {# <span class="text-muted" style="margin-left: 5px;" id="rating-count">
+                                        {% if rating.amount == 1 %}
+                                            (1 rating)
+                                        {% else %}
+                                            ({{ rating.amount }} ratings)
+                                        {% endif %}
+                                    </span> #}
+                                {% else %}
+                                    Not rated yet
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr style="height: 15px;"><!-- Spacer row --></tr>
                         {% if item.minGameBuild is not null %}
