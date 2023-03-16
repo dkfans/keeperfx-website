@@ -5,18 +5,18 @@ namespace App\Twig\Extension;
 class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
 {
 
-    protected const STAR_FULL               = '/img/rating/star-full.png';
-    protected const STAR_HALF               = '/img/rating/star-half.png';
-    protected const STAR_EMPTY              = '/img/rating/star-empty.png';
-    protected const STAR_UNRATED            = '/img/rating/star-unrated.png';
+    protected const STAR_FULL               = '/img/rating/star2-full.png';
+    protected const STAR_HALF               = '/img/rating/star2-half.png';
+    protected const STAR_EMPTY              = '/img/rating/star2-empty.png';
+    protected const STAR_UNRATED            = '/img/rating/star2-unrated.png';
 
     protected const STAR_DIFFICULTY_FULL    = '/img/rating/star-difficulty-full.png';
     protected const STAR_DIFFICULTY_HALF    = '/img/rating/star-difficulty-half.png';
     protected const STAR_DIFFICULTY_EMPTY   = '/img/rating/star-difficulty-empty.png';
     protected const STAR_DIFFICULTY_UNRATED = '/img/rating/star-difficulty-unrated.png';
 
-    protected const IMG_STYLE  = 'width: 20px; height: 20px';
-    protected const SPAN_STYLE = 'width: 100px; height: 20px; display: inline-block';
+    protected const IMG_STYLE  = 'width: 18px; height: 18px';
+    protected const SPAN_STYLE = 'width: 90px; height: 18px; display: inline-block';
 
     public function getName(): string
     {

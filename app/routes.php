@@ -129,7 +129,8 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     $group->get('/edit/{id:\d+}/screenshot/delete/{filename}/{token_name}/{token_value:.+}', [WorkshopController::class, 'deleteScreenshot']);
 
     // Workshop item rate
-    $group->post('/rate/{id:\d+}', [WorkshopController::class, 'rate'])->add(LoggedInMiddleware::class);
+    $group->post('/rate/{id:\d+}/overall', [WorkshopItemRateController::class, 'rateOverall'])->add(LoggedInMiddleware::class);
+    $group->post('/rate/{id:\d+}/difficulty', [WorkshopItemRateController::class, 'rateDifficulty'])->add(LoggedInMiddleware::class);
 
     // Browse items
     $group->get('/browse', [WorkshopBrowseController::class, 'browseIndex']);

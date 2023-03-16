@@ -8,7 +8,9 @@ use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
 
 use App\Enum\WorkshopType;
+
 use App\FlashMessage;
+use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
@@ -210,12 +212,13 @@ class WorkshopBrowseController {
         // Render view
         $response->getBody()->write(
             $twig->render('workshop/browse.workshop.html.twig', [
-                'workshop_items' => $workshop_items,
-                'types'          => WorkshopType::cases(),
-                'tags'           => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-                'builds'         => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
-                'pagination'     => $pagination,
-                'submitter'      => $submitter,
+                'workshop_items'           => $workshop_items,
+                'types'                    => WorkshopType::cases(),
+                'types_without_difficulty' => Config::get('app.workshop.item_types_without_difficulty'),
+                'tags'                     => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+                'builds'                   => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
+                'pagination'               => $pagination,
+                'submitter'                => $submitter,
             ])
         );
 

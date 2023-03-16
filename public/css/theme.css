@@ -550,6 +550,12 @@ footer {
     border-bottom: 0 !important;
 }
 
+.workshop-info-box {
+    margin-top: 15px;
+    background-color: rgba(6, 6, 6, 0.666);
+    border: 2px solid #333;
+}
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -576,8 +582,8 @@ footer {
 }
 
 .workshop-grid-item-image-container {
-    width: 120px;
-    height: 120px;
+    width: 110px;
+    height: 110px;
     flex-grow: 0;
     flex-shrink: 0;
     background-image: url(/img/bg-black.png);
@@ -604,6 +610,8 @@ footer {
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 6px;
+
+    font-weight: bold;
 }
 
 .workshop-grid-item-title a {

@@ -25,21 +25,18 @@
 
             <div class="">
 
-                <form method="GET">
-
                 {# Order by #}
-                <span>Order by:</span>
-                <select class="form-control form-select" id="order-by" name="order_by" style="width: inherit; display: inline-block;">
-                    <option value="latest" {% if get_query_param('order_by') == 'latest' %}selected=selected{% endif %}>Latest</option>
-                    <option value="most-downloaded" {% if get_query_param('order_by') == 'most-downloaded' %}selected=selected{% endif %}>Most Downloaded</option>
-                    <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
-                    <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
-                </select>
-
+                <form method="GET">
+                    <span>Order by:</span>
+                    <select class="form-control form-select" id="order-by" name="order_by" style="width: inherit; display: inline-block;">
+                        <option value="latest" {% if get_query_param('order_by') == 'latest' %}selected=selected{% endif %}>Latest</option>
+                        <option value="most-downloaded" {% if get_query_param('order_by') == 'most-downloaded' %}selected=selected{% endif %}>Most Downloaded</option>
+                        <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
+                        <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
+                    </select>
                     <noscript>
                         <input class="btn btn-primary" type="submit" value="Change" style="display: inline-block;" />
                     </noscript>
-
                 </form>
 
             </div>
@@ -80,16 +77,33 @@
 
                                     {# Type #}
                                     {# <span class="text-warning"> #}
-                                    <span style="margin-top: 2px; display: block;">
+                                    <span style="margin-top: 2px; display: block; margin-bottom: 5px">
                                         {{ item.type.name|enum_beautify }}
                                     </span>
+
+                                    {# User or Original Author #}
+                                    {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, preferOriginalAuthor: true} %}
 
                                 </div>
 
                                 <div class="col-6" style="text-align: right;">
 
-                                    {# Rating #}
-                                    {{ render_workshop_overall_rating(item.id, item.ratingScore) }}
+                                    {# Overall Rating #}
+                                    {% if item.ratingScore is not null %}
+                                        {{ render_workshop_overall_rating(item.id, item.ratingScore) }}
+                                    {% endif %}
+
+                                    {# Difficulty Rating #}
+                                    {% if item.difficultyRatingScore is not null and item.type not in types_without_difficulty %}
+                                        {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
+                                    {% endif %}
+
+                                    {# Date #}
+                                    {# {% if item.originalCreationDate is not null %}
+                                        {{ item.originalCreationDate|date('Y-m-d') }}
+                                    {% else %}
+                                        {{ item.updatedTimestamp|date('Y-m-d') }}
+                                    {% endif %} #}
 
                                     {# Downloads #}
                                     {# <span style="margin-top: 7px; display: inline-block;">
@@ -103,30 +117,6 @@
                                 </div>
 
                             </div>
-
-
-
-                            <div class="row" style="margin-top: 4px;">
-                                <div class="col-6">
-
-                                    {# User or Original Author #}
-                                    {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, preferOriginalAuthor: true} %}
-                                </div>
-
-                                <div class="col-6" style="text-align: right;">
-
-                                    {# Date #}
-                                    {% if item.originalCreationDate is not null %}
-                                        {{ item.originalCreationDate|date('Y-m-d') }}
-                                    {% else %}
-                                        {{ item.updatedTimestamp|date('Y-m-d') }}
-                                    {% endif %}
-
-                                </div>
-                            </div>
-
-
-
 
                         </div>
 

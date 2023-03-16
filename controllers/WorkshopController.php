@@ -14,6 +14,7 @@ use App\Entity\WorkshopTag;
 use URLify;
 use App\Account;
 use App\FlashMessage;
+use App\Config\Config;
 use App\Twig\Extension\WorkshopRatingTwigExtension;
 
 use Slim\Csrf\Guard as CsrfGuard;
@@ -41,9 +42,10 @@ class WorkshopController {
     {
         // TODO: improve the name of this function
         return [
-            'types'  => WorkshopType::cases(),
-            'tags'   => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-            'builds' => $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
+            'types'                    => WorkshopType::cases(),
+            'types_without_difficulty' => Config::get('app.workshop.item_types_without_difficulty'),
+            'tags'                     => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+            'builds'                   => $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
         ];
     }
 
@@ -85,9 +87,10 @@ class WorkshopController {
         }
         $filesize = \filesize($filepath);
 
-        // Get workshop item rating
-        $rating_score = $workshop_item->getRatingScore();
-        $rating_count = \count($workshop_item->getRatings());
+        // Get workshop item ratings
+        $rating_score            = $workshop_item->getRatingScore();
+        $rating_count            = \count($workshop_item->getRatings());
+        $difficulty_rating_count = \count($workshop_item->getDifficultyRatings());
 
         // Get screenshots
         $screenshots = [];
@@ -106,13 +109,11 @@ class WorkshopController {
         // Render view
         $response->getBody()->write(
             $twig->render('workshop/item.workshop.html.twig', $this->getWorkshopOptions() + [
-                'item'        => $workshop_item,
-                'screenshots' => $screenshots,
-                'rating' => [
-                    'score'  => $rating_score,
-                    'amount' => $rating_count,
-                ],
-                'filesize' => $filesize,
+                'item'                     => $workshop_item,
+                'screenshots'              => $screenshots,
+                'rating_amount'            => $rating_count,
+                'difficulty_rating_amount' => $difficulty_rating_count,
+                'filesize'                 => $filesize,
             ])
         );
 
@@ -544,98 +545,6 @@ class WorkshopController {
 
         $response->getBody()->write(
             $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
-        );
-
-        return $response;
-    }
-
-    public function rate(
-        Request $request,
-        Response $response,
-        Account $account,
-        EntityManager $em,
-        CsrfGuard $csrf_guard,
-        WorkshopRatingTwigExtension $workshop_rating_extension,
-        $id
-    )
-    {
-        $post = $request->getParsedBody();
-        $score = (int) ($post['score'] ?? 0);
-
-        // Check valid score
-        if($score < 1 || $score > 5){
-            return $response;
-        }
-
-        // Check if workshop item exists
-        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
-        if(!$workshop_item){
-            return $response;
-        }
-
-        // Check if workshop item has been accepted
-        if($workshop_item->getIsAccepted() !== true){
-            return $response;
-        }
-
-        if($workshop_item->getSubmitter() === $account->getUser()){
-            return $response;
-        }
-
-        // Get possible already existing rating
-        $rating = $em->getRepository(WorkshopRating::class)->findOneBy([
-            'item' => $workshop_item,
-            'user' => $account->getUser()
-        ]);
-
-        // Set rating or create a new one
-        if($rating !== null){
-            $rating->setScore($score);
-        } else {
-            $rating = new WorkshopRating();
-            $rating->setItem($workshop_item);
-            $rating->setUser($account->getUser());
-            $rating->setScore($score);
-            $em->persist($rating);
-        }
-
-        // Save changes to DB
-        $em->flush();
-
-        // Get updated rating
-        $rating_score = null;
-        $ratings = $workshop_item->getRatings();
-        if($ratings && \count($ratings) > 0){
-            $rating_scores = [];
-            foreach($ratings as $rating){
-                $rating_scores[] = $rating->getScore();
-            }
-            $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
-            $rating_score  = \round($rating_average, 2);
-        }
-
-        // Set updated rating in item
-        // This way we don't always have to calculate the rating when doing stuff like
-        //   ordering workshop items by rating score
-        $workshop_item->setRatingScore($rating_score);
-        $em->flush();
-
-        // Return
-        $response->getBody()->write(
-            \json_encode([
-                'success'      => true,
-                'rating_score' => $rating_score,
-                'rating_count' => \count($ratings),
-                'html'         => $workshop_rating_extension->renderWorkshopOverallRating($id, $rating_score),
-                'csrf'         => [
-                    'keys' => [
-                        'name'  => $csrf_guard->getTokenNameKey(),
-                        'value' => $csrf_guard->getTokenValueKey(),
-                    ],
-                    'name'  => $csrf_guard->getTokenName(),
-                    'value' => $csrf_guard->getTokenValue()
-                ],
-            ])
         );
 
         return $response;

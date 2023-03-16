@@ -57,20 +57,27 @@ class WorkshopItem {
     #[ORM\Column(type: 'integer')]
     private int $download_count = 0;
 
-    #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'item')]
-    private Collection $ratings;
-
     #[ORM\Column(nullable: true)]
     private string|null $original_author = null;
 
     #[ORM\Column(nullable: true)]
     private \DateTime|null $original_creation_date = null;
 
+    #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'item')]
+    private Collection $ratings;
+
     #[ORM\Column(type: "decimal", precision: 3, scale: 2, nullable: true)]
     private float|null $rating_score = null;
 
+    #[ORM\OneToMany(targetEntity: WorkshopDifficultyRating::class, mappedBy: 'item')]
+    private Collection $difficulty_ratings;
+
+    #[ORM\Column(type: "decimal", precision: 3, scale: 2, nullable: true)]
+    private float|null $difficulty_rating_score = null;
+
     public function __construct() {
-        $this->ratings = new ArrayCollection();
+        $this->ratings            = new ArrayCollection();
+        $this->difficulty_ratings = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -80,9 +87,10 @@ class WorkshopItem {
         $this->updated_timestamp = new \DateTime("now");
     }
 
-    #[ORM\PreUpdate]
-    public function onPreUpdate()
+    private function updateLastUpdatedTimestamp()
     {
+        // Even though using `PreUpdate` would be nice, some columns should not update the last-updated timestamp.
+        // For example, download counts and the calculated ratings are stored in this Entity for better performance.
         $this->updated_timestamp = new \DateTime("now");
     }
 
@@ -108,6 +116,7 @@ class WorkshopItem {
     public function setName(string $name): self
     {
         $this->name = $name;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -180,6 +189,7 @@ class WorkshopItem {
     public function setType(WorkshopType $type): self
     {
         $this->type = $type;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -198,6 +208,7 @@ class WorkshopItem {
     public function setMapNumber(?int $map_number): self
     {
         $this->map_number = $map_number;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -216,6 +227,7 @@ class WorkshopItem {
     public function setMinGameBuild(GithubRelease|null $min_game_build): self
     {
         $this->min_game_build = $min_game_build;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -234,6 +246,7 @@ class WorkshopItem {
     public function setInstallInstructions(string $install_instructions): self
     {
         $this->install_instructions = $install_instructions;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -252,6 +265,7 @@ class WorkshopItem {
     public function setDescription(string $description): self
     {
         $this->description = $description;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -270,6 +284,7 @@ class WorkshopItem {
     public function setFilename(string $filename): self
     {
         $this->filename = $filename;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -288,6 +303,7 @@ class WorkshopItem {
     public function setSubmitter(User|null $submitter): self
     {
         $this->submitter = $submitter;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -324,6 +340,7 @@ class WorkshopItem {
     public function setThumbnail(?string $thumbnail): self
     {
         $this->thumbnail = $thumbnail;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -350,6 +367,7 @@ class WorkshopItem {
     public function setOriginalAuthor(?string $original_author): self
     {
         $this->original_author = $original_author;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -368,6 +386,7 @@ class WorkshopItem {
     public function setOriginalCreationDate(?\DateTime $original_creation_date): self
     {
         $this->original_creation_date = $original_creation_date;
+        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -388,5 +407,31 @@ class WorkshopItem {
         $this->rating_score = $rating_score;
 
         return $this;
+    }
+
+    /**
+     * Get the value of difficulty_rating_score
+     */
+    public function getDifficultyRatingScore(): ?float
+    {
+        return $this->difficulty_rating_score;
+    }
+
+    /**
+     * Set the value of difficulty_rating_score
+     */
+    public function setDifficultyRatingScore(?float $difficulty_rating_score): self
+    {
+        $this->difficulty_rating_score = $difficulty_rating_score;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of difficulty_ratings
+     */
+    public function getDifficultyRatings(): Collection
+    {
+        return $this->difficulty_ratings;
     }
 }
