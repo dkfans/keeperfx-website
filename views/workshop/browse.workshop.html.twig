@@ -14,36 +14,41 @@
             </h2>
         </div>
 
-        <div class="content-menu d-flex justify-content-between">
 
-            <div class="" style="margin-top: 4px;">
+        {% if workshop_items|length != 0 %}
+            <div class="content-menu d-flex justify-content-between">
 
-                {# Pagination #}
-                {% include 'workshop/_workshop_browse_pagination.html.twig' %}
+                <div class="" style="margin-top: 4px;">
+                    {# Pagination #}
+                    {% include 'workshop/_workshop_browse_pagination.html.twig' %}
+                </div>
+
+                <div class="">
+                    {# Order by #}
+                    <form method="GET">
+                        <span>Order by:</span>
+                        <select class="form-control form-select" id="order-by" name="order_by" style="width: inherit; display: inline-block;">
+                            <option value="latest" {% if get_query_param('order_by') == 'latest' %}selected=selected{% endif %}>Latest</option>
+                            <option value="most-downloaded" {% if get_query_param('order_by') == 'most-downloaded' %}selected=selected{% endif %}>Most Downloaded</option>
+                            <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
+                            <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
+                        </select>
+                        <noscript>
+                            <input class="btn btn-primary" type="submit" value="Change" style="display: inline-block;" />
+                        </noscript>
+                    </form>
+
+                </div>
 
             </div>
-
-            <div class="">
-
-                {# Order by #}
-                <form method="GET">
-                    <span>Order by:</span>
-                    <select class="form-control form-select" id="order-by" name="order_by" style="width: inherit; display: inline-block;">
-                        <option value="latest" {% if get_query_param('order_by') == 'latest' %}selected=selected{% endif %}>Latest</option>
-                        <option value="most-downloaded" {% if get_query_param('order_by') == 'most-downloaded' %}selected=selected{% endif %}>Most Downloaded</option>
-                        <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
-                        <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
-                    </select>
-                    <noscript>
-                        <input class="btn btn-primary" type="submit" value="Change" style="display: inline-block;" />
-                    </noscript>
-                </form>
-
-            </div>
-
-        </div>
+        {% endif %}
 
         <div class="content-body" style="padding-top: 0px;">
+
+            {# Show notice when no items #}
+            {% if workshop_items|length == 0 %}
+                <p style="margin: 15px 0 0 0;">No workshop items found</p>
+            {% endif %}
 
             <div class="workshop-grid">
 
