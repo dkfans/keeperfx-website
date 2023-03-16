@@ -16,6 +16,43 @@
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-body">
 
+            {# Title #}
+            <h2 class="workshop-item-title">{{ item.name }}</h2>
+
+            {# Submitted by & Rating #}
+            <div class="d-flex justify-content-between" style="margin-top: 10px;  margin-bottom: 15px; padding: 0 5px;">
+
+                {# Submitted by #}
+                <div class="">
+                    <span style="margin-right: 3px;">
+                        Submitted by
+                    </span>
+
+                    {# User #}
+                    {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, preferOriginalAuthor: false} %}
+                </div>
+
+                {# Rating #}
+                {# <div class="">
+                    {{ render_workshop_overall_rating(item.id, rating.score) }}
+                </div> #}
+
+                {# Edit #}
+                <div class="">
+                {% if account != null %}
+                    {% if account.role >= roles.admin %}
+                        <a href="/workshop-mod/workshop/{{ item.id }}">Edit as workshop moderator</a>
+                    {% endif %}
+                    {% if item.submitter != null and item.submitter.id == account.id and account.role >= roles.admin %}
+                        <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                    {% endif %}
+                    {% if item.submitter != null and item.submitter.id == account.id %}
+                        <a href="/workshop/edit/{{ item.id }}">Edit your workshop item</a>
+                    {% endif %}
+                {% endif %}
+                </div>
+            </div>
+
             <div class="row">
 
                 <div class="col-md-5">
@@ -50,28 +87,6 @@
                 </div>
 
                 <div class="col-md-7">
-
-                    {# Title #}
-                    <h2 class="workshop-item-title">{{ item.name }}</h2>
-
-                    {# Submitted by & Rating #}
-                    <div class="d-flex justify-content-between" style="margin-top: 10px;">
-
-                        {# Submitted by #}
-                        <div class="">
-                            <span style="margin-right: 3px;">
-                                Submitted by
-                            </span>
-
-                            {# User #}
-                            {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, preferOriginalAuthor: false} %}
-                        </div>
-
-                        {# Rating #}
-                        {# <div class="">
-                            {{ render_workshop_overall_rating(item.id, rating.score) }}
-                        </div> #}
-                    </div>
 
                     {# Information #}
                     <div class="workshop-info-box">
@@ -160,12 +175,14 @@
                                     {{ item.createdTimestamp|date('Y-m-d') }}
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Last updated</td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
-                                        {{ item.updatedTimestamp|date('Y-m-d') }}
-                                </td>
-                            </tr>
+                            {% if item.updatedTimestamp != item.createdTimestamp %}
+                                <tr>
+                                    <td>Last updated</td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                            {{ item.updatedTimestamp|date('Y-m-d') }}
+                                    </td>
+                                </tr>
+                            {% endif %}
                             <tr style="height: 15px;"><!-- Spacer row --></tr>
                             <tr>
                                 <td>Filesize</td>
@@ -187,10 +204,8 @@
                             {% endif %}
                         </table>
 
-                        {# Download & Edit buttons #}
+                        {# Download button #}
                         <div class="text-center" style="margin-bottom: 20px; width: 100%;">
-
-                            {# Download button #}
                             <a
                                 href="/workshop/download/{{ item.id }}/{{ item.filename|url_encode }}"
                                 class="btn btn-lg btn-medieval"
@@ -198,26 +213,6 @@
                                 download>
                                     Download
                             </a>
-
-                            {# Edit buttons #}
-                            {% if account != null %}
-                                {% if item.submitter != null and item.submitter.id == account.id %}
-                                    <a
-                                        href="/workshop/edit/{{ item.id }}"
-                                        class="btn btn-medieval btn-medieval-gray"
-                                        style="margin-top: 15px; width: 100%; max-width: 300px;">
-                                            Edit this workshop item
-                                    </a>
-                                {% endif %}
-                                {% if account.role >= roles.admin %}
-                                    <a
-                                        href="/workshop-mod/workshop/{{ item.id }}"
-                                        class="btn btn-medieval btn-medieval-gray"
-                                        style="margin-top: 15px; width: 100%; max-width: 300px;">
-                                            Edit item as workshop moderator
-                                    </a>
-                                {% endif %}
-                            {% endif %}
                         </div>
 
                     </div>
@@ -232,21 +227,17 @@
 
                     {# Description #}
                     {% if item.description is not empty %}
-                        <div class="workshop-info-box">
-                            <h5 style="margin: 20px; border-bottom: 0;">Description</h5>
-                            <div class="workshop-item-text-content" style="margin-top: 20px;">
+                        <h5 style="margin-top: 40px; border-bottom: 0;">Description</h5>
+                        <div class="workshop-item-text-content" style="margin-top: 15px;">
                                 {{ item.description|nl2br|markdown_to_html }}
                             </div>
-                        </div>
                     {% endif %}
 
                     {# Install Instructions #}
                     {% if item.installInstructions is not empty %}
-                        <div class="workshop-info-box">
-                            <h5 style="margin: 20px; border-bottom: 0;">Installation Intructions</h5>
-                            <div class="workshop-item-text-content" style="margin-top: 20px;">
-                                {{ item.installInstructions|nl2br|markdown_to_html }}
-                            </div>
+                        <h5 style="margin-top: 40px; border-bottom: 0;">Installation Intructions</h5>
+                        <div class="workshop-item-text-content" style="margin-top: 15px;">
+                            {{ item.installInstructions|nl2br|markdown_to_html }}
                         </div>
                     {% endif %}
 
