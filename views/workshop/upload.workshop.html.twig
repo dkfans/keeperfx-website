@@ -11,7 +11,7 @@
 
         <div class="content-body">
 
-            <form action="/workshop/upload" method="POST" enctype="multipart/form-data">
+            <form id="upload-item-form" action="/workshop/upload" method="POST" enctype="multipart/form-data">
 
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
@@ -172,4 +172,69 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block body_javascript %}
+    <script>
+        $(function(){
+
+            var fileFileSize = 0;
+            var thumbnailFileSize = 0;
+            var screenshotsTotalFileSize = 0;
+
+            // Item max upload filesize check
+            $('#file').on('change', function(){
+                fileFileSize = 0;
+                if(this.files[0].size > app_store.upload_limit.workshop_item.size){
+                    toastr.warning('File exceeds maximum filesize of ' + app_store.upload_limit.workshop_item.formatted);
+                    this.value = null;
+                } else {
+                    fileFileSize = this.files[0].size;
+                }
+            });
+
+            // Thumbnail max upload filesize check
+            $('#thumbnail').on('change', function(){
+                thumbnailFileSize = 0;
+                if(this.files[0].size > app_store.upload_limit.workshop_image.size){
+                    toastr.warning('Thumbnail exceeds maximum filesize of ' + app_store.upload_limit.workshop_image.formatted);
+                    this.value = null;
+                } else {
+                    thumbnailFileSize = this.files[0].size;
+                }
+            });
+
+            // Screenshots max upload filesize check
+            $('#screenshots').on('change', function(){
+                screenshotsTotalFileSize = 0;
+                var valid = true;
+                var totalUploadSize = 0;
+                $.each(this.files, function(index, file){
+                    totalUploadSize += file.size;
+                    if(file.size > app_store.upload_limit.workshop_image.size){
+                        toastr.warning('Image "' + file.name + '" exceeds maximum filesize of ' + app_store.upload_limit.workshop_image.formatted);
+                        valid = false;
+                    }
+                });
+                if(!valid){
+                    this.value = null;
+                    totalUploadSize = 0;
+                }
+                screenshotsTotalFileSize = totalUploadSize;
+            });
+
+            // Check total upload size on form submit
+            $('#upload-item-form').on('submit', function(e){
+                var totalUploadSize = fileFileSize + thumbnailFileSize + screenshotsTotalFileSize;
+                if(totalUploadSize > app_store.upload_limit.total.size){
+                    toastr.warning(
+                        'Maximum total upload size of ' + app_store.upload_limit.total.formatted + ' is exceeded. ' +
+                        'If you have many screenshots, try uploading the item without them and then add the screenshots later.'
+                    );
+                    e.preventDefault();
+                }
+            });
+
+        });
+    </script>
 {% endblock %}

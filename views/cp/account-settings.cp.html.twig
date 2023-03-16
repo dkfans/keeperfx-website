@@ -139,3 +139,18 @@
 </div>
 
 {% endblock %}
+
+
+{% block body_javascript %}
+    <script>
+        $(function(e){
+            // Avatar max upload filesize check
+            $('#avatar').on('change', function(){
+                if(this.files[0].size > app_store.upload_limit.avatar.size){
+                    toastr.warning('Avatar exceeds maximum filesize of ' + app_store.upload_limit.avatar.formatted);
+                    this.value = null;
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -39,8 +39,8 @@
                     Max Avatar upload filesize
                 </td>
                 <td class="text-info">
-                    {{ globals.avatar_max_upload_size|format_bytes }}
-                    {% if get_env('APP_AVATAR_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_AVATAR_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
+                    {{ globals.upload_limit.avatar.size|format_bytes }}
+                    {% if get_env('APP_AVATAR_MAX_UPLOAD_SIZE') is not null and get_env('APP_AVATAR_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_AVATAR_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
                         <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
                         <span class="text-muted" style="margin-left: 10px; font-weight: 800;">(Original: {{ get_env('APP_AVATAR_MAX_UPLOAD_SIZE')|format_bytes }})</span>
                     {% endif %}
@@ -48,13 +48,25 @@
             </tr>
             <tr>
                 <td>
-                    Max Workshop upload filesize
+                    Max Workshop item upload filesize
                 </td>
                 <td class="text-info">
-                    {{ globals.workshop_max_upload_size|format_bytes }}
-                    {% if get_env('APP_WORKSHOP_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_WORKSHOP_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
+                    {{ globals.upload_limit.workshop_item.size|format_bytes }}
+                    {% if get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE') is not null and get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
                         <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
-                        <span class="text-muted" style="margin-left: 10px; font-weight: 800;">(Original: {{ get_env('APP_WORKSHOP_MAX_UPLOAD_SIZE')|format_bytes }})</span>
+                        <span class="text-muted" style="margin-left: 10px; font-weight: 800;">(Original: {{ get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE')|format_bytes }})</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Max Workshop image upload filesize
+                </td>
+                <td class="text-info">
+                    {{ globals.upload_limit.workshop_image.size|format_bytes }}
+                    {% if get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE') is not null and get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
+                        <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
+                        <span class="text-muted" style="margin-left: 10px; font-weight: 800;">(Original: {{ get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE')|format_bytes }})</span>
                     {% endif %}
                 </td>
             </tr>
@@ -88,7 +100,7 @@
             </tr>
             <tr>
                 <td>
-                    Maximum PHP upload filesize
+                    Maximum PHP file upload filesize
                 </td>
                 <td class="text-info">
                     {{ upload_calculated_minimum|format_bytes }}

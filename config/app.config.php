@@ -18,8 +18,6 @@ return [
     ],
 
     'workshop' => [
-        'item_max_filesize_bytes' => 20971520, // 20 MiB
-
         'item_types_without_difficulty' => [
             \App\Enum\WorkshopType::Application,
             \App\Enum\WorkshopType::Other,

@@ -2,17 +2,19 @@
 
 namespace App\Controller\ControlPanel;
 
+use App\Entity\User;
 
 use App\Account;
 use App\FlashMessage;
+use App\UploadSizeHelper;
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
 use Twig\Environment as TwigEnvironment;
+use ByteUnits\Binary as BinaryFormatter;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Entity\User;
 use Psr\Http\Message\UploadedFileInterface;
 
 class AccountController {
@@ -139,7 +141,8 @@ class AccountController {
         Response $response,
         Account $account,
         EntityManager $em,
-        FlashMessage $flash
+        FlashMessage $flash,
+        UploadSizeHelper $upload_size_helper,
     ){
         // Get avatar file
         $files = $request->getUploadedFiles();
@@ -157,6 +160,17 @@ class AccountController {
         $file_extension = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
         if(!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif'])){
             $flash->warning('Invalid avatar image file. Allowed file types: jpg, jpeg, png, gif');
+            $response = $response->withHeader('Location', '/account')->withStatus(302);
+            return $response;
+        }
+
+        // Check filesize
+        if($file->getSize() > $upload_size_helper->getFinalAvatarUploadSize()){
+            $flash->warning(
+                'Maximum upload filesize for avatar exceeded. (' .
+                BinaryFormatter::bytes($upload_size_helper->getFinalAvatarUploadSize())->format() .
+                ')'
+            );
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
         }

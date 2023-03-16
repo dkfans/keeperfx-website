@@ -6,6 +6,10 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
 
+/**
+ * The avatar controller is used to output avatars.
+ * Updating an avatar is done in the AccountController.
+ */
 class AvatarController {
 
     public function outputAvatar(

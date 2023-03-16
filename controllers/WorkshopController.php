@@ -15,11 +15,12 @@ use URLify;
 use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
-use App\Twig\Extension\WorkshopRatingTwigExtension;
 
+use App\UploadSizeHelper;
 use Slim\Csrf\Guard as CsrfGuard;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
+use ByteUnits\Binary as BinaryFormatter;
 
 use Slim\Psr7\UploadedFile;
 use Psr\Http\Message\UploadedFileInterface;
@@ -27,6 +28,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
+
+use App\Twig\Extension\WorkshopRatingTwigExtension;
 
 use Slim\Exception\HttpNotFoundException;
 
@@ -138,7 +141,8 @@ class WorkshopController {
         FlashMessage $flash,
         TwigEnvironment $twig,
         Account $account,
-        EntityManager $em
+        EntityManager $em,
+        UploadSizeHelper $upload_size_helper,
     ){
 
         $success = true;
@@ -169,10 +173,21 @@ class WorkshopController {
             $success = false;
         }
 
-        // Check if a file was uploaded
+        // Check if a workshop file was uploaded
         if(empty($uploaded_files['file']) || !($uploaded_files['file'] instanceof UploadedFileInterface) || $uploaded_files['file']->getError() === UPLOAD_ERR_NO_FILE){
             $flash->warning('You did not submit a file');
             $success = false;
+        } else {
+
+            // Check workshop file filesize
+            if($uploaded_files['file']->getSize() > $upload_size_helper->getFinalWorkshopItemUploadSize()){
+                $flash->warning(
+                    'Maximum upload size for workshop item exceeded. (' .
+                    BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopItemUploadSize())->format() .
+                    ')'
+                );
+                $success = false;
+            }
         }
 
         // Check valid screenshot files
@@ -190,6 +205,18 @@ class WorkshopController {
                 if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
                     $success = false;
                     $flash->warning('One or more screenshots are invalid. Allowed file types: jpg, jpeg, png, gif');
+                } else {
+
+                    // Check screenshot filesize
+                    if($screenshot_file->getSize() > $upload_size_helper->getFinalWorkshopImageUploadSize()){
+                        $flash->warning(
+                            'Maximum upload size for workshop screenshot exceeded. (' .
+                            BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopImageUploadSize())->format() .
+                            ')'
+                        );
+                        $success = false;
+                    }
+
                 }
             }
         }
@@ -204,6 +231,17 @@ class WorkshopController {
             if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
                 $success = false;
                 $flash->warning('Invalid thumbnail. Allowed file types: jpg, jpeg, png, gif');
+            } else {
+
+                // Check filesize
+                if($uploaded_files['thumbnail']->getSize() > $upload_size_helper->getFinalWorkshopImageUploadSize()){
+                    $flash->warning(
+                        'Maximum upload size for workshop item exceeded. (' .
+                        BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopImageUploadSize())->format() .
+                        ')'
+                    );
+                    $success = false;
+                }
             }
         }
 
