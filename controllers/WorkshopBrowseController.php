@@ -55,7 +55,7 @@ class WorkshopBrowseController {
                 break;
             default:
             case 'latest':
-                $order_by = ['updated_timestamp' => 'DESC'];
+                $order_by = ['created_timestamp' => 'DESC'];
                 $url_params['order_by'] = 'latest';
                 break;
         }
