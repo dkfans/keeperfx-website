@@ -47,6 +47,7 @@ return [
         \App\Twig\Extension\SlugifyTwigExtension::class,
         \App\Twig\Extension\PathTwigExtension::class,
         \App\Twig\Extension\RequestVarTwigExtension::class,
+        \App\Twig\Extension\PregReplaceTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
 
