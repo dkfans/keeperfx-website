@@ -32,11 +32,6 @@
                     {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, preferOriginalAuthor: false} %}
                 </div>
 
-                {# Rating #}
-                {# <div class="">
-                    {{ render_workshop_overall_rating(item.id, rating.score) }}
-                </div> #}
-
                 {# Edit #}
                 <div class="">
                 {% if account != null %}
@@ -247,22 +242,44 @@
     </div>
 
     {# Comments #}
-    {# <div class="content-box bg-keeper bd-keeper">
+    <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
             <h2>Comments</h2>
         </div>
         <div class="content-body">
-            <p>
-                No comments yet.
-            </p>
-            <div class="form-group">
-                <textarea class="form-control" name="comment" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-                <input type="submit" class="btn btn-medieval" value="Submit" />
-            </div>
+            {% if item.comments|length == 0 %}
+                <p>
+                    No comments yet.
+                </p>
+            {% else %}
+                {% for comment in item.comments %}
+                    <div class="workshop-item-comment">
+                        <div class="workshop-item-comment-user" style="display:inline;">
+                            {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, preferOriginalAuthor: false} %}
+                            commented:
+                        </div>
+                        <div class="text-muted" style="display:inline; float:right;">
+                            {{ comment.createdTimestamp|date('Y-m-d H:m:s') }}
+                        </div>
+                        <div style="padding: 10px 0px 5px;">
+                            {{ comment.content|nl2br|markdown_to_html }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <h5 style="border-bottom: 0; margin-top: 30px;">Comment</h5>
+            <form action="/workshop/item/{{ item.id }}/comment" method="POST">
+                <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+                <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+                <div class="form-group">
+                    <textarea class="form-control" name="content" rows="4" placeholder="Write a comment" required></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-medieval" value="Submit" />
+                </div>
+            </form>
         </div>
-    </div> #}
+    </div>
 
 {% endblock %}
 

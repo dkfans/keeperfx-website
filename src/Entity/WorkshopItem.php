@@ -75,9 +75,13 @@ class WorkshopItem {
     #[ORM\Column(type: "decimal", precision: 3, scale: 2, nullable: true)]
     private float|null $difficulty_rating_score = null;
 
+    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'item')]
+    private Collection $comments;
+
     public function __construct() {
         $this->ratings            = new ArrayCollection();
         $this->difficulty_ratings = new ArrayCollection();
+        $this->comments           = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -433,5 +437,13 @@ class WorkshopItem {
     public function getDifficultyRatings(): Collection
     {
         return $this->difficulty_ratings;
+    }
+
+    /**
+     * Get the value of difficulty_ratings
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
     }
 }

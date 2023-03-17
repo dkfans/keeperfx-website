@@ -6,17 +6,18 @@ namespace App\Controller;
 use App\Enum\UserRole;
 use App\Enum\WorkshopType;
 
-use App\Entity\GithubRelease;
-use App\Entity\WorkshopItem;
-use App\Entity\WorkshopRating;
 use App\Entity\WorkshopTag;
+use App\Entity\WorkshopItem;
+use App\Entity\GithubRelease;
+use App\Entity\WorkshopRating;
+use App\Entity\WorkshopComment;
 
-use URLify;
 use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
-
 use App\UploadSizeHelper;
+
+use URLify;
 use Slim\Csrf\Guard as CsrfGuard;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
@@ -28,8 +29,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
-
-use App\Twig\Extension\WorkshopRatingTwigExtension;
 
 use Slim\Exception\HttpNotFoundException;
 
@@ -90,8 +89,7 @@ class WorkshopController {
         }
         $filesize = \filesize($filepath);
 
-        // Get workshop item ratings
-        $rating_score            = $workshop_item->getRatingScore();
+        // Get workshop item rating counts
         $rating_count            = \count($workshop_item->getRatings());
         $difficulty_rating_count = \count($workshop_item->getDifficultyRatings());
 
@@ -877,6 +875,49 @@ class WorkshopController {
 
         $flash->warning('Failed to remove screenshot.');
         $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId())->withStatus(302);
+        return $response;
+    }
+
+    public function comment(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        Account $account,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        $id
+    ){
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            $flash->warning('The requested workshop item could not be found.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            );
+            return $response;
+        }
+
+        $post    = $request->getParsedBody();
+        $content = (string) ($post['content'] ?? null);
+
+        if(empty($content)){
+            $flash->warning('You tried to submit an empty comment.');
+            $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
+            return $response;
+        }
+
+        // TODO: filter bad words
+
+        $comment = new WorkshopComment();
+        $comment->setItem($workshop_item);
+        $comment->setUser($account->getUser());
+        $comment->setContent($content);
+
+        $em->persist($comment);
+        $em->flush();
+
+        $flash->success('Your comment has been added!');
+        $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
         return $response;
     }
 

@@ -132,6 +132,9 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     $group->post('/rate/{id:\d+}/overall', [WorkshopItemRateController::class, 'rateOverall'])->add(LoggedInMiddleware::class);
     $group->post('/rate/{id:\d+}/difficulty', [WorkshopItemRateController::class, 'rateDifficulty'])->add(LoggedInMiddleware::class);
 
+    // Workshop item comment
+    $group->post('/item/{id:\d+}/comment', [WorkshopController::class, 'comment'])->add(LoggedInMiddleware::class);
+
     // Browse items
     $group->get('/browse', [WorkshopBrowseController::class, 'browseIndex']);
 
