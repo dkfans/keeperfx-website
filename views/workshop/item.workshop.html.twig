@@ -221,20 +221,20 @@
             </div>
 
 
-            <div class="row">
+            <div class="row" style="margin-top: 40px;">
                 <div class="col-12">
 
                     {# Description #}
                     {% if item.description is not empty %}
-                        <h5 style="margin-top: 40px; border-bottom: 0;">Description</h5>
+                        <h5 style="margin-top: 0px; border-bottom: 0;">Description</h5>
                         <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
-                                {{ item.description|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
-                            </div>
+                            {{ item.description|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
+                        </div>
                     {% endif %}
 
                     {# Install Instructions #}
                     {% if item.installInstructions is not empty %}
-                        <h5 style="margin-top: 40px; border-bottom: 0;">Installation Intructions</h5>
+                        <h5 style="margin-top: 0px; border-bottom: 0;">Installation Intructions</h5>
                         <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
                             {{ item.installInstructions|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
                         </div>
