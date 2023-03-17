@@ -568,11 +568,11 @@ footer {
 }
 
 .workshop-item-comment-content {
-    padding: 0;
+    /* padding: 0;
     margin-top: 10px;
     margin-left: 30px;
     margin-right: 30px;
-    margin-bottom: 20px;
+    margin-bottom: 20px; */
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -740,9 +740,20 @@ footer {
     border-radius: 50%;
     width: 20px;
     height: 20px;
-    border: 1px solid rgb(50, 48, 47);
+    /* border: 1px solid rgb(50, 48, 47); */
     padding: 0px;
-    bottom: 2px;
+    bottom: 1px;
+    position: relative;
+    margin-right: 2px;
+}
+
+.user-avatar-big {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    /* border: 1px solid rgb(50, 48, 47); */
+    padding: 0px;
+    bottom: 1px;
     position: relative;
 }
 
@@ -752,7 +763,7 @@ nav .user-avatar {
     margin-right: 6px;
     bottom: 2px;
     position: relative;
-    border: 1px solid rgb(50, 48, 47);
+    /* border: 1px solid rgb(50, 48, 47); */
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/

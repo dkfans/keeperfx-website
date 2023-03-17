@@ -228,7 +228,7 @@
                     {% if item.description is not empty %}
                         <h5 style="margin-top: 40px; border-bottom: 0;">Description</h5>
                         <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
-                                {{ item.description|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html }}
+                                {{ item.description|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
                             </div>
                     {% endif %}
 
@@ -236,7 +236,7 @@
                     {% if item.installInstructions is not empty %}
                         <h5 style="margin-top: 40px; border-bottom: 0;">Installation Intructions</h5>
                         <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
-                            {{ item.installInstructions|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html }}
+                            {{ item.installInstructions|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
                         </div>
                     {% endif %}
 
@@ -257,27 +257,36 @@
                 </p>
             {% else %}
                 {% for comment in item.comments %}
-                    <div class="workshop-item-comment">
-                        <div class="workshop-item-comment-user" style="display:inline;">
-                        <a
-                        href="/workshop/browse?user={{ comment.user.username }}"
-                        title="Browse {{ comment.user.username }}'s Workshop Items"
-                        class="user-link d-inline-block">
+                    <div class="workshop-item-comment d-flex">
+
+                        <div class="" style="height: 100%;">
                             {% if comment.user.avatar %}
-                                <img src="/avatar/{{ comment.user.avatar }}" class="user-avatar" />
+                                <img src="/avatar/{{ comment.user.avatar }}" class="user-avatar user-avatar-big" />
                             {% else %}
-                                <img src="{{ avatar(comment.user.username, 'circle', 128) }}" class="user-avatar" />
+                                <img src="{{ avatar(comment.user.username, 'circle', 128) }}" class="user-avatar user-avatar-big" />
                             {% endif %}
-                            <span class="user-username">{{ comment.user.username }}</span>
-                        </a>
-                            commented:
                         </div>
-                        <div class="text-muted" style="display:inline; float:right;">
-                            {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
+
+                        <div class="" style="width: 100%; margin-left: 7px; padding: 0;">
+                                <div class="d-flex justify-content-between" style="width: 100%;">
+                                    <a
+                                    href="/workshop/browse?user={{ comment.user.username }}"
+                                    title="Browse {{ comment.user.username }}'s Workshop Items"
+                                    class="user-link d-inline-block">
+                                        <span class="user-username">{{ comment.user.username }}</span>
+                                    </a>
+                                    <span class="text-muted" style="display:inline;">
+                                        {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
+                                    </span>
+                                </div>
+
+                                <div class="force-wordwrap" style="margin-bottom: 15px; margin-top: 3px;">
+                                    {{ comment.content|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|nl2br }}
+                                </div>
                         </div>
-                        <div class="workshop-item-comment-content force-wordwrap">
-                            {{ comment.content|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|nl2br }}
-                        </div>
+
+
+
                     </div>
                 {% endfor %}
             {% endif %}
