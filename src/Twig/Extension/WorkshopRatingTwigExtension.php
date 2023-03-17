@@ -15,7 +15,7 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
     protected const STAR_DIFFICULTY_EMPTY   = '/img/rating/star-difficulty-empty.png';
     protected const STAR_DIFFICULTY_UNRATED = '/img/rating/star-difficulty-unrated.png';
 
-    protected const IMG_STYLE  = 'width: 18px; height: 18px';
+    protected const IMG_STYLE  = 'width: 18px; height: 18px;';
     protected const SPAN_STYLE = 'width: 90px; height: 18px; display: inline-block';
 
     public function getName(): string
@@ -95,7 +95,12 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
      */
     private static function createStarContainerSpan(int $item_id, float|int|null $rating, string $type = 'overall', array $stars = [])
     {
-        $output = '<span style="' . self::SPAN_STYLE . '" data-workshop-item-id="' . $item_id . '" data-workshop-rating-type=' . $type . '>%s</span>';
+        $output = '<span ' .
+            'style="' . self::SPAN_STYLE . '" ' .
+            'data-workshop-item-id="' . $item_id . '" ' .
+            'data-workshop-rating-type="' . $type . '" ' .
+            'data-workshop-rating-score="' . \round($rating, 2) . '" ' .
+            '>%s</span>';
 
         if($rating === null){
             return \sprintf($output, \sprintf(

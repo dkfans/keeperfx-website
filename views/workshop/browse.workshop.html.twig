@@ -159,6 +159,21 @@
             window.location.href = '/workshop/browse?' + queryParams.toString();
         });
 
+
+        $.each($('span[data-workshop-rating-score]'), function(index, element){
+
+            let ratingType = $(this).attr('data-workshop-rating-type');
+            ratingType = ratingType.charAt(0).toUpperCase() + ratingType.slice(1);
+
+            let string = ratingType + ' rating: ' + $(this).attr('data-workshop-rating-score');
+
+            new bootstrap.Popover(element, {
+                'placement': 'top',
+                'trigger': 'hover',
+                'content': string,
+                'offset': '5px'
+            });
+        });
     });
 </script>
 
