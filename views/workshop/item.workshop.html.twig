@@ -259,7 +259,17 @@
                 {% for comment in item.comments %}
                     <div class="workshop-item-comment">
                         <div class="workshop-item-comment-user" style="display:inline;">
-                            {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, preferOriginalAuthor: false} %}
+                        <a
+                        href="/workshop/browse?user={{ comment.user.username }}"
+                        title="Browse {{ comment.user.username }}'s Workshop Items"
+                        class="user-link d-inline-block">
+                            {% if comment.user.avatar %}
+                                <img src="/avatar/{{ comment.user.avatar }}" class="user-avatar" />
+                            {% else %}
+                                <img src="{{ avatar(comment.user.username, 'circle', 128) }}" class="user-avatar" />
+                            {% endif %}
+                            <span class="user-username">{{ comment.user.username }}</span>
+                        </a>
                             commented:
                         </div>
                         <div class="text-muted" style="display:inline; float:right;">
