@@ -273,7 +273,7 @@
                             commented:
                         </div>
                         <div class="text-muted" style="display:inline; float:right;">
-                            {{ comment.createdTimestamp|date('Y-m-d H:m:s') }}
+                            {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
                         </div>
                         <div style="padding: 10px 0px 5px;">
                             {{ comment.content|nl2br|markdown_to_html }}
