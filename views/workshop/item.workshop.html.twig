@@ -125,9 +125,11 @@
                                                     {{ rating_amount }} ratings
                                                 {% endif %}
                                             </span>
-                                            <span style="margin: 0 3px" class="text-muted">&bull;</span>
-                                            Your rating:
-                                            <span id="overall-rating-self" class="text-muted">3</span>
+                                            {% if user_rating != null %}
+                                                <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                                                Your rating:
+                                                <span id="overall-rating-self" class="text-muted">{{ user_rating }}</span>
+                                            {% endif %}
                                         {% else %}
                                             Not rated yet
                                         {% endif %}
@@ -153,9 +155,11 @@
                                                     {{ difficulty_rating_amount }} ratings
                                                 {% endif %}
                                             </span>
-                                            <span style="margin: 0 3px" class="text-muted">&bull;</span>
-                                            Your rating:
-                                            <span id="difficulty-rating-self" class="text-muted">2</span>
+                                            {% if user_difficulty_rating != null %}
+                                                <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                                                Your rating:
+                                                <span id="difficulty-rating-self" class="text-muted">{{ user_difficulty_rating }}</span>
+                                            {% endif %}
                                         {% else %}
                                             Not rated yet
                                         {% endif %}
@@ -387,7 +391,7 @@
                         }
 
                         // Update self rating
-                        $('#' + ratingType + '-rating-self').text(data.rating_score);
+                        $('#' + ratingType + '-rating-self').text(ratingScore);
 
                         // Update CSRF tokens
                         app_store.csrf.name = data.csrf.name;

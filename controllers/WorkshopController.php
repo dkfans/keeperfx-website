@@ -33,6 +33,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
 use Slim\Exception\HttpNotFoundException;
+use App\Entity\WorkshopDifficultyRating;
 
 class WorkshopController {
 
@@ -59,6 +60,7 @@ class WorkshopController {
         TwigEnvironment $twig,
         FlashMessage $flash,
         EntityManager $em,
+        Account $account,
         $id,
         $slug = null
     ){
@@ -109,13 +111,27 @@ class WorkshopController {
             }
         }
 
+        // Get user rating
+        $user_rating = $em->getRepository(WorkshopRating::class)->findOneBy([
+            'item' => $workshop_item,
+            'user' => $account?->getUser()
+        ])?->getScore();
+
+        // Get user difficulty rating
+        $user_difficulty_rating = $em->getRepository(WorkshopDifficultyRating::class)->findOneBy([
+            'item' => $workshop_item,
+            'user' => $account?->getUser()
+        ])?->getScore();
+
         // Render view
         $response->getBody()->write(
             $twig->render('workshop/item.workshop.html.twig', $this->getWorkshopOptions() + [
                 'item'                     => $workshop_item,
                 'screenshots'              => $screenshots,
                 'rating_amount'            => $rating_count,
+                'user_rating'              => $user_rating,
                 'difficulty_rating_amount' => $difficulty_rating_count,
+                'user_difficulty_rating'   => $user_difficulty_rating,
                 'filesize'                 => $filesize,
             ])
         );
