@@ -342,7 +342,7 @@
                 }
 
                 // Disable rating own account items
-                if(app_store.account.id === workshop_item.submitter_id){
+                if(ratingType === 'overall' && app_store.account.id === workshop_item.submitter_id){
                     toastr.warning('You can not rate your own workshop items!');
                     return;
                 }

@@ -139,10 +139,6 @@ class WorkshopItemRateController {
             return $response;
         }
 
-        if($workshop_item->getSubmitter() === $account->getUser()){
-            return $response;
-        }
-
         // Get possible already existing rating
         $rating = $em->getRepository(WorkshopDifficultyRating::class)->findOneBy([
             'item' => $workshop_item,
