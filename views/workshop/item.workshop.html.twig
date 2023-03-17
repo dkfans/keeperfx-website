@@ -275,13 +275,7 @@
                         <div class="text-muted" style="display:inline; float:right;">
                             {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
                         </div>
-                        <div class="force-wordwrap" style="
-                            padding: 0;
-                            margin-top: 10px;
-                            margin-left: 30px;
-                            margin-right: 30px;
-                            margin-bottom: 20px;
-                        ">
+                        <div class="workshop-item-comment-content force-wordwrap">
                             {{ comment.content|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|nl2br }}
                         </div>
                     </div>
