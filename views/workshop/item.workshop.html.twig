@@ -35,10 +35,10 @@
                 {# Edit #}
                 <div class="">
                 {% if account != null %}
-                    {% if account.role >= roles.admin %}
+                    {% if account.role >= roles.workshop_moderator %}
                         <a href="/workshop-mod/workshop/{{ item.id }}">Edit as workshop moderator</a>
                     {% endif %}
-                    {% if item.submitter != null and item.submitter.id == account.id and account.role >= roles.admin %}
+                    {% if item.submitter != null and item.submitter.id == account.id and account.role >= roles.workshop_moderator %}
                         <span style="margin: 0 3px" class="text-muted">&bull;</span>
                     {% endif %}
                     {% if item.submitter != null and item.submitter.id == account.id %}
