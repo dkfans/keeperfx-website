@@ -227,16 +227,16 @@
                     {# Description #}
                     {% if item.description is not empty %}
                         <h5 style="margin-top: 40px; border-bottom: 0;">Description</h5>
-                        <div class="workshop-item-text-content" style="margin-top: 15px;">
-                                {{ item.description|nl2br|markdown_to_html }}
+                        <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
+                                {{ item.description|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html }}
                             </div>
                     {% endif %}
 
                     {# Install Instructions #}
                     {% if item.installInstructions is not empty %}
                         <h5 style="margin-top: 40px; border-bottom: 0;">Installation Intructions</h5>
-                        <div class="workshop-item-text-content" style="margin-top: 15px;">
-                            {{ item.installInstructions|nl2br|markdown_to_html }}
+                        <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
+                            {{ item.installInstructions|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html }}
                         </div>
                     {% endif %}
 
