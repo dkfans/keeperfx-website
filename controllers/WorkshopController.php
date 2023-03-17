@@ -18,12 +18,14 @@ use App\Config\Config;
 use App\UploadSizeHelper;
 
 use URLify;
-use Slim\Csrf\Guard as CsrfGuard;
 use Doctrine\ORM\EntityManager;
+use Slim\Csrf\Guard as CsrfGuard;
+use geertw\IpAnonymizer\IpAnonymizer;
 use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
 
 use Slim\Psr7\UploadedFile;
+use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -593,6 +595,7 @@ class WorkshopController {
         Account $account,
         TwigEnvironment $twig,
         EntityManager $em,
+        CacheInterface $cache,
         $id,
         $filename
     )
@@ -642,10 +645,23 @@ class WorkshopController {
 
         // Increase download count
         if(!isset($request->getQueryParams()['no_download_increment'])){
-            $download_count = $workshop_item->getDownloadCount();
-            $download_count++;
-            $workshop_item->setDownloadCount($download_count);
-            $em->flush();
+
+            // Get anonymized IP hash & cache key
+            $ip           = $request->getAttribute('ip_address');
+            $anon_ip      = (new IpAnonymizer())->anonymize($ip ?? '');
+            $anon_ip_hash = \sha1($anon_ip);
+            $dl_cache_key = 'download-' . $workshop_item->getId() . '-' . $anon_ip_hash;
+
+            // Increase download counter if IP has not downloaded this item (in the last 7 days)
+            if($cache->get($dl_cache_key, null) === null){
+                $download_count = $workshop_item->getDownloadCount();
+                $download_count++;
+                $workshop_item->setDownloadCount($download_count);
+                $em->flush();
+
+                // Remember download for 7 days
+                $cache->set($dl_cache_key, 1, (int) $_ENV['APP_WORKSHOP_DOWNLOAD_IP_REMEMBER_TIME']);
+            }
         }
 
         // Return download
