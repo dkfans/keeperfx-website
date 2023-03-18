@@ -21,7 +21,7 @@
 
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" value="{{ get_post_var('username') }}">
+                    <input type="text" class="form-control" id="username" name="username" value="{{ get_post_var('username') }}" required>
                 </div>
 
                 <div class="form-group">
@@ -31,15 +31,28 @@
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" value="">
+                    <input type="password" class="form-control" id="password" name="password" value="" required>
                 </div>
 
                 <div class="form-group">
                     <label for="repeat_password">Repeat Password</label>
-                    <input type="password" class="form-control" id="repeat_password" name="repeat_password" value="">
+                    <input type="password" class="form-control" id="repeat_password" name="repeat_password" value="" required>
                 </div>
 
-                <div class="form-group" style="margin-top: 50px;">
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="accepted_tos_and_privacy_policy" id="accepted_tos_and_privacy_policy" required />
+                        <label class="form-check-label" for="accepted_tos_and_privacy_policy" style="font-size: 14px">
+                            I have read and accept the
+                            <a href="/terms-of-service" target="_blank">Terms of Service</a>
+                            and
+                            <a href="/privacy-policy" target="_blank">Privacy Policy</a>
+                            .
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
                     <input type="submit" class="btn btn-lg btn-medieval" style="width: 100%;" value="Register" />
                 </div>
 

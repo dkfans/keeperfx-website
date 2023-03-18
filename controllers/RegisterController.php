@@ -125,6 +125,12 @@ class RegisterController {
             }
         }
 
+        // Make sure ToS and privacy policy have been read and accepted
+        if(!isset($post['accepted_tos_and_privacy_policy'])){
+            $success = false;
+            $flash->warning('You did not accept the Terms of Service and Privacy Policy.');
+        }
+
         // Given details must be valid before creating a user
         if(!$success){
 

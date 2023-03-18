@@ -147,6 +147,10 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     });
 });
 
+// ToS & Privacy Policy
+$app->get('/terms-of-service', [InfoPageController::class, 'termsOfServiceIndex']);
+$app->get('/privacy-policy', [InfoPageController::class, 'privacyPolicyIndex']);
+
 // RSS
 $app->get('/rss-info', [RSSController::class, 'rssInfoIndex']);
 $app->group('/rss', function (RouteCollectorProxy $group) use ($container) {
