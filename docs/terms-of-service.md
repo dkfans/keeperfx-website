@@ -1,5 +1,5 @@
-KeeperFX Website - Terms and Conditions
-=======================================
+KeeperFX Website - Terms of Service
+===================================
 
 **THIS IS A DRAFT, IT IS NOT APPLICABLE TO THE WEBSITE YET AND SHOULD BE IGNORED**
 
@@ -10,7 +10,7 @@ KeeperFX Website - Terms and Conditions
 Welcome to the KeeperFX website! By using our website, you agree to the following terms and conditions:
 
 1. **Intellectual Property**: Users can upload their own content but it must not include any intellectual property that they don't have permission to share. An exception is Dungeon Keeper-related content.
-2. **Content**: Users are not allowed to upload content that is malicious, inappropriate, or violates our guidelines. Examples of prohibited content include nudity, gambling, non-game-related violence, racism, sexism, and any other content that we deem inappropriate.
+2. **Content**: Users are not allowed to upload content that is malicious, inappropriate, or violates our guidelines. Examples of prohibited content include nudity, gambling, non-game-related violence, racism, sexism, and any other content that we deem inappropriate. Additionally, any content related to illegally obtaining a copy of Dungeon Keeper is strictly prohibited.
 3. **Comments**: Comments posted by users must follow the same rules as content and are subject to removal if they violate our guidelines.
 4. **Multiple Accounts**: Users are not allowed to create multiple accounts to abuse website functionality such as download counts and ratings.
 5. **Privacy and Security**: Users are not allowed to access the accounts of other users without their consent. Any attempt to gain unauthorized access to other users' accounts will result in termination of the offender's account and access to the website may be blocked.
