@@ -35,7 +35,7 @@
                             </a>
                         </td>
                         <td>{{ build.sizeInBytes|format_bytes }}</td>
-                        <td>{{ build.timestamp|date('Y-m-d G:i:s') }}</td>
+                        <td>{{ build.timestamp|date('Y/m/d G:i') }}</td>
                         <td>{{ build.workflowTitle|github_interact }}</td>
                     </tr>
                 {% endfor %}

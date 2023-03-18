@@ -67,7 +67,7 @@
                         <div class="form-group">
                             <label for="submitter">Submission date</label>
                             <p id="submitter">
-                                {{ workshop_item.createdTimestamp|date('Y-m-d') }}
+                                {{ workshop_item.createdTimestamp|date('Y/m/d') }}
                             </p>
                         </div>
                     </div>
@@ -261,7 +261,7 @@
                             </label>
                             <div class="input-group mb-3">
                                 <input type="date" class="form-control" id="original_creation_date" name="original_creation_date"
-                                    value="{% if workshop_item.originalCreationDate %}{{ workshop_item.originalCreationDate|date('Y-m-d') }}{% endif %}">
+                                    value="{% if workshop_item.originalCreationDate %}{{ workshop_item.originalCreationDate|date('Y/m/d') }}{% endif %}">
                                 <button class="btn btn-outline-secondary" type="button" onclick="javascript:original_creation_date.value=''">Clear</button>
                             </div>
                         </div>

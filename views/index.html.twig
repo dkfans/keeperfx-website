@@ -58,7 +58,7 @@
                         {% for article in articles %}
                             <div class="news">
                                 <h3 class="news-title">{{ article.title }}</h3>
-                                <span class="news-date">{{ article.createdTimestamp|date('Y-m-d') }}</span>
+                                <span class="news-date">{{ article.createdTimestamp|date('Y/m/d') }}</span>
                                 {% if article.shortText %}
                                     <p class="news-content">{{ article.text|markdown_to_html }}</p>
                                 {% else %}

@@ -103,7 +103,7 @@
                                 {% if item.originalCreationDate %}
                                     <tr>
                                         <td>Original creation date</td>
-                                        <td class="text-stand-out" style="padding-left: 25px;">{{ item.originalCreationDate|date('Y-m-d') }}</td>
+                                        <td class="text-stand-out" style="padding-left: 25px;">{{ item.originalCreationDate|date('Y/m/d') }}</td>
                                     </tr>
                                 {% endif %}
                                 <tr style="height: 15px;"><!-- Spacer row --></tr>
@@ -171,14 +171,14 @@
                             <tr>
                                 <td>Submission date</td>
                                 <td class="text-stand-out time-ago" style="padding-left: 25px;">
-                                    {{ item.createdTimestamp|date('Y-m-d') }}
+                                    {{ item.createdTimestamp|date('Y/m/d') }}
                                 </td>
                             </tr>
                             {% if item.updatedTimestamp != item.createdTimestamp %}
                                 <tr>
                                     <td>Last updated</td>
                                     <td class="text-stand-out" style="padding-left: 25px;">
-                                            {{ item.updatedTimestamp|date('Y-m-d') }}
+                                            {{ item.updatedTimestamp|date('Y/m/d') }}
                                     </td>
                                 </tr>
                             {% endif %}
@@ -276,7 +276,7 @@
                                         <span class="user-username">{{ comment.user.username }}</span>
                                     </a>
                                     <span class="text-muted" style="display:inline;">
-                                        {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
+                                        {{ comment.createdTimestamp|date('Y/m/d - G:i') }}
                                     </span>
                                 </div>
 

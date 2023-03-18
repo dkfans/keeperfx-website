@@ -27,7 +27,7 @@
                         <tr>
                             <td><a href="/news/{{ article.id }}/{{ article.titleSlug }}">{{ article.title }}</a></td>
                             <td>{{ article.author.username }}</td>
-                            <td>{{ article.createdTimestamp|date('Y-m-d') }}</td>
+                            <td>{{ article.createdTimestamp|date('Y/m/d') }}</td>
                             <td>
                                 <a href="/admin/news/{{ article.id }}">Edit</a>
                             </td>
