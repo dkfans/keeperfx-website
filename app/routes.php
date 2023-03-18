@@ -5,8 +5,8 @@ namespace App\Controller;
 use Slim\Routing\RouteCollectorProxy;
 
 use App\Middleware\LoggedInMiddleware;
-use App\Middleware\AuthAdminMiddleware;
-use App\Middleware\AuthWorkshopModMiddleware;
+use App\Middleware\AuthAdminCPMiddleware;
+use App\Middleware\AuthModCPMiddleware;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -64,45 +64,45 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
         // Admin: NEWS
         $group->group('/news', function (RouteCollectorProxy $group) use ($container) {
-            $group->get('/list', [Admin\AdminNewsController::class, 'newsIndex']);
-            $group->get('/add', [Admin\AdminNewsController::class, 'newsAddIndex']);
-            $group->post('/add', [Admin\AdminNewsController::class, 'newsAdd']);
-            $group->get('/{id:\d+}', [Admin\AdminNewsController::class, 'newsEditIndex']);
-            $group->post('/{id:\d+}', [Admin\AdminNewsController::class, 'newsEdit']);
-            $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminNewsController::class, 'newsDelete']);
+            $group->get('/list', [AdminCP\AdminNewsController::class, 'newsIndex']);
+            $group->get('/add', [AdminCP\AdminNewsController::class, 'newsAddIndex']);
+            $group->post('/add', [AdminCP\AdminNewsController::class, 'newsAdd']);
+            $group->get('/{id:\d+}', [AdminCP\AdminNewsController::class, 'newsEditIndex']);
+            $group->post('/{id:\d+}', [AdminCP\AdminNewsController::class, 'newsEdit']);
+            $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminNewsController::class, 'newsDelete']);
         });
 
         // Admin: USERS
         $group->group('/user', function (RouteCollectorProxy $group) use ($container) {
-            $group->get('/list', [Admin\AdminUsersController::class, 'usersIndex']);
-            $group->get('/add', [Admin\AdminUsersController::class, 'userAddIndex']);
-            $group->post('/add', [Admin\AdminUsersController::class, 'userAdd']);
-            $group->get('/{id:\d+}', [Admin\AdminUsersController::class, 'userEditIndex']);
-            $group->post('/{id:\d+}', [Admin\AdminUsersController::class, 'userEdit']);
-            $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Admin\AdminUsersController::class, 'userDelete']);
+            $group->get('/list', [AdminCP\AdminUsersController::class, 'usersIndex']);
+            $group->get('/add', [AdminCP\AdminUsersController::class, 'userAddIndex']);
+            $group->post('/add', [AdminCP\AdminUsersController::class, 'userAdd']);
+            $group->get('/{id:\d+}', [AdminCP\AdminUsersController::class, 'userEditIndex']);
+            $group->post('/{id:\d+}', [AdminCP\AdminUsersController::class, 'userEdit']);
+            $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminUsersController::class, 'userDelete']);
         });
 
 
         $group->get('/server-info', [Admin\AdminServerInfoController::class, 'serverInfoIndex']);
 
-    })->add(AuthAdminMiddleware::class);
+    })->add(AuthAdminCPMiddleware::class);
 
-    // AUTH: WORKSHOP MODERATOR
-    $group->group('/workshop-mod', function (RouteCollectorProxy $group) use ($container) {
+    // AUTH: MODERATOR
+    $group->group('/moderate', function (RouteCollectorProxy $group) use ($container) {
 
-        // Workshop Moderator: WORKSHOP
+        // Moderate: WORKSHOP
         $group->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
-            $group->get('/list', [WorkshopMod\WorkshopModWorkshopController::class, 'listIndex']);
-            $group->get('/add', [WorkshopMod\WorkshopModWorkshopController::class, 'itemAddIndex']);
-            $group->post('/add', [WorkshopMod\WorkshopModWorkshopController::class, 'itemAdd']);
-            $group->get('/{id:\d+}', [WorkshopMod\WorkshopModWorkshopController::class, 'itemIndex']);
-            $group->post('/{id:\d+}', [WorkshopMod\WorkshopModWorkshopController::class, 'itemUpdate']);
-            // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [WorkshopMod\WorkshopModWorkshopController::class, 'itemDelete']);
-            $group->get('/{id:\d+}/screenshot/delete/{filename}/{token_name}/{token_value:.+}', [WorkshopMod\WorkshopModWorkshopController::class, 'deleteScreenshot']);
-            $group->get('/{id:\d+}/thumbnail/delete/{token_name}/{token_value:.+}', [WorkshopMod\WorkshopModWorkshopController::class, 'deleteThumbnail']);
+            $group->get('/list', [ModCP\ModerateWorkshopController::class, 'listIndex']);
+            $group->get('/add', [ModCP\ModerateWorkshopController::class, 'itemAddIndex']);
+            $group->post('/add', [ModCP\ModerateWorkshopController::class, 'itemAdd']);
+            $group->get('/{id:\d+}', [ModCP\ModerateWorkshopController::class, 'itemIndex']);
+            $group->post('/{id:\d+}', [ModCP\ModerateWorkshopController::class, 'itemUpdate']);
+            // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [ModCP\ModerateWorkshopController::class, 'itemDelete']);
+            $group->get('/{id:\d+}/screenshot/delete/{filename}/{token_name}/{token_value:.+}', [ModCP\ModerateWorkshopController::class, 'deleteScreenshot']);
+            $group->get('/{id:\d+}/thumbnail/delete/{token_name}/{token_value:.+}', [ModCP\ModerateWorkshopController::class, 'deleteThumbnail']);
         });
 
-    })->add(AuthWorkshopModMiddleware::class);
+    })->add(AuthModCPMiddleware::class);
 
 })->add(LoggedInMiddleware::class);
 

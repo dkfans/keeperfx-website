@@ -19,10 +19,10 @@ class RolesTwigExtension extends \Twig\Extension\AbstractExtension implements \T
     {
         return [
             'roles' => [
-                'user'               => UserRole::User->value,
-                'workshop_moderator' => UserRole::WorkshopModerator->value,
-                'developer'          => UserRole::Developer->value,
-                'admin'              => UserRole::Admin->value,
+                'user'      => UserRole::User->value,
+                'moderator' => UserRole::Moderator->value,
+                'developer' => UserRole::Developer->value,
+                'admin'     => UserRole::Admin->value,
             ]
         ];
     }

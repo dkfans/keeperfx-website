@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\AdminCP;
 
 use App\Account;
 use App\FlashMessage;
@@ -23,7 +23,7 @@ class AdminUsersController {
         $users = $em->getRepository(User::class)->findAll();
 
         $response->getBody()->write(
-            $twig->render('cp/admin/users/users.admin.cp.html.twig', [
+            $twig->render('admincp/users/users.admin.cp.html.twig', [
                 'users' => $users
             ])
         );
@@ -37,7 +37,7 @@ class AdminUsersController {
         TwigEnvironment $twig
     ){
         $response->getBody()->write(
-            $twig->render('cp/admin/users/users.add.admin.cp.html.twig')
+            $twig->render('admincp/users/users.add.admin.cp.html.twig')
         );
 
         return $response;
@@ -103,7 +103,7 @@ class AdminUsersController {
         // Return errors if one or more checks did not pass
         if(!$success){
             $response->getBody()->write(
-                $twig->render('cp/admin/users/users.add.admin.cp.html.twig')
+                $twig->render('admincp/users/users.add.admin.cp.html.twig')
             );
             return $response;
         }
@@ -141,7 +141,7 @@ class AdminUsersController {
         }
 
         $response->getBody()->write(
-            $twig->render('cp/admin/users/users.edit.admin.cp.html.twig', [
+            $twig->render('admincp/users/users.edit.admin.cp.html.twig', [
                 'user' => $user,
             ])
         );
@@ -225,7 +225,7 @@ class AdminUsersController {
         // Output errors if not successful
         if(!$success){
             $response->getBody()->write(
-                $twig->render('cp/admin/users/users.edit.admin.cp.html.twig', ['user' => $user])
+                $twig->render('admincp/users/users.edit.admin.cp.html.twig', ['user' => $user])
             );
             return $response;
         }
@@ -246,7 +246,7 @@ class AdminUsersController {
 
         // Return view
         $response->getBody()->write(
-            $twig->render('cp/admin/users/users.edit.admin.cp.html.twig', ['user' => $user])
+            $twig->render('admincp/users/users.edit.admin.cp.html.twig', ['user' => $user])
         );
         return $response;
     }

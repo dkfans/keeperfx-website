@@ -23,8 +23,8 @@
                         <ion-icon name="person-outline"></ion-icon>
                         Account Settings
                     </a>
-                    {% if account.role >= roles.workshop_moderator %}
-                        <a class="nav-link {% if path_equals('/workshop-mod/workshop/*') %}active{% endif %}" href="/workshop-mod/workshop/list">
+                    {% if account.role >= roles.moderator %}
+                        <a class="nav-link {% if path_equals('/moderate/workshop/*') %}active{% endif %}" href="/moderate/workshop/list">
                             <ion-icon name="cube-outline"></ion-icon>
                             Manage Workshop
                         </a>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\WorkshopMod;
+namespace App\Controller\ModCP;
 
 use App\Enum\WorkshopType;
 
@@ -22,7 +22,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
 
-class WorkshopModWorkshopController {
+class ModerateWorkshopController {
 
     public function listIndex(
         Request $request,
@@ -31,7 +31,7 @@ class WorkshopModWorkshopController {
         EntityManager $em
     ){
         $response->getBody()->write(
-            $twig->render('cp/workshop-mod/workshop/workshop.workshop-mod.cp.html.twig', [
+            $twig->render('modcp/workshop/workshop.workshop-mod.cp.html.twig', [
                 'workshop_items'   => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => true], ['id' => 'DESC']),
                 'open_submissions' => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => false], ['id' => 'DESC']),
             ])
@@ -69,7 +69,7 @@ class WorkshopModWorkshopController {
         }
 
         $response->getBody()->write(
-            $twig->render('cp/workshop-mod/workshop/workshop.item.workshop-mod.cp.html.twig', [
+            $twig->render('modcp/workshop/workshop.item.workshop-mod.cp.html.twig', [
                 'workshop_item' => $workshop_item,
                 'types'         => WorkshopType::cases(),
                 'tags'          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
@@ -202,7 +202,7 @@ class WorkshopModWorkshopController {
         $em->flush();
 
         $flash->success('Workshop item updated!');
-        $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
+        $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
         return $response;
     }
 
@@ -214,7 +214,7 @@ class WorkshopModWorkshopController {
     ){
 
         $response->getBody()->write(
-            $twig->render('cp/workshop-mod/workshop/workshop.add.workshop-mod.html.twig', [
+            $twig->render('modcp/workshop/workshop.add.workshop-mod.html.twig', [
                 'types'  => WorkshopType::cases(),
                 'tags'   => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
                 'builds' => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
@@ -345,7 +345,7 @@ class WorkshopModWorkshopController {
         // Return the page if submission is invalid
         if(!$success){
             $response->getBody()->write(
-                $twig->render('cp/workshop-mod/workshop/workshop.add.workshop-mod.html.twig', [
+                $twig->render('modcp/workshop/workshop.add.workshop-mod.html.twig', [
                     'types'  => WorkshopType::cases(),
                     'tags'   => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
                     'builds' => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
@@ -462,7 +462,7 @@ class WorkshopModWorkshopController {
 
         $flash->success('The workshop item has been created.');
 
-        $response = $response->withHeader('Location', '/workshop-mod/workshop/list')->withStatus(302);
+        $response = $response->withHeader('Location', '/moderate/workshop/list')->withStatus(302);
         return $response;
 
     }
@@ -515,7 +515,7 @@ class WorkshopModWorkshopController {
 
         // Return view
         $flash->success('Thumbnail successfully removed');
-        $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
+        $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
         return $response;
     }
 
@@ -558,7 +558,7 @@ class WorkshopModWorkshopController {
                     }
 
                     $flash->success('Screenshot removed!');
-                    $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
+                    $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
                     return $response;
                 }
             }
@@ -566,7 +566,7 @@ class WorkshopModWorkshopController {
 
 
         $flash->warning('Failed to remove screenshot.');
-        $response = $response->withHeader('Location', '/workshop-mod/workshop/' . $workshop_item->getId())->withStatus(302);
+        $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
         return $response;
     }
 

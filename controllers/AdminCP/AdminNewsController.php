@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\AdminCP;
 
 use App\Account;
 use App\Entity\NewsArticle;
@@ -23,7 +23,7 @@ class AdminNewsController {
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC']);
 
         $response->getBody()->write(
-            $twig->render('cp/admin/news/news.admin.cp.html.twig', [
+            $twig->render('admincp/news/news.admin.cp.html.twig', [
                 'articles' => $articles
             ])
         );
@@ -37,7 +37,7 @@ class AdminNewsController {
         TwigEnvironment $twig
     ){
         $response->getBody()->write(
-            $twig->render('cp/admin/news/news.add.admin.cp.html.twig')
+            $twig->render('admincp/news/news.add.admin.cp.html.twig')
         );
 
         return $response;
@@ -92,7 +92,7 @@ class AdminNewsController {
 
 
         $response->getBody()->write(
-            $twig->render('cp/admin/news/news.edit.admin.cp.html.twig', [
+            $twig->render('admincp/news/news.edit.admin.cp.html.twig', [
                 'article' => $article,
             ])
         );

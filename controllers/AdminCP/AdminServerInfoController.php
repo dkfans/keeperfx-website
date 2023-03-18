@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\AdminCP;
 
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
@@ -39,7 +39,7 @@ class AdminServerInfoController {
         }
 
         $response->getBody()->write(
-            $twig->render('cp/admin/server-info.admin.cp.html.twig', [
+            $twig->render('admincp/server-info.admin.cp.html.twig', [
                 'alpha_build_count'             => $alpha_build_count,
                 'alpha_build_storage_size'      => $alpha_build_storage_size,
                 'php_max_upload'                => $php_max_upload,

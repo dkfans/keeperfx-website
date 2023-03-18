@@ -310,7 +310,7 @@ class WorkshopController {
         }
 
         // Automatically accept item for accounts with a role higher than 'User'
-        if($account->getUser()->getRole()->value >= UserRole::WorkshopModerator->value){
+        if($account->getUser()->getRole()->value >= UserRole::Moderator->value){
             $workshop_item->setIsAccepted(true);
         }
 
@@ -385,7 +385,7 @@ class WorkshopController {
         $em->flush();
 
         // Redirect accounts with a role higher than 'User' because their item is automatically accepted
-        if($account->getUser()->getRole()->value >= UserRole::WorkshopModerator->value){
+        if($account->getUser()->getRole()->value >= UserRole::Moderator->value){
             $flash->success('Workshop item successfully created!');
             $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
             return $response;

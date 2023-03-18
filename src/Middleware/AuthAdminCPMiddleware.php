@@ -12,7 +12,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Factory\ResponseFactory;
 
-class AuthWorkshopModMiddleware implements MiddlewareInterface {
+class AuthAdminCPMiddleware implements MiddlewareInterface {
 
     /** @var ResponseFactory $response_factory */
     public $response_factory;
@@ -47,7 +47,7 @@ class AuthWorkshopModMiddleware implements MiddlewareInterface {
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if(!$this->account->isLoggedIn() || $this->account->getUser()->getRole()->value < UserRole::WorkshopModerator->value){
+        if(!$this->account->isLoggedIn() || $this->account->getUser()->getRole()->value < UserRole::Admin->value){
 
             $this->flash->warning('You do not have the rights to access this resource.');
 

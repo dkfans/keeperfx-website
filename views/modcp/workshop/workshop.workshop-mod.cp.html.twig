@@ -28,7 +28,7 @@
                             <td>{{ workshop_item.name }}</td>
                             <td>{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, preferOriginalAuthor: false} %}</td>
                             <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:i') }}</td>
-                            <td><a href="/workshop-mod/workshop/{{ workshop_item.id }}">Edit</a></td>
+                            <td><a href="/moderate/workshop/{{ workshop_item.id }}">Edit</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -45,7 +45,7 @@
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
         <h2>Workshop Items</h2>
-        <a href="/workshop-mod/workshop/add" style="right: 0;">
+        <a href="/moderate/workshop/add" style="right: 0;">
             <button class="btn btn-medieval">Create new workshop item</button>
         </a>
     </div>
@@ -69,7 +69,7 @@
                         <td>{{ workshop_item.name }}</td>
                         <td>{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, preferOriginalAuthor: false} %}</td>
                         <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:i') }}</td>
-                        <td><a href="/workshop-mod/workshop/{{ workshop_item.id }}">Edit</a></td>
+                        <td><a href="/moderate/workshop/{{ workshop_item.id }}">Edit</a></td>
                     </tr>
                 {% endfor %}
             </tbody>

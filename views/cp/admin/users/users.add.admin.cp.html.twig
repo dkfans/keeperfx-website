@@ -39,7 +39,7 @@
                 <label for="exampleFormControlSelect1">Role</label>
                 <select class="form-control form-select" id="role" name="role">
                     <option value="{{ roles.user }}" {% if get_post_var('role') == roles.user %}selected=selected{% endif %}>User</option>
-                    <option value="{{ roles.workshop_moderator }}" {% if get_post_var('role') == roles.workshop_moderator %}selected=selected{% endif %}>Workshop Moderator</option>
+                    <option value="{{ roles.moderator }}" {% if get_post_var('role') == roles.moderator %}selected=selected{% endif %}>Moderator</option>
                     <option value="{{ roles.developer }}" {% if get_post_var('role') == roles.developer %}selected=selected{% endif %}>Developer</option>
                     <option value="{{ roles.admin }}" {% if get_post_var('role') == roles.admin %}selected=selected{% endif %}>Admin</option>
                 </select>
