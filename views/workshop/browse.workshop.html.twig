@@ -96,9 +96,9 @@
 
                                 <div class="col-6" style="text-align: right;">
 
-                                    {# Overall Rating #}
+                                    {# Quality Rating #}
                                     {% if item.ratingScore is not null %}
-                                        {{ render_workshop_overall_rating(item.id, item.ratingScore) }}
+                                        {{ render_workshop_quality_rating(item.id, item.ratingScore) }}
                                     {% endif %}
 
                                     {# Difficulty Rating #}

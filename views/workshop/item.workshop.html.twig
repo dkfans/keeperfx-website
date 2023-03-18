@@ -112,13 +112,13 @@
                                 <td style="vertical-align: top">Rating</td>
                                 <td class="text-stand-out" style="padding-left: 25px;">
 
-                                    {{ render_workshop_overall_rating(item.id, item.ratingScore) }}
+                                    {{ render_workshop_quality_rating(item.id, item.ratingScore) }}
 
-                                    <span id="overall-rating-info" class="text-muted" style="display: block; margin-top: 3px;">
+                                    <span id="quality-rating-info" class="text-muted" style="display: block; margin-top: 3px;">
                                         {% if item.ratingScore is not null %}
-                                            <span id="overall-rating-score" class="text-muted">{{ item.ratingScore|round(2, 'floor') }}</span> out of 5
+                                            <span id="quality-rating-score" class="text-muted">{{ item.ratingScore|round(2, 'floor') }}</span> out of 5
                                             <span style="margin: 0 3px" class="text-muted">&bull;</span>
-                                            <span id="overall-rating-count" class="text-muted">
+                                            <span id="quality-rating-count" class="text-muted">
                                                 {% if rating_amount == 1 %}
                                                     1 rating
                                                 {% else %}
@@ -128,7 +128,7 @@
                                             {% if user_rating != null %}
                                                 <span style="margin: 0 3px" class="text-muted">&bull;</span>
                                                 Your rating:
-                                                <span id="overall-rating-self" class="text-muted">{{ user_rating }}</span>
+                                                <span id="quality-rating-self" class="text-muted">{{ user_rating }}</span>
                                             {% endif %}
                                         {% else %}
                                             Not rated yet
@@ -367,7 +367,7 @@
                 }
 
                 // Disable rating own account items
-                if(ratingType === 'overall' && app_store.account.id === workshop_item.submitter_id){
+                if(ratingType === 'quality' && app_store.account.id === workshop_item.submitter_id){
                     toastr.warning('You can not rate your own workshop items!');
                     return;
                 }

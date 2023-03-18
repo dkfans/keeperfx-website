@@ -17,7 +17,7 @@ use App\Twig\Extension\WorkshopRatingTwigExtension;
 
 class WorkshopItemRateController {
 
-    public function rateOverall(
+    public function rateQuality(
         Request $request,
         Response $response,
         Account $account,
@@ -94,7 +94,7 @@ class WorkshopItemRateController {
                 'success'      => true,
                 'rating_score' => $rating_score,
                 'rating_count' => \count($ratings),
-                'html'         => $workshop_rating_extension->renderWorkshopOverallRating($id, $rating_score),
+                'html'         => $workshop_rating_extension->renderWorkshopQualityRating($id, $rating_score),
                 'csrf'         => [
                     'keys' => [
                         'name'  => $csrf_guard->getTokenNameKey(),

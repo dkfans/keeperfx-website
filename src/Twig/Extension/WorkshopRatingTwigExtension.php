@@ -27,8 +27,8 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
     {
         return [
             new \Twig\TwigFunction(
-                'render_workshop_overall_rating',
-                [$this, 'renderWorkshopOverallRating'],
+                'render_workshop_quality_rating',
+                [$this, 'renderWorkshopQualityRating'],
                 ['is_safe' => ['html']]
             ),
             new \Twig\TwigFunction(
@@ -51,15 +51,15 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     /**
-     * Retrieve a span with the overall rating for a workshop item.
+     * Retrieve a span with the quality rating for a workshop item.
      *
      * @param int $item_id
      * @param float|int|null $rating
      * @return string
      */
-    public function renderWorkshopOverallRating(int $item_id, float|int|null $rating) : string
+    public function renderWorkshopQualityRating(int $item_id, float|int|null $rating) : string
     {
-        return self::createStarContainerSpan($item_id, $rating, $type = 'overall', [
+        return self::createStarContainerSpan($item_id, $rating, $type = 'quality', [
             'full'    => self::STAR_FULL,
             'half'    => self::STAR_HALF,
             'empty'   => self::STAR_EMPTY,
@@ -93,7 +93,7 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
      * @param string $type    Type
      * @return string
      */
-    private static function createStarContainerSpan(int $item_id, float|int|null $rating, string $type = 'overall', array $stars = [])
+    private static function createStarContainerSpan(int $item_id, float|int|null $rating, string $type = 'quality', array $stars = [])
     {
         $output = '<span ' .
             'style="' . self::SPAN_STYLE . '" ' .
