@@ -98,9 +98,9 @@ class WorkshopModWorkshopController {
         $uploaded_files = $request->getUploadedFiles();
         $post           = $request->getParsedBody();
 
-        $name                  = (string) ($post['name'] ?? null);
-        $description           = (string) ($post['description'] ?? null);
-        $install_instructions  = (string) ($post['install_instructions'] ?? null);
+        $name                  = \trim((string) ($post['name'] ?? null));
+        $description           = \trim((string) ($post['description'] ?? null));
+        $install_instructions  = \trim((string) ($post['install_instructions'] ?? null));
 
         $original_author        = $post['original_author'] ?? null;
         $original_creation_date = $post['original_creation_date'] ?? null;
@@ -238,9 +238,9 @@ class WorkshopModWorkshopController {
         $uploaded_files        = $request->getUploadedFiles();
         $post                  = $request->getParsedBody();
 
-        $name                  = (string) ($post['name'] ?? null);
-        $description           = (string) ($post['description'] ?? null);
-        $install_instructions  = (string) ($post['install_instructions'] ?? null);
+        $name                  = \trim((string) ($post['name'] ?? null));
+        $description           = \trim((string) ($post['description'] ?? null));
+        $install_instructions  = \trim((string) ($post['install_instructions'] ?? null));
 
         $original_author        = $post['original_author'] ?? null;
         $original_creation_date = $post['original_creation_date'] ?? null;
