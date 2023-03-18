@@ -36,6 +36,7 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
     {
         return [
             new \Twig\TwigFunction('path_equals', [$this, 'pathEquals']),
+            new \Twig\TwigFunction('get_path', [$this, 'getPath']),
         ];
     }
 
@@ -69,5 +70,15 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
         }
 
         return false;
+    }
+
+    /**
+     * Get the current server request PATH
+     *
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->current_path;
     }
 }
