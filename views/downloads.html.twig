@@ -58,7 +58,7 @@
                             {% if loop.first %}(latest){% endif %}
                         </td>
                         <td>{{ release.sizeInBytes|format_bytes }}</td>
-                        <td>{{ release.timestamp|date('Y/m/d') }}</td>
+                        <td>{{ release.timestamp|date('Y-m-d') }}</td>
                         <td>
                             <a href="/changelog/{{ release.tag }}">Changelog</a>
                             ({{ release.commits.count }})
@@ -119,7 +119,7 @@
                             </a>
                         </td>
                         <td>{{ build.sizeInBytes|format_bytes }}</td>
-                        <td>{{ build.timestamp|date('Y/m/d - G:i') }}</td>
+                        <td>{{ build.timestamp|date('Y-m-d G:i:s') }}</td>
                         <td>{{ build.workflowTitle|github_interact }}</td>
                     </tr>
                 {% endfor %}

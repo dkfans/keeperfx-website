@@ -36,7 +36,7 @@
                             {% if loop.first %}(latest){% endif %}
                         </td>
                         <td>{{ release.sizeInBytes|format_bytes }}</td>
-                        <td>{{ release.timestamp|date('Y/m/d') }}</td>
+                        <td>{{ release.timestamp|date('Y-m-d') }}</td>
                         <td>
                             <a href="/changelog/{{ release.tag }}">Changelog</a>
                             ({{ release.commits.count }})

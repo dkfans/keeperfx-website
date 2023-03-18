@@ -108,9 +108,9 @@
 
                                     {# Date #}
                                     {# {% if item.originalCreationDate is not null %}
-                                        {{ item.originalCreationDate|date('Y/m/d') }}
+                                        {{ item.originalCreationDate|date('Y-m-d') }}
                                     {% else %}
-                                        {{ item.updatedTimestamp|date('Y/m/d') }}
+                                        {{ item.updatedTimestamp|date('Y-m-d') }}
                                     {% endif %} #}
 
                                     {# Downloads #}
