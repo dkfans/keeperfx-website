@@ -455,7 +455,7 @@ footer {
 
 .btn-medieval,
 .form-group .btn-medieval {
-    border: 0 !important;
+    /* border: 0 !important; */
     border-radius: 0px;
     background-color: #1c1c1c;
     color: rgb(238, 231, 224);
