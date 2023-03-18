@@ -35,7 +35,9 @@ class WorkshopBrowseController {
         $order_by  = null;
         $offset    = 0;
         $limit     = 40;
+
         $submitter = null;
+        $org_author = null;
 
         $page = (int)($q['page'] ?? 1);
 
@@ -95,6 +97,14 @@ class WorkshopBrowseController {
                 $submitter             = $user->getUsername();
                 $url_params['user']    = $user->getUsername();
             }
+        }
+
+        // Add original author criteria
+        if(!isset($q['user']) && isset($q['org_author']) && \is_string($q['org_author'])){
+            $criteria['original_author'] = $q['org_author'];
+            $url_params['org_author']    = $q['org_author'];
+            $query                       = $query->andWhere('a.original_author = :org_author')->setParameter('org_author', $q['org_author']);
+            $org_author                  = $q['org_author'];
         }
 
         // Get total workshop item count
@@ -219,6 +229,7 @@ class WorkshopBrowseController {
                 'builds'                   => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
                 'pagination'               => $pagination,
                 'submitter'                => $submitter,
+                'org_author'               => $org_author,
             ])
         );
 
