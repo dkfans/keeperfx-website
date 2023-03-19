@@ -24,10 +24,24 @@ class EnvironmentTwigExtension extends \Twig\Extension\AbstractExtension
      * Retrieve an environment variable
      *
      * @param string $var
-     * @return string
+     * @return mixed
      */
-    public function getEnvironmentVar(string $var): string
+    public function getEnvironmentVar(string $var): mixed
     {
-        return $_ENV[$var] ?? null;
+        $val = $_ENV[$var] ?? null;
+
+        if($val === null){
+            return null;
+        }
+
+        if(\filter_var($val, \FILTER_VALIDATE_INT) !== false){
+            return (int) $val;
+        }
+
+        if(\filter_var($val, \FILTER_VALIDATE_FLOAT) !== false){
+            return (float) $val;
+        }
+
+        return (string) $val;
     }
 }

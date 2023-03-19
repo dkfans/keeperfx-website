@@ -1,0 +1,237 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = 'Edit workshop item - ' ~ workshop_item.name ~ ' - Workshop' %}
+
+{% block workshop_content %}
+
+    <div class="alert alert-info">
+        Updating your workshop item will temporary remove it until the new version has been accepted by the KeeperFX team.
+    </div>
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Workshop Item: {{ workshop_item.name }}</h2>
+        </div>
+
+        <div class="content-body">
+
+            <form action="/workshop/edit/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data">
+
+                <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+                <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+                <div class="row" style="margin-bottom: 25px;">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">
+                                Name
+                                <span class="text-danger">
+                                    *
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ workshop_item.name }}" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="type">
+                                Type
+                                <span class="text-danger">
+                                    *
+                                </span>
+                            </label>
+                            <select class="form-control form-select" id="type" name="type" required>
+                                <option value="" disabled hidden>Choose the type of this item</option>
+                                {% if types|length > 0 %}
+                                    {% for type in types %}
+                                        <option value="{{ type.value }}" {% if type.value == workshop_item.type.value %}selected=selected{% endif %}>
+                                            {{ type.name|enum_beautify }}
+                                        </option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom: 25px;">
+
+                    <div class="col-md-6"></div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="min_game_build">
+                                Minimum game version
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <select class="form-control form-select" id="min_game_build" name="min_game_build">
+                                <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="-1"></option>
+                                {% if builds|length > 0 %}
+                                    {% for build in builds %}
+                                        <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild.id == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="file">File</label>
+                            <p id="file">
+                                <a href="/workshop/download/{{ workshop_item.id }}/{{ workshop_item.filename|url_encode }}?no_download_increment" download>{{ workshop_item.filename }}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="file">
+                                Update file
+                            </label>
+                            <input type="file" class="form-control" id="file" name="file">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Thumbnail</label>
+                            {% if workshop_item.thumbnail is null %}
+                                <p>
+                                    No thumbnail
+                                </p>
+                            {% else %}
+                                <div class="workshop-item-thumbnail bd-keeper">
+                                    <img src="/workshop/thumbnail/{{ workshop_item.id }}/{{ workshop_item.thumbnail }}" />
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="thumbnail">
+                                Update thumbnail
+                            </label>
+                            <input type="file" class="form-control" id="thumbnail" name="thumbnail">
+                        </div>
+                        {% if workshop_item.thumbnail is not null %}
+                            <p style="margin-top: 15px;">
+                                <a href="/workshop/edit/{{ workshop_item.id }}/thumbnail/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove thumbnail</a>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="screenshots">Screenshots</label>
+
+                            {% if screenshots|length == 0 %}
+                                <p>
+                                    No screenshots
+                                </p>
+                            {% else %}
+                                <div class="workshop-screenshots" id="workshop-screenshots">
+                                    {% for screenshot in screenshots %}
+                                        <div class="workshop-screenshot">
+                                            <a href="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}"
+                                                data-pswp-width="{{ screenshot.width }}"
+                                                data-pswp-height="{{ screenshot.height }}"
+                                                data-cropped="true"
+                                                class="workshop-screenshot-item"
+                                                target="_blank">
+                                                    <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
+                                            </a>
+                                            {# Delete screenshot #}
+                                            <a
+                                                href="/workshop/edit/{{ workshop_item.id }}/screenshot/delete/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
+                                                onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
+                                                class="btn-medieval"
+                                                style="display: inline-block; position: relative; top: -98px; right: -78px;  width: 20px; height: 20px;"
+                                                alt="Remove screenshot" title="Remove screenshot">
+                                                <ion-icon name="close-outline" style="margin-left: 2px;" alt="Remove" title="Remove"></ion-icon>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="file">
+                                Add screenshot(s)
+                            </label>
+                            <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">
+                        Description
+                        <span class="text-muted">
+                            (Optional)
+                        </span>
+                    </label>
+                    <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="install_instructions">
+                        Installation instructions
+                        <span class="text-muted">
+                            (Optional)
+                        </span>
+                    </label>
+                    <textarea class="form-control" name="install_instructions" rows="4">{{ workshop_item.installInstructions }}</textarea>
+                </div>
+
+                <div class="row" style="margin-top: 25px; margin-bottom: 30px;">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="original_author">
+                                Original Author
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" id="original_author" name="original_author" value="{{ workshop_item.originalAuthor }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="original_creation_date">
+                                Original Creation Date
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <div class="input-group mb-3">
+                                <input type="date" class="form-control" id="original_creation_date" name="original_creation_date"
+                                    value="{% if workshop_item.originalCreationDate %}{{ workshop_item.originalCreationDate|date('Y-m-d') }}{% endif %}">
+                                <button class="btn btn-outline-secondary" type="button" onclick="javascript:original_creation_date.value=''">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-medieval" value="Save" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

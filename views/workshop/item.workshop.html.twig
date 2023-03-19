@@ -1,0 +1,445 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = item.name ~ ' - Workshop' %}
+
+{% set meta = {
+    title: item.title ?? '',
+    description: item.description ?? '',
+    og: {
+        url: '/workshop/item/' ~ item.id ~ '/' ~ item.name|slugify,
+        image: item.thumbnail ? '/workshop/thumbnail/' ~ item.id ~ '/' ~ item.thumbnail : '/img/horny-face.png'
+    }
+} %}
+
+{% block workshop_content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-body">
+
+            {# Title #}
+            <h2 class="workshop-item-title">{{ item.name }}</h2>
+
+            {# Submitted by & Rating #}
+            <div class="d-flex justify-content-between" style="margin-top: 10px;  margin-bottom: 15px; padding: 0 5px;">
+
+                {# Submitted by #}
+                <div class="">
+                    <span style="margin-right: 3px;">
+                        Submitted by
+                    </span>
+
+                    {# User #}
+                    {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, preferOriginalAuthor: false} %}
+                </div>
+
+                {# Edit #}
+                <div class="">
+                {% if account != null %}
+                    {% if account.role >= roles.moderator %}
+                        <a href="/moderate/workshop/{{ item.id }}">Edit as moderator</a>
+                    {% endif %}
+                    {% if item.submitter != null and item.submitter.id == account.id and account.role >= roles.moderator %}
+                        <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                    {% endif %}
+                    {% if item.submitter != null and item.submitter.id == account.id %}
+                        <a href="/workshop/edit/{{ item.id }}">Edit your workshop item</a>
+                    {% endif %}
+                {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-5">
+
+                    {# Thumbnail #}
+                    <div class="workshop-item-thumbnail bd-keeper">
+                        {% if item.thumbnail is not null %}
+                            <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
+                        {% else %}
+                            <img src="/img/horny-face.png" />
+                        {% endif %}
+                    </div>
+
+                    {# Screenshots #}
+                    {% if screenshots|length > 0 %}
+                        <div class="workshop-screenshots" id="workshop-screenshots" style="margin-top: 15px;">
+                            {% for screenshot in screenshots %}
+                                <div class="workshop-screenshot">
+                                    <a href="/workshop/screenshot/{{ item.id }}/{{ screenshot.filename }}"
+                                        data-pswp-width="{{ screenshot.width }}"
+                                        data-pswp-height="{{ screenshot.height }}"
+                                        data-cropped="true"
+                                        class="workshop-screenshot-item"
+                                        target="_blank">
+                                            <img src="/workshop/screenshot/{{ item.id }}/{{ screenshot.filename }}" alt="" />
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-7">
+
+                    {# Information #}
+                    <div class="workshop-info-box">
+                        <table style="margin: 15px;">
+                            <tr>
+                                <td>Type</td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ item.type.name|enum_beautify }}
+                                </td>
+                            </tr>
+                            <tr style="height: 15px;"><!-- Spacer row --></tr>
+                            {% if item.originalAuthor is not empty or item.originalCreationDate is not empty %}
+                                {% if item.originalAuthor is not empty %}
+                                    <tr>
+                                        <td>Original author</td>
+                                        <td class="text-stand-out" style="padding-left: 25px;">{{ item.originalAuthor }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if item.originalCreationDate %}
+                                    <tr>
+                                        <td>Original creation date</td>
+                                        <td class="text-stand-out" style="padding-left: 25px;">{{ item.originalCreationDate|date('Y-m-d') }}</td>
+                                    </tr>
+                                {% endif %}
+                                <tr style="height: 15px;"><!-- Spacer row --></tr>
+                            {% endif %}
+                            <tr>
+                                <td style="vertical-align: top">Rating</td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+
+                                    {{ render_workshop_quality_rating(item.id, item.ratingScore) }}
+
+                                    <span id="quality-rating-info" class="text-muted" style="display: block; margin-top: 3px;">
+                                        {% if item.ratingScore is not null %}
+                                            <span id="quality-rating-score" class="text-muted">{{ item.ratingScore|round(2, 'floor') }}</span> out of 5
+                                            <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                                            <span id="quality-rating-count" class="text-muted">
+                                                {% if rating_amount == 1 %}
+                                                    1 rating
+                                                {% else %}
+                                                    {{ rating_amount }} ratings
+                                                {% endif %}
+                                            </span>
+                                            {% if user_rating != null %}
+                                                <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                                                Your rating:
+                                                <span id="quality-rating-self" class="text-muted">{{ user_rating }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            Not rated yet
+                                        {% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% if item.type not in types_without_difficulty %}
+                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                            <tr>
+                                <td style="vertical-align: top">Difficulty</td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+
+                                    {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
+
+                                    <span id="difficulty-rating-info" class="text-muted" style="display: block; margin-top: 3px;">
+                                        {% if item.difficultyRatingScore is not null %}
+                                            <span id="difficulty-rating-score" class="text-muted">{{ item.difficultyRatingScore|round(2, 'floor') }}</span> out of 5
+                                            <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                                            <span id="difficulty-rating-total" class="text-muted">
+                                                {% if difficulty_rating_amount == 1 %}
+                                                    1 rating
+                                                {% else %}
+                                                    {{ difficulty_rating_amount }} ratings
+                                                {% endif %}
+                                            </span>
+                                            {% if user_difficulty_rating != null %}
+                                                <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                                                Your rating:
+                                                <span id="difficulty-rating-self" class="text-muted">{{ user_difficulty_rating }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            Not rated yet
+                                        {% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                            <tr>
+                                <td>Submission date</td>
+                                <td class="text-stand-out time-ago" style="padding-left: 25px;">
+                                    {{ item.createdTimestamp|date('Y-m-d') }}
+                                </td>
+                            </tr>
+                            {% if item.updatedTimestamp != item.createdTimestamp %}
+                                <tr>
+                                    <td>Last updated</td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                            {{ item.updatedTimestamp|date('Y-m-d') }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr style="height: 15px;"><!-- Spacer row --></tr>
+                            <tr>
+                                <td>Filesize</td>
+                                <td class="text-stand-out" style="padding-left: 25px;">{{ filesize|format_bytes }}</td>
+                            </tr>
+                            <tr>
+                                <td>Downloads</td>
+                                <td class="text-stand-out" style="padding-left: 25px;">{{ item.downloadCount }}</td>
+                            </tr>
+                            {% if item.minGameBuild is not null %}
+                                <tr style="height: 15px;"><!-- Spacer row --></tr>
+                                <tr>
+                                    <td>Min. game version</td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {{ item.minGameBuild.name }}
+                                        {# <span class="text-muted" style="margin-left: 5px;">(and up)</span> #}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </table>
+
+                        {# Download button #}
+                        <div class="text-center" style="margin-bottom: 20px; width: 100%;">
+                            <a
+                                href="/workshop/download/{{ item.id }}/{{ item.filename|url_encode }}"
+                                class="btn btn-lg btn-medieval"
+                                style="width: 100%; max-width: 300px;"
+                                download>
+                                    Download
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-12">
+
+                    {# Description #}
+                    {% if item.description is not empty %}
+                        <h5 style="margin-top: 0px; border-bottom: 0;">Description</h5>
+                        <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
+                            {{ item.description|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
+                        </div>
+                    {% endif %}
+
+                    {# Install Instructions #}
+                    {% if item.installInstructions is not empty %}
+                        <h5 style="margin-top: 0px; border-bottom: 0;">Installation Intructions</h5>
+                        <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
+                            {{ item.installInstructions|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Comments #}
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Comments</h2>
+        </div>
+        <div class="content-body">
+            {% if item.comments|length == 0 %}
+                <p>
+                    No comments yet.
+                </p>
+            {% else %}
+                {% for comment in item.comments %}
+                    <div class="workshop-item-comment d-flex">
+
+                        <div class="" style="height: 100%;">
+                            {% if comment.user.avatar %}
+                                <img src="/avatar/{{ comment.user.avatar }}" class="user-avatar user-avatar-big" />
+                            {% else %}
+                                <img src="{{ avatar(comment.user.username, 'circle', 128) }}" class="user-avatar user-avatar-big" />
+                            {% endif %}
+                        </div>
+
+                        <div class="" style="width: 100%; margin-left: 7px; padding: 0;">
+                                <div class="d-flex justify-content-between" style="width: 100%;">
+                                    <a
+                                    href="/workshop/browse?user={{ comment.user.username }}"
+                                    title="Browse {{ comment.user.username }}'s Workshop Items"
+                                    class="user-link d-inline-block">
+                                        <span class="user-username">{{ comment.user.username }}</span>
+                                    </a>
+                                    <span class="text-muted" style="display:inline;">
+                                        {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
+                                    </span>
+                                </div>
+
+                                <div class="force-wordwrap" style="margin-bottom: 15px; margin-top: 3px;">
+                                    {{ comment.content|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|nl2br }}
+                                </div>
+                        </div>
+
+
+
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <h5 style="border-bottom: 0; margin-top: 30px;">Comment</h5>
+            {% if account is null %}
+            <p>
+                <a href="/login?redirect={{ get_path() }}">Login</a> or <a href="/register">register</a> to comment on this workshop item.
+            </p>
+            {% else %}
+                <form action="/workshop/item/{{ item.id }}/comment" method="POST">
+                    <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+                    <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+                    <div class="form-group">
+                        <textarea class="form-control" name="content" rows="4" placeholder="Write a comment" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-medieval" value="Submit" />
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block body_javascript %}
+<script>
+    const workshop_item = {
+        id: {{ item.id }},
+        slug: '{{ item.name|slugify }}',
+        submitter_id: {{ item.submitter.id ?? 'null' }}
+    }
+</script>
+<script type="module">
+    import PhotoSwipeLightbox from 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe-lightbox.esm.min.js';
+
+    // Initialize image lightbox
+    const lightbox = new PhotoSwipeLightbox({
+        bgOpacity: 0.8,
+        gallery: '#workshop-screenshots',
+        children: 'a.workshop-screenshot-item',
+        pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.esm.min.js'),
+        mainClass: 'pswp-with-perma-preloader',
+        initialZoomLevel: 'fit',
+        showHideAnimationType: 'zoom'
+    });
+
+    // Init lightbox
+    lightbox.init();
+</script>
+<script>
+
+    function handleRatingHtml(el){
+
+        var $ratingBox     = $(el);
+        var workshopItemId = $ratingBox.attr('data-workshop-item-id');
+        var ratingType     = $ratingBox.attr('data-workshop-rating-type');
+
+        $.each($(el).find('img'), function(index, element){
+
+            var ratingScore = parseInt($(element).attr('data-rating-score'));
+
+            $(element).css('cursor', 'pointer');
+
+            $(element).on('click', function(e){
+
+                // Hide open popover
+                $('.popover').hide();
+
+                // Make sure we are logged in
+                if(app_store.account === null){
+                    window.location = '/login'
+                        + '?redirect=/workshop/item/' + workshop_item.id + '/' + workshop_item.slug
+                        + '&msg=workshop-rate';
+                    return;
+                }
+
+                // Disable rating own account items
+                if(ratingType === 'quality' && app_store.account.id === workshop_item.submitter_id){
+                    toastr.warning('You can not rate your own workshop items!');
+                    return;
+                }
+
+                // Rate the workshop item
+                $.ajax({
+                    type: 'POST',
+                    url: '/workshop/rate/' + workshopItemId + '/' + ratingType,
+                    data: {
+                        score: ratingScore,
+                        [app_store.csrf.keys.name]: app_store.csrf.name,
+                        [app_store.csrf.keys.value]: app_store.csrf.value
+                    },
+                    dataType: 'json', // return type data,
+                    error: function(data){
+                        toastr.error('Something went wrong.');
+                    },
+                    success: function(data){
+
+                        // Make sure rating went successful
+                        if(typeof data.success === 'undefined' || data.success !== true){
+                            toastr.error('Something went wrong.');
+                            return;
+                        }
+
+                        // Update rating stars HTML
+                        $ratingBox.html(data.html);
+                        handleRatingHtml($ratingBox);
+
+                        // Set template for rating info
+                        $('#' + ratingType + '-rating-info').html('<span id="' + ratingType + '-rating-score" class="text-muted"></span> out of 5' +
+                            '<span style="margin: 0 3px" class="text-muted"> &bull; </span>' +
+                            '<span id="' + ratingType + '-rating-count" class="text-muted"></span>' +
+                            '<span style="margin: 0 3px" class="text-muted"> &bull; </span>' +
+                            'Your rating: ' +
+                            '<span id="' + ratingType + '-rating-self" class="text-muted"></span>');
+
+                        // Update rating score
+                        $('#' + ratingType + '-rating-score').text(data.rating_score);
+
+                        // Update rating count
+                        if(data.rating_count === 1){
+                            $('#' + ratingType + '-rating-count').text('1 rating');
+                        } else {
+                            $('#' + ratingType + '-rating-count').text('' + data.rating_count + ' ratings');
+                        }
+
+                        // Update self rating
+                        $('#' + ratingType + '-rating-self').text(ratingScore);
+
+                        // Update CSRF tokens
+                        app_store.csrf.name = data.csrf.name;
+                        app_store.csrf.value = data.csrf.value;
+
+                        toastr.success('You have succesfuly rated this workshop item!');
+
+                    },
+                });
+            });
+
+            new bootstrap.Popover(element, {
+                'placement': 'top',
+                'trigger': 'hover',
+                'content': 'Rate this item ' + ratingScore + ' out of 5'
+            });
+        });
+    }
+
+    $(function(e){
+        $.each($('[data-workshop-rating-type]'), function(i, el){
+            handleRatingHtml(el);
+        });
+    });
+</script>
+{% endblock %}

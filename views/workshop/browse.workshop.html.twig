@@ -1,0 +1,183 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = 'Workshop' %}
+
+{% block workshop_content %}
+
+    <div class="content-box bd-keeper bg-keeper">
+        <div class="content-header">
+            <h2>
+                {% if submitter != null %}
+                    <span class="text-special">{{ submitter }}</span>'s
+                {% endif %}
+                {% if org_author != null %}
+                    <span class="text-white">{{ org_author }}</span>'s
+                {% endif %}
+                Workshop items
+            </h2>
+        </div>
+
+
+        {% if workshop_items|length != 0 %}
+            <div class="content-menu d-flex justify-content-between">
+
+                <div class="" style="margin-top: 4px;">
+                    {# Pagination #}
+                    {% include 'workshop/_workshop_browse_pagination.html.twig' %}
+                </div>
+
+                <div class="">
+                    {# Order by #}
+                    <form method="GET">
+                        <span>Order by:</span>
+                        <select class="form-control form-select" id="order-by" name="order_by" style="width: inherit; display: inline-block;">
+                            <option value="latest" {% if get_query_param('order_by') == 'latest' %}selected=selected{% endif %}>Latest</option>
+                            <option value="most-downloaded" {% if get_query_param('order_by') == 'most-downloaded' %}selected=selected{% endif %}>Most Downloaded</option>
+                            <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
+                            <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
+                        </select>
+                        <noscript>
+                            <input class="btn btn-primary" type="submit" value="Change" style="display: inline-block;" />
+                        </noscript>
+                    </form>
+
+                </div>
+
+            </div>
+        {% endif %}
+
+        <div class="content-body" style="padding-top: 0px;">
+
+            {# Show notice when no items #}
+            {% if workshop_items|length == 0 %}
+                <p style="margin: 15px 0 0 0;">No workshop items found</p>
+            {% endif %}
+
+            <div class="workshop-grid">
+
+                {% for item in workshop_items %}
+                    <div class="workshop-grid-item">
+
+                        {# Thumbnail #}
+                        <div class="workshop-grid-item-image-container">
+                            <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                {% if item.thumbnail is not null %}
+                                    <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
+                                {% else %}
+                                    <img src="/img/horny-face.png" />
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <div class="workshop-grid-item-info">
+
+                            {# Title #}
+                            <div class="workshop-grid-item-title">
+                                <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                    {{ item.name }}
+                                </a>
+                            </div>
+
+                            {# Info #}
+                            <div class="row" style="margin-top: 10px;">
+
+                                <div class="col-6">
+
+                                    {# Type #}
+                                    {# <span class="text-warning"> #}
+                                    <span style="margin-top: 2px; display: block; margin-bottom: 5px">
+                                        {{ item.type.name|enum_beautify }}
+                                    </span>
+
+                                    {# User or Original Author #}
+                                    {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, preferOriginalAuthor: true} %}
+
+                                </div>
+
+                                <div class="col-6" style="text-align: right;">
+
+                                    {# Quality Rating #}
+                                    {% if item.ratingScore is not null %}
+                                        {{ render_workshop_quality_rating(item.id, item.ratingScore) }}
+                                    {% endif %}
+
+                                    {# Difficulty Rating #}
+                                    {% if item.difficultyRatingScore is not null and item.type not in types_without_difficulty %}
+                                        {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
+                                    {% endif %}
+
+                                    {# Date #}
+                                    {# {% if item.originalCreationDate is not null %}
+                                        {{ item.originalCreationDate|date('Y-m-d') }}
+                                    {% else %}
+                                        {{ item.updatedTimestamp|date('Y-m-d') }}
+                                    {% endif %} #}
+
+                                    {# Downloads #}
+                                    {# <span style="margin-top: 7px; display: inline-block;">
+                                        {{ item.downloadCount }}
+                                        {% if item.downloadCount == 1 %}
+                                            download
+                                        {% else %}
+                                            downloads
+                                        {% endif %}
+                                    </span> #}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                {% endfor %}
+
+                {# Fix the grid having only 1 column when there is only 1 workshop item #}
+                {% if workshop_items|length == 1 %}
+                    <div></div>
+                {% endif %}
+
+            </div>
+        </div>
+
+
+        {# Pagination (bottom) #}
+        {% if pagination|length > 1 %}
+            <div class="content-menu d-flex justify-content-start" style="padding-top: 0px;">
+                <div class="" style="margin-top: 4px;">
+                    {% include 'workshop/_workshop_browse_pagination.html.twig' %}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+<script>
+    $(function(){
+
+        var queryParams = new URLSearchParams(location.search);
+
+        $('#order-by').on('change', function(e){
+            queryParams.set('order_by', $(this).val());
+            queryParams.delete('page');
+            window.location.href = '/workshop/browse?' + queryParams.toString();
+        });
+
+
+        $.each($('span[data-workshop-rating-score]'), function(index, element){
+
+            let ratingType = $(this).attr('data-workshop-rating-type');
+            ratingType = ratingType.charAt(0).toUpperCase() + ratingType.slice(1);
+
+            let string = ratingType + ' rating: ' + $(this).attr('data-workshop-rating-score');
+
+            new bootstrap.Popover(element, {
+                'placement': 'top',
+                'trigger': 'hover',
+                'content': string,
+                'offset': '5px'
+            });
+        });
+    });
+</script>
+
+{% endblock %}

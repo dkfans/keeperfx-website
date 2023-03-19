@@ -75,6 +75,10 @@ class CreateUserCommand extends Command
                 case 'user':
                     $role = UserRole::User;
                     break;
+                case 'mod':
+                case 'moderator':
+                    $role = UserRole::Moderator;
+                    break;
                 case 'dev':
                 case 'developer':
                     $role = UserRole::Developer;

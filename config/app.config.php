@@ -17,4 +17,20 @@ return [
         'editor'     => $_ENV['APP_DEV_WHOOPS_EDITOR'],
     ],
 
+    'workshop' => [
+        'item_types_without_difficulty' => [
+            \App\Enum\WorkshopType::Application,
+            \App\Enum\WorkshopType::Other,
+        ]
+    ],
+
+    'disallowed_username_words' => [
+        'keeperfx',
+        'kfx',
+        'admin',
+        'moderator',
+        'developer',
+        'workshop',
+    ],
+
 ];

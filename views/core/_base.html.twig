@@ -5,31 +5,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         {# Page title #}
-        <title>
-            {% if get_env('APP_ENV') == 'dev' %}[*dev*]{% endif %}
-            {% if block('full_title') is empty %}
-                {% if block('title') is not empty %}
-                    {% block title %}{% endblock %} -
-                {% endif %}
-                KeeperFX
-            {% else %}
-                {% block full_title %}{% endblock %}
-            {% endif %}
-        </title>
+        <title>{% include 'core/_page_title.html.twig' %}</title>
 
-        {# SEO stuff #}
-        {% if block('meta_description') is not empty %}
-            <meta name="description" content="{% block meta_description %}{% endblock %}" />
-        {% endif %}
-        <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="keeperfx, dungeon keeper, opensource, open-source, remake, modern, windows, download" />
+        {# Meta Tags #}
+        {% include 'core/_meta_tags.html.twig' %}
 
         {# Favicon #}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
         {# Bootstrap core CSS #}
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+            integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous" />
+
+        {# Taostr CSS #}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" crossorigin="anonymous" />
+
+        {# Photoswipe CSS #}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.min.css"
+            integrity="sha512-TdCx5ObKpq3+lwUdiXFgFLhqwTB98YsdaQWSJrwkOz084qaeO86+NMYfU/pnpPo1pDVah0a7yvFmbcvI8ZiGAw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         {# CSS #}
         <link rel="stylesheet" href="{{ asset('/css/theme.css') }}" />
@@ -38,9 +32,13 @@
         {% block stylesheets %}{% endblock %}
 
         {# App store - used for passing application variables to javascript #}
-        {% if app_store is defined %}
-            <script>const app_store = {{ app_store|json_encode()|raw }};</script>
-        {% endif %}
+        <script>
+            const app_store = {
+                account: {{ account|json_encode()|raw }},
+                csrf: {{ csrf|json_encode()|raw }},
+                upload_limit: {{ globals.upload_limit|json_encode()|raw }}
+            };
+        </script>
 
         {# Sentry #}
         {# {% if get_env('APP_SENTRY_DSN') %}
@@ -53,8 +51,14 @@
             </script>
         {% endif %} #}
 
-        {# Javascript #}
-        {# <script src="/lib/jquery/jquery-3.6.0.min.js"></script> #}
+        {# Bootstrap javascript #}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+        {# jQuery javascript #}
+        <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+
+        {# Toastr javascript #}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js" crossorigin="anonymous"></script>
 
     </head>
 
@@ -62,11 +66,12 @@
 
         {% block body %}{% endblock %}
 
+        {# Ion Icons javascript #}
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js" crossorigin="anonymous"></script>
+        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js" crossorigin="anonymous"></script>
+
         {# Javascript #}
         {% block body_javascript %}{% endblock %}
-
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
     </body>
 

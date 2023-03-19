@@ -1,0 +1,240 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = 'Upload a new workshop item - Workshop' %}
+
+{% block workshop_content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Upload a new workshop item</h2>
+        </div>
+
+        <div class="content-body">
+
+            <form id="upload-item-form" action="/workshop/upload" method="POST" enctype="multipart/form-data">
+
+                <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+                <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+                <div class="row" style="margin-bottom: 25px;">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">
+                                Name
+                                <span class="text-danger">
+                                    *
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="type">
+                                Type
+                                <span class="text-danger">
+                                    *
+                                </span>
+                            </label>
+                            <select class="form-control form-select" id="type" name="type" required>
+                                <option value="" disabled selected hidden>Choose the type of this item</option>
+                                {% if types|length > 0 %}
+                                    {% for type in types %}
+                                        <option value="{{ type.value }}">
+                                            {{ type.name|enum_beautify }}
+                                        </option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom: 25px;">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="file">
+                                File
+                                <span class="text-danger">
+                                    *
+                                </span>
+                            </label>
+                            <input type="file" class="form-control" id="file" name="file" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="min_game_build">
+                                Minimum game version
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <select class="form-control form-select" id="min_game_build" name="min_game_build">
+                                <option selected="selected"></option>
+                                {% if builds|length > 0 %}
+                                    {% for build in builds %}
+                                        <option value="{{ build.id }}">
+                                            {{ build.name }}
+                                        </option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom: 25px;">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="thumbnail">
+                                Thumbnail
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <input type="file" class="form-control" id="thumbnail" name="thumbnail">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="screenshots">
+                                Screenshots
+                                (Multiple)
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">
+                        Description
+                        <span class="text-muted">
+                            (Optional)
+                        </span>
+                    </label>
+                    <textarea class="form-control" name="description" rows="6"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="install_instructions">
+                        Installation instructions
+                        <span class="text-muted">
+                            (Optional)
+                        </span>
+                    </label>
+                    <textarea class="form-control" name="install_instructions" rows="4"></textarea>
+                </div>
+
+                <div class="row" style="margin-top: 25px; margin-bottom: 30px;">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="original_author">
+                                Original Author
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" id="original_author" name="original_author">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="original_creation_date">
+                                Original Creation Date
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <input type="date" class="form-control" id="original_creation_date" name="original_creation_date">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-medieval" value="Submit" />
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block body_javascript %}
+    <script>
+        $(function(){
+
+            var fileFileSize = 0;
+            var thumbnailFileSize = 0;
+            var screenshotsTotalFileSize = 0;
+
+            // Item max upload filesize check
+            $('#file').on('change', function(){
+                fileFileSize = 0;
+                if(this.files[0].size > app_store.upload_limit.workshop_item.size){
+                    toastr.warning('File exceeds maximum filesize of ' + app_store.upload_limit.workshop_item.formatted);
+                    this.value = null;
+                } else {
+                    fileFileSize = this.files[0].size;
+                }
+            });
+
+            // Thumbnail max upload filesize check
+            $('#thumbnail').on('change', function(){
+                thumbnailFileSize = 0;
+                if(this.files[0].size > app_store.upload_limit.workshop_image.size){
+                    toastr.warning('Thumbnail exceeds maximum filesize of ' + app_store.upload_limit.workshop_image.formatted);
+                    this.value = null;
+                } else {
+                    thumbnailFileSize = this.files[0].size;
+                }
+            });
+
+            // Screenshots max upload filesize check
+            $('#screenshots').on('change', function(){
+                screenshotsTotalFileSize = 0;
+                var valid = true;
+                var totalUploadSize = 0;
+                $.each(this.files, function(index, file){
+                    totalUploadSize += file.size;
+                    if(file.size > app_store.upload_limit.workshop_image.size){
+                        toastr.warning('Image "' + file.name + '" exceeds maximum filesize of ' + app_store.upload_limit.workshop_image.formatted);
+                        valid = false;
+                    }
+                });
+                if(!valid){
+                    this.value = null;
+                    totalUploadSize = 0;
+                }
+                screenshotsTotalFileSize = totalUploadSize;
+            });
+
+            // Check total upload size on form submit
+            $('#upload-item-form').on('submit', function(e){
+                var totalUploadSize = fileFileSize + thumbnailFileSize + screenshotsTotalFileSize;
+                if(totalUploadSize > app_store.upload_limit.total.size){
+                    toastr.warning(
+                        'Maximum total upload size of ' + app_store.upload_limit.total.formatted + ' is exceeded. ' +
+                        'If you have many screenshots, try uploading the item without them and then add the screenshots later.'
+                    );
+                    e.preventDefault();
+                }
+            });
+
+        });
+    </script>
+{% endblock %}

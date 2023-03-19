@@ -1,0 +1,114 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Account Settings' %}
+
+{% block page %}
+
+{# Server Info #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Server Information</h2>
+    </div>
+    <div class="content-body">
+
+        {# Alpha build info #}
+        <table class="table">
+            <tr>
+                <td>
+                    Alpha Build count
+                </td>
+                <td class="text-info">
+                    {{ alpha_build_count }}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Alpha Build total storage size
+                </td>
+                <td class="text-info">
+                    {{ alpha_build_storage_size|format_bytes }}
+                </td>
+            </tr>
+        </table>
+
+        {# Upload info #}
+        <table class="table">
+            <tr>
+                <td>
+                    Max Avatar upload filesize
+                </td>
+                <td class="text-info">
+                    {{ globals.upload_limit.avatar.size|format_bytes }}
+                    {% if get_env('APP_AVATAR_MAX_UPLOAD_SIZE') is not null and get_env('APP_AVATAR_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_AVATAR_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
+                        <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
+                        <span class="text-muted" style="margin-left: 10px; font-weight: 800;">(Original: {{ get_env('APP_AVATAR_MAX_UPLOAD_SIZE')|format_bytes }})</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Max Workshop item upload filesize
+                </td>
+                <td class="text-info">
+                    {{ globals.upload_limit.workshop_item.size|format_bytes }}
+                    {% if get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE') is not null and get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
+                        <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
+                        <span class="text-muted" style="margin-left: 10px; font-weight: 800;">(Original: {{ get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE')|format_bytes }})</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Max Workshop image upload filesize
+                </td>
+                <td class="text-info">
+                    {{ globals.upload_limit.workshop_image.size|format_bytes }}
+                    {% if get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE') is not null and get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
+                        <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
+                        <span class="text-muted" style="margin-left: 10px; font-weight: 800;">(Original: {{ get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE')|format_bytes }})</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        {# PHP upload info #}
+        <table class="table">
+            <tr>
+                <td>
+                    php.ini - <code>upload_max_filesize</code>
+                </td>
+                <td class="text-info">
+                    {{ php_max_upload|format_bytes }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    php.ini - <code>post_max_size</code>
+                </td>
+                <td class="text-info">
+                    {{ php_max_post|format_bytes }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    php.ini - <code>memory_limit</code>
+                </td>
+                <td class="text-info">
+                    {{ php_memory_limit|format_bytes }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Maximum PHP file upload filesize
+                </td>
+                <td class="text-info">
+                    {{ upload_calculated_minimum|format_bytes }}
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

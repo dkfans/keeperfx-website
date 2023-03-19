@@ -1,0 +1,42 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'News articles - Admin' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>News</h2>
+        <a href="/admin/news/add" style="right: 0;">
+            <button class="btn btn-medieval">Create new article</button>
+        </a>
+    </div>
+    <div class="content-body">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                        <tr>
+                            <td><a href="/news/{{ article.id }}/{{ article.titleSlug }}">{{ article.title }}</a></td>
+                            <td>{{ article.author.username }}</td>
+                            <td>{{ article.createdTimestamp|date('Y-m-d') }}</td>
+                            <td>
+                                <a href="/admin/news/{{ article.id }}">Edit</a>
+                            </td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+
+{# Standard Meta tags #}
+<meta name="robots" content="index, follow" />
+<meta name="keywords" content="keeperfx, dungeon keeper, opensource, open-source, remake, modern, windows, download" />
+
+{# <meta property="og:site_name" content="KeeperFX" /> #}
+
+<meta charset="utf-8" />
+
+{# Show a large image on Twitter #}
+{# <meta name="twitter:card" content="summary_large_image"> #}
+
+{# Description #}
+{% if meta.description is defined and meta.description is not empty %}
+    <meta name="description" content="{{ meta.description }}" />
+{% endif %}
+
+{# OG: Title #}
+{% if meta.og.title is defined %}
+    <meta property="og:title" content="{{ meta.og.title }} - KeeperFX" />
+{% else %}
+    <meta property="og:title" content="{% include 'core/_page_title.html.twig' %}" />
+{% endif %}
+
+{# OG: Description #}
+{% if meta.og.description is defined %}
+    <meta property="og:description" content="{{ meta.og.description }}" />
+{% elseif meta.description is defined and meta.description is not empty %}
+    <meta property="og:description" content="{{ meta.description }}" />
+{% endif %}
+
+{# OG Image #}
+{% if meta.og.image is defined %}
+    <meta property="og:image" content="{{ meta.og.image }}" />
+{% elseif meta.description is defined %}
+    <meta property="og:image" content="/img/horny-face.png" />
+{% endif %}
+
+{# OG: Type #}
+{% if meta.og.type is defined %}
+    <meta property="og:type" content="{{ meta.og.type }}" />
+{% else %}
+    <meta property="og:type" content="website" />
+{% endif %}
+
+{# OG URL #}
+{% if meta.og.url is defined %}
+    <meta property="og:url" content="{{ meta.og.url }}" />
+{% endif %}

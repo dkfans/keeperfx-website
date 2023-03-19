@@ -1,10 +1,15 @@
 {% extends "core/_layout.html.twig" %}
 
-{% block full_title %}KeeperFX - Dungeon Keeper Opensource Remake and Fan Expansion{% endblock %}
-{% block meta_description %}KeeperFX is an opensource remake of the game Dungeon Keeper. It also adds a ton of fan made content.{% endblock %}
+{% set full_page_title = 'KeeperFX - Dungeon Keeper Opensource Remake and Fan Expansion' %}
+
+{% set meta = {
+    description: 'KeeperFX is an opensource remake of the game Dungeon Keeper. It makes the game run on modern machines and adds a ton of fan made content.'
+} %}
 
 
 {% block content %}
+
+{{ render_flash_messages() }}
 
 <div class="row">
 
@@ -18,7 +23,7 @@
             </div>
             <div class="content-body">
                 <p>
-                    <strong>KeeperFX</strong> is an open-source remake and fan expansion of <a href="https://en.wikipedia.org/wiki/Dungeon_Keeper" target="_blank">Dungeon Keeper <ion-icon name="log-out-outline"></ion-icon></a>.
+                    <strong>KeeperFX</strong> is an open-source remake and fan expansion of <a href="https://en.wikipedia.org/wiki/Dungeon_Keeper" target="_blank">Dungeon Keeper <ion-icon name="open-outline" class="outgoing"></ion-icon></a>.
                 </p>
                 <p>
                     <strong>Features:</strong>
@@ -75,7 +80,7 @@
         {# Download Button #}
         {% if release %}
             <a href="/downloads" alt="Download">
-                <button class="btn btn-medieval" style="padding: 15px;width: 100%; margin-bottom: 25px">
+                <button class="btn btn-medieval" style="padding: 16px;width: 100%; margin-bottom: 25px">
                     <h3>Download</h3>
                     <span>{{ release.name }}</span>
                 </button>
@@ -91,7 +96,7 @@
             <div class="content-body">
                 Repository:
                 <a href="https://github.com/dkfans/keeperfx" target="_blank">
-                    dkfans/keeperfx <ion-icon name="log-out-outline"></ion-icon>
+                    dkfans/keeperfx <ion-icon name="open-outline" class="outgoing"></ion-icon>
                 </a>
 
                 <br />
@@ -137,7 +142,7 @@
                 <div class="content-body">
                     {% for thread in forum_threads %}
                         <p>
-                            <a href="{{ thread.url }}" target="_blank">{{ thread.title }} <ion-icon name="log-out-outline"></ion-icon></a>
+                            <a href="{{ thread.url }}" target="_blank">{{ thread.title }} <ion-icon name="open-outline" class="outgoing"></ion-icon></a>
                             <br />
                             {{ thread.date_str }}
                         </p>

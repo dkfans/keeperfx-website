@@ -22,11 +22,20 @@ class LoginController {
     ){
 
         if($account->isLoggedIn()){
-            $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
+            $response = $response->withHeader('Location', '/')->withStatus(302);
+            // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
         }
 
-        $flash->info('This area is currently for Developers and Admins only. Logged in user functionality will be implemented later.');
+        $params = $request->getQueryParams();
+
+        if(isset($params['msg'])){
+            switch((string)$params['msg']){
+                case 'workshop-rate':
+                    $flash->info('You need to be logged in to rate workshop items.');
+                    break;
+            }
+        }
 
         $response->getBody()->write(
             $twig->render('login.html.twig')
@@ -44,10 +53,10 @@ class LoginController {
         Session $session,
         FlashMessage $flash
     ){
-
         $post = $request->getParsedBody();
-        $username = (string) ($post['username'] ?? null);
-        $password = (string) ($post['password'] ?? null);
+        $username = (string) ($post['username'] ?? '');
+        $password = (string) ($post['password'] ?? '');
+        $redirect = (string) ($post['redirect'] ?? '');
 
         if($username && $password){
 
@@ -56,11 +65,21 @@ class LoginController {
 
                 if(\password_verify($password, $user->getPassword())){
 
+                    // Log user in (session)
                     $session['uid'] = $user->getId();
 
-                    $flash->success('Successfuly logged in!');
+                    // Determine redirect location
+                    $redirect_location = '/';
+                    // $redirect_location = '/dashboard';
+                    if($redirect && \preg_match('/^\/[a-zA-Z]/', $redirect)){
+                        $redirect_location = $redirect;
+                    }
 
-                    $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
+                    // Show flash message
+                    $flash->success('You have successfully logged in!');
+
+                    // Redirect
+                    $response = $response->withHeader('Location', $redirect_location)->withStatus(302);
                     return $response;
 
                 }

@@ -2,7 +2,7 @@
 
 {% block body %}
 
-    <div class="container">
+    <div class="container-lg">
 
         <div class="content-box bd-keeper" style="margin-top: 30px;">
 
@@ -16,7 +16,7 @@
             <img src="/img/top-banner.png" width="100%" />
         </div>
 
-        <nav class="navbar justify-content-between content-box bd-keeper header">
+        <nav class="navbar justify-content-between content-box bg-keeper bd-keeper header">
             <div>
 
                 <a href="/">
@@ -25,6 +25,10 @@
                 <span class="header-separator">|</span>
                 <a href="/downloads">
                     Downloads
+                </a>
+                <span class="header-separator">|</span>
+                <a href="/workshop/browse">
+                    Workshop
                 </a>
                 <span class="header-separator">|</span>
                 <a href="/wiki">
@@ -43,13 +47,56 @@
 
             <div>
 
-                {# <a href="/">
-                    Register
-                </a>
-                <span class="header-separator">|</span>
-                <a href="/login">
-                    Login
-                </a> #}
+                {% if account %}
+
+                    <div class="dropdown">
+                        <a class="dropdown-toggle" href="/account" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {# <a class="dropdown-toggle" href="/dashboard" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> #}
+
+                            {% if account.avatar %}
+                                <img src="/avatar/{{ account.avatar }}" class="user-avatar" />
+                            {% else %}
+                                <img src="{{ avatar(account.username, 'circle', 128) }}" class="user-avatar" />
+                            {% endif %}
+
+                            {{ account.username }}
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarDropdown">
+
+                            {# <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li> #}
+                            <li><a class="dropdown-item" href="/account">Account Settings</a></li>
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            {% if account.role >= roles.moderator %}
+                                <li><a class="dropdown-item" href="/moderate/workshop/list">Manage Workshop</a></li>
+
+                                {% if account.role >= roles.admin %}
+                                    <li><a class="dropdown-item" href="/admin/news/list">Manage News</a></li>
+                                    <li><a class="dropdown-item" href="/admin/user/list">Manage Users</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/admin/server-info">Server Info</a></li>
+                                {% endif %}
+
+                                <li><hr class="dropdown-divider"></li>
+
+                            {% endif %}
+
+                            <li><a class="dropdown-item" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">Logout</a></li>
+
+                        </ul>
+
+                    </div>
+                {% else %}
+                    <a href="/login">
+                        Login
+                    </a>
+                    <span class="header-separator">|</span>
+                    <a href="/register">
+                        Register
+                    </a>
+                {% endif %}
 
             </div>
 
@@ -58,7 +105,15 @@
         {% block content %}{% endblock %}
 
         <footer>
-            KeeperFX - Open Source Dungeon Keeper Remake & Fan Expansion - <a href="/rss-info">RSS</a> - <a href="/login">Login</a>
+            KeeperFX - Open Source Dungeon Keeper Remake & Fan Expansion
+            <br />
+            No affiliation with Bullfrog or E.A.
+            <br />
+            <a href="/rss-info">RSS</a>
+            -
+            <a href="/terms-of-service">Terms of Service</a>
+            -
+            <a href="/privacy-policy">Privacy Policy</a>
         </footer>
 
     </div>

@@ -1,0 +1,31 @@
+
+
+<ul class="pagination">
+
+    {# <li class="page-item {% if pagination.first.disabled %}disabled{% endif %}">
+        <a class="page-link page-link-caret" href="{{ pagination.first.url }}"><<</a>
+    </li>
+
+    <li class="page-item {% if pagination.previous.disabled %}disabled{% endif %}">
+        <a class="page-link page-link-caret" href="{{ pagination.previous.url }}"><</a>
+    </li> #}
+
+    {% for page in pagination %}
+
+        <li class="page-item {% if page.active %}active{% endif %} {% if page.disabled %}disabled{% endif %}">
+            <a class="page-link" href="{{ page.url }}">
+                {{ page.label }}
+            </a>
+        </li>
+
+    {% endfor %}
+
+    {# <li class="page-item {% if pagination.next.disabled %}disabled{% endif %}">
+        <a class="page-link page-link-caret" href="{{ pagination.next.url }}">></a>
+    </li>
+
+    <li class="page-item {% if pagination.last.disabled %}disabled{% endif %}">
+        <a class="page-link page-link-caret" href="{{ pagination.last.url }}">>></a>
+    </li> #}
+
+</ul>

@@ -15,6 +15,9 @@ return [
     // User
     \App\Console\Command\User\CreateUserCommand::class,
 
+    // Workshop
+    \App\Console\Command\Workshop\AddWorkshopTagCommand::class,
+
     // Cache
     \App\Console\Command\Cache\CacheClearCommand::class,
     \App\Console\Command\Cache\CacheWarmCommand::class,

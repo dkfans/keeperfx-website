@@ -1,0 +1,65 @@
+{% extends "core/_layout.html.twig" %}
+
+{% block content %}
+
+
+
+<div class="row">
+
+    {# Sidebar #}
+    <div class="col-md-3">
+        <div class="content-box bg-keeper bd-keeper">
+            <div class="content-header">
+                <h2>Control Panel</h2>
+            </div>
+            <div class="content-body">
+                <p>Welcome, {{ account.username }}</p>
+                <nav class="nav flex-column">
+                    {# <a class="nav-link {% if path_equals('/dashboard') %}active{% endif %}" href="/dashboard">
+                        <ion-icon name="home-outline"></ion-icon>
+                        Dashboard
+                    </a> #}
+                    <a class="nav-link {% if path_equals('/account') %}active{% endif %}" href="/account">
+                        <ion-icon name="person-outline"></ion-icon>
+                        Account Settings
+                    </a>
+                    {% if account.role >= roles.moderator %}
+                        <a class="nav-link {% if path_equals('/moderate/workshop/*') %}active{% endif %}" href="/moderate/workshop/list">
+                            <ion-icon name="cube-outline"></ion-icon>
+                            Manage Workshop
+                        </a>
+                    {% endif %}
+                    {% if account.role >= roles.admin %}
+                        <a class="nav-link {% if path_equals('/admin/news/*') %}active{% endif %}" href="/admin/news/list">
+                            <ion-icon name="newspaper-outline"></ion-icon>
+                            Manage News
+                        </a>
+                        <a class="nav-link {% if path_equals('/admin/user/*') %}active{% endif %}" href="/admin/user/list">
+                            <ion-icon name="people-outline"></ion-icon>
+                            Manage Users
+                        </a>
+                        <a class="nav-link {% if path_equals('/admin/server-info') %}active{% endif %}" href="/admin/server-info">
+                            <ion-icon name="server-outline"></ion-icon>
+                            Server Info
+                        </a>
+                    {% endif %}
+                    <a class="nav-link" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                        Logout
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    {# Control Panel Page #}
+    <div class="col-md-9">
+
+        {{ render_flash_messages() }}
+
+        {% block page %}{% endblock %}
+    </div>
+
+</div>
+
+{% endblock %}
