@@ -31,7 +31,7 @@ class ModerateWorkshopController {
         EntityManager $em
     ){
         $response->getBody()->write(
-            $twig->render('modcp/workshop/workshop.workshop-mod.cp.html.twig', [
+            $twig->render('modcp/workshop/workshop.modcp.html.twig', [
                 'workshop_items'   => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => true], ['id' => 'DESC']),
                 'open_submissions' => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => false], ['id' => 'DESC']),
             ])
@@ -69,7 +69,7 @@ class ModerateWorkshopController {
         }
 
         $response->getBody()->write(
-            $twig->render('modcp/workshop/workshop.item.workshop-mod.cp.html.twig', [
+            $twig->render('modcp/workshop/item.workshop.modcp.html.twig', [
                 'workshop_item' => $workshop_item,
                 'types'         => WorkshopType::cases(),
                 'tags'          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
@@ -214,7 +214,7 @@ class ModerateWorkshopController {
     ){
 
         $response->getBody()->write(
-            $twig->render('modcp/workshop/workshop.add.workshop-mod.html.twig', [
+            $twig->render('modcp/workshop/add.workshop.modcp.html.twig', [
                 'types'  => WorkshopType::cases(),
                 'tags'   => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
                 'builds' => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
@@ -345,7 +345,7 @@ class ModerateWorkshopController {
         // Return the page if submission is invalid
         if(!$success){
             $response->getBody()->write(
-                $twig->render('modcp/workshop/workshop.add.workshop-mod.html.twig', [
+                $twig->render('modcp/workshop/add.workshop.modcp.html.twig', [
                     'types'  => WorkshopType::cases(),
                     'tags'   => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
                     'builds' => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
