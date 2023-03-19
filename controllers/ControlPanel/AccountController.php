@@ -182,7 +182,7 @@ class AccountController {
             throw new \Exception('Avatar storage directory not set: \'APP_AVATAR_STORAGE\'');
         }
         if(!is_dir($avatar_dir)){
-            if(!\mkdir($avatar_dir)){
+            if(!\mkdir($avatar_dir, null, true)){
                 throw new \Exception('Failed to create avatar storage directory: \'' . $avatar_dir . '\'');
             }
         }

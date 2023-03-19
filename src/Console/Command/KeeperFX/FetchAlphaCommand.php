@@ -54,7 +54,7 @@ class FetchAlphaCommand extends Command
 
         // Create output directory if it does not exist
         if(!\is_dir($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])){
-            if(!\mkdir($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])){
+            if(!\mkdir($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'], 0777, true)){
                 $output->writeln("[-] Failed to create alpha build download directory");
                 return Command::FAILURE;
             }
