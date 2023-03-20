@@ -11,6 +11,8 @@
         "Compwright",
         "csrf",
         "dbal",
+        "fastcgi",
+        "geertw",
         "httponly",
         "inversed",
         "keeperfx",
