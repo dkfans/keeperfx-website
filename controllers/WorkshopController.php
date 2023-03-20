@@ -11,6 +11,7 @@ use App\Entity\WorkshopItem;
 use App\Entity\GithubRelease;
 use App\Entity\WorkshopRating;
 use App\Entity\WorkshopComment;
+use App\Entity\WorkshopDifficultyRating;
 
 use App\Account;
 use App\FlashMessage;
@@ -18,13 +19,14 @@ use App\Config\Config;
 use App\UploadSizeHelper;
 
 use URLify;
+use Slim\Psr7\UploadedFile;
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
+use GuzzleHttp\Psr7\LazyOpenStream;
 use geertw\IpAnonymizer\IpAnonymizer;
 use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
 
-use Slim\Psr7\UploadedFile;
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -33,7 +35,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
 use Slim\Exception\HttpNotFoundException;
-use App\Entity\WorkshopDifficultyRating;
 
 class WorkshopController {
 
@@ -681,16 +682,13 @@ class WorkshopController {
         }
 
         // Return download
-        $response = $response
+        return $response
             ->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->withHeader('Pragma', 'no-cache')
             ->withHeader('Content-Type', 'application/octet-stream')
             ->withHeader('Content-Transfer-Encoding', 'Binary')
-            ->withHeader('Content-Disposition', 'attachment; filename="' . $workshop_item->getFilename() . '"');
-        $response->getBody()->write(
-            \file_get_contents($filepath)
-        );
-        return $response;
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $workshop_item->getFilename() . '"')
+            ->withBody(new LazyOpenStream($filepath, 'r'));
     }
 
     public function outputScreenshot(
@@ -734,16 +732,12 @@ class WorkshopController {
 
         // Return screenshot
         $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
-        $response = $response
+        return $response
             ->withHeader('Pragma', 'public')
             ->withHeader('Cache-Control', 'max-age=' . $cache_time)
             ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
-            ->withHeader('Content-Type', $content_type);
-        $response->getBody()->write(
-            \file_get_contents($screenshot_filepath)
-        );
-
-        return $response;
+            ->withHeader('Content-Type', $content_type)
+            ->withBody(new LazyOpenStream($screenshot_filepath, 'r'));
     }
 
     public function outputThumbnail(
@@ -787,16 +781,12 @@ class WorkshopController {
 
         // Return thumbnail
         $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
-        $response = $response
+        return $response
             ->withHeader('Pragma', 'public')
             ->withHeader('Cache-Control', 'max-age=' . $cache_time)
             ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
-            ->withHeader('Content-Type', $content_type);
-        $response->getBody()->write(
-            \file_get_contents($thumbnail_filepath)
-        );
-
-        return $response;
+            ->withHeader('Content-Type', $content_type)
+            ->withBody(new LazyOpenStream($thumbnail_filepath, 'r'));
     }
 
     public function deleteThumbnail(
