@@ -6,6 +6,8 @@ use App\Config\Config;
 // This should be the very first check that is ran.
 // That way every part of the application can update without an end user executing any code.
 if(\file_exists(__DIR__ . '/../__MAINTENANCE_MODE_ACTIVE')){
+    \header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    \header('Pragma: no-cache');
     $content_type = $_SERVER["CONTENT_TYPE"] ?? '';
     if($content_type == 'application/json') {
         \header('Content-Type: application/json');

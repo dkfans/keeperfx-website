@@ -3,6 +3,7 @@
 /keeperfx/
 /temp/
 TODO
+__MAINTENANCE_MODE_ACTIVE
 
 # Environment vars
 .env
