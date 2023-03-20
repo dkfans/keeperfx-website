@@ -1,0 +1,32 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+        "autowire",
+        "autowires",
+        "autowiring",
+        "classname",
+        "Compwright",
+        "csrf",
+        "dbal",
+        "httponly",
+        "inversed",
+        "keeperfx",
+        "maxlifetime",
+        "middlewares",
+        "nginx",
+        "PHPSESSID",
+        "psysh",
+        "regexes",
+        "samesite",
+        "URLify",
+        "webstack"
+    ],
+    "ignoreWords": [
+        "bootstrap",
+        "class"
+    ],
+    "import": []
+}

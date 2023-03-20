@@ -41,7 +41,7 @@ return [
             $twig->addGlobal($key, $value);
         }
 
-        // Add markdown runetime loader
+        // Add markdown runtime loader
         $twig->addRuntimeLoader(new class implements RuntimeLoaderInterface {
             public function load($class) {
                 if (MarkdownRuntime::class === $class) {
