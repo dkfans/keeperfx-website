@@ -145,6 +145,9 @@
                                 <span class="text-muted">
                                     (Optional)
                                 </span>
+                                <span data-bs-toggle="popover" data-bs-placement="top" data-bs-content="If you are not the original author of this item, you can add their name to give credit.">
+                                    <ion-icon name="information-circle-outline" class="text-info" style="position: relative; top: 3px;"></ion-icon>
+                                </span>
                             </label>
                             <input type="text" class="form-control" id="original_author" name="original_author">
                         </div>
@@ -176,6 +179,9 @@
 
 {% block body_javascript %}
     <script>
+
+        var popover = new bootstrap.Popover($('[data-bs-toggle="popover"]'), {trigger: 'hover'});
+
         $(function(){
 
             var fileFileSize = 0;
