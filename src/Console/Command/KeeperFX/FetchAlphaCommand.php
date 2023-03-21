@@ -34,35 +34,36 @@ class FetchAlphaCommand extends Command
 
         // Make sure a Github token is set
         if(
-            !isset($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOADER_TOKEN'])
-            || empty($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOADER_TOKEN'])
+            !isset($_ENV['APP_ALPHA_PATCH_GITHUB_DOWNLOADER_AUTH_TOKEN'])
+            || empty($_ENV['APP_ALPHA_PATCH_GITHUB_DOWNLOADER_AUTH_TOKEN'])
         ){
             $output->writeln("[-] Github token not set");
-            $output->writeln("[>] ENV VAR: 'KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOADER_TOKEN'");
+            $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_GITHUB_DOWNLOADER_AUTH_TOKEN'");
             return Command::FAILURE;
         }
 
         // Make sure an output directory is set
-        if(
-            !isset($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])
-            || empty($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])
-        ){
+        if(!empty($_ENV['APP_ALPHA_PATCH_STORAGE_CLI'])){
+            $storage_dir = $_ENV['APP_ALPHA_PATCH_STORAGE_CLI'];
+        } elseif (!empty($_ENV['APP_ALPHA_PATCH_STORAGE'])){
+            $storage_dir = $_ENV['APP_ALPHA_PATCH_STORAGE'];
+        } else {
             $output->writeln("[-] Alpha build download directory is not set");
-            $output->writeln("[>] ENV VAR: 'KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'");
+            $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_STORAGE_CLI'");
             return Command::FAILURE;
         }
 
         // Create output directory if it does not exist
-        if(!\is_dir($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])){
-            if(!\mkdir($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'])){
+        if(!\is_dir($_ENV['APP_ALPHA_PATCH_STORAGE'])){
+            if(!\mkdir($_ENV['APP_ALPHA_PATCH_STORAGE'])){
                 $output->writeln("[-] Failed to create alpha build download directory");
                 return Command::FAILURE;
             }
         }
 
-        $output->writeln("[>] Download directory: " . $_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH']);
+        $output->writeln("[>] Download directory: " . $_ENV['APP_ALPHA_PATCH_STORAGE']);
 
-        $workflow_id = \intval($_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_WORKFLOW_ID'] ?? 0);
+        $workflow_id = \intval($_ENV['APP_ALPHA_PATCH_GITHUB_WORKFLOW_ID'] ?? 0);
 
         $output->writeln("[>] Grabbing latest workflow runs...");
         $output->writeln("[>] " . self::GITHUB_WORKFLOW_RUNS_URL);
@@ -72,7 +73,7 @@ class FetchAlphaCommand extends Command
             'verify' => false, // Don't verify SSL connection
             'headers' => [
                 'Accept'               => 'application/vnd.github+json',
-                'Authorization'        => 'Bearer ' . $_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOADER_TOKEN'],
+                'Authorization'        => 'Bearer ' . $_ENV['APP_ALPHA_PATCH_GITHUB_DOWNLOADER_AUTH_TOKEN'],
                 'X-GitHub-Api-Version' => '2022-11-28',
             ],
         ]);
@@ -132,7 +133,7 @@ class FetchAlphaCommand extends Command
             $exp         = \explode('/', $artifact->archive_download_url);
             $filetype    = \end($exp);
             $filename    = $artifact->name . '.' . $filetype;
-            $output_path = $_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'] . '/' . $filename;
+            $output_path = $_ENV['APP_ALPHA_PATCH_STORAGE'] . '/' . $filename;
 
             // Remove file if already exists
             if(\file_exists($output_path)){

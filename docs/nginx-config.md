@@ -35,7 +35,7 @@ server {
 
 ## Alpha build serving
 
-If you use the env var `KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH` you can setup nginx to serve those files using any chosen directory.
+If you use the env var `APP_ALPHA_PATCH_STORAGE` you can setup nginx to serve those files using any chosen directory.
 
 ```nginx
 location /downloads/ {

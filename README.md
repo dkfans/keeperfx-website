@@ -35,8 +35,8 @@ Copy and rename `./.env.dev` to `./.env`. Edit environment variables in this fil
 
 Point your webserver to `./public/index.php`. An example nginx config can be found at [docs/nginx-config.md](docs/nginx-config.md).
 
-For downloading alpha builds locally and serving them, setup the environment variable `KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH` and point the nginx config for `/downloads/` to this directory.
-You'll also need to define a Github token in `KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOADER_TOKEN` to be able to download the artifacts.
+For downloading alpha builds locally and serving them, setup the environment variable `APP_ALPHA_PATCH_STORAGE` and point the nginx config for `/downloads/` to this directory.
+You'll also need to define a Github token in `APP_ALPHA_PATCH_GITHUB_DOWNLOADER_AUTH_TOKEN` to be able to download the artifacts.
 You can get one at [Github > Settings > Developer settings > Personal access tokens > Tokens (classic)](https://github.com/settings/tokens).
 
 After setting the correct database environment variables. Make sure your webserver (+ php) and database are running and setup the database structure using *doctrine/migrations*:

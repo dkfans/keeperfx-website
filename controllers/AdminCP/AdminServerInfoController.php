@@ -25,7 +25,7 @@ class AdminServerInfoController {
         // Alpha build vars
         $alpha_build_count = 0;
         $alpha_build_storage_size = 0;
-        $alpha_build_storage_path = $_ENV['KEEPERFX_GITHUB_ALPHA_BUILD_DOWNLOAD_PATH'];
+        $alpha_build_storage_path = $_ENV['APP_ALPHA_PATCH_STORAGE'];
 
         // Check if alpha build dir exists
         if(!\is_dir($alpha_build_storage_path)){
