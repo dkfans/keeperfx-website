@@ -47,7 +47,8 @@
     ],
     "ignoreWords": [
         "bootstrap",
-        "class"
+        "class",
+        "filetype"
     ],
     "import": []
 }

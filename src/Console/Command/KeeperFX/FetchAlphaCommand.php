@@ -44,13 +44,13 @@ class FetchAlphaCommand extends Command
         }
 
         // Make sure an output directory is set
-        if(!empty($_ENV['APP_ALPHA_PATCH_STORAGE_CLI'])){
-            $storage_dir = $_ENV['APP_ALPHA_PATCH_STORAGE_CLI'];
+        if(!empty($_ENV['APP_ALPHA_PATCH_STORAGE_CLI_PATH'])){
+            $storage_dir = $_ENV['APP_ALPHA_PATCH_STORAGE_CLI_PATH'];
         } elseif (!empty($_ENV['APP_ALPHA_PATCH_STORAGE'])){
             $storage_dir = $_ENV['APP_ALPHA_PATCH_STORAGE'];
         } else {
             $output->writeln("[-] Alpha build download directory is not set");
-            $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_STORAGE_CLI'");
+            $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_STORAGE_CLI_PATH' or 'APP_ALPHA_PATCH_STORAGE'");
             return Command::FAILURE;
         }
 
@@ -58,7 +58,7 @@ class FetchAlphaCommand extends Command
         if(!\is_dir($storage_dir)){
             if(!@\mkdir($storage_dir)){
                 $output->writeln("[-] Failed to create alpha build download directory");
-                $output->writeln("[>] DL DIR: {$storage_dir}");
+                $output->writeln("[>] DIR: {$storage_dir}");
                 return Command::FAILURE;
             }
         }
@@ -135,7 +135,7 @@ class FetchAlphaCommand extends Command
             $exp         = \explode('/', $artifact->archive_download_url);
             $filetype    = \end($exp);
             $filename    = $artifact->name . '.' . $filetype;
-            $output_path = $_ENV['APP_ALPHA_PATCH_STORAGE'] . '/' . $filename;
+            $output_path = $storage_dir . '/' . $filename;
 
             // Remove file if already exists
             if(\file_exists($output_path)){
@@ -157,18 +157,25 @@ class FetchAlphaCommand extends Command
 
             // Add bundle files
             if(!empty($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'])){
+                $bundle_path = $_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'];
                 $output->writeln("[>] Adding file bundle...");
-                if(!\is_dir($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'])){
+                if(!\is_dir($bundle_path)){
                     $output->writeln("[-] File bundle path is not a dir");
                     $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'");
                     return Command::FAILURE;
                 } else {
-                    try {
-                        $archive = UnifiedArchive::open($output_path);
-                        $archive->addDirectory($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'], '');
-                    } catch (\Exception $ex) {
-                        $output->writeln("[-] FAILED to add file bundle to archive");
-                        return Command::FAILURE;
+                    $bundle_file_count = \count(\scandir($bundle_path));
+                	if($bundle_file_count == 2){
+                        $output->writeln("[>] No files to add");
+                    } else {
+                        try {
+                            $archive = UnifiedArchive::open($output_path);
+                            $archive->addDirectory($bundle_path, '');
+                            $output->writeln("[+] Added <info>{$bundle_file_count}</info> extra files");
+                        } catch (\Exception $ex) {
+                            $output->writeln("[-] Failed to add file bundle to archive");
+                            return Command::FAILURE;
+                        }
                     }
                 }
             }
@@ -186,7 +193,7 @@ class FetchAlphaCommand extends Command
             $this->em->persist($build);
             $this->em->flush();
 
-            $output->writeln("[+] {$artifact->name} stored!");
+            $output->writeln("[+] <info>{$artifact->name}</info> stored!");
         }
 
         return Command::SUCCESS;
