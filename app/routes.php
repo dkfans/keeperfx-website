@@ -83,7 +83,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         });
 
 
-        $group->get('/server-info', [Admin\AdminServerInfoController::class, 'serverInfoIndex']);
+        $group->get('/server-info', [AdminCP\AdminServerInfoController::class, 'serverInfoIndex']);
 
     })->add(AuthAdminCPMiddleware::class);
 
