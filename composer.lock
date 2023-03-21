@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d5e206d5158dd837e9c42f2032b0c4f2",
+    "content-hash": "ae4ca9b02905392ff9b12db34f57b5f2",
     "packages": [
         {
             "name": "akrabat/ip-address-middleware",
@@ -5770,6 +5770,107 @@
                 "source": "https://github.com/voku/stop-words/tree/master"
             },
             "time": "2018-11-23T01:37:27+00:00"
+        },
+        {
+            "name": "wapmorgan/unified-archive",
+            "version": "1.1.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wapmorgan/UnifiedArchive.git",
+                "reference": "3fc76bbe24e5ff4789738dd7ee5fb01307ae3021"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/3fc76bbe24e5ff4789738dd7ee5fb01307ae3021",
+                "reference": "3fc76bbe24e5ff4789738dd7ee5fb01307ae3021",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "php": ">=5.5.0"
+            },
+            "replace": {
+                "pclzip/pclzip": "2.8.2",
+                "wapmorgan/cam": "1.0.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8|9.5.16",
+                "symfony/console": "~v3.4.47|~v4.4.42|~5.4|~6.1"
+            },
+            "suggest": {
+                "alchemy/zippy": "[utility + bridge] ZIP, TAR, GZIP, BZIP2 support (with combinations) via console programs",
+                "bin-ncompress": "[utility] TAR.Z support via console program",
+                "ext-bz2": "[extension] BZ2 (BZIP2) support",
+                "ext-phar": "[extension] TAR/ZIP support",
+                "ext-rar": "[extension] RAR support",
+                "ext-xz": "[extension] XZ (LZMA) support",
+                "ext-zip": "[extension] ZIP support",
+                "ext-zlib": "[extension] GZ (GZIP) support",
+                "gemorroj/archive7z": "[utility + bridge] 7ZIP (and a lot of other formats) support via console program",
+                "nelexa/zip": "[pure] ZIP native support",
+                "pear/archive_tar": "[pure] another native TAR support",
+                "phpclasses/php-iso-file": "[pure] native ISO support",
+                "splitbrain/php-archive": "[pure] ZIP/TAR (tgz/tbz2) native support",
+                "symfony/console": "Requirement for cam (Console Archive Manager)",
+                "wapmorgan/cab-archive": "[pure] native CAB support"
+            },
+            "bin": [
+                "bin/cam"
+            ],
+            "type": "library",
+            "extra": {
+                "phar-builder": {
+                    "compression": "BZip2",
+                    "name": "cam.phar",
+                    "output-dir": "./",
+                    "entry-point": "bin/cam",
+                    "include": [
+                        "bin",
+                        "src",
+                        "vendor"
+                    ],
+                    "events": {
+                        "command.package.start": "git describe --tags > bin/version.txt",
+                        "command.package.end": "chmod +x cam.phar && rm bin/version.txt"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "wapmorgan\\UnifiedArchive\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "wapmorgan",
+                    "email": "wapmorgan@gmail.com",
+                    "role": "developer"
+                }
+            ],
+            "description": "UnifiedArchive - an archive manager with unified interface of working with all popular archive formats (zip/7z/rar/gz/bz2/xz/cab/tar/tar.gz/tar.bz2/tar.x/tar.Z/...) for PHP with ability for listing, reading, extracting and creation + built-in console archive manager.",
+            "keywords": [
+                "7z",
+                "archive",
+                "bzip2",
+                "cab",
+                "compression",
+                "gzip",
+                "iso",
+                "lzma2",
+                "ncompress",
+                "rar",
+                "tar",
+                "zip"
+            ],
+            "support": {
+                "issues": "https://github.com/wapmorgan/UnifiedArchive/issues",
+                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.1.10"
+            },
+            "time": "2023-01-17T00:15:57+00:00"
         },
         {
             "name": "xenokore/utility",
