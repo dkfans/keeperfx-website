@@ -2,10 +2,11 @@
 
 namespace App\Console\Command\KeeperFX;
 
-use DateTime;
 use App\Entity\GithubAlphaBuild;
 
+use DateTime;
 use Doctrine\ORM\EntityManager;
+use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
@@ -151,6 +152,24 @@ class FetchAlphaCommand extends Command
                 return Command::FAILURE;
             } else {
                 $output->writeln("[+] Downloaded artifact!");
+            }
+
+            // Add bundle files
+            if(!empty($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'])){
+                $output->writeln("[>] Adding file bundle...");
+                if(!\is_dir($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'])){
+                    $output->writeln("[-] File bundle path is not a dir");
+                    $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'");
+                    return Command::FAILURE;
+                } else {
+                    try {
+                        $archive = UnifiedArchive::open($output_path);
+                        $archive->addDirectory($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'], '');
+                    } catch (\Exception $ex) {
+                        $output->writeln("[-] FAILED to add file bundle to archive");
+                        return Command::FAILURE;
+                    }
+                }
             }
 
             // Add to database
