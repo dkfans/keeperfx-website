@@ -789,6 +789,11 @@ a.dropdown-item:active {
 
 a.user-link {
     text-decoration: none;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 a.user-link:hover {
