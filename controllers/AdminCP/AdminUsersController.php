@@ -74,7 +74,7 @@ class AdminUsersController {
         }
 
         // Handle email address
-        if(isset($post['email']) && is_string($post['email'])){
+        if(isset($post['email']) && is_string($post['email']) && \strlen($post['email']) > 0){
 
             // Check valid email address
             if(\filter_var($post['email'], \FILTER_VALIDATE_EMAIL) === false){
