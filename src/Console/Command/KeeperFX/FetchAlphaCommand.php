@@ -55,14 +55,15 @@ class FetchAlphaCommand extends Command
         }
 
         // Create output directory if it does not exist
-        if(!\is_dir($_ENV['APP_ALPHA_PATCH_STORAGE'])){
-            if(!\mkdir($_ENV['APP_ALPHA_PATCH_STORAGE'])){
+        if(!\is_dir($storage_dir)){
+            if(!@\mkdir($storage_dir)){
                 $output->writeln("[-] Failed to create alpha build download directory");
+                $output->writeln("[>] DL DIR: {$storage_dir}");
                 return Command::FAILURE;
             }
         }
 
-        $output->writeln("[>] Download directory: " . $_ENV['APP_ALPHA_PATCH_STORAGE']);
+        $output->writeln("[>] Download directory: " . $storage_dir);
 
         $workflow_id = \intval($_ENV['APP_ALPHA_PATCH_GITHUB_WORKFLOW_ID'] ?? 0);
 
