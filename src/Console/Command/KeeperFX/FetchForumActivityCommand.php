@@ -49,9 +49,12 @@ class FetchForumActivityCommand extends Command
         $crawler = new Crawler((string)$content);
 
         $threads = $crawler->filter('#threads .threadbit')->each(function (Crawler $node, $i) {
+            $replies_str = $node->filter('.threadstats li')->first()->text();
+            $replies     = \preg_replace('/[^0-9]/', '', $replies_str ?? '');
             return [
                 'title'    => $node->filter('.title')->text(),
                 'date_str' => $node->filter('.threadlastpost dd')->last()->text(),
+                'replies'  => $replies,
                 'url'      => self::THREAD_URL_BASE . $node->filter('h3 a')->first()->attr('href'),
             ];
         });

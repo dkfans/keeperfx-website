@@ -145,6 +145,8 @@
                             <a href="{{ thread.url }}" target="_blank">{{ thread.title }} <ion-icon name="open-outline" class="outgoing"></ion-icon></a>
                             <br />
                             {{ thread.date_str }}
+                            <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                            {{ thread.replies ?? 0 }} replies
                         </p>
                     {% endfor %}
                 </div>
