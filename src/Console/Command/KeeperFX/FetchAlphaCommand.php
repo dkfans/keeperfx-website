@@ -12,6 +12,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+use Xenokore\Utility\Helper\DirectoryHelper;
+
 class FetchAlphaCommand extends Command
 {
     public const GITHUB_WORKFLOW_RUNS_URL = 'https://api.github.com/repos/dkfans/keeperfx/actions/runs';
@@ -147,7 +149,6 @@ class FetchAlphaCommand extends Command
             // Download alpha build
             $output->writeln("[>] Downloading: {$filename}");
             $client->request('GET', $artifact->archive_download_url, ['sink' => $output_path]);
-
             if(!\file_exists($output_path)){
                 $output->writeln("[-] Failed to download artifact");
                 return Command::FAILURE;
@@ -164,8 +165,9 @@ class FetchAlphaCommand extends Command
                     $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'");
                     return Command::FAILURE;
                 } else {
-                    $bundle_file_count = \count(\scandir($bundle_path));
-                	if($bundle_file_count == 2){
+                    // $bundle_file_count = \count(\scandir($bundle_path));
+                    $bundle_file_count = \count(DirectoryHelper::tree($bundle_path));
+                	if($bundle_file_count == 0){
                         $output->writeln("[>] No files to add");
                     } else {
                         try {
