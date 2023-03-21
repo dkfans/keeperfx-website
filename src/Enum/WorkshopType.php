@@ -15,7 +15,7 @@ enum WorkshopType: int {
     case MapPack            = 15;
     case Campaign           = 20;
     case MultiplayerMap     = 30;
-    case MPMapPack          = 35;
+    case MultiplayerMapPack = 35;
 
     // Without difficulty rating
     case Application = 50;
