@@ -127,11 +127,11 @@
         {% if get_env('APP_WORKSHOP_UNEARTH_URL') %}
             <div class="content-box bg-keeper bd-keeper">
                 <div class="content-body">
-                    <a href="" class="margin-top: 50px;">
+                    <a href="{{ get_env('APP_WORKSHOP_UNEARTH_URL') }}" class="margin-top: 50px;">
                         <img src="/img/unearth.png" class="mx-auto d-block" />
                     </a>
                     <div style="width: 100%" class="d-flex justify-content-center">
-                        <a href="/" class="title-link" style="margin-top: 20px; margin-bottom: 10px;">
+                        <a href="{{ get_env('APP_WORKSHOP_UNEARTH_URL') }}" class="title-link" style="margin-top: 20px; margin-bottom: 10px;">
                             Unearth
                         </a>
                     </div>
