@@ -70,8 +70,7 @@ class LoginController {
 
                     // Determine redirect location
                     $redirect_location = '/';
-                    // $redirect_location = '/dashboard';
-                    if($redirect && \preg_match('/^\/[a-zA-Z]/', $redirect)){
+                    if($redirect && \preg_match('/^\/[a-zA-Z0-9\-\/\.]/', $redirect)){
                         $redirect_location = $redirect;
                     }
 

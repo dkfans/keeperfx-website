@@ -53,13 +53,18 @@ class LoggedInMiddleware implements MiddlewareInterface {
     {
         if(!$this->account->isLoggedIn()){
 
-            // Remember path for redirection after login
-            // $this->session['redirect_next'] = $request->getUri()->getPath();
-
             $this->flash->info('You need to be logged in to access this resource.');
 
+            $location = '/login';
+
+            // Remember path for redirection after login
+            $redirect = $request->getUri()->getPath();
+            if($redirect){
+                $location .= '?redirect=' . $redirect;
+            }
+
             return $this->response_factory->createResponse()
-                ->withHeader('Location', '/login')
+                ->withHeader('Location', $location)
                 ->withStatus(302);
 
         }
