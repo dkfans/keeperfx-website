@@ -3,6 +3,7 @@
 namespace App\Controller\ControlPanel;
 
 use App\Entity\User;
+use App\Entity\UserCookieToken;
 
 use App\Account;
 use App\FlashMessage;
@@ -12,7 +13,8 @@ use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
 use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
-
+use Dflydev\FigCookies\FigResponseCookies;
+use Dflydev\FigCookies\SetCookie;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\UploadedFileInterface;
@@ -273,6 +275,7 @@ class AccountController {
         Response $response,
         CsrfGuard $csrf_guard,
         Session $session,
+        EntityManager $em,
         $token_name,
         $token_value,
     ){
@@ -282,6 +285,25 @@ class AccountController {
             $session['uid'] = null;
         }
 
+        // Check if 'remember me' token is set (and valid)
+        $cookies = $request->getCookieParams();
+        $token = (string) ($cookies['user_cookie_token'] ?? '');
+        if($token && \preg_match('~^[a-zA-Z0-9]+$~', $token)){
+
+            // Find token in DB
+            $cookieToken = $em->getRepository(UserCookieToken::class)->findOneBy(['token' => $token]);
+            if($cookieToken){
+
+                // Remove token
+                $em->remove($cookieToken);
+                $em->flush();
+            }
+        }
+
+        // Remove possible 'remember me' cookie
+        $response = FigResponseCookies::remove($response, 'user_cookie_token');
+
+        // Redirect back to homepage
         $response = $response->withHeader('Location', '/')->withStatus(302);
         return $response;
     }
