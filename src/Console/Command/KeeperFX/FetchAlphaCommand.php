@@ -148,9 +148,10 @@ class FetchAlphaCommand extends Command
             }
 
             // Create temp filename and paths for extraction and repackage process
-            $temp_archive_name = \substr(\md5($artifact->name), 0, 8) . '-' . \strtolower($artifact->name);
-            $temp_archive_path = \sys_get_temp_dir() . '/' . $temp_archive_name . '.' . $filetype;
-            $temp_archive_dir  = \sys_get_temp_dir() . '/' . $temp_archive_name;
+            $temp_archive_name     = \substr(\md5($artifact->name), 0, 8) . '-' . \strtolower($artifact->name);
+            $temp_archive_path     = \sys_get_temp_dir() . '/' . $temp_archive_name . '.' . $filetype;
+            $temp_archive_path_new = \sys_get_temp_dir() . '/' . $temp_archive_name . '-new.7z';
+            $temp_archive_dir      = \sys_get_temp_dir() . '/' . $temp_archive_name;
 
             // Download alpha build
             $output->writeln("[>] Downloading: {$artifact->name} -> {$temp_archive_path}");
@@ -195,15 +196,21 @@ class FetchAlphaCommand extends Command
             // Create new 7z archive
             $output->writeln("[>] Creating new 7z archive...");
             try {
-                UnifiedArchive::create(['' => $temp_archive_dir], $output_path, BasicDriver::COMPRESSION_MAXIMUM);
-                $output->writeln("[+] Archive created: <info>{$output_path}</info>");
+                UnifiedArchive::create(['' => $temp_archive_dir], $temp_archive_path_new, BasicDriver::COMPRESSION_MAXIMUM);
+                $output->writeln("[+] Archive created: <info>{$temp_archive_path_new}</info>");
             } catch (\Exception $ex) {
                 throw $ex;
             }
 
-            // Remove temp dir
-            $output->writeln("[>] Removing temporary archive dir...");
+            // Move new archive
+            $output->writeln("[>] Moving new archive to: <info>{$output_path}</info>");
+            \rename($temp_archive_path_new, $output_path);
+
+            // Remove temp files and dir
+            $output->writeln("[>] Removing temporary files and dir...");
             \rmdir($temp_archive_dir);
+            \unlink($temp_archive_path);
+            \unlink($temp_archive_path_new);
 
             // Add to database
             $build = new GithubAlphaBuild();
