@@ -165,14 +165,19 @@ class FetchAlphaCommand extends Command
                     $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'");
                     return Command::FAILURE;
                 } else {
-                    // $bundle_file_count = \count(\scandir($bundle_path));
-                    $bundle_file_count = \count(DirectoryHelper::tree($bundle_path));
+                    $bundle_relative_paths = DirectoryHelper::tree($bundle_path, true);
+                    $bundle_absolute_paths = DirectoryHelper::tree($bundle_path);
+                    $bundle_file_array = [];
+                    foreach($bundle_relative_paths as $i => $bundle_relative_path){
+                        $bundle_file_array[$bundle_relative_path] = $bundle_absolute_paths[$i];
+                    }
+                    $bundle_file_count = \count($bundle_file_array);
                 	if($bundle_file_count == 0){
                         $output->writeln("[>] No files to add");
                     } else {
                         try {
                             $archive = UnifiedArchive::open($output_path);
-                            $archive->addDirectory($bundle_path, '');
+                            $archive->add($bundle_file_array);
                             $output->writeln("[+] Added <info>{$bundle_file_count}</info> extra files");
                         } catch (\Exception $ex) {
                             $output->writeln("[-] Failed to add file bundle to archive");
