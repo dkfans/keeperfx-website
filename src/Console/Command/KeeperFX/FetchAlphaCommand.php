@@ -7,6 +7,7 @@ use App\Entity\GithubAlphaBuild;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
+use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
@@ -134,10 +135,10 @@ class FetchAlphaCommand extends Command
             }
 
             // Create filename and output path
-            $exp         = \explode('/', $artifact->archive_download_url);
-            $filetype    = \end($exp);
-            $filename    = $artifact->name . '.' . $filetype;
-            $output_path = $storage_dir . '/' . $filename;
+            $exp          = \explode('/', $artifact->archive_download_url);
+            $filetype     = \end($exp);
+            $new_filename = $artifact->name . '.7z';
+            $output_path  = $storage_dir . '/' . $new_filename;
 
             // Remove file if already exists
             if(\file_exists($output_path)){
@@ -146,15 +147,25 @@ class FetchAlphaCommand extends Command
                 \unlink($output_path);
             }
 
+            // Create temp filename and paths for extraction and repackage process
+            $temp_archive_name = \substr(\md5($artifact->name), 0, 8) . '-' . \strtolower($artifact->name);
+            $temp_archive_path = \sys_get_temp_dir() . '/' . $temp_archive_name . '.' . $filetype;
+            $temp_archive_dir  = \sys_get_temp_dir() . '/' . $temp_archive_name;
+
             // Download alpha build
-            $output->writeln("[>] Downloading: {$filename}");
-            $client->request('GET', $artifact->archive_download_url, ['sink' => $output_path]);
-            if(!\file_exists($output_path)){
+            $output->writeln("[>] Downloading: {$artifact->name} -> {$temp_archive_path}");
+            $client->request('GET', $artifact->archive_download_url, ['sink' => $temp_archive_path]);
+            if(!\file_exists($temp_archive_path)){
                 $output->writeln("[-] Failed to download artifact");
                 return Command::FAILURE;
             } else {
                 $output->writeln("[+] Downloaded artifact!");
             }
+
+            // Extract the files
+            $output->writeln("[>] Extracting...");
+            $temp_archive = UnifiedArchive::open($temp_archive_path);
+            $temp_archive->extract($temp_archive_dir);
 
             // Add bundle files
             if(!empty($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'])){
@@ -165,33 +176,40 @@ class FetchAlphaCommand extends Command
                     $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'");
                     return Command::FAILURE;
                 } else {
-                    $bundle_relative_paths = DirectoryHelper::tree($bundle_path, true);
-                    $bundle_absolute_paths = DirectoryHelper::tree($bundle_path);
-                    $bundle_file_array = [];
-                    foreach($bundle_relative_paths as $i => $bundle_relative_path){
-                        $bundle_file_array[$bundle_relative_path] = $bundle_absolute_paths[$i];
-                    }
-                    $bundle_file_count = \count($bundle_file_array);
-                	if($bundle_file_count == 0){
-                        $output->writeln("[>] No files to add");
-                    } else {
-                        try {
-                            $archive = UnifiedArchive::open($output_path);
-                            $archive->add($bundle_file_array);
-                            $output->writeln("[+] Added <info>{$bundle_file_count}</info> extra files");
-                        } catch (\Exception $ex) {
-                            $output->writeln("[-] Failed to add file bundle to archive");
-                            return Command::FAILURE;
+                    $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);
+                    $iterator     = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+                    foreach ($iterator as $item) {
+                        if ($item->isDir()) {
+                            $item_dir_path = $temp_archive_dir . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                            if(!\file_exists($item_dir_path) && !\is_dir($item_dir_path)){
+                                \mkdir($item_dir_path);
+                            }
+                        } else {
+                            $item_filepath = $temp_archive_dir . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                            \copy($item, $item_filepath);
                         }
                     }
                 }
             }
 
+            // Create new 7z archive
+            $output->writeln("[>] Creating new 7z archive...");
+            try {
+                UnifiedArchive::create(['' => $temp_archive_dir], $output_path, BasicDriver::COMPRESSION_MAXIMUM);
+                $output->writeln("[+] Archive created: <info>{$output_path}</info>");
+            } catch (\Exception $ex) {
+                throw $ex;
+            }
+
+            // Remove temp dir
+            $output->writeln("[>] Removing temporary archive dir...");
+            \rmdir($temp_archive_dir);
+
             // Add to database
             $build = new GithubAlphaBuild();
             $build->setName($artifact->name);
             $build->setArtifactId($artifact->id);
-            $build->setFilename($filename);
+            $build->setFilename($new_filename);
             $build->setSizeInBytes(\filesize($output_path));
             $build->setTimestamp(new DateTime($artifact->created_at));
             $build->setWorkflowTitle($run->display_title);
