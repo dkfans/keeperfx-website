@@ -277,7 +277,7 @@ class WorkshopItem {
     /**
      * Get the value of filename
      */
-    public function getFilename(): string
+    public function getFilename(): string|null
     {
         return $this->filename;
     }
