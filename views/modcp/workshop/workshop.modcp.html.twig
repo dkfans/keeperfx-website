@@ -26,7 +26,7 @@
                         <tr>
                             <td>{{ workshop_item.id }}</td>
                             <td>{{ workshop_item.name }}</td>
-                            <td>{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, preferOriginalAuthor: false} %}</td>
+                            <td>{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, includeOriginalAuthor: false} %}</td>
                             <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:i') }}</td>
                             <td><a href="/moderate/workshop/{{ workshop_item.id }}">Edit</a></td>
                         </tr>
@@ -67,7 +67,7 @@
                     <tr>
                         <td>{{ workshop_item.id }}</td>
                         <td>{{ workshop_item.name }}</td>
-                        <td>{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, preferOriginalAuthor: false} %}</td>
+                        <td>{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, includeOriginalAuthor: false} %}</td>
                         <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:i') }}</td>
                         <td><a href="/moderate/workshop/{{ workshop_item.id }}">Edit</a></td>
                     </tr>

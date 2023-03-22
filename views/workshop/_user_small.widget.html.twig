@@ -1,6 +1,12 @@
 
 {# Original Author #}
-{% if preferOriginalAuthor is defined and preferOriginalAuthor == true and workshop_item.originalAuthor is defined and workshop_item.originalAuthor != null %}
+{%
+    if includeOriginalAuthor is defined
+    and includeOriginalAuthor == true
+    and workshop_item.originalAuthor is defined
+    and workshop_item.originalAuthor != null
+    and workshop_item.originalAuthor|lower != workshop_item.submitter.username|lower
+%}
     {# <strong>{{ workshop_item.originalAuthor }}</strong> #}
     <a href="/workshop/browse?org_author={{ workshop_item.originalAuthor|url_encode }}" class="username-link-org-author">
         {{ workshop_item.originalAuthor }}
