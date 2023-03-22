@@ -791,7 +791,7 @@ a.user-link {
     text-decoration: none;
     display: inline-block;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: clip;
     text-overflow: ellipsis;
     max-width: 100%;
 }
