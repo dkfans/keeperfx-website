@@ -140,18 +140,27 @@ class FetchAlphaCommand extends Command
             $new_filename = $artifact->name . '.7z';
             $output_path  = $storage_dir . '/' . $new_filename;
 
-            // Remove file if already exists
-            if(\file_exists($output_path)){
-                $output->writeln("[>] '{$output_path}' already exists?");
-                $output->writeln("[>] Removing file...");
-                \unlink($output_path);
-            }
-
             // Create temp filename and paths for extraction and repackage process
-            $temp_archive_name     = \substr(\md5($artifact->name), 0, 8) . '-' . \strtolower($artifact->name);
-            $temp_archive_path     = \sys_get_temp_dir() . '/' . $temp_archive_name . '.' . $filetype;
-            $temp_archive_path_new = \sys_get_temp_dir() . '/' . $temp_archive_name . '-new.7z';
-            $temp_archive_dir      = \sys_get_temp_dir() . '/' . $temp_archive_name;
+            $temp_archive_path     = \sys_get_temp_dir() . '/' . $artifact->name . '.' . $filetype;
+            $temp_archive_path_new = \sys_get_temp_dir() . '/' . $artifact->name . '-new.7z';
+            $temp_archive_dir      = \sys_get_temp_dir() . '/' . $artifact->name;
+
+            // Make sure there isn't a download/archive process already executing
+            if(\file_exists($temp_archive_path)){
+                $output->writeln("[-] Temporary download file already exists: {$temp_archive_path}");
+                $output->writeln("[>] Skipping...");
+                continue;
+            }
+            if(\file_exists($temp_archive_path_new)){
+                $output->writeln("[-] Temporary archive already exists: {$temp_archive_path_new}");
+                $output->writeln("[>] Skipping...");
+                continue;
+            }
+            if(\file_exists($temp_archive_dir)){
+                $output->writeln("[-] Temporary archive dir already exists: {$temp_archive_dir}");
+                $output->writeln("[>] Skipping...");
+                continue;
+            }
 
             // Download alpha build
             $output->writeln("[>] Downloading: {$artifact->name} -> {$temp_archive_path}");
@@ -196,10 +205,17 @@ class FetchAlphaCommand extends Command
             // Create new 7z archive
             $output->writeln("[>] Creating new 7z archive...");
             try {
-                UnifiedArchive::create(['' => $temp_archive_dir], $temp_archive_path_new, BasicDriver::COMPRESSION_MAXIMUM);
+                UnifiedArchive::create(['' => $temp_archive_dir], $temp_archive_path_new, BasicDriver::COMPRESSION_STRONG);
                 $output->writeln("[+] Archive created: <info>{$temp_archive_path_new}</info>");
             } catch (\Exception $ex) {
                 throw $ex;
+            }
+
+            // Remove output file if it already exists
+            if(\file_exists($output_path)){
+                $output->writeln("[>] '{$output_path}' already exists?");
+                $output->writeln("[>] Removing file...");
+                \unlink($output_path);
             }
 
             // Move new archive
@@ -208,9 +224,8 @@ class FetchAlphaCommand extends Command
 
             // Remove temp files and dir
             $output->writeln("[>] Removing temporary files and dir...");
-            \rmdir($temp_archive_dir);
+            DirectoryHelper::delete($temp_archive_dir);
             \unlink($temp_archive_path);
-            \unlink($temp_archive_path_new);
 
             // Add to database
             $build = new GithubAlphaBuild();
