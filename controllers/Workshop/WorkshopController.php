@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Workshop;
 
 
 use App\Enum\UserRole;
@@ -38,23 +38,6 @@ use Slim\Exception\HttpNotFoundException;
 
 class WorkshopController {
 
-    private EntityManager $em;
-
-    public function __construct(EntityManager $em){
-        $this->em = $em;
-    }
-
-    private function getWorkshopOptions(): array
-    {
-        // TODO: improve the name of this function
-        return [
-            'types'                    => WorkshopType::cases(),
-            'types_without_difficulty' => Config::get('app.workshop.item_types_without_difficulty'),
-            'tags'                     => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-            'builds'                   => $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
-        ];
-    }
-
     public function itemIndex(
         Request $request,
         Response $response,
@@ -70,7 +53,7 @@ class WorkshopController {
         if(!$workshop_item){
             $flash->warning('The requested workshop item could not be found.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }
@@ -88,7 +71,7 @@ class WorkshopController {
         if(!\file_exists($filepath)){
             $flash->warning('The requested file of this workshop item could not be found.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }
@@ -126,7 +109,7 @@ class WorkshopController {
 
         // Render view
         $response->getBody()->write(
-            $twig->render('workshop/item.workshop.html.twig', $this->getWorkshopOptions() + [
+            $twig->render('workshop/item.workshop.html.twig', [
                 'item'                     => $workshop_item,
                 'screenshots'              => $screenshots,
                 'rating_amount'            => $rating_count,
@@ -146,7 +129,7 @@ class WorkshopController {
         TwigEnvironment $twig
     ){
         $response->getBody()->write(
-            $twig->render('workshop/upload.workshop.html.twig', $this->getWorkshopOptions())
+            $twig->render('workshop/upload.workshop.html.twig')
         );
 
         return $response;
@@ -266,7 +249,7 @@ class WorkshopController {
         if(!$success){
             // TODO: remove post vars (request twig extension)
             $response->getBody()->write(
-                $twig->render('workshop/upload.workshop.html.twig', $this->getWorkshopOptions() + [
+                $twig->render('workshop/upload.workshop.html.twig', [
                     'name'                 => $name,
                     'description'          => $description,
                     'install_instructions' => $install_instructions,
@@ -399,7 +382,7 @@ class WorkshopController {
         );
 
         $response->getBody()->write(
-            $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            $twig->render('workshop/alert.workshop.html.twig')
         );
 
         return $response;
@@ -419,7 +402,7 @@ class WorkshopController {
         if(!$workshop_item){
             $flash->warning('The requested workshop item could not be found.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }
@@ -428,7 +411,7 @@ class WorkshopController {
         if($workshop_item->getSubmitter() !== $account->getUser()){
             $flash->warning('You can not edit this workshop item because you did not submit it.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }
@@ -449,7 +432,7 @@ class WorkshopController {
 
         // Show edit page
         $response->getBody()->write(
-            $twig->render('workshop/edit.workshop.html.twig', $this->getWorkshopOptions() + [
+            $twig->render('workshop/edit.workshop.html.twig', [
                 'workshop_item' => $workshop_item,
                 'screenshots'   => $screenshots,
             ])
@@ -471,7 +454,7 @@ class WorkshopController {
         if(!$workshop_item){
             $flash->warning('The requested workshop item could not be found.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }
@@ -480,7 +463,7 @@ class WorkshopController {
         if($workshop_item->getSubmitter() !== $account->getUser()){
             $flash->warning('You can not edit this workshop item because you did not submit it.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }
@@ -599,7 +582,7 @@ class WorkshopController {
         );
 
         $response->getBody()->write(
-            $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+            $twig->render('workshop/alert.workshop.html.twig')
         );
 
         return $response;
@@ -622,7 +605,7 @@ class WorkshopController {
         if(!$workshop_item){
             $flash->warning('The requested workshop item could not be found.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }
@@ -635,7 +618,7 @@ class WorkshopController {
         ){
             $flash->warning('The requested workshop item has not been accepted yet.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }
@@ -644,7 +627,7 @@ class WorkshopController {
         if($filename !== $workshop_item->getFilename()){
             $flash->warning('Invalid workshop download URL.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }
@@ -655,7 +638,7 @@ class WorkshopController {
         if(!\file_exists($filepath)){
             $flash->warning('The requested workshop file could not be found.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }
@@ -914,7 +897,7 @@ class WorkshopController {
         if(!$workshop_item){
             $flash->warning('The requested workshop item could not be found.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }

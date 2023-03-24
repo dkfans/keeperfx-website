@@ -68,8 +68,8 @@
                         <label for="type">Type</label>
                         <select class="form-control form-select" id="type" name="type">
                             <option value="any">Any</option>
-                            {% if types|length > 0 %}
-                                {% for type in types %}
+                            {% if workshop_globals.types|length > 0 %}
+                                {% for type in workshop_globals.types %}
                                     <option value="{{ type.value }}">{{ type.name|enum_beautify }}</option>
                                 {% endfor %}
                             {% endif %}
@@ -86,8 +86,8 @@
                                 Any
                             </label>
                         </div>
-                        {% if types|length > 0 %}
-                            {% for type in types %}
+                        {% if workshop_globals.types|length > 0 %}
+                            {% for type in workshop_globals.types %}
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="type" value="{{ type.value }}" id="type{{ loop.index }}">
                                     <label class="form-check-label" for="type{{ loop.index }}">
@@ -102,8 +102,8 @@
                         <label>
                             Tags
                         </label>
-                        {% if tags|length > 0 %}
-                            {% for tag in tags %}
+                        {% if workshop_globals.tags|length > 0 %}
+                            {% for tag in workshop_globals.tags %}
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="tag[]" value="{{ tag.name }}" id="tag{{ loop.index }}">
                                 <label class="form-check-label" for="tag{{ loop.index }}">

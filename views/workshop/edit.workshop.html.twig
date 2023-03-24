@@ -44,8 +44,8 @@
                             </label>
                             <select class="form-control form-select" id="type" name="type" required>
                                 <option value="" disabled hidden>Choose the type of this item</option>
-                                {% if types|length > 0 %}
-                                    {% for type in types %}
+                                {% if workshop_globals.types|length > 0 %}
+                                    {% for type in workshop_globals.types %}
                                         <option value="{{ type.value }}" {% if type.value == workshop_item.type.value %}selected=selected{% endif %}>
                                             {{ type.name|enum_beautify }}
                                         </option>
@@ -70,8 +70,8 @@
                             </label>
                             <select class="form-control form-select" id="min_game_build" name="min_game_build">
                                 <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="-1"></option>
-                                {% if builds|length > 0 %}
-                                    {% for build in builds %}
+                                {% if workshop_globals.stable_builds|length > 0 %}
+                                    {% for build in workshop_globals.stable_builds %}
                                         <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild.id == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
                                     {% endfor %}
                                 {% endif %}

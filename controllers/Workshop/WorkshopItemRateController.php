@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Workshop;
 
 use App\Account;
 use Doctrine\ORM\EntityManager;

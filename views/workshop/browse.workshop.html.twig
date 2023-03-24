@@ -102,7 +102,7 @@
                                     {% endif %}
 
                                     {# Difficulty Rating #}
-                                    {% if item.difficultyRatingScore is not null and item.type not in types_without_difficulty %}
+                                    {% if item.difficultyRatingScore is not null and item.type not in workshop_globals.types_without_difficulty %}
                                         {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
                                     {% endif %}
 

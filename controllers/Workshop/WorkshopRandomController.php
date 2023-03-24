@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Workshop;
 
 use App\Enum\WorkshopType;
 
@@ -17,22 +17,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class WorkshopRandomController {
-
-    private EntityManager $em;
-
-    public function __construct(EntityManager $em){
-        $this->em = $em;
-    }
-
-    private function getWorkshopOptions(): array
-    {
-        // TODO: improve the name of this function
-        return [
-            'types'  => WorkshopType::cases(),
-            'tags'   => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-            'builds' => $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
-        ];
-    }
 
     public function navRandomItem(
         Request $request,
@@ -55,7 +39,7 @@ class WorkshopRandomController {
         if(empty($workshop_items)){
             $flash->warning('Random workshop item not found.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }

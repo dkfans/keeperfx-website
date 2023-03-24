@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Enum\WorkshopType;
-use App\Entity\WorkshopRating;
-use Doctrine\ORM\Mapping as ORM;
+use App\Enum\WorkshopScanStatus;
 
+use App\Entity\WorkshopRating;
+
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -39,11 +41,11 @@ class WorkshopItem {
     #[ORM\Column]
     private \DateTime $updated_timestamp;
 
-    #[ORM\Column(type: 'text')]
-    private string $description = '';
+    #[ORM\Column(type: 'text', nullable: true)]
+    private string|null $description = null;
 
-    #[ORM\Column(type: 'text')]
-    private string $install_instructions = '';
+    #[ORM\Column(type: 'text', nullable: true)]
+    private string|null $install_instructions = null;
 
     #[ORM\Column(nullable: true)]
     private string|null $filename = null;
@@ -77,6 +79,9 @@ class WorkshopItem {
 
     #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'item')]
     private Collection $comments;
+
+    #[ORM\Column(type: 'integer', enumType: WorkshopScanStatus::class)]
+    private WorkshopScanStatus $scan_status = WorkshopScanStatus::NOT_SCANNED_YET;
 
     public function __construct() {
         $this->ratings            = new ArrayCollection();
@@ -239,7 +244,7 @@ class WorkshopItem {
     /**
      * Get the value of install_instructions
      */
-    public function getInstallInstructions(): string
+    public function getInstallInstructions(): string|null
     {
         return $this->install_instructions;
     }
@@ -247,7 +252,7 @@ class WorkshopItem {
     /**
      * Set the value of install_instructions
      */
-    public function setInstallInstructions(string $install_instructions): self
+    public function setInstallInstructions(string|null $install_instructions): self
     {
         $this->install_instructions = $install_instructions;
         $this->updateLastUpdatedTimestamp();
@@ -258,7 +263,7 @@ class WorkshopItem {
     /**
      * Get the value of description
      */
-    public function getDescription(): string
+    public function getDescription(): string|null
     {
         return $this->description;
     }
@@ -266,7 +271,7 @@ class WorkshopItem {
     /**
      * Set the value of description
      */
-    public function setDescription(string $description): self
+    public function setDescription(string|null $description): self
     {
         $this->description = $description;
         $this->updateLastUpdatedTimestamp();

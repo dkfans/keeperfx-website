@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Workshop;
 
 use App\Entity\GithubRelease;
 use App\Entity\User;
