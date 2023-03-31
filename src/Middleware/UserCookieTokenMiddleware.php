@@ -2,10 +2,16 @@
 
 namespace App\Middleware;
 
-use App\Account;
+use App\Enum\UserOAuthTokenType;
+
+use App\Entity\UserOAuthToken;
 use App\Entity\UserCookieToken;
+
+use App\Account;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
+
+use League\OAuth2\Client\Token\AccessToken;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -56,12 +62,54 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
             if($token && \preg_match('~^[a-zA-Z0-9]+$~', $token)){
 
                 // Check if token exists in DB
-                $cookieToken = $this->em->getRepository(UserCookieToken::class)->findOneBy(['token' => $token]);
-                if($cookieToken){
+                $cookie_token = $this->em->getRepository(UserCookieToken::class)->findOneBy(['token' => $token]);
+                if($cookie_token){
+
+                    // Check if cookie is linked to an OAuth Token
+                    /** @var UserOAuthToken $oauth_token_entity */
+                    $oauth_token_entity = $cookie_token->getOAuthToken();
+                    if($oauth_token_entity){
+
+                        if($oauth_token_entity->getType() !== UserOAuthTokenType::Discord){
+                            die('invalid oauth token type');
+                        }
+
+                        $provider = new \Wohali\OAuth2\Client\Provider\Discord([
+                            'clientId'     => $_ENV['APP_DISCORD_OAUTH_CLIENT_ID'],
+                            'clientSecret' => $_ENV['APP_DISCORD_OAUTH_CLIENT_SECRET'],
+                        ]);
+
+                        $oauth_token = new AccessToken([
+                            'access_token'      => $oauth_token_entity->getToken(),
+                            'refresh_token'     => $oauth_token_entity->getRefreshToken(),
+                            'resource_owner_id' => $oauth_token_entity->getUid(),
+                            'expires'           => $oauth_token_entity->getExpiresTimestamp(),
+                        ]);
+
+                        // Refresh expired OAuth Token
+                        if($oauth_token->hasExpired()){
+
+                            // TODO: handle errors
+                            // TODO: remove invalid cookies
+
+                            // Get new OAuth Token from provider
+                            $new_access_token = $provider->getAccessToken('refresh_token', [
+                                'refresh_token' => $oauth_token->getRefreshToken()
+                            ]);
+
+                            // Update OAuth Token in DB
+                            $oauth_token_entity->setToken($new_access_token->getToken());
+                            $oauth_token_entity->setRefreshToken($new_access_token->getRefreshToken());
+                            $oauth_token_entity->setExpiresTimestamp(
+                                \DateTime::createFromFormat('U', (int) $new_access_token->getExpires())
+                            );
+                            $this->em->persist($oauth_token_entity);
+                        }
+                    }
 
                     // Login the user
-                    $this->account->setUser($cookieToken->getUser());
-                    $this->session['uid'] = $cookieToken->getUser()->getId();
+                    $this->account->setUser($cookie_token->getUser());
+                    $this->session['uid'] = $cookie_token->getUser()->getId();
                 }
             }
         }

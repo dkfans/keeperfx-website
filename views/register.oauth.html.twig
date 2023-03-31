@@ -1,6 +1,6 @@
 {% extends "core/_layout.html.twig" %}
 
-{% set page_title = 'Register' %}
+{% set page_title = 'Register using Discord' %}
 
 {% block content %}
 
@@ -10,25 +10,9 @@
 
         <h2 class="login-title">Register an account</h2>
 
-        <p style="margin: 0; padding: 0 0 5px 5px;">
-            Connect with
-        </p>
-
-        <a href="/oauth/authenticate/discord" style="width: 100%">
-            <button class="btn btn-lg btn-discord" style="width: 100%;">
-                <img src="/img/discord-logo-white.svg" style="height: 24px;" />
-            </button>
-        </a>
-
-        <div class="form-separator">
-            <hr />
-            <span>Or create a local account</span>
-            <hr />
-        </div>
-
         {{ render_flash_messages() }}
 
-        <form action="/register" method="POST">
+        <form action="/oauth/register/{{ oauth_provider_type.value }}" method="POST">
 
             <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
             <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
@@ -36,23 +20,13 @@
             <div class="row g-3">
 
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" value="{{ get_post_var('username') }}" required>
+                    <label for="username">Username <span class="text-muted">for use on KeeperFX.net</span></label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{ username ?? get_post_var('username') }}" required>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email address <span class="text-muted">(Optional)</span></label>
-                    <input type="email" class="form-control" id="email" name="email" value="{{ get_post_var('email') }}">
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" value="" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="repeat_password">Repeat Password</label>
-                    <input type="password" class="form-control" id="repeat_password" name="repeat_password" value="" required>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ email ?? get_post_var('email') }}">
                 </div>
 
                 <div class="form-group">
@@ -68,7 +42,7 @@
                 </div>
 
                 <div class="form-group" style="margin-top: 20px;">
-                    <input type="submit" class="btn btn-lg btn-medieval" style="width: 100%;" value="Register" />
+                    <input type="submit" class="btn btn-lg btn-medieval" style="width: 100%;" value="Register using {{ oauth_provider_type.name }}" />
                 </div>
 
             </div>

@@ -10,6 +10,22 @@
 
         <h2 class="login-title">Login</h2>
 
+        <p style="margin: 0; padding: 0 0 5px 5px;">
+            Connect with
+        </p>
+
+        <a href="/oauth/authenticate/discord" style="width: 100%">
+            <button class="btn btn-lg btn-discord" style="width: 100%;">
+                <img src="/img/discord-logo-white.svg" style="height: 24px;" />
+            </button>
+        </a>
+
+        <div class="form-separator">
+            <hr />
+            <span>Or use your local account</span>
+            <hr />
+        </div>
+
         {{ render_flash_messages() }}
 
         <form method="POST">
