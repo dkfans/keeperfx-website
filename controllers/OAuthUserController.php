@@ -57,6 +57,15 @@ class OAuthUserController {
             ])
         };
 
+        // Set a HTTP client that does not verify SSL certs
+        $provider->setHttpClient(new \GuzzleHttp\Client([
+            'defaults' => [
+                \GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 5,
+                \GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true
+            ],
+            \GuzzleHttp\RequestOptions::VERIFY => false,
+        ]));
+
         $query_params = $request->getQueryParams();
 
         // Step 1. Get authorization code
@@ -81,7 +90,7 @@ class OAuthUserController {
 
         // Step 2. Get an access token using the provided authorization code
         try {
-            /** @var AccessTokenInterface $user */
+            /** @var AccessToken $token */
             $token = $provider->getAccessToken('authorization_code', [
                 'code' => $query_params['code']
             ]);
@@ -90,19 +99,18 @@ class OAuthUserController {
             return $response;
         }
 
-
         // Step 3. Get user profile
         try {
             /** @var ResourceOwnerInterface|DiscordResourceOwner $resource_owner */
             $resource_owner = $provider->getResourceOwner($token);
         } catch (\Exception $ex) {
-            die('Failed to grab user details from Discord.');
+            die('Failed to grab user details from OAuth provider.');
             return $response;
         }
 
         // Check if resource owner is linked to a local account
         $user_oauth_token = $em->getRepository(UserOAuthToken::class)->findOneBy([
-            'type'  => UserOAuthTokenType::Discord,
+            'type'  => $provider_type,
             'uid'   => $resource_owner->getId()
         ]);
         if($user_oauth_token){
