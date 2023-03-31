@@ -21,6 +21,9 @@ class UserCookieToken {
     #[ORM\Column]
     private string $token;
 
+    #[ORM\ManyToOne(targetEntity: UserOAuthToken::class)]
+    private UserOAuthToken|null $oauth_token = null;
+
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
@@ -70,6 +73,24 @@ class UserCookieToken {
     public function setToken(string $token): self
     {
         $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of oauth_token
+     */
+    public function getOAuthToken(): ?UserOAuthToken
+    {
+        return $this->oauth_token;
+    }
+
+    /**
+     * Set the value of oauth_token
+     */
+    public function setOAuthToken(?UserOAuthToken $oauth_token): self
+    {
+        $this->oauth_token = $oauth_token;
 
         return $this;
     }

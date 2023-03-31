@@ -38,6 +38,10 @@ $app->post('/login', [LoginController::class, 'login']);
 $app->get('/register', [RegisterController::class, 'registerIndex']);
 $app->post('/register', [RegisterController::class, 'register']);
 
+// OAuth - User Authenticate (Login & Register)
+$app->get('/oauth/authenticate/{provider_name}', [OAuthUserController::class, 'authenticateIndex']);
+$app->post('/oauth/register/{provider_name}', [OAuthUserController::class, 'register']);
+
 // Avatar fallback
 $app->get('/avatar/{filename:[\w\d\-\.]+}', [AvatarController::class, 'outputAvatar']);
 
