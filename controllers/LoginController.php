@@ -9,6 +9,7 @@ use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
 use Twig\Environment as TwigEnvironment;
+use Dflydev\FigCookies\FigResponseCookies;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
