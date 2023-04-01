@@ -235,6 +235,15 @@ nav {
     border-bottom: 2px solid #333;
 }
 
+.content-body pre+h1,
+.content-body pre+h2,
+.content-body pre+h3,
+.content-body pre+h4,
+.content-body pre+h5,
+.content-body pre+h6 {
+    margin-top: 60px;
+}
+
 .content-body p {
     padding-left: 15px;
     padding-right: 15px;
@@ -431,9 +440,16 @@ input:focus {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-pre.code {
+code {
     background-color: rgba(30, 30, 30, 0.7);
     border: 1px solid rgba(50, 50, 50, 1);
+    padding: 4px;
+    padding-bottom: 3px;
+    color: rgb(238, 231, 224);
+}
+
+pre>code {
+    display: block;
     padding: 5px;
 }
 
