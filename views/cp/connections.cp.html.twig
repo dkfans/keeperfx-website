@@ -36,9 +36,9 @@
                 </td>
                 <td>
                     {% if connections.discord.is_connected %}
-                        <a href="/oauth/unlink/discord/{{ csrf.value }}">Disconnect</a>
+                        <a href="/oauth/disconnect/discord/{{ csrf.name }}/{{ csrf.value|url_encode }}">Disconnect</a>
                     {% else %}
-                        <a href="/oauth/link/discord/{{ csrf.value }}">Connect</a>
+                        <a href="/oauth/connect/discord/{{ csrf.name }}/{{ csrf.value|url_encode }}">Connect</a>
                     {% endif %}
                 </td>
             </tr>
@@ -51,17 +51,17 @@
                     </span>
                 </td>
                 <td>
-                    {% if connections.discord.is_connected %}
-                        {{ connections.discord.uid }}
+                    {% if connections.twitch.is_connected %}
+                        {{ connections.twitch.uid }}
                     {% else %}
                         <span class="text-muted">Not connected</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if connections.twitch.is_connected %}
-                        <a href="/oauth/unlink/discord/{{ csrf.value }}">Disconnect</a>
+                        <a href="/oauth/disconnect/twitch/{{ csrf.name }}/{{ csrf.value|url_encode }}">Disconnect</a>
                     {% else %}
-                        <a href="/oauth/link/discord/{{ csrf.value }}">Connect</a>
+                        <a href="/oauth/connect/twitch/{{ csrf.name }}/{{ csrf.value|url_encode }}">Connect</a>
                     {% endif %}
                 </td>
             </tr>

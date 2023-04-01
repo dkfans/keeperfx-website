@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b6fef1553f4b3cb9fd3c8a5a54c55d0d",
+    "content-hash": "22160a7c5f36c6f57e9a1ffde51ac8d5",
     "packages": [
         {
             "name": "akrabat/ip-address-middleware",
@@ -5737,6 +5737,63 @@
                 }
             ],
             "time": "2023-02-08T07:49:20+00:00"
+        },
+        {
+            "name": "vertisan/oauth2-twitch-helix",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vertisan/oauth2-twitch-helix.git",
+                "reference": "67cac44b4adf113aee026424b435975a026db0e9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vertisan/oauth2-twitch-helix/zipball/67cac44b4adf113aee026424b435975a026db0e9",
+                "reference": "67cac44b4adf113aee026424b435975a026db0e9",
+                "shasum": ""
+            },
+            "require": {
+                "league/oauth2-client": "^2.2.1",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "ext-json": "*",
+                "jakub-onderka/php-parallel-lint": "^1.0",
+                "mockery/mockery": "^1.2",
+                "phpunit/phpunit": "^5.7",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Vertisan\\OAuth2\\Client\\Provider\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paweł Farys",
+                    "email": "pmg.farys@gmail.com",
+                    "homepage": "https://github.com/vertisan"
+                }
+            ],
+            "description": "Twitch (new version Helix) OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
+            "keywords": [
+                "client",
+                "helix",
+                "league",
+                "oauth",
+                "package",
+                "twitch"
+            ],
+            "support": {
+                "issues": "https://github.com/vertisan/oauth2-twitch-helix/issues",
+                "source": "https://github.com/vertisan/oauth2-twitch-helix/tree/1.1.2"
+            },
+            "time": "2022-02-03T20:38:26+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

@@ -38,8 +38,10 @@ $app->post('/login', [LoginController::class, 'login']);
 $app->get('/register', [RegisterController::class, 'registerIndex']);
 $app->post('/register', [RegisterController::class, 'register']);
 
-// OAuth - User Authenticate (Login & Register)
-$app->get('/oauth/authenticate/{provider_name}', [OAuthUserController::class, 'authenticateIndex']);
+// OAuth - Login + Register + Connect / Disconnect account
+$app->get('/oauth/connect/{provider_name}', [OAuthUserController::class, 'connect']);
+$app->get('/oauth/connect/{provider_name}/{token_name}/{token_value:.+}', [OAuthUserController::class, 'connect']);
+$app->get('/oauth/disconnect/{provider_name}/{token_name}/{token_value:.+}', [OAuthUserController::class, 'disconnect'])->add(LoggedInMiddleware::class);
 $app->post('/oauth/register/{provider_name}', [OAuthUserController::class, 'register']);
 
 // Avatar fallback
@@ -54,6 +56,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     // Users: Control Panel
     $group->group('/account', function (RouteCollectorProxy $group) use ($container) {
 
+        // Account settings
         $group->get('', [ControlPanel\AccountController::class, 'accountSettingsIndex']);
         $group->post('/email', [ControlPanel\AccountController::class, 'updateEmail']);
         $group->post('/password', [ControlPanel\AccountController::class, 'updatePassword']);
@@ -61,10 +64,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->get('/remove-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeEmail']);
         $group->get('/remove-avatar/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeAvatar']);
 
-        $group->group('/connections', function (RouteCollectorProxy $group) use ($container) {
-
-            $group->get('', [ControlPanel\ConnectionController::class, 'index']);
-        });
+        // Account Connections
+        $group->get('/connections', [ControlPanel\ConnectionController::class, 'index']);
     });
 
     // AUTH: ADMIN
