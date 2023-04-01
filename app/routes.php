@@ -55,12 +55,16 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->group('/account', function (RouteCollectorProxy $group) use ($container) {
 
         $group->get('', [ControlPanel\AccountController::class, 'accountSettingsIndex']);
-
         $group->post('/email', [ControlPanel\AccountController::class, 'updateEmail']);
         $group->post('/password', [ControlPanel\AccountController::class, 'updatePassword']);
         $group->post('/avatar', [ControlPanel\AccountController::class, 'updateAvatar']);
         $group->get('/remove-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeEmail']);
         $group->get('/remove-avatar/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeAvatar']);
+
+        $group->group('/connections', function (RouteCollectorProxy $group) use ($container) {
+
+            $group->get('', [ControlPanel\ConnectionController::class, 'index']);
+        });
     });
 
     // AUTH: ADMIN
