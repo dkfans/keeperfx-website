@@ -79,6 +79,15 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
                             'clientSecret' => $_ENV['APP_DISCORD_OAUTH_CLIENT_SECRET'],
                         ]);
 
+                        // Set a HTTP client that does not verify SSL certs
+                        $provider->setHttpClient(new \GuzzleHttp\Client([
+                            'defaults' => [
+                                \GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 5,
+                                \GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true
+                            ],
+                            \GuzzleHttp\RequestOptions::VERIFY => false,
+                        ]));
+
                         $oauth_token = new AccessToken([
                             'access_token'      => $oauth_token_entity->getToken(),
                             'refresh_token'     => $oauth_token_entity->getRefreshToken(),
