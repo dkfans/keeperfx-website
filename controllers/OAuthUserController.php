@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\UserOAuthToken;
 
 use App\Enum\UserOAuthTokenType;
 
 use App\Account;
 use App\FlashMessage;
+use App\Config\Config;
 use Doctrine\ORM\EntityManager;
+use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
 use Twig\Environment as TwigEnvironment;
 
@@ -18,13 +21,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
-use App\Entity\User;
+
 use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
-use App\Config\Config;
+use Vertisan\OAuth2\Client\Provider\TwitchHelixResourceOwner;
 
 class OAuthUserController {
 
-    public function authenticateIndex(
+    public function connect(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
@@ -32,15 +35,11 @@ class OAuthUserController {
         EntityManager $em,
         Account $account,
         FlashMessage $flash,
-        $provider_name
+        CsrfGuard $csrf_guard,
+        $provider_name,
+        $token_name = null,
+        $token_value = null,
     ){
-
-        // Only logged-out guests allowed
-        if($account->isLoggedIn()){
-            $response = $response->withHeader('Location', '/')->withStatus(302);
-            // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
-            return $response;
-        }
 
         // Make sure provider is valid
         $provider_type = UserOAuthTokenType::tryFrom($provider_name);
@@ -48,14 +47,34 @@ class OAuthUserController {
             throw new HttpNotFoundException($request);
         }
 
-        // Create the provider instance
-        $provider = match($provider_type){
-            UserOAuthTokenType::Discord => new \Wohali\OAuth2\Client\Provider\Discord([
-                'clientId'     => $_ENV['APP_DISCORD_OAUTH_CLIENT_ID'],
-                'clientSecret' => $_ENV['APP_DISCORD_OAUTH_CLIENT_SECRET'],
-                'redirectUri'  => $_ENV['APP_ROOT_URL'] . '/oauth/authenticate/discord'
-            ])
+        // Check if user is logged in and already has a connection for this provider
+        if($account->isLoggedIn()){
+            $existing_oauth_token = $em->getRepository(UserOAuthToken::class)->findOneBy([
+                'type' => $provider_type,
+                'user' => $account->getUser(),
+            ]);
+            if($existing_oauth_token){
+                $flash->error("This user account is already connected to {$provider_type->name}");
+                $response = $response->withHeader('Location', '/account/connections')->withStatus(302);
+                return $response;
+            }
+        }
+
+        $provider_class = match($provider_type){
+            UserOAuthTokenType::Discord            => \Wohali\OAuth2\Client\Provider\Discord::class,
+            UserOAuthTokenType::Twitch             => \Vertisan\OAuth2\Client\Provider\TwitchHelix::class,
         };
+
+        $provider_scopes = match($provider_type){
+            UserOAuthTokenType::Discord            => ['identify', 'email'],
+            UserOAuthTokenType::Twitch             => ['user:read:email'],
+        };
+
+        $provider = new $provider_class([
+            'clientId'     => $_ENV['APP_OAUTH_' . \strtoupper($provider_type->value) . '_CLIENT_ID'],
+            'clientSecret' => $_ENV['APP_OAUTH_' . \strtoupper($provider_type->value) . '_CLIENT_SECRET'],
+            'redirectUri'  => $_ENV['APP_ROOT_URL'] . '/oauth/connect/' . $provider_type->value
+        ]);
 
         // Set a HTTP client that does not verify SSL certs
         $provider->setHttpClient(new \GuzzleHttp\Client([
@@ -70,8 +89,15 @@ class OAuthUserController {
 
         // Step 1. Get authorization code
         if(!isset($query_params['code']) || !\is_string($query_params['code'])){
+
+            // Check for valid request (anti CSRF)
+            $valid = $csrf_guard->validateToken($token_name, $token_value);
+            if(!$valid){
+                throw new HttpNotFoundException($request);
+            }
+
             $auth_url = $provider->getAuthorizationUrl([
-                'scope' => ['identify', 'email'],
+                'scope' => $provider_scopes,
             ]);
             $session['oauth_state'] = $provider->getState();
             $response = $response->withHeader('Location', $auth_url)->withStatus(302);
@@ -101,7 +127,7 @@ class OAuthUserController {
 
         // Step 3. Get user profile
         try {
-            /** @var ResourceOwnerInterface|DiscordResourceOwner $resource_owner */
+            /** @var ResourceOwnerInterface|DiscordResourceOwner|TwitchHelixResourceOwner $resource_owner */
             $resource_owner = $provider->getResourceOwner($token);
         } catch (\Exception $ex) {
             die('Failed to grab user details from OAuth provider.');
@@ -115,9 +141,11 @@ class OAuthUserController {
         ]);
         if($user_oauth_token){
 
-            // Login the user
-            $session['uid'] = $user_oauth_token->getUser()->getId();
-            $flash->success('You have successfully logged in!');
+            // Check if users tries to add a token when it should already be connected
+            if($account->isLoggedIn()){
+                // TODO: make sure this works as expected
+                return $response;
+            }
 
             // Map entity to AccessToken (for expire check)
             $access_token = new AccessToken([
@@ -151,9 +179,38 @@ class OAuthUserController {
                 }
             }
 
+            // Login the user
+            $session['uid'] = $user_oauth_token->getUser()->getId();
+            $flash->success('You have successfully logged in!');
+
             // Redirect user
             // TODO: check session for redirect-after-login
             $response = $response->withHeader('Location', '/')->withStatus(302);
+            return $response;
+        }
+
+        // If the user is logged in we will add the token to this account
+        // and move them back to the connections page
+        if($account->isLoggedIn()){
+
+            // Create OAuth token for user
+            $user_oauth_token = new UserOAuthToken();
+            $user_oauth_token->setUser($account->getUser());
+            $user_oauth_token->setType($provider_type);
+            $user_oauth_token->setUid($resource_owner->getId());
+            $user_oauth_token->setToken($token->getToken());
+            $user_oauth_token->setRefreshToken($token->getRefreshToken());
+            $user_oauth_token->setExpiresTimestamp(
+                \DateTime::createFromFormat('U', (int) $token->getExpires())
+            );
+            $em->persist($user_oauth_token);
+
+            // Make changes to DB
+            $em->flush();
+
+            // Redirect & show message
+            $flash->success('Authorization successful. Your account has been connected.');
+            $response = $response->withHeader('Location', '/account/connections')->withStatus(302);
             return $response;
         }
 
@@ -206,6 +263,52 @@ class OAuthUserController {
                 'oauth_provider_type' => $provider_type,
             ])
         );
+
+        return $response;
+    }
+
+    public function disconnect(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        Session $session,
+        EntityManager $em,
+        Account $account,
+        FlashMessage $flash,
+        CsrfGuard $csrf_guard,
+        $provider_name,
+        $token_name = null,
+        $token_value = null,
+    ){
+        // Make sure provider is valid
+        $provider_type = UserOAuthTokenType::tryFrom($provider_name);
+        if($provider_type === null){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check for valid request (anti CSRF)
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            throw new HttpNotFoundException($request);
+        }
+
+        $oauth_token = $em->getRepository(UserOAuthToken::class)->findOneBy([
+            'type' => $provider_type,
+            'user' => $account->getUser(),
+        ]);
+
+        if(!$oauth_token){
+            $flash->error("Failed to remove OAuth connection");
+            $response = $response->withHeader('Location', '/account/connections')->withStatus(302);
+            return $response;
+        }
+
+        $em->remove($oauth_token);
+        $em->flush();
+
+        $flash->success("Removed account connection with {$provider_type->name}");
+        $response = $response->withHeader('Location', '/account/connections')->withStatus(302);
+        return $response;
 
         return $response;
     }

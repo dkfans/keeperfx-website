@@ -13,11 +13,15 @@ use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
 use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
+
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\SetCookie;
+
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\UploadedFileInterface;
+
+use Slim\Exception\HttpNotFoundException;
 
 class AccountController {
 
@@ -281,9 +285,12 @@ class AccountController {
     ){
         // Check for valid logout request
         $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if($valid){
-            $session['uid'] = null;
+        if(!$valid){
+            throw new HttpNotFoundException($request);
         }
+
+        // Logout user
+        $session['uid'] = null;
 
         // Check if 'remember me' token is set (and valid)
         $cookies = $request->getCookieParams();
