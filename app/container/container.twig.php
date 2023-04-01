@@ -1,16 +1,17 @@
 <?php
 
-use App\Twig\TwigExtensionLoader;
-use App\Twig\TwigGlobalProvider;
-
-use Psr\Container\ContainerInterface;
-
-use App\Kernel\Exception\ContainerException;
 use App\Config\Config;
+use App\Twig\TwigGlobalProvider;
+use App\Twig\TwigExtensionLoader;
+
+use Twig\RuntimeLoader\RuntimeLoaderInterface;
 
 use Twig\Extra\Markdown\MarkdownRuntime;
-use Twig\Extra\Markdown\DefaultMarkdown;
-use Twig\RuntimeLoader\RuntimeLoaderInterface;
+use Twig\Extra\Markdown\MarkdownInterface;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
+
+use Psr\Container\ContainerInterface;
+use App\Kernel\Exception\ContainerException;
 
 /**
  * Twig container definitions
@@ -45,7 +46,14 @@ return [
         $twig->addRuntimeLoader(new class implements RuntimeLoaderInterface {
             public function load($class) {
                 if (MarkdownRuntime::class === $class) {
-                    return new MarkdownRuntime(new DefaultMarkdown());
+                    return new MarkdownRuntime(
+                        new class (new GithubFlavoredMarkdownConverter) implements MarkdownInterface {
+                            public function __construct(private $converter){}
+                            public function convert(string $string): string {
+                                return $this->converter->convert($string);
+                            }
+                        }
+                    );
                 }
             }
         });
