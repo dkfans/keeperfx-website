@@ -2,8 +2,8 @@
 php ./console maintenance:start
 git checkout .
 git pull
+php ./console cache:clear
 composer install --no-dev
 php ./console migrations:migrate --no-interaction
-php ./console cache:clear
 php ./console cache:warm
 php ./console maintenance:stop
