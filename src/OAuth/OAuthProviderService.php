@@ -30,12 +30,21 @@ class OAuthProviderService {
 
         $class_name = self::CLASSES[$provider->value];
 
+        // Create provider class
         $class = new $class_name([
             'clientId'     => $_ENV['APP_OAUTH_' . \strtoupper($provider->value) . '_CLIENT_ID'],
             'clientSecret' => $_ENV['APP_OAUTH_' . \strtoupper($provider->value) . '_CLIENT_SECRET'],
             'redirectUri'  => $_ENV['APP_ROOT_URL'] . '/oauth/connect/' . $provider->value,
-            'verify'       => false,
         ]);
+
+        // Set a HTTP client that does not verify SSL certs
+        $class->setHttpClient(new \GuzzleHttp\Client([
+            'defaults' => [
+                \GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 5,
+                \GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true
+            ],
+            \GuzzleHttp\RequestOptions::VERIFY => false,
+        ]));
 
         $this->providers[$provider->value] = $class;
 

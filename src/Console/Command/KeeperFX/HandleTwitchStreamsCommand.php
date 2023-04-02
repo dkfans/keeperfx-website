@@ -7,8 +7,8 @@ use App\Enum\OAuthProviderType;
 use App\Entity\GitCommit;
 use App\Entity\GithubRelease;
 use App\Entity\UserOAuthToken;
-
 use Doctrine\ORM\EntityManager;
+use App\OAuth\OAuthProviderService;
 use Psr\SimpleCache\CacheInterface;
 
 use Symfony\Component\Console\Command\Command;
@@ -27,9 +27,12 @@ class HandleTwitchStreamsCommand extends Command
 
     private CacheInterface $cache;
 
-    public function __construct(EntityManager $em, CacheInterface $cache) {
-        $this->em    = $em;
-        $this->cache = $cache;
+    private OAuthProviderService $provider_service;
+
+    public function __construct(EntityManager $em, CacheInterface $cache, OAuthProviderService $provider_service) {
+        $this->em               = $em;
+        $this->cache            = $cache;
+        $this->provider_service = $provider_service;
         parent::__construct();
     }
 
@@ -60,12 +63,7 @@ class HandleTwitchStreamsCommand extends Command
 
         // Setup OAuth provider (for refreshing tokens)
         $output->writeln("[>] Setting up Twitch OAuth Provider client...");
-        $provider = new \Vertisan\OAuth2\Client\Provider\TwitchHelix([
-            'clientId'     => $_ENV['APP_OAUTH_TWITCH_CLIENT_ID'],
-            'clientSecret' => $_ENV['APP_OAUTH_TWITCH_CLIENT_SECRET'],
-            'redirectUri'  => $_ENV['APP_ROOT_URL'] . '/oauth/connect/twitch',
-            'verify'       => false, // no ssl verification
-        ]);
+        $provider = $this->provider_service->getProvider(OAuthProviderType::Twitch);
 
         $oauth_token_count = \count($oauth_tokens);
         $output->writeln("[>] Checking <info>{$oauth_token_count}</info> OAuth tokens...");
