@@ -2,21 +2,22 @@
 
 namespace App\Console\Command\KeeperFX;
 
+use App\Enum\UserOAuthTokenType;
+
 use App\Entity\GitCommit;
 use App\Entity\GithubRelease;
 use App\Entity\UserOAuthToken;
-use App\Enum\UserOAuthTokenType;
+
 use Doctrine\ORM\EntityManager;
 use Psr\SimpleCache\CacheInterface;
-use Symfony\Component\Process\Process;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
-use Xenokore\Utility\Helper\DirectoryHelper;
 use TwitchApi\TwitchApi;
 use TwitchApi\HelixGuzzleClient;
+use League\OAuth2\Client\Token\AccessToken;
 
 class HandleTwitchStreamsCommand extends Command
 {
@@ -57,10 +58,39 @@ class HandleTwitchStreamsCommand extends Command
         $client = new HelixGuzzleClient($_ENV['APP_OAUTH_TWITCH_CLIENT_ID'], ['verify' => false]);
         $api    = new TwitchApi($client, $_ENV['APP_OAUTH_TWITCH_CLIENT_ID'], $_ENV['APP_OAUTH_TWITCH_CLIENT_SECRET']);
 
+        // Setup OAuth provider (for refreshing tokens)
+        $output->writeln("[>] Setting up Twitch OAuth Provider client...");
+        $provider = new \Vertisan\OAuth2\Client\Provider\TwitchHelix([
+            'clientId'     => $_ENV['APP_OAUTH_TWITCH_CLIENT_ID'],
+            'clientSecret' => $_ENV['APP_OAUTH_TWITCH_CLIENT_SECRET'],
+            'redirectUri'  => $_ENV['APP_ROOT_URL'] . '/oauth/connect/twitch',
+            'verify'       => false, // no ssl verification
+        ]);
+
         $oauth_token_count = \count($oauth_tokens);
         $output->writeln("[>] Checking <info>{$oauth_token_count}</info> OAuth tokens...");
 
         foreach($oauth_tokens as $token){
+
+            // Refresh expired OAuth Token
+            if($token->getExpiresTimestamp()->getTimestamp() < \time()){
+
+                $output->writeln("[>] Refreshing token of user: {$token->getUser()->getUsername()}");
+
+                // Get new OAuth Token from provider
+                $new_access_token = $provider->getAccessToken('refresh_token', [
+                    'refresh_token' => $token->getRefreshToken()
+                ]);
+
+                // Update OAuth Token in DB
+                $token->setToken($new_access_token->getToken());
+                $token->setRefreshToken($new_access_token->getRefreshToken());
+                $token->setExpiresTimestamp(
+                    \DateTime::createFromFormat('U', (int) $new_access_token->getExpires())
+                );
+                $this->em->persist($token);
+                $this->em->flush();
+            }
 
             // Check valid response
             $response = $api->getStreamsApi()->getStreamForUserId($token->getToken(), $token->getUid());
