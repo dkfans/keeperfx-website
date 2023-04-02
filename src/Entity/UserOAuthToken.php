@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Enum\UserOAuthTokenType;
+use App\Enum\OAuthProviderType;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,8 +18,8 @@ class UserOAuthToken {
     #[ORM\ManyToOne(targetEntity: 'User')]
     private User $user;
 
-    #[ORM\Column(type: 'string', enumType: UserOAuthTokenType::class)]
-    private UserOAuthTokenType $type;
+    #[ORM\Column(type: 'string', enumType: OAuthProviderType::class)]
+    private OAuthProviderType $provider_type;
 
     #[ORM\Column]
     private string $token;
@@ -69,19 +69,19 @@ class UserOAuthToken {
     }
 
     /**
-     * Get the value of type
+     * Get the value of provider
      */
-    public function getType(): UserOAuthTokenType
+    public function getProviderType(): OAuthProviderType
     {
-        return $this->type;
+        return $this->provider_type;
     }
 
     /**
-     * Set the value of type
+     * Set the value of provider
      */
-    public function setType(UserOAuthTokenType $type): self
+    public function setProviderType(OAuthProviderType $provider): self
     {
-        $this->type = $type;
+        $this->provider_type = $provider;
 
         return $this;
     }

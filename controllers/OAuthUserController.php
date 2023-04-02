@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\UserOAuthToken;
 
-use App\Enum\UserOAuthTokenType;
+use App\Enum\OAuthProviderType;
 
 use App\Account;
 use App\FlashMessage;
@@ -13,6 +13,7 @@ use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
+use App\OAuth\OAuthProviderService;
 use Twig\Environment as TwigEnvironment;
 
 use Slim\Exception\HttpNotFoundException;
@@ -36,13 +37,14 @@ class OAuthUserController {
         Account $account,
         FlashMessage $flash,
         CsrfGuard $csrf_guard,
+        OAuthProviderService $provider_service,
         $provider_name,
         $token_name = null,
         $token_value = null,
     ){
 
         // Make sure provider is valid
-        $provider_type = UserOAuthTokenType::tryFrom($provider_name);
+        $provider_type = OAuthProviderType::tryFrom($provider_name);
         if($provider_type === null){
             throw new HttpNotFoundException($request);
         }
@@ -50,8 +52,8 @@ class OAuthUserController {
         // Check if user is logged in and already has a connection for this provider
         if($account->isLoggedIn()){
             $existing_oauth_token = $em->getRepository(UserOAuthToken::class)->findOneBy([
-                'type' => $provider_type,
-                'user' => $account->getUser(),
+                'provider_type' => $provider_type,
+                'user'          => $account->getUser(),
             ]);
             if($existing_oauth_token){
                 $flash->error("This user account is already connected to {$provider_type->name}");
@@ -60,30 +62,7 @@ class OAuthUserController {
             }
         }
 
-        $provider_class = match($provider_type){
-            UserOAuthTokenType::Discord            => \Wohali\OAuth2\Client\Provider\Discord::class,
-            UserOAuthTokenType::Twitch             => \Vertisan\OAuth2\Client\Provider\TwitchHelix::class,
-        };
-
-        $provider_scopes = match($provider_type){
-            UserOAuthTokenType::Discord            => ['identify', 'email'],
-            UserOAuthTokenType::Twitch             => ['user:read:email'],
-        };
-
-        $provider = new $provider_class([
-            'clientId'     => $_ENV['APP_OAUTH_' . \strtoupper($provider_type->value) . '_CLIENT_ID'],
-            'clientSecret' => $_ENV['APP_OAUTH_' . \strtoupper($provider_type->value) . '_CLIENT_SECRET'],
-            'redirectUri'  => $_ENV['APP_ROOT_URL'] . '/oauth/connect/' . $provider_type->value
-        ]);
-
-        // Set a HTTP client that does not verify SSL certs
-        $provider->setHttpClient(new \GuzzleHttp\Client([
-            'defaults' => [
-                \GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 5,
-                \GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true
-            ],
-            \GuzzleHttp\RequestOptions::VERIFY => false,
-        ]));
+        $provider = $provider_service->getProvider($provider_type);
 
         $query_params = $request->getQueryParams();
 
@@ -96,8 +75,9 @@ class OAuthUserController {
                 throw new HttpNotFoundException($request);
             }
 
+            // Redirect user to OAuth Provider's login page
             $auth_url = $provider->getAuthorizationUrl([
-                'scope' => $provider_scopes,
+                'scope' => $provider_service->getScopes($provider_type),
             ]);
             $session['oauth_state'] = $provider->getState();
             $response = $response->withHeader('Location', $auth_url)->withStatus(302);
@@ -136,8 +116,8 @@ class OAuthUserController {
 
         // Check if resource owner is linked to a local account
         $user_oauth_token = $em->getRepository(UserOAuthToken::class)->findOneBy([
-            'type'  => $provider_type,
-            'uid'   => $resource_owner->getId()
+            'provider_type' => $provider_type,
+            'uid'           => $resource_owner->getId()
         ]);
         if($user_oauth_token){
 
@@ -196,7 +176,7 @@ class OAuthUserController {
             // Create OAuth token for user
             $user_oauth_token = new UserOAuthToken();
             $user_oauth_token->setUser($account->getUser());
-            $user_oauth_token->setType($provider_type);
+            $user_oauth_token->setProviderType($provider_type);
             $user_oauth_token->setUid($resource_owner->getId());
             $user_oauth_token->setToken($token->getToken());
             $user_oauth_token->setRefreshToken($token->getRefreshToken());
@@ -251,7 +231,7 @@ class OAuthUserController {
         ];
 
         // Add possible Discord avatar hash
-        if($provider_type === UserOAuthTokenType::Discord && \method_exists($resource_owner, 'getAvatarHash')){
+        if($provider_type === OAuthProviderType::Discord && \method_exists($resource_owner, 'getAvatarHash')){
             $session['oauth_register']['discord_avatar_hash'] = $resource_owner->getAvatarHash();
         }
 
@@ -281,7 +261,7 @@ class OAuthUserController {
         $token_value = null,
     ){
         // Make sure provider is valid
-        $provider_type = UserOAuthTokenType::tryFrom($provider_name);
+        $provider_type = OAuthProviderType::tryFrom($provider_name);
         if($provider_type === null){
             throw new HttpNotFoundException($request);
         }
@@ -293,8 +273,8 @@ class OAuthUserController {
         }
 
         $oauth_token = $em->getRepository(UserOAuthToken::class)->findOneBy([
-            'type' => $provider_type,
-            'user' => $account->getUser(),
+            'provider_type' => $provider_type,
+            'user'          => $account->getUser(),
         ]);
 
         if(!$oauth_token){
@@ -337,8 +317,8 @@ class OAuthUserController {
 
         // Make sure the user does not try to register multiple times
         $existing_token = $em->getRepository(UserOAuthToken::class)->findOneBy([
-            'type'  => $session['oauth_register']['provider_type'],
-            'uid'   => $session['oauth_register']['uid'],
+            'provider_type' => $session['oauth_register']['provider_type'],
+            'uid'           => $session['oauth_register']['uid'],
         ]);
         if($existing_token){
             die('oauth connection already exists');
@@ -419,7 +399,7 @@ class OAuthUserController {
         // Create OAuth token for user
         $user_oauth_token = new UserOAuthToken();
         $user_oauth_token->setUser($user);
-        $user_oauth_token->setType($session['oauth_register']['provider_type']);
+        $user_oauth_token->setProviderType($session['oauth_register']['provider_type']);
         $user_oauth_token->setUid($session['oauth_register']['uid']);
         $user_oauth_token->setToken($session['oauth_register']['token']);
         $user_oauth_token->setRefreshToken($session['oauth_register']['refresh_token']);

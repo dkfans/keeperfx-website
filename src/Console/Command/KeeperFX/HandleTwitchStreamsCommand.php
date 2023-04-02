@@ -2,7 +2,7 @@
 
 namespace App\Console\Command\KeeperFX;
 
-use App\Enum\UserOAuthTokenType;
+use App\Enum\OAuthProviderType;
 
 use App\Entity\GitCommit;
 use App\Entity\GithubRelease;
@@ -46,7 +46,7 @@ class HandleTwitchStreamsCommand extends Command
 
         // We'll use the OAuth tokens as these contain the Twitch account connections
         /** @var UserOAuthToken[] $oauth_tokens */
-        $oauth_tokens = $this->em->getRepository(UserOAuthToken::class)->findBy(['type' => UserOAuthTokenType::Twitch]);
+        $oauth_tokens = $this->em->getRepository(UserOAuthToken::class)->findBy(['provider_type' => OAuthProviderType::Twitch]);
 
         if(!$oauth_tokens || \count($oauth_tokens) < 1){
             $output->writeln("[+] No OAuth tokens found");

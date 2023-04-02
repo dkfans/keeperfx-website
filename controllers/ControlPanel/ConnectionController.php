@@ -2,9 +2,11 @@
 
 namespace App\Controller\ControlPanel;
 
-use App\Account;
+use App\Enum\OAuthProviderType;
+
 use App\Entity\UserOAuthToken;
-use App\Enum\UserOAuthTokenType;
+
+use App\Account;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
@@ -32,8 +34,8 @@ class ConnectionController {
         ];
 
         $discord_token = $em->getRepository(UserOAuthToken::class)->findOneBy([
-            'user' => $account->getUser(),
-            'type' => UserOAuthTokenType::Discord,
+            'user'          => $account->getUser(),
+            'provider_type' => OAuthProviderType::Discord,
         ]);
 
         if($discord_token){
@@ -44,8 +46,8 @@ class ConnectionController {
         }
 
         $twitch_token = $em->getRepository(UserOAuthToken::class)->findOneBy([
-            'user' => $account->getUser(),
-            'type' => UserOAuthTokenType::Twitch,
+            'user'          => $account->getUser(),
+            'provider_type' => OAuthProviderType::Twitch,
         ]);
 
         if($twitch_token){

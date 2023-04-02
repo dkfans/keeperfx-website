@@ -2,7 +2,7 @@
 
 namespace App\Middleware;
 
-use App\Enum\UserOAuthTokenType;
+use App\Enum\OAuthProviderType;
 
 use App\Entity\UserOAuthToken;
 use App\Entity\UserCookieToken;
@@ -10,6 +10,7 @@ use App\Entity\UserCookieToken;
 use App\Account;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
+use App\OAuth\OAuthProviderService;
 
 use League\OAuth2\Client\Token\AccessToken;
 
@@ -20,30 +21,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class UserCookieTokenMiddleware implements MiddlewareInterface {
 
-    /** @var EntityManager $em */
-    public $em;
-
-    /** @var Account $account */
-    public $account;
-
-    /** @var Session $session */
-    public $session;
-
-    /**
-     * Constructor
-     *
-     * @param Account $account
-     * @param Session $session
-     */
     public function __construct(
-        EntityManager $em,
-        Account $account,
-        Session $session
-    ) {
-        $this->em      = $em;
-        $this->account = $account;
-        $this->session = $session;
-    }
+        private EntityManager $em,
+        private Account $account,
+        private Session $session,
+        private OAuthProviderService $provider_service
+    ) {}
 
     /**
      * Process a server request and return a response.
@@ -67,36 +50,14 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
 
                     // Check if cookie is linked to an OAuth Token
                     /** @var UserOAuthToken $oauth_token_entity */
-                    $oauth_token_entity = $cookie_token->getOAuthToken();
-                    if($oauth_token_entity){
+                    $oauth_token = $cookie_token->getOAuthToken();
+                    if($oauth_token){
 
-                        if($oauth_token_entity->getType() !== UserOAuthTokenType::Discord){
-                            die('invalid oauth token type');
-                        }
-
-                        $provider = new \Wohali\OAuth2\Client\Provider\Discord([
-                            'clientId'     => $_ENV['APP_DISCORD_OAUTH_CLIENT_ID'],
-                            'clientSecret' => $_ENV['APP_DISCORD_OAUTH_CLIENT_SECRET'],
-                        ]);
-
-                        // Set a HTTP client that does not verify SSL certs
-                        $provider->setHttpClient(new \GuzzleHttp\Client([
-                            'defaults' => [
-                                \GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 5,
-                                \GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true
-                            ],
-                            \GuzzleHttp\RequestOptions::VERIFY => false,
-                        ]));
-
-                        $oauth_token = new AccessToken([
-                            'access_token'      => $oauth_token_entity->getToken(),
-                            'refresh_token'     => $oauth_token_entity->getRefreshToken(),
-                            'resource_owner_id' => $oauth_token_entity->getUid(),
-                            'expires'           => $oauth_token_entity->getExpiresTimestamp(),
-                        ]);
+                        // Get OAuth provider
+                        $provider = $this->provider_service->getProvider($oauth_token_entity->getProviderType());
 
                         // Refresh expired OAuth Token
-                        if($oauth_token->hasExpired()){
+                        if($oauth_token->getExpiresTimestamp()->getTimestamp() < time()){
 
                             // TODO: handle errors
                             // TODO: remove invalid cookies
@@ -107,12 +68,13 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
                             ]);
 
                             // Update OAuth Token in DB
-                            $oauth_token_entity->setToken($new_access_token->getToken());
-                            $oauth_token_entity->setRefreshToken($new_access_token->getRefreshToken());
-                            $oauth_token_entity->setExpiresTimestamp(
+                            $oauth_token->setToken($new_access_token->getToken());
+                            $oauth_token->setRefreshToken($new_access_token->getRefreshToken());
+                            $oauth_token->setExpiresTimestamp(
                                 \DateTime::createFromFormat('U', (int) $new_access_token->getExpires())
                             );
-                            $this->em->persist($oauth_token_entity);
+                            $this->em->persist($oauth_token);
+                            $this->em->flush();
                         }
                     }
 
