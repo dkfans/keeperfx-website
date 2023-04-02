@@ -40,11 +40,20 @@ class IndexController {
             }
         }
 
+        // Get Twitch stream
+        $twitch_channel = null;
+        $streams = $cache->get('twitch_streams', []);
+        if(!empty($streams)){
+            $twitch_channel = $streams[\array_rand($streams)];
+        }
+
         $response->getBody()->write(
             $twig->render('index.html.twig', [
-                'articles'      => $articles,
-                'release'       => $release,
-                'forum_threads' => $cache->get('keeperfx_forum_threads', []),
+                'articles'           => $articles,
+                'release'            => $release,
+                'forum_threads'      => $cache->get('keeperfx_forum_threads', []),
+                'twitch_channel'     => $twitch_channel,
+                'twitch_parent_host' => \parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_HOST),
             ])
         );
 
