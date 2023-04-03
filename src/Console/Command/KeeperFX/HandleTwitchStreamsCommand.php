@@ -23,6 +23,13 @@ class HandleTwitchStreamsCommand extends Command
 {
     public const DUNGEON_KEEPER_GAME_ID = '16169'; // string
 
+    public const KEEPER_FX_STRINGS = [
+        'keeperfx',
+        'keeper-fx',
+        'keeper fx',
+        'kfx',
+    ];
+
     private EntityManager $em;
 
     private CacheInterface $cache;
@@ -117,29 +124,17 @@ class HandleTwitchStreamsCommand extends Command
                 continue;
             }
 
-            // Check if KeeperFX is found in tags
-            $tag_found = false;
-            if(\is_array($data->tags)){
-                foreach($data->tags as $tag){
-                    if(
-                        \strpos(\strtolower($tag), 'keeperfx') !== false
-                        || \strpos(\strtolower($tag), 'keeper-fx') !== false
-                        || \strpos(\strtolower($tag), 'keeper fx') !== false
-                        || \strpos(\strtolower($tag), 'kfx') !== false
-                    ){
-                        $tag_found = true;
+            // Check if KeeperFX is found in title or tags
+            $string_found = false;
+            foreach((array) $data->tags ?? [] + [(string) $data->title ?? ''] as $string){
+                foreach(self::KEEPER_FX_STRINGS as $string_search){
+                    if(\strpos(\strtolower($string), $string_search) !== false){
+                        $string_found = true;
+                        break 2;
                     }
                 }
             }
-
-            // Check if KeeperFX is found in title or tags
-            if(
-                $tag_found
-                || \strpos(\strtolower($data->title), 'keeperfx') !== false
-                || \strpos(\strtolower($data->title), 'keeper-fx') !== false
-                || \strpos(\strtolower($data->title), 'keeper fx') !== false
-                || \strpos(\strtolower($data->title), 'kfx') !== false
-            ){
+            if($string_found){
                 $output->writeln("[+] <info>{$token->getUser()->getUsername()}</info> is streaming KeeperFX!");
                 $streams[] = $data->user_login;
                 continue;
