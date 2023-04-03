@@ -202,6 +202,13 @@ class FetchAlphaCommand extends Command
                 }
             }
 
+            // Rename the default 'keeperfx.cfg' file
+            $cfg_filepath     = $temp_archive_dir . '/keeperfx.cfg';
+            $cfg_filepath_new = $temp_archive_dir . '/_keeperfx.cfg';
+            if(\file_exists($cfg_filepath)){
+                \rename($cfg_filepath, $cfg_filepath_new);
+            }
+
             // Create new 7z archive
             $output->writeln("[>] Creating new 7z archive...");
             try {
