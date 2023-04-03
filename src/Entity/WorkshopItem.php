@@ -48,9 +48,6 @@ class WorkshopItem {
     private string|null $install_instructions = null;
 
     #[ORM\Column(nullable: true)]
-    private string|null $filename = null;
-
-    #[ORM\Column(nullable: true)]
     private string|null $thumbnail = null;
 
     #[ORM\Column]
@@ -64,6 +61,9 @@ class WorkshopItem {
 
     #[ORM\Column(nullable: true)]
     private \DateTime|null $original_creation_date = null;
+
+    #[ORM\OneToMany(targetEntity: WorkshopFile::class, mappedBy: 'item')]
+    private Collection $files;
 
     #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'item')]
     private Collection $ratings;
@@ -80,10 +80,8 @@ class WorkshopItem {
     #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'item')]
     private Collection $comments;
 
-    #[ORM\Column(type: 'integer', enumType: WorkshopScanStatus::class)]
-    private WorkshopScanStatus $scan_status = WorkshopScanStatus::NOT_SCANNED_YET;
-
     public function __construct() {
+        $this->files              = new ArrayCollection();
         $this->ratings            = new ArrayCollection();
         $this->difficulty_ratings = new ArrayCollection();
         $this->comments           = new ArrayCollection();
@@ -280,25 +278,6 @@ class WorkshopItem {
     }
 
     /**
-     * Get the value of filename
-     */
-    public function getFilename(): string|null
-    {
-        return $this->filename;
-    }
-
-    /**
-     * Set the value of filename
-     */
-    public function setFilename(string $filename): self
-    {
-        $this->filename = $filename;
-        $this->updateLastUpdatedTimestamp();
-
-        return $this;
-    }
-
-    /**
      * Get the value of submitter
      */
     public function getSubmitter(): User|null
@@ -450,5 +429,13 @@ class WorkshopItem {
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+
+    /**
+     * Get the value of files
+     */
+    public function getFiles(): Collection
+    {
+        return $this->files;
     }
 }

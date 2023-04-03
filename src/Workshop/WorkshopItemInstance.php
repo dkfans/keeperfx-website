@@ -5,16 +5,19 @@ namespace App\Workshop;
 use App\Entity\User;
 use App\Entity\WorkshopItem;
 use App\Entity\GithubRelease;
-
+use App\Entity\WorkshopFile;
 use App\Enum\WorkshopType;
 
 use Doctrine\ORM\EntityManager;
 
 use App\Workshop\Exception\WorkshopException;
+use Doctrine\Common\Collections\Collection;
 
 class WorkshopItemInstance {
 
     public const DEFAULT_TYPE = WorkshopType::Other;
+
+    private Collection $files;
 
     public function __construct(
         private WorkshopItem $item,
@@ -150,7 +153,7 @@ class WorkshopItemInstance {
         return $this;
     }
 
-    public function getStorageDir(): string
+    public function getFilesDir(): string
     {
         if(!$this->item){
             throw new WorkshopException('Workshop item not set.');
@@ -160,10 +163,10 @@ class WorkshopItemInstance {
             throw new WorkshopException('Workshop item does not have an ID yet. Save it first.');
         }
 
-        $dir = Workshop::getStorageDir() . '/' . $this->item->getId();
+        $dir = Workshop::getStorageDir() . '/' . $this->item->getId() . '/files';
 
         if(!\is_dir($dir)){
-            if(!@mkdir($dir)){
+            if(!@mkdir($dir, 0777, true)){
                 throw new WorkshopException("Failed to create storage dir for workshop item with id {$this->item->getId()}.");
             }
         }
@@ -184,12 +187,57 @@ class WorkshopItemInstance {
         $dir = Workshop::getStorageDir() . '/' . $this->item->getId() . '/screenshots';
 
         if(!\is_dir($dir)){
-            if(!@mkdir($dir)){
+            if(!@mkdir($dir, 0777, true)){
                 throw new WorkshopException("Failed to create screenshots dir for workshop item with id {$this->item->getId()}.");
             }
         }
 
         return $dir;
+    }
+
+    public function getFiles(): Collection
+    {
+        if($this->files !== null){
+            return $this->files;
+        }
+
+        if(!$this->item){
+            throw new WorkshopException('Workshop item not set.');
+        }
+
+        if($this->item->getId() === null){
+            throw new WorkshopException('Workshop item does not have an ID yet. Save it first.');
+        }
+
+        $this->files = new Collection();
+
+        // Loop trough all files
+        $files = $this->em->getRepository(WorkshopFile::class)->findBy(['item' => $this->item], ['created_timestamp' => 'DESC']);
+        if($files && \count($files) > 0){
+            $file_dir = $this->getFilesDir();
+            foreach($files as $file){
+
+                // Add file to collection if file is found on disk
+                $filepath = $file_dir . '/' . $file->getStorageFilename();
+                if(\file_exists($filepath)){
+                    $this->files->add($file);
+                } else {
+                    // TODO: log error
+                }
+            }
+        }
+
+        return $this->files;
+    }
+
+    public function getLatestFile(): WorkshopFile|null
+    {
+        $files = $this->getFiles();
+        if($files && \count($files) > 0){
+            return $files->first();
+        }
+
+        return null;
     }
 
     public function __call($method, $args) {
