@@ -1,0 +1,75 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Account Connections' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Account Connections</h2>
+    </div>
+    <div class="content-body">
+
+    <table class="table" style="vertical-align: middle;">
+        <thead>
+            <tr>
+                <th>Service</th>
+                <th>User ID</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {# Discord #}
+            <tr>
+                <td>
+                    <span style="width: 130px; display: block; padding: 5px; text-align: center; background-color: #5865F2;">
+                        <img src="/img/discord-logo-white.svg" style="height: 18px;" />
+                    </span>
+                </td>
+                <td>
+                    {% if connections.discord.is_connected %}
+                        {{ connections.discord.uid }}
+                    {% else %}
+                        <span class="text-muted">Not connected</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if connections.discord.is_connected %}
+                        <a href="/oauth/disconnect/discord/{{ csrf.name }}/{{ csrf.value|url_encode }}">Disconnect</a>
+                    {% else %}
+                        <a href="/oauth/connect/discord/{{ csrf.name }}/{{ csrf.value|url_encode }}">Connect</a>
+                    {% endif %}
+                </td>
+            </tr>
+
+            {# Twitch #}
+            <tr>
+                <td>
+                    <span style="width: 130px; display: block; padding: 5px; text-align: center; background-color: rgb(169, 112, 255);">
+                        <img src="/img/twitch-logo.svg" style="height: 19px;" />
+                    </span>
+                </td>
+                <td>
+                    {% if connections.twitch.is_connected %}
+                        {{ connections.twitch.uid }}
+                    {% else %}
+                        <span class="text-muted">Not connected</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if connections.twitch.is_connected %}
+                        <a href="/oauth/disconnect/twitch/{{ csrf.name }}/{{ csrf.value|url_encode }}">Disconnect</a>
+                    {% else %}
+                        <a href="/oauth/connect/twitch/{{ csrf.name }}/{{ csrf.value|url_encode }}">Connect</a>
+                    {% endif %}
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -11,6 +11,7 @@ return [
     \App\Console\Command\KeeperFX\HandleCommitsCommand::class,
     \App\Console\Command\KeeperFX\PullRepoCommand::class,
     \App\Console\Command\KeeperFX\FetchForumActivityCommand::class,
+    \App\Console\Command\KeeperFX\HandleTwitchStreamsCommand::class,
 
     // User
     \App\Console\Command\User\CreateUserCommand::class,

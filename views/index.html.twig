@@ -118,6 +118,23 @@
             </div>
         </div>
 
+        {# Featured Twitch Stream Box #}
+        {% if twitch_channel %}
+            <div class="content-box bg-keeper bd-keeper">
+                <div class="content-header">
+                    <h2>Featured Twitch Stream</h2>
+                </div>
+                <div class="content-body">
+                    <iframe
+                        src="https://player.twitch.tv/?channel={{ twitch_channel }}&parent={{ twitch_parent_host }}&muted=true"
+                        height="210px"
+                        width="100%"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        {% endif %}
+
         {# Discord Box #}
         <div class="content-box bg-keeper bd-keeper">
             <div class="content-header">

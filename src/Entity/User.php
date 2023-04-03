@@ -18,8 +18,8 @@ class User {
     #[ORM\Column]
     private string $username;
 
-    #[ORM\Column]
-    private string $password;
+    #[ORM\Column(nullable: true)]
+    private string|null $password;
 
     #[ORM\Column(nullable: true)]
     private string|null $email = null;
@@ -70,7 +70,7 @@ class User {
     /**
      * Get the value of password
      */
-    public function getPassword()
+    public function getPassword(): string|null
     {
         return $this->password;
     }
@@ -80,10 +80,13 @@ class User {
      *
      * @return  self
      */
-    public function setPassword(string $password)
+    public function setPassword(string|null $password)
     {
-        $this->password = \password_hash($password, PASSWORD_DEFAULT);
+        if(\is_string($password)){
+            $password = \password_hash($password, PASSWORD_DEFAULT);
+        }
 
+        $this->password = $password;
         return $this;
     }
 

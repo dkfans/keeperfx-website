@@ -10,6 +10,28 @@
 
         <h2 class="login-title">Register an account</h2>
 
+        <p style="margin: 0; padding: 0 0 5px 5px;">
+            Connect with
+        </p>
+
+        <a href="/oauth/connect/discord/{{ csrf.name }}/{{ csrf.value|url_encode }}" style="width: 100%">
+            <button class="btn btn-lg btn-oauth" style="background-color: #5865F2;">
+                <img src="/img/discord-logo-white.svg" style="height: 24px;" />
+            </button>
+        </a>
+
+        <a href="/oauth/connect/twitch/{{ csrf.name }}/{{ csrf.value|url_encode }}" style="width: 100%; margin-top: 15px;">
+            <button class="btn btn-lg btn-oauth" style="width: 100%; margin-top: 15px; background-color: #9146FF;">
+                <img src="/img/twitch-logo.svg" style="height: 24px;" />
+            </button>
+        </a>
+
+        <div class="form-separator">
+            <hr />
+            <span>Or create a local account</span>
+            <hr />
+        </div>
+
         {{ render_flash_messages() }}
 
         <form action="/register" method="POST">
@@ -47,7 +69,6 @@
                             <a href="/terms-of-service" target="_blank">Terms of Service</a>
                             and
                             <a href="/privacy-policy" target="_blank">Privacy Policy</a>
-                            .
                         </label>
                     </div>
                 </div>

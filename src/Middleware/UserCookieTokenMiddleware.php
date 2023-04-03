@@ -2,10 +2,17 @@
 
 namespace App\Middleware;
 
-use App\Account;
+use App\Enum\OAuthProviderType;
+
+use App\Entity\UserOAuthToken;
 use App\Entity\UserCookieToken;
+
+use App\Account;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
+use App\OAuth\OAuthProviderService;
+
+use League\OAuth2\Client\Token\AccessToken;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -14,30 +21,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class UserCookieTokenMiddleware implements MiddlewareInterface {
 
-    /** @var EntityManager $em */
-    public $em;
-
-    /** @var Account $account */
-    public $account;
-
-    /** @var Session $session */
-    public $session;
-
-    /**
-     * Constructor
-     *
-     * @param Account $account
-     * @param Session $session
-     */
     public function __construct(
-        EntityManager $em,
-        Account $account,
-        Session $session
-    ) {
-        $this->em      = $em;
-        $this->account = $account;
-        $this->session = $session;
-    }
+        private EntityManager $em,
+        private Account $account,
+        private Session $session,
+        private OAuthProviderService $provider_service
+    ) {}
 
     /**
      * Process a server request and return a response.
@@ -56,12 +45,42 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
             if($token && \preg_match('~^[a-zA-Z0-9]+$~', $token)){
 
                 // Check if token exists in DB
-                $cookieToken = $this->em->getRepository(UserCookieToken::class)->findOneBy(['token' => $token]);
-                if($cookieToken){
+                $cookie_token = $this->em->getRepository(UserCookieToken::class)->findOneBy(['token' => $token]);
+                if($cookie_token){
+
+                    // Check if cookie is linked to an OAuth Token
+                    /** @var UserOAuthToken $oauth_token_entity */
+                    $oauth_token = $cookie_token->getOAuthToken();
+                    if($oauth_token){
+
+                        // Get OAuth provider
+                        $provider = $this->provider_service->getProvider($oauth_token_entity->getProviderType());
+
+                        // Refresh expired OAuth Token
+                        if($oauth_token->getExpiresTimestamp()->getTimestamp() < time()){
+
+                            // TODO: handle errors
+                            // TODO: remove invalid cookies
+
+                            // Get new OAuth Token from provider
+                            $new_access_token = $provider->getAccessToken('refresh_token', [
+                                'refresh_token' => $oauth_token->getRefreshToken()
+                            ]);
+
+                            // Update OAuth Token in DB
+                            $oauth_token->setToken($new_access_token->getToken());
+                            $oauth_token->setRefreshToken($new_access_token->getRefreshToken());
+                            $oauth_token->setExpiresTimestamp(
+                                \DateTime::createFromFormat('U', (int) $new_access_token->getExpires())
+                            );
+                            $this->em->persist($oauth_token);
+                            $this->em->flush();
+                        }
+                    }
 
                     // Login the user
-                    $this->account->setUser($cookieToken->getUser());
-                    $this->session['uid'] = $cookieToken->getUser()->getId();
+                    $this->account->setUser($cookie_token->getUser());
+                    $this->session['uid'] = $cookie_token->getUser()->getId();
                 }
             }
         }

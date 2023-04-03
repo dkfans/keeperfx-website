@@ -2,15 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+
 use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
-
-use App\Entity\User;
-
 use Twig\Environment as TwigEnvironment;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -161,5 +161,4 @@ class RegisterController {
         // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
         return $response;
     }
-
 }
