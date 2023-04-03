@@ -124,6 +124,7 @@ class HandleTwitchStreamsCommand extends Command
                     if(
                         \strpos(\strtolower($tag), 'keeperfx') !== false
                         || \strpos(\strtolower($tag), 'keeper-fx') !== false
+                        || \strpos(\strtolower($tag), 'keeper fx') !== false
                         || \strpos(\strtolower($tag), 'kfx') !== false
                     ){
                         $tag_found = true;
@@ -136,6 +137,7 @@ class HandleTwitchStreamsCommand extends Command
                 $tag_found
                 || \strpos(\strtolower($data->title), 'keeperfx') !== false
                 || \strpos(\strtolower($data->title), 'keeper-fx') !== false
+                || \strpos(\strtolower($data->title), 'keeper fx') !== false
                 || \strpos(\strtolower($data->title), 'kfx') !== false
             ){
                 $output->writeln("[+] <info>{$token->getUser()->getUsername()}</info> is streaming KeeperFX!");
