@@ -242,13 +242,16 @@ class FetchAlphaCommand extends Command
                 }
 
                 return Command::FAILURE;
-
             }
 
             // Remove temp files and dir
             $output->writeln("[>] Removing temporary files and dir...");
             DirectoryHelper::delete($temp_archive_dir);
             \unlink($temp_archive_path);
+
+            // Fix display title
+            $display_title = $run->display_title;
+            $display_title = \preg_replace('~(\s\(\#\d)\…$~', '…', $display_title);
 
             // Add to database
             $build = new GithubAlphaBuild();
@@ -257,13 +260,13 @@ class FetchAlphaCommand extends Command
             $build->setFilename($new_filename);
             $build->setSizeInBytes(\filesize($output_path));
             $build->setTimestamp(new DateTime($artifact->created_at));
-            $build->setWorkflowTitle($run->display_title);
+            $build->setWorkflowTitle($display_title);
             $build->setIsAvailable(true);
 
             $this->em->persist($build);
             $this->em->flush();
 
-            $output->writeln("[+] <info>{$artifact->name}</info> stored!");
+            $output->writeln("[+] <info>{$artifact->name}</info> stored! -> <info>{$display_title}</info>");
         }
 
         return Command::SUCCESS;
