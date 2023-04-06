@@ -388,6 +388,16 @@ class OAuthUserController {
             $flash->warning('You did not accept the Terms of Service and Privacy Policy.');
         }
 
+        // Given details must be valid before creating a user
+        if(!$success){
+
+            // Render register page
+            $response->getBody()->write(
+                $twig->render('register.oauth.html.twig')
+            );
+            return $response;
+        }
+
         // TODO: discord_avatar_hash
 
         // Create new user
