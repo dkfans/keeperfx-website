@@ -51,7 +51,7 @@ class WorkshopItem {
     private string|null $thumbnail = null;
 
     #[ORM\Column]
-    private bool $is_accepted = false;
+    private bool $is_published = false;
 
     #[ORM\Column(type: 'integer')]
     private int $download_count = 0;
@@ -165,19 +165,19 @@ class WorkshopItem {
     }
 
     /**
-     * Get the value of is_accepted
+     * Get the value of is_published
      */
-    public function getIsAccepted(): bool
+    public function getIsPublished(): bool
     {
-        return $this->is_accepted;
+        return $this->is_published;
     }
 
     /**
-     * Set the value of is_accepted
+     * Set the value of is_published
      */
-    public function setIsAccepted(bool $is_accepted): self
+    public function setIsPublished(bool $is_published): self
     {
-        $this->is_accepted = $is_accepted;
+        $this->is_published = $is_published;
 
         return $this;
     }

@@ -32,8 +32,8 @@ class ModerateWorkshopController {
     ){
         $response->getBody()->write(
             $twig->render('modcp/workshop/workshop.modcp.html.twig', [
-                'workshop_items'   => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => true], ['id' => 'DESC']),
-                'open_submissions' => $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => false], ['id' => 'DESC']),
+                'workshop_items'   => $em->getRepository(WorkshopItem::class)->findBy(['is_published' => true], ['id' => 'DESC']),
+                'open_submissions' => $em->getRepository(WorkshopItem::class)->findBy(['is_published' => false], ['id' => 'DESC']),
             ])
         );
 
@@ -108,7 +108,7 @@ class ModerateWorkshopController {
         $workshop_item->setName($name);
         $workshop_item->setDescription($description);
         $workshop_item->setInstallInstructions($install_instructions);
-        $workshop_item->setIsAccepted(isset($post['is_accepted']));
+        $workshop_item->setIsPublished(isset($post['is_published']));
 
         // Set workshop item type
         $type = WorkshopType::tryFrom((int) ($post['type'] ?? null));
@@ -359,7 +359,7 @@ class ModerateWorkshopController {
         $workshop_item->setName($name);
         $workshop_item->setSubmitter($submitter);
         $workshop_item->setType($type);
-        $workshop_item->setIsAccepted(isset($post['is_accepted']));
+        $workshop_item->setIsPublished(isset($post['is_published']));
 
         if(!empty($description)){
             $workshop_item->setDescription($description);

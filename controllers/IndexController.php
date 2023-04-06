@@ -34,7 +34,7 @@ class IndexController {
 
         // Show a notice to users with a Moderator role or higher if there's new workshop items
         if($account->isLoggedIn() && $account->getUser()->getRole()->value >= UserRole::Moderator->value){
-            $open_workshop_submissions = $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => false]);
+            $open_workshop_submissions = $em->getRepository(WorkshopItem::class)->findBy(['is_published' => false]);
             if($open_workshop_submissions && \count($open_workshop_submissions) > 0){
                 $flash->info('There are open workshop submissions. Click <a href="/moderate/workshop/list">here</a> to view them.');
             }

@@ -33,7 +33,7 @@ class WorkshopRandomController {
         };
 
         $workshop_items = $em->getRepository(WorkshopItem::class)->findBy(
-            ['is_accepted' => true, 'type' => $type->value]
+            ['is_published' => true, 'type' => $type->value]
         );
 
         if(empty($workshop_items)){

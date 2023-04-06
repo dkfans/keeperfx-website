@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use App\Twig\Extension\WorkshopRatingTwigExtension;
 
-class WorkshopItemRateController {
+class WorkshopRatingController {
 
     public function rateQuality(
         Request $request,
@@ -42,7 +42,7 @@ class WorkshopItemRateController {
         }
 
         // Check if workshop item has been accepted
-        if($workshop_item->getIsAccepted() !== true){
+        if($workshop_item->getIsPublished() !== true){
             return $response;
         }
 
@@ -135,7 +135,7 @@ class WorkshopItemRateController {
         }
 
         // Check if workshop item has been accepted
-        if($workshop_item->getIsAccepted() !== true){
+        if($workshop_item->getIsPublished() !== true){
             return $response;
         }
 

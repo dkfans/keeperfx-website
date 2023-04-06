@@ -24,9 +24,9 @@
 
 {% block page %}
 
-    {% if workshop_item.isAccepted != true %}
+    {% if workshop_item.isPublished != true %}
         <div class="alert alert-info">
-            This workshop item has not been accepted yet.
+            This workshop item has not been published yet.
         </div>
     {% endif %}
 
@@ -271,11 +271,11 @@
                 <div class="form-group">
                     <div class="form-check">
                         <input
-                            class="form-check-input" type="checkbox" name="is_accepted" id="is_accepted"
-                            {% if workshop_item.isAccepted == true %}checked=checked{% endif %}
+                            class="form-check-input" type="checkbox" name="is_published" id="is_published"
+                            {% if workshop_item.isPublished == true %}checked=checked{% endif %}
                         />
-                        <label class="form-check-label" for="is_accepted">
-                            Accepted
+                        <label class="form-check-label" for="is_published">
+                            Published
                         </label>
                     </div>
                 </div>

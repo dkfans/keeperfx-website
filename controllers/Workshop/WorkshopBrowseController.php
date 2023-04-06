@@ -31,7 +31,7 @@ class WorkshopBrowseController {
 
         $url_params = [];
 
-        $criteria  = ['is_accepted' => true];
+        $criteria  = ['is_published' => true];
         $order_by  = null;
         $offset    = 0;
         $limit     = 40;
@@ -64,7 +64,7 @@ class WorkshopBrowseController {
 
         // Create query for total workshop item count
         $query = $em->getRepository(WorkshopItem::class)->createQueryBuilder('a')
-            ->where('a.is_accepted = 1');
+            ->where('a.is_published = 1');
 
         // Add user criteria
         if(isset($q['user']) && \is_string($q['user'])){
