@@ -185,7 +185,7 @@ class AdminUsersController {
 
                 // Username check
                 $user_with_username = $em->getRepository(User::class)->findOneBy(['username' => $username]);
-                if($user_with_username){
+                if($user_with_username && $user !== $user_with_username){
                     $flash->warning("A user with the username \"{$username}\" already exists");
                     $success = false;
                 }
