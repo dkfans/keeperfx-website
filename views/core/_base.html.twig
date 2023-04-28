@@ -36,7 +36,10 @@
             const app_store = {
                 account: {{ account|json_encode()|raw }},
                 csrf: {{ csrf|json_encode()|raw }},
-                upload_limit: {{ globals.upload_limit|json_encode()|raw }}
+                upload_limit: {{ globals.upload_limit|json_encode()|raw }},
+                workshop: {
+                    types: {{ workshop_globals.types_map|json_encode()|raw }}
+                }
             };
         </script>
 

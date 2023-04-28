@@ -11,7 +11,7 @@ class WorkshopItemRepository {
         private EntityManager $em,
     ){}
 
-    public function find(int $id): WorkshopItemInstance|null
+    public function find(int $id): WorkshopItemObject|null
     {
         $item = $this->em->getRepository(WorkshopItem::class)->find($id);
 
@@ -19,7 +19,7 @@ class WorkshopItemRepository {
             return null;
         }
 
-        return new WorkshopItemInstance($item, $this->em);
+        return new WorkshopItemObject($item, $this->em);
     }
 
 }

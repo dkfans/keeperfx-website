@@ -21,7 +21,7 @@ return [
         'item_types_without_difficulty' => [
             \App\Enum\WorkshopType::Application,
             \App\Enum\WorkshopType::Other,
-        ]
+        ],
     ],
 
     'disallowed_username_words' => [

@@ -23,7 +23,7 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 
 use Slim\Exception\HttpNotFoundException;
 
-class WorkshopController {
+class WorkshopDownloadController {
 
 
     public function download(

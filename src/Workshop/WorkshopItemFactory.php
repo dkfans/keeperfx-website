@@ -11,8 +11,8 @@ class WorkshopItemFactory {
         private EntityManager $em,
     ){}
 
-    public function create(): WorkshopItemInstance
+    public function create(): WorkshopItemObject
     {
-        return new WorkshopItemInstance(new WorkshopItem(), $this->em);
+        return new WorkshopItemObject(new WorkshopItem(), $this->em);
     }
 }

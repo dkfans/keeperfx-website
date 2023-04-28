@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManager;
 use App\Workshop\Exception\WorkshopException;
 use Doctrine\Common\Collections\Collection;
 
-class WorkshopItemInstance {
+class WorkshopItemObject {
 
     public const DEFAULT_TYPE = WorkshopType::Other;
 
