@@ -18,6 +18,7 @@ enum WorkshopType: int {
     case MultiplayerMapPack = 35;
 
     // Without difficulty rating
+    case Creature    = 45;
     case Application = 50;
     case Other       = 100;
 }
