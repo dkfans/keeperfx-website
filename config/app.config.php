@@ -19,6 +19,7 @@ return [
 
     'workshop' => [
         'item_types_without_difficulty' => [
+            \App\Enum\WorkshopType::Creature,
             \App\Enum\WorkshopType::Application,
             \App\Enum\WorkshopType::Other,
         ]
