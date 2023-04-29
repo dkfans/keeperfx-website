@@ -1,6 +1,9 @@
-var popover = new bootstrap.Popover($('[data-bs-toggle="popover"]'), {trigger: 'hover'});
-
 $(function(){
+
+    // Load popovers
+    $.each($('[data-bs-toggle="popover"]'), function(i, element){
+        new bootstrap.Popover(element, {trigger: 'hover'})
+    });
 
     // Item max upload filesize check
     $('#file').on('change', function(){
