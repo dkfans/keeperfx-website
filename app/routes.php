@@ -132,6 +132,7 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     // Workshop item upload (LOGGED IN)
     $group->get('/upload', [Workshop\WorkshopUploadController::class, 'uploadIndex'])->add(LoggedInMiddleware::class);
     $group->post('/upload', [Workshop\WorkshopUploadController::class, 'upload'])->add(LoggedInMiddleware::class);
+    $group->get('/upload/map_number/{map_number:\d+}', [Workshop\WorkshopUploadController::class, 'checkMapNumber'])->add(LoggedInMiddleware::class);
 
     // Workshop item edit (LOGGED IN)
     $group->get('/edit/{id:\d+}', [Workshop\WorkshopController::class, 'editIndex'])->add(LoggedInMiddleware::class);

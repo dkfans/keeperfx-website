@@ -104,16 +104,28 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="map_number">
-                                Map number (1000-32000)
+                                Map number
                                 <span class="text-danger">
                                     *
                                 </span>
+                                <span class="text-muted">
+                                    (between 202 and 32767)
+                                </span>
                             </label>
-                            <input type="text" class="form-control" id="map_number" name="map_number" value="{{ get_post_var('map_number') }}" required>
+
+                            <div id="map-number-loader" class="spinner-border text-muted" role="status"
+                                style="height: 16px; width: 16px; font-size: 8px; position: relative; float: right; top: 46px; right: 15px; display: none;"
+                            ></div>
+
+                            <input type="text" class="form-control" id="map_number" name="map_number" value="{{ get_post_var('map_number') }}"
+                                min="202" max="32767" step="1" pattern="\d+"
+                                oninput="this.value= ['','-'].includes(this.value) ? this.value : this.value|0"
+                                />
                         </div>
-                        <div class="alert alert-info" style="margin-top: 15px;">
+                        <div class="alert bg-dark" style="margin-top: 15px;">
                             Your map should have a unique map number. This is required so there are no conflicts with other maps.
                             This is done because of the old game engine working with numbers and it allows players to track their completion of maps in-game.
+                            Make sure the filenames of your map match an available number and have 5 numbers in total. Example: <strong>map00001</strong>.
                         </div>
                     </div>
                 </div>
