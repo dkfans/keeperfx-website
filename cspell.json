@@ -4,6 +4,7 @@
     "dictionaryDefinitions": [],
     "dictionaries": [],
     "words": [
+        "ajax",
         "akrabat",
         "autoload",
         "autowire",
@@ -41,6 +42,7 @@
         "regexes",
         "samesite",
         "symfony",
+        "toastr",
         "urlify",
         "URLify",
         "vertisan",
