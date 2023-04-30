@@ -1,6 +1,6 @@
 var uploaderImages = {};
 
-function renderUploader()
+function renderImageUploader()
 {
     var imageCount = Object.keys(uploaderImages).length;
 
@@ -77,6 +77,7 @@ $(function(){
 
     // Show image uploader (because it should not be visible if javascript is disabled)
     $('#image-uploader').show();
+    renderImageUploader();
 
     // Handle file uploading
     $('#image-uploader-container').on('click', function(e){
@@ -100,7 +101,7 @@ $(function(){
 
             $.each(files, function(i, file){
 
-                // Check filesize
+                // Check file size
                 if(file.size > app_store.upload_limit.workshop_image.size){
                     toastr.warning('Image "' + file.name + '" exceeds maximum filesize of ' + app_store.upload_limit.workshop_image.formatted);
                     return;
@@ -114,18 +115,7 @@ $(function(){
                 };
             });
 
-            renderUploader();
-
-
-
-            // var reader = new FileReader();
-
-            // reader.onload = function (e) {
-            //     $('#blah').attr('src', e.target.result);
-            // }
-
-            // reader.readAsDataURL(input.files[0]);
-
+            renderImageUploader();
         });
 
         // Open browser file input
