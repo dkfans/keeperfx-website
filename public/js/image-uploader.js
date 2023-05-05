@@ -16,13 +16,6 @@ function renderImageUploader()
             $imageBox.clone().addClass('image-upload-image').append(
                 $('<img></img>').attr('src', uploaderImages[i].src)
             )
-            // .draggable({
-            //     revert: true,
-            //     zIndex: 100
-            // })
-            // .droppable({
-            //     accept: ".image-upload-box"
-            // })
         );
     }
 
@@ -54,8 +47,16 @@ $(function(){
     $('#image-uploader').show();
     renderImageUploader();
 
-    var placeholderElement = jQuery('<div style="background-color: transparent;"></div>');
-
+    // Handle sorting/drag/drop
+    $('#image-uploader-container').sortable({
+        placeholder: "ui-sortable-placeholder",
+        zIndex: 100,
+        items: ">.image-upload-image",
+        opacity: 0.5,
+        tolerance: "pointer",
+        distance: 1,
+        appendTo: "body",
+    });
 
     // Handle file uploading
     $('#image-uploader-container').on('click', function(e){
@@ -97,17 +98,6 @@ $(function(){
 
         // Open browser file input
         $input.click();
-    });
-
-    // Handle sorting/drag/drop
-    $('#image-uploader-container').sortable({
-        placeholder: "ui-sortable-placeholder",
-        zIndex: 100,
-        items: ">.image-upload-image",
-        opacity: 0.5,
-        tolerance: "pointer",
-        distance: 1,
-        appendTo: "body",
     });
 
 });
