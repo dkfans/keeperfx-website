@@ -1,4 +1,5 @@
 var uploaderImages = {};
+var $imageBox      = $('<div></div>').addClass('image-upload-box');
 
 function renderImageUploader()
 {
@@ -6,60 +7,34 @@ function renderImageUploader()
 
     var $container = $('#image-uploader-container');
 
-    var $imageBox = $('<div></div>')
-        .addClass('image-upload-box');
-
-    var $thumbnailBox = $imageBox.clone()
-        .addClass('image-upload-box-thumbnail');
-
     // Clear upload container
     $container.html('');
 
-    // Handle no images
-    if(imageCount === 0){
-        $container
-            .append(
-                $thumbnailBox.clone().addClass('image-upload-button')
-            )
-            .append($imageBox.clone())
-            .append($imageBox.clone());
-
-        return;
-    }
-
-    // Handle 1 image
-    if(imageCount === 1){
-        $container
-            .append(
-                $thumbnailBox.clone().addClass('image-upload-image').append(
-                    $('<img></img>').attr('src', uploaderImages[0].src)
-                )
-            )
-            .append($imageBox.clone().addClass('image-upload-button'))
-            .append($imageBox.clone());
-
-        return;
-    }
-
-    // Handle more than 1 image
-    if(imageCount > 1){
-        $container
-            .append(
-                $thumbnailBox.clone().addClass('image-upload-image').append(
-                    $('<img></img>').attr('src', uploaderImages[0].src)
-                )
-            );
-
-        for(let i = 1; i < imageCount; i++){
-            $container
-            .append($imageBox.clone().addClass('image-upload-image').append(
+    // Add pictures
+    for(let i = 0; i < imageCount; i++){
+        $container.append(
+            $imageBox.clone().addClass('image-upload-image').append(
                 $('<img></img>').attr('src', uploaderImages[i].src)
-            ));
+            )
+            // .draggable({
+            //     revert: true,
+            //     zIndex: 100
+            // })
+            // .droppable({
+            //     accept: ".image-upload-box"
+            // })
+        );
+    }
+
+    // Show upload button
+    $container.append($imageBox.clone().addClass('image-upload-button'));
+
+    // Add placeholders if image count is below threshold
+    if(imageCount < 2){
+        $container.append($imageBox.clone());
+        if(imageCount < 1){
+            $container.append($imageBox.clone());
         }
-
-        $container.append($imageBox.clone().addClass('image-upload-button'))
-
-        return;
     }
 }
 
@@ -79,6 +54,9 @@ $(function(){
     $('#image-uploader').show();
     renderImageUploader();
 
+    var placeholderElement = jQuery('<div style="background-color: transparent;"></div>');
+
+
     // Handle file uploading
     $('#image-uploader-container').on('click', function(e){
 
@@ -97,13 +75,12 @@ $(function(){
         // Handle file input
         $input.on('change', function(e){
 
-            var files  = $(this)[0].files;
-
-            $.each(files, function(i, file){
+            // Loop trough all files
+            $.each($(this)[0].files, function(i, file){
 
                 // Check file size
                 if(file.size > app_store.upload_limit.workshop_image.size){
-                    toastr.warning('Image "' + file.name + '" exceeds maximum filesize of ' + app_store.upload_limit.workshop_image.formatted);
+                    toastr.warning('Image "' + file.name + '" exceeds maximum file size of ' + app_store.upload_limit.workshop_image.formatted);
                     return;
                 }
 
@@ -121,4 +98,16 @@ $(function(){
         // Open browser file input
         $input.click();
     });
+
+    // Handle sorting/drag/drop
+    $('#image-uploader-container').sortable({
+        placeholder: "ui-sortable-placeholder",
+        zIndex: 100,
+        items: ">.image-upload-image",
+        opacity: 0.5,
+        tolerance: "pointer",
+        distance: 1,
+        appendTo: "body",
+    });
+
 });
