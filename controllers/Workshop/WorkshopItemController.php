@@ -63,6 +63,15 @@ class WorkshopController {
             return $response;
         }
 
+        // Show non-published notice
+        if(!$workshop_item->getIsPublished()){
+            $flash->warning('The requested workshop item has not been published.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig')
+            );
+            return $response;
+        }
+
         // Get item filesize
         $filepath = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/' . $workshop_item->getFilename();
         if(!\file_exists($filepath)){
