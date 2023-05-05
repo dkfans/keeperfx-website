@@ -124,9 +124,13 @@ class HandleTwitchStreamsCommand extends Command
                 continue;
             }
 
-            // Check if KeeperFX is found in title or tags
+            // Gather strings to search trough
+            $strings   = (array) ($data->tags ?? []);
+            $strings[] = (string) ($data->title ?? '');
+
+            // Check if "KeeperFX" string is found in title or tags
             $string_found = false;
-            foreach((array) $data->tags ?? [] + [(string) $data->title ?? ''] as $string){
+            foreach($strings as $string){
                 foreach(self::KEEPER_FX_STRINGS as $string_search){
                     if(\strpos(\strtolower($string), $string_search) !== false){
                         $string_found = true;
@@ -134,6 +138,8 @@ class HandleTwitchStreamsCommand extends Command
                     }
                 }
             }
+
+            // Remember stream if string is found
             if($string_found){
                 $output->writeln("[+] <info>{$token->getUser()->getUsername()}</info> is streaming KeeperFX!");
                 $streams[] = $data->user_login;
