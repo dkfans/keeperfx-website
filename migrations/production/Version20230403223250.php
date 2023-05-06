@@ -19,15 +19,16 @@ final class Version20230403223250 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE TABLE workshop_file (id INT AUTO_INCREMENT NOT NULL, item_id INT DEFAULT NULL, filename VARCHAR(255) NOT NULL, storage_filename VARCHAR(255) NOT NULL, download_count INT NOT NULL, version VARCHAR(255) DEFAULT NULL, scan_status INT NOT NULL, created_timestamp DATETIME NOT NULL, INDEX IDX_B6181F57126F525E (item_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE workshop_file (id INT AUTO_INCREMENT NOT NULL, item_id INT DEFAULT NULL, filename VARCHAR(255) NOT NULL, storage_filename VARCHAR(255) NOT NULL, size INT NOT NULL, download_count INT NOT NULL, version VARCHAR(255) DEFAULT NULL, scan_status INT NOT NULL, created_timestamp DATETIME NOT NULL, INDEX IDX_B6181F57126F525E (item_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE workshop_file ADD CONSTRAINT FK_B6181F57126F525E FOREIGN KEY (item_id) REFERENCES workshop_item (id)');
 
         // Move current files to new WorkshopFile entity
-        $items = $this->connection->fetchAssociative("SELECT * FROM workshop_item");
+        $items = $this->connection->fetchAllAssociative("SELECT * FROM workshop_item");
         if($items && \is_iterable($items)){
             foreach($items as $item){
+                $filesize = @\filesize($_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item['id'] . '/' . $item['filename']) ?? 0;
                 $this->addSql(
-                    "INSERT INTO workshop_file SET (item_id, filename, storage_filename, download_count, scan_status, created_timestamp) VALUES ({$item['id']}, {$item['filename']}, {$item['filename']}, {$item['download_count']}, 2, {$item['created_timestamp']})"
+                    "INSERT INTO workshop_file (item_id, filename, storage_filename, size, download_count, scan_status, created_timestamp) VALUES ({$item['id']}, '{$item['filename']}', '{$item['filename']}', {$filesize}, {$item['download_count']}, 2, '{$item['created_timestamp']}')"
                 );
             }
         }

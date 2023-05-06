@@ -27,6 +27,9 @@ class WorkshopFile {
     private string $storage_filename;
 
     #[ORM\Column(type: 'integer')]
+    private int $size = 0;
+
+    #[ORM\Column(type: 'integer')]
     private int $download_count = 0;
 
     #[ORM\Column(nullable: true)]
@@ -113,6 +116,24 @@ class WorkshopFile {
     public function setStorageFilename(string $storage_filename): self
     {
         $this->storage_filename = $storage_filename;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of size
+     */
+    public function getSize(): int
+    {
+        return $this->size;
+    }
+
+    /**
+     * Set the value of size
+     */
+    public function setSize(int $size): self
+    {
+        $this->size = $size;
 
         return $this;
     }

@@ -20,7 +20,7 @@ class WorkshopImage {
     private string $filename;
 
     #[ORM\Column(type: 'integer')]
-    private int $order = 0;
+    private int $weight = 0;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
@@ -87,19 +87,19 @@ class WorkshopImage {
 
 
     /**
-     * Get the value of order
+     * Get the value of weight
      */
-    public function getOrder(): int
+    public function getWeight(): int
     {
-        return $this->order;
+        return $this->weight;
     }
 
     /**
      * Set the value of order
      */
-    public function setOrder(int $order): self
+    public function setWeight(int $weight): self
     {
-        $this->order = $order;
+        $this->weight = $weight;
 
         return $this;
     }

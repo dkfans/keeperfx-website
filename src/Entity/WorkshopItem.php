@@ -47,9 +47,6 @@ class WorkshopItem {
     #[ORM\Column(type: 'text', nullable: true)]
     private string|null $install_instructions = null;
 
-    #[ORM\Column(nullable: true)]
-    private string|null $thumbnail = null;
-
     #[ORM\Column]
     private bool $is_published = false;
 
@@ -310,25 +307,6 @@ class WorkshopItem {
     public function setDownloadCount(int $download_count): self
     {
         $this->download_count = $download_count;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of thumbnail
-     */
-    public function getThumbnail(): ?string
-    {
-        return $this->thumbnail;
-    }
-
-    /**
-     * Set the value of thumbnail
-     */
-    public function setThumbnail(?string $thumbnail): self
-    {
-        $this->thumbnail = $thumbnail;
-        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
