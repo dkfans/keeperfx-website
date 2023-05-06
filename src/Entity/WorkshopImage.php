@@ -13,7 +13,7 @@ class WorkshopImage {
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: WorkshopItem::class, inversedBy: 'files')]
+    #[ORM\ManyToOne(targetEntity: WorkshopItem::class, inversedBy: 'images')]
     private WorkshopItem $item;
 
     #[ORM\Column]

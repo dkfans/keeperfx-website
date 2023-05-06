@@ -124,10 +124,9 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     // Download file
     $group->get('/download/{id:\d+}/{filename}', [Workshop\WorkshopDownloadController::class, 'download']);
 
-    // Screenshot & thumbnail fallbacks
+    // Image fallbacks
     // These should be served by the webserver
-    $group->get('/screenshot/{id:\d+}/{filename}', [Workshop\WorkshopController::class, 'outputScreenshot']);
-    $group->get('/thumbnail/{id:\d+}/{filename}', [Workshop\WorkshopController::class, 'outputThumbnail']);
+    $group->get('/image/{id:\d+}/{filename}', [Workshop\WorkshopImageController::class, 'outputImage']);
 
     // Workshop item upload (LOGGED IN)
     $group->get('/upload', [Workshop\WorkshopUploadController::class, 'uploadIndex'])->add(LoggedInMiddleware::class);

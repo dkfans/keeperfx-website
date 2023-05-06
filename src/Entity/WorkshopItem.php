@@ -3,9 +3,6 @@
 namespace App\Entity;
 
 use App\Enum\WorkshopType;
-use App\Enum\WorkshopScanStatus;
-
-use App\Entity\WorkshopRating;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
@@ -60,7 +57,12 @@ class WorkshopItem {
     private \DateTime|null $original_creation_date = null;
 
     #[ORM\OneToMany(targetEntity: WorkshopFile::class, mappedBy: 'item')]
+    #[ORM\OrderBy(["created_timestamp" => "DESC"])]
     private Collection $files;
+
+    #[ORM\OneToMany(targetEntity: WorkshopImage::class, mappedBy: 'item')]
+    #[ORM\OrderBy(["weight" => "ASC"])]
+    private Collection $images;
 
     #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'item')]
     private Collection $ratings;
@@ -79,6 +81,7 @@ class WorkshopItem {
 
     public function __construct() {
         $this->files              = new ArrayCollection();
+        $this->images             = new ArrayCollection();
         $this->ratings            = new ArrayCollection();
         $this->difficulty_ratings = new ArrayCollection();
         $this->comments           = new ArrayCollection();
@@ -415,5 +418,13 @@ class WorkshopItem {
     public function getFiles(): Collection
     {
         return $this->files;
+    }
+
+    /**
+     * Get the value of images
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
     }
 }

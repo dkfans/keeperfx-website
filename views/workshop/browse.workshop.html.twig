@@ -61,8 +61,8 @@
                         {# Thumbnail #}
                         <div class="workshop-grid-item-image-container">
                             <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
-                                {% if item.thumbnail is not null %}
-                                    <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
+                                {% if item.images|length > 0 %}
+                                    <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}" />
                                 {% else %}
                                     <img src="/img/horny-face.png" />
                                 {% endif %}
