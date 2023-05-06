@@ -36,6 +36,8 @@ body {
     --bs-popover-bg: #090909 !important;
     --bs-popover-body-color: #fff;
     --bs-popover-border-radius: 0 !important;
+
+    --bs-alert-color: #fff !important;
 }
 
 ul {
