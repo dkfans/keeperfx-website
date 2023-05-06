@@ -138,7 +138,7 @@
                             Images
                         </span>
 
-                        <div class="image-upload-container" style="margin-top: 10px;" id="image-uploader-container"></div>
+                        <div class="image-widget-container" style="margin-top: 10px;" id="image-widget-container"></div>
                     </div>
                 </div>
 
@@ -232,5 +232,6 @@
 
 {% block body_javascript %}
     <script src="{{ asset('js/workshop.upload.js') }}"></script>
-    <script src="{{ asset('js/image-uploader.js') }}"></script>
+    <script>var imageWidgetData = {};</script>
+    <script src="{{ asset('js/image-widget.js') }}"></script>
 {% endblock %}

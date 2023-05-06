@@ -1,26 +1,26 @@
-var uploaderImages = {};
-var $imageBox      = $('<div></div>').addClass('image-upload-box');
 
-function renderImageUploader()
+var $imageBox = $('<div></div>').addClass('image-widget-box');
+
+function renderImageWidget()
 {
-    var imageCount = Object.keys(uploaderImages).length;
+    var imageCount = Object.keys(imageWidgetData).length;
 
-    var $container = $('#image-uploader-container');
+    var $container = $('#image-widget-container');
 
-    // Clear upload container
+    // Clear widget container
     $container.html('');
 
     // Add pictures
     for(let i = 0; i < imageCount; i++){
         $container.append(
-            $imageBox.clone().addClass('image-upload-image').append(
-                $('<img></img>').attr('src', uploaderImages[i].src)
+            $imageBox.clone().addClass('image-widget-image').append(
+                $('<img></img>').attr('src', imageWidgetData[i].src)
             )
         );
     }
 
     // Show upload button
-    $container.append($imageBox.clone().addClass('image-upload-button'));
+    $container.append($imageBox.clone().addClass('image-widget-upload-button'));
 
     // Add placeholders if image count is below threshold
     if(imageCount < 2){
@@ -33,25 +33,31 @@ function renderImageUploader()
 
 $(function(){
 
+    // Make sure image widget data has been defined
+    if(typeof imageWidgetData == 'undefined'){
+        console.warning('imageWidgetData is not defined');
+        return;
+    }
+
+    // Make sure browser API's exist
     if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
         console.warning('The File APIs are not fully supported in this browser.');
         return;
     }
-
     if (!URL || !URL.createObjectURL) {
         console.warning('The URL APIs are not fully supported in this browser.');
         return;
     }
 
-    // Show image uploader (because it should not be visible if javascript is disabled)
-    $('#image-uploader').show();
-    renderImageUploader();
+    // Show image widget (because it should not be visible if javascript is disabled)
+    $('#image-widget-container').show();
+    renderImageWidget();
 
     // Handle sorting/drag/drop
-    $('#image-uploader-container').sortable({
+    $('#image-widget-container').sortable({
         placeholder: "ui-sortable-placeholder",
         zIndex: 100,
-        items: ">.image-upload-image",
+        items: ">.image-widget-image",
         opacity: 0.5,
         tolerance: "pointer",
         distance: 1,
@@ -59,11 +65,11 @@ $(function(){
     });
 
     // Handle file uploading
-    $('#image-uploader-container').on('click', function(e){
+    $('#image-widget-container').on('click', function(e){
 
         // Check if clicking on the upload button
         let $target = $(e.target);
-        if(!$target.hasClass('image-upload-button')){
+        if(!$target.hasClass('image-widget-upload-button')){
             return;
         }
 
@@ -85,15 +91,16 @@ $(function(){
                     return;
                 }
 
-                // Add images to uploader object
-                uploaderImages[Object.keys(uploaderImages).length] = {
+                // Add images to widget
+                imageWidgetData[Object.keys(imageWidgetData).length] = {
+                    'id': null,
                     'name': file.name,
                     'size': file.size,
                     'src': URL.createObjectURL(file)
                 };
             });
 
-            renderImageUploader();
+            renderImageWidget();
         });
 
         // Open browser file input

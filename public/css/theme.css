@@ -931,48 +931,48 @@ a.username-link-org-author {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-.image-upload-container {
+.image-widget-container {
     min-height: 250px;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 10px;
 }
 
-.image-upload-box {
+.image-widget-box {
     border: 2px dashed #777777;
     border-radius: 3px;
     aspect-ratio: 1;
 }
 
-.image-upload-container .image-upload-box:not(.ui-sortable-helper):first-child {
+.image-widget-container .image-widget-box:not(.ui-sortable-helper):first-child {
     grid-column: 1 / 3;
     grid-row: 1 / 3;
 }
 
-.image-upload-image {
+.image-widget-image {
     border: 1px solid #666;
 }
 
-.image-upload-image img {
+.image-widget-image img {
     object-fit: cover;
     height: 100%;
     width: 100%;
     user-select: none;
 }
 
-.image-upload-button {
+.image-widget-upload-button {
     /* Plus icon */
     background: url('data:image/svg+xml,<svg color="hsl(0, 0%, 35%)" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 112v288M400 256H112"/></svg>') 50% 50% no-repeat;
     background-size: 100px 100px;
 }
 
-.image-upload-button:hover {
+.image-widget-upload-button:hover {
     filter: brightness(1.5);
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.03)
 }
 
-.image-upload-container .ui-sortable-placeholder:first-child {
+.image-widget-container .ui-sortable-placeholder:first-child {
     grid-column: 1 / 3;
     grid-row: 1 / 3;
 }
