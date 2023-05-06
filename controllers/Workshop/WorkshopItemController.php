@@ -37,7 +37,7 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 
 use Slim\Exception\HttpNotFoundException;
 
-class WorkshopController {
+class WorkshopItemController {
 
     public function itemIndex(
         Request $request,
@@ -72,34 +72,9 @@ class WorkshopController {
             return $response;
         }
 
-        // Get item filesize
-        $filepath = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/' . $workshop_item->getFilename();
-        if(!\file_exists($filepath)){
-            $flash->warning('The requested file of this workshop item could not be found.');
-            $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig')
-            );
-            return $response;
-        }
-        $filesize = \filesize($filepath);
-
         // Get workshop item rating counts
         $rating_count            = \count($workshop_item->getRatings());
         $difficulty_rating_count = \count($workshop_item->getDifficultyRatings());
-
-        // Get screenshots
-        $screenshots = [];
-        $screenshot_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/screenshots';
-        if(\is_dir($screenshot_dir)){
-            foreach(\glob($screenshot_dir . '/*') as $screenshot_file){
-                $size = \getimagesize($screenshot_file);
-                $screenshots[] = [
-                    'filename' => \basename($screenshot_file),
-                    'width'    => $size[0],
-                    'height'   => $size[1],
-                ];
-            }
-        }
 
         // Get user rating
         $user_rating = $em->getRepository(WorkshopRating::class)->findOneBy([
@@ -117,12 +92,10 @@ class WorkshopController {
         $response->getBody()->write(
             $twig->render('workshop/item.workshop.html.twig', [
                 'item'                     => $workshop_item,
-                'screenshots'              => $screenshots,
                 'rating_amount'            => $rating_count,
                 'user_rating'              => $user_rating,
                 'difficulty_rating_amount' => $difficulty_rating_count,
                 'user_difficulty_rating'   => $user_difficulty_rating,
-                'filesize'                 => $filesize,
             ])
         );
 
