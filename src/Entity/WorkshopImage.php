@@ -22,6 +22,12 @@ class WorkshopImage {
     #[ORM\Column(type: 'integer')]
     private int $weight = 0;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $width = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $height = null;
+
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
@@ -85,6 +91,41 @@ class WorkshopImage {
         return $this;
     }
 
+    /**
+     * Get the value of x
+     */
+    public function getWidth(): ?int
+    {
+        return $this->width;
+    }
+
+    /**
+     * Set the value of x
+     */
+    public function setWidth(?int $width): self
+    {
+        $this->width = $width;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of y
+     */
+    public function getHeight(): ?int
+    {
+        return $this->height;
+    }
+
+    /**
+     * Set the value of y
+     */
+    public function setHeight(?int $height): self
+    {
+        $this->height = $height;
+
+        return $this;
+    }
 
     /**
      * Get the value of weight

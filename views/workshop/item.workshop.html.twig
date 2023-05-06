@@ -7,7 +7,7 @@
     description: item.description ?? '',
     og: {
         url: '/workshop/item/' ~ item.id ~ '/' ~ item.name|slugify,
-        image: item.thumbnail ? '/workshop/thumbnail/' ~ item.id ~ '/' ~ item.thumbnail : '/img/horny-face.png'
+        image: item.images|first ? '/workshop/image/' ~ item.id ~ '/' ~ item.images|first.filename : '/img/horny-face.png'
     }
 } %}
 
@@ -52,32 +52,27 @@
 
                 <div class="col-md-5">
 
-                    {# Thumbnail #}
-                    <div class="workshop-item-thumbnail bd-keeper">
-                        {% if item.thumbnail is not null %}
-                            <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
+                    {# Images #}
+                    <div class="workshop-item-images" id="workshop-images">
+                        {% if item.images|length == 0 %}
+                            <div class="workshop-item-image bd-keeper">
+                                <img src="/img/horny-face.png" />
+                            </div>
                         {% else %}
-                            <img src="/img/horny-face.png" />
-                        {% endif %}
-                    </div>
-
-                    {# Screenshots #}
-                    {% if screenshots|length > 0 %}
-                        <div class="workshop-screenshots" id="workshop-screenshots" style="margin-top: 15px;">
-                            {% for screenshot in screenshots %}
-                                <div class="workshop-screenshot">
-                                    <a href="/workshop/screenshot/{{ item.id }}/{{ screenshot.filename }}"
-                                        data-pswp-width="{{ screenshot.width }}"
-                                        data-pswp-height="{{ screenshot.height }}"
+                            {% for image in item.images %}
+                                <div class="workshop-item-image bd-keeper">
+                                    <a href="/workshop/image/{{ item.id }}/{{ image.filename }}"
+                                        data-pswp-width="{{ image.width }}"
+                                        data-pswp-height="{{ image.height }}"
                                         data-cropped="true"
-                                        class="workshop-screenshot-item"
+                                        class="workshop-image"
                                         target="_blank">
-                                            <img src="/workshop/screenshot/{{ item.id }}/{{ screenshot.filename }}" alt="" />
+                                            <img src="/workshop/image/{{ item.id }}/{{ image.filename }}" alt="" />
                                     </a>
                                 </div>
                             {% endfor %}
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    </div>
 
                 </div>
 
@@ -183,10 +178,10 @@
                                 </tr>
                             {% endif %}
                             <tr style="height: 15px;"><!-- Spacer row --></tr>
-                            <tr>
+                            {# <tr>
                                 <td>Filesize</td>
                                 <td class="text-stand-out" style="padding-left: 25px;">{{ filesize|format_bytes }}</td>
-                            </tr>
+                            </tr> #}
                             <tr>
                                 <td>Downloads</td>
                                 <td class="text-stand-out" style="padding-left: 25px;">{{ item.downloadCount }}</td>
@@ -203,17 +198,17 @@
                             {% endif %}
                         </table>
 
-                        {# Download button #}
-                        <div class="text-center" style="margin-bottom: 20px; width: 100%;">
-                            <a
-                                href="/workshop/download/{{ item.id }}/{{ item.filename|url_encode }}"
-                                class="btn btn-lg btn-medieval"
-                                style="width: 100%; max-width: 300px;"
-                                download>
-                                    Download
-                            </a>
-                        </div>
+                    </div>
 
+                    {# Download button #}
+                    <div class="text-center" style="margin-bottom: 20px; width: 100%; margin-top: 30px;">
+                        <a
+                            href="/workshop/download/{{ item.id }}/{{ item.files|first.filename|url_encode }}"
+                            class="btn btn-lg btn-medieval"
+                            style="width: 100%; max-width: 300px; min-height: 50px;"
+                            download>
+                                Download
+                        </a>
                     </div>
 
                 </div>
@@ -328,8 +323,8 @@
     // Initialize image lightbox
     const lightbox = new PhotoSwipeLightbox({
         bgOpacity: 0.8,
-        gallery: '#workshop-screenshots',
-        children: 'a.workshop-screenshot-item',
+        gallery: '#workshop-images',
+        children: 'a.workshop-image',
         pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.esm.min.js'),
         mainClass: 'pswp-with-perma-preloader',
         initialZoomLevel: 'fit',

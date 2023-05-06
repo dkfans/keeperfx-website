@@ -19,7 +19,7 @@ final class Version20230505180242 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE TABLE workshop_image (id INT AUTO_INCREMENT NOT NULL, item_id INT DEFAULT NULL, filename VARCHAR(255) NOT NULL, weight INT NOT NULL, created_timestamp DATETIME NOT NULL, INDEX IDX_2DBF5745126F525E (item_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE workshop_image (id INT AUTO_INCREMENT NOT NULL, item_id INT DEFAULT NULL, filename VARCHAR(255) NOT NULL, width INT DEFAULT NULL, height INT DEFAULT NULL, weight INT NOT NULL, created_timestamp DATETIME NOT NULL, INDEX IDX_2DBF5745126F525E (item_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE workshop_image ADD CONSTRAINT FK_2DBF5745126F525E FOREIGN KEY (item_id) REFERENCES workshop_item (id)');
 
         // Move current thumbnail and screenshots to new WorkshopImage entity
@@ -48,10 +48,21 @@ final class Version20230505180242 extends AbstractMigration
                         $thumbnail_path     = $storage_dir . '/' . $item['thumbnail'];
                         $thumbnail_new_path = $images_dir . '/' . $item['thumbnail'];
                         if(\file_exists($thumbnail_path)){
+
                             \rename($thumbnail_path, $thumbnail_new_path);
+
+                            $width  = 'NULL';
+                            $height = 'NULL';
+                            $size   = @\getimagesize($thumbnail_new_path);
+                            if($size && \is_array($size)){
+                                $width  = $size[0];
+                                $height = $size[1];
+                            }
+
                             $this->addSql(
-                                "INSERT INTO workshop_image (item_id, filename, weight, created_timestamp) VALUES ({$item['id']}, '{$item['thumbnail']}', {$weight}, '{$item['created_timestamp']}')"
+                                "INSERT INTO workshop_image (item_id, filename, width, height, weight, created_timestamp) VALUES ({$item['id']}, '{$item['thumbnail']}', {$width}, {$height}, {$weight}, '{$item['created_timestamp']}')"
                             );
+
                             $weight++;
                         }
                     }
@@ -63,10 +74,21 @@ final class Version20230505180242 extends AbstractMigration
                             $screenshot_path     = $screenshot_dir . '/' . $screenshot_filename;
                             $screenshot_new_path = $images_dir . '/' . $screenshot_filename;
                             if(\file_exists($screenshot_path)){
+
                                 \rename($screenshot_path, $screenshot_new_path);
+
+                                $width  = 'NULL';
+                                $height = 'NULL';
+                                $size   = @\getimagesize($screenshot_new_path);
+                                if($size && \is_array($size)){
+                                    $width  = $size[0];
+                                    $height = $size[1];
+                                }
+
                                 $this->addSql(
-                                    "INSERT INTO workshop_image (item_id, filename, weight, created_timestamp) VALUES ({$item['id']}, '{$screenshot_filename}', {$weight}, '{$item['created_timestamp']}')"
+                                    "INSERT INTO workshop_image (item_id, filename, x, y, weight, created_timestamp) VALUES ({$item['id']}, '{$screenshot_filename}', {$width}, {$height}, {$weight}, '{$item['created_timestamp']}')"
                                 );
+
                                 $weight++;
                             }
                         }
