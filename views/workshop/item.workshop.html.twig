@@ -53,7 +53,7 @@
                 <div class="col-md-5">
 
                     {# Images #}
-                    <div class="workshop-item-images" id="workshop-images">
+                    <div class="workshop-item-images" id="workshop-images" style="margin-bottom: 30px;">
                         {% if item.images|length == 0 %}
                             <div class="workshop-item-image bd-keeper">
                                 <img src="/img/horny-face.png" />
@@ -201,37 +201,74 @@
                     </div>
 
                     {# Download button #}
-                    <div class="text-center" style="margin-bottom: 20px; width: 100%; margin-top: 30px;">
-                        <a
-                            href="/workshop/download/{{ item.id }}/{{ item.files|first.filename|url_encode }}"
-                            class="btn btn-lg btn-medieval"
-                            style="width: 100%; max-width: 300px; min-height: 50px;"
-                            download>
-                                Download
-                        </a>
-                    </div>
-
+                    {% if item.files|length > 0 %}
+                        <div class="text-center" style="margin-bottom: 20px; width: 100%; margin-top: 30px;">
+                            <a
+                                href="/workshop/download/{{ item.id }}/{{ item.files|first.filename|url_encode }}"
+                                class="btn btn-lg btn-medieval"
+                                style="width: 100%; max-width: 300px; min-height: 50px; padding-top: 9px; padding-bottom: 4px;"
+                                download>
+                                    Download
+                                    {% if item.files|first.version is not empty %}
+                                        <span style="display: block; position: relative; top: -3px; font-size: 12px; font-family: 'Nunito';">{{ item.files|first.version }}</span>
+                                    {% endif %}
+                            </a>
+                            <div style="display:none; margin-top: 10px;" class="text-muted" id="show-all-downloads">
+                                <a href="#">Show all downloads ({{ item.files|length }})</a>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
 
             </div>
 
-
-            <div class="row" style="margin-top: 40px;">
+            <div class="row" style="">
                 <div class="col-12">
+
+                    {% if item.files|length > 0 %}
+                        <div id="all-downloads-list">
+                            <table class="table" style="margin-bottom: 0px;">
+                                <thead>
+                                    <tr>
+                                        <th>File</th>
+                                        <th>Version</th>
+                                        <th>Downloads</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for file in item.files %}
+                                        <tr>
+                                            <td><a href="/workshop/">{{ file.filename }}</td>
+                                            <td>
+                                                {% if file.version is not empty %}
+                                                        {{ file.version }}
+                                                    {% else %}
+                                                        <span class="text-muted">N/A</span>
+                                                {% endif %}
+                                                </td>
+                                            <td>{{ file.downloadCount }}</td>
+                                            <td>{{ file.createdTimestamp|date('Y-m-d') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
 
                     {# Description #}
                     {% if item.description is not empty %}
-                        <h5 style="margin-top: 0px; border-bottom: 0;">Description</h5>
+                        <h5 style="margin-top: 50px; border-bottom: 0;">Description</h5>
                         <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
-                            {{ item.description|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
+                            {{ item.description|preg_replace("~([\r]?\n[\s]*){3,}~", "\n")|trim|markdown_to_html|nl2br }}
                         </div>
                     {% endif %}
 
                     {# Install Instructions #}
                     {% if item.installInstructions is not empty %}
-                        <h5 style="margin-top: 0px; border-bottom: 0;">Installation Intructions</h5>
+                        <h5 style="margin-top: 50px; border-bottom: 0;">Installation Intructions</h5>
                         <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
-                            {{ item.installInstructions|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
+                            {{ item.installInstructions|preg_replace("~([\r]?\n[\s]*){3,}~", "\n")|trim|markdown_to_html|nl2br }}
                         </div>
                     {% endif %}
 
@@ -432,8 +469,27 @@
     }
 
     $(function(e){
+
+        // Render workshop ratings
         $.each($('[data-workshop-rating-type]'), function(i, el){
             handleRatingHtml(el);
+        });
+
+        // Show 'Show all downloads' and hide 'Downloads list'
+        // This is users with javascript disabled can still view all files
+        $('#show-all-downloads').show();
+        $('#all-downloads-list').hide();
+
+        // Handle 'Show all downloads'
+        $('#show-all-downloads a').on('click', function(e){
+            e.preventDefault();
+            if($('#all-downloads-list').is(':visible') === true){
+                $(this).text('Show all downloads (' + $('#all-downloads-list tbody tr').length + ')');
+                $('#all-downloads-list').slideUp("fast");
+            } else if($('#all-downloads-list').is(':visible') === false) {
+                $(this).text('Hide all downloads (' + $('#all-downloads-list tbody tr').length + ')');
+                $('#all-downloads-list').slideDown("fast");
+            }
         });
     });
 </script>
