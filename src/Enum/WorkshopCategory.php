@@ -3,12 +3,12 @@
 namespace App\Enum;
 
 /**
- * Workshop item types.
+ * Workshop item categories.
  *
- * If a new type is added and it should not have a difficulty rating:
- *      Update the config value: `app.workshop.item_types_without_difficulty`
+ * If a new category is added and it should not have a difficulty rating:
+ *      Update the config value: `app.workshop.item_categories_without_difficulty`
  */
-enum WorkshopType: int {
+enum WorkshopCategory: int {
 
     // With difficulty rating
     case Map                = 10;

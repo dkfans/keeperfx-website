@@ -150,7 +150,7 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     $group->get('/browse', [Workshop\WorkshopBrowseController::class, 'browseIndex']);
 
     // Random workshop item
-    $group->get('/random/{item_type}', [Workshop\WorkshopRandomController::class, 'navRandomItem']);
+    $group->get('/random/{item_category}', [Workshop\WorkshopRandomController::class, 'navRandomItem']);
 
     // Redirect '/workshop' to '/workshop/browse'
     $group->get('', function (Request $request, Response $response){

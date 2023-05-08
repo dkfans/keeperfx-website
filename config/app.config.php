@@ -18,10 +18,10 @@ return [
     ],
 
     'workshop' => [
-        'item_types_without_difficulty' => [
-            \App\Enum\WorkshopType::Creature,
-            \App\Enum\WorkshopType::Application,
-            \App\Enum\WorkshopType::Other,
+        'item_categories_without_difficulty' => [
+            \App\Enum\WorkshopCategory::Creature,
+            \App\Enum\WorkshopCategory::Application,
+            \App\Enum\WorkshopCategory::Other,
         ],
     ],
 

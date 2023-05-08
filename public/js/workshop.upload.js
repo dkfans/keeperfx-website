@@ -45,8 +45,8 @@ $(function(){
         $('#original_creationdate_box').slideToggle("fast");
     });
 
-    // Show map number input when type is Map
-    $('#type').on('change', function(e){
+    // Show map number input when category is Map
+    $('#category').on('change', function(e){
         if($('#map-number-box').is(':visible') === true && $(this).val() !== '10'){
             $('#map-number-box').slideUp("fast");
             $('#map_number').removeAttr('required');

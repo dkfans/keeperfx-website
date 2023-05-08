@@ -4,7 +4,7 @@ namespace App\Controller\Workshop;
 
 
 use App\Enum\UserRole;
-use App\Enum\WorkshopType;
+use App\Enum\WorkshopCategory;
 
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;

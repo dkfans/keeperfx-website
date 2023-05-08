@@ -2,7 +2,7 @@
 
 namespace App\Controller\ModCP;
 
-use App\Enum\WorkshopType;
+use App\Enum\WorkshopCategory;
 
 use App\Entity\User;
 use App\Entity\WorkshopTag;
@@ -71,7 +71,7 @@ class ModerateWorkshopController {
         $response->getBody()->write(
             $twig->render('modcp/workshop/item.workshop.modcp.html.twig', [
                 'workshop_item' => $workshop_item,
-                'types'         => WorkshopType::cases(),
+                'categories'         => WorkshopCategory::cases(),
                 'tags'          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
                 'builds'        => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
                 'screenshots'   => $screenshots,
@@ -110,9 +110,9 @@ class ModerateWorkshopController {
         $workshop_item->setInstallInstructions($install_instructions);
         $workshop_item->setIsPublished(isset($post['is_published']));
 
-        // Set workshop item type
-        $type = WorkshopType::tryFrom((int) ($post['type'] ?? null));
-        $workshop_item->setType($type);
+        // Set workshop item category
+        $category = WorkshopCategory::tryFrom((int) ($post['category'] ?? null));
+        $workshop_item->setCategory($category);
 
         // Set minimum game build
         $min_game_build = $em->getRepository(GithubRelease::class)->find((int) ($post['min_game_build'] ?? null));
@@ -215,9 +215,9 @@ class ModerateWorkshopController {
 
         $response->getBody()->write(
             $twig->render('modcp/workshop/add.workshop.modcp.html.twig', [
-                'types'  => WorkshopType::cases(),
-                'tags'   => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-                'builds' => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
+                'categories' => WorkshopCategory::cases(),
+                'tags'       => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+                'builds'     => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
             ])
         );
 
@@ -251,10 +251,10 @@ class ModerateWorkshopController {
             $flash->warning('Please enter a name for this workshop item');
         }
 
-        // Check if type is valid
-        $type = WorkshopType::tryFrom((int) ($post['type'] ?? null));
-        if($type === null){
-            $flash->warning('Invalid workshop type');
+        // Check if category is valid
+        $category = WorkshopCategory::tryFrom((int) ($post['category'] ?? null));
+        if($category === null){
+            $flash->warning('Invalid workshop category');
             $success = false;
         }
 
@@ -346,9 +346,9 @@ class ModerateWorkshopController {
         if(!$success){
             $response->getBody()->write(
                 $twig->render('modcp/workshop/add.workshop.modcp.html.twig', [
-                    'types'  => WorkshopType::cases(),
-                    'tags'   => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-                    'builds' => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
+                    'categories' => WorkshopCategory::cases(),
+                    'tags'       => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+                    'builds'     => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
                 ])
             );
             return $response;
@@ -358,7 +358,7 @@ class ModerateWorkshopController {
         $workshop_item = new WorkshopItem();
         $workshop_item->setName($name);
         $workshop_item->setSubmitter($submitter);
-        $workshop_item->setType($type);
+        $workshop_item->setCategory($category);
         $workshop_item->setIsPublished(isset($post['is_published']));
 
         if(!empty($description)){

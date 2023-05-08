@@ -68,9 +68,9 @@
                         <label for="type">Type</label>
                         <select class="form-control form-select" id="type" name="type">
                             <option value="any">Any</option>
-                            {% if workshop_globals.types|length > 0 %}
-                                {% for type in workshop_globals.types %}
-                                    <option value="{{ type.value }}">{{ type.name|enum_beautify }}</option>
+                            {% if workshop_globals.categories|length > 0 %}
+                                {% for category in workshop_globals.categories %}
+                                    <option value="{{ category.value }}">{{ category.name|enum_beautify }}</option>
                                 {% endfor %}
                             {% endif %}
                         </select>

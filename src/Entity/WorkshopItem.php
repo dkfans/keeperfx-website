@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Enum\WorkshopType;
+use App\Enum\WorkshopCategory;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
@@ -26,8 +26,8 @@ class WorkshopItem {
     #[ORM\Column(nullable: true)]
     private int|null $map_number = null;
 
-    #[ORM\Column(type: 'integer', enumType: WorkshopType::class)]
-    private WorkshopType $type;
+    #[ORM\Column(type: 'integer', enumType: WorkshopCategory::class)]
+    private WorkshopCategory $category;
 
     #[ORM\ManyToOne(targetEntity: GithubRelease::class)]
     private GithubRelease|null $min_game_build = null;
@@ -183,19 +183,19 @@ class WorkshopItem {
     }
 
     /**
-     * Get the value of type
+     * Get the value of category
      */
-    public function getType(): WorkshopType
+    public function getCategory(): WorkshopCategory
     {
-        return $this->type;
+        return $this->category;
     }
 
     /**
-     * Set the value of type
+     * Set the value of category
      */
-    public function setType(WorkshopType $type): self
+    public function setCategory(WorkshopCategory $category): self
     {
-        $this->type = $type;
+        $this->category = $category;
         $this->updateLastUpdatedTimestamp();
 
         return $this;

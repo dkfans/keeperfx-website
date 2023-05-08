@@ -60,18 +60,18 @@
                 <div class="row" style="margin-bottom: 50px;">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="type">
-                                Type
+                            <label for="category">
+                                Category
                                 <span class="text-danger">
                                     *
                                 </span>
                             </label>
-                            <select class="form-control form-select" id="type" name="type" required>
-                                <option value="" disabled selected hidden>Choose the type of this item</option>
-                                {% if workshop_globals.types|length > 0 %}
-                                    {% for type in workshop_globals.types %}
-                                        <option value="{{ type.value }}">
-                                            {{ type.name|enum_beautify }}
+                            <select class="form-control form-select" id="category" name="category" required>
+                                <option value="" disabled selected hidden>Choose the category of this item</option>
+                                {% if workshop_globals.categories|length > 0 %}
+                                    {% for category in workshop_globals.categories %}
+                                        <option value="{{ category.value }}">
+                                            {{ category.name|enum_beautify }}
                                         </option>
                                     {% endfor %}
                                 {% endif %}

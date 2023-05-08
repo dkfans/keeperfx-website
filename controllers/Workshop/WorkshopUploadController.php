@@ -4,7 +4,7 @@ namespace App\Controller\Workshop;
 
 
 use App\Enum\UserRole;
-use App\Enum\WorkshopType;
+use App\Enum\WorkshopCategory;
 
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
@@ -82,10 +82,10 @@ class WorkshopUploadController {
             $flash->warning('Please enter a name for this workshop item');
         }
 
-        // Check if type is valid
-        $type = WorkshopType::tryFrom((int) ($post['type'] ?? null));
-        if($type === null){
-            $flash->warning('Invalid workshop type');
+        // Check if category is valid
+        $category = WorkshopCategory::tryFrom((int) ($post['category'] ?? null));
+        if($category === null){
+            $flash->warning('Invalid workshop category');
             $success = false;
         }
 
@@ -178,7 +178,7 @@ class WorkshopUploadController {
         $workshop_item = new WorkshopItem();
         $workshop_item->setName($name);
         $workshop_item->setSubmitter($account->getUser());
-        $workshop_item->setType($type);
+        $workshop_item->setCategory($category);
 
         if(!empty($description)){
             $workshop_item->setDescription($description);

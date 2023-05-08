@@ -86,7 +86,7 @@
                                     {# Type #}
                                     {# <span class="text-warning"> #}
                                     <span style="margin-top: 2px; display: block; margin-bottom: 5px">
-                                        {{ item.type.name|enum_beautify }}
+                                        {{ item.category.name|enum_beautify }}
                                     </span>
 
                                     {# User or Original Author #}
@@ -102,7 +102,7 @@
                                     {% endif %}
 
                                     {# Difficulty Rating #}
-                                    {% if item.difficultyRatingScore is not null and item.type not in workshop_globals.types_without_difficulty %}
+                                    {% if item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
                                         {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
                                     {% endif %}
 

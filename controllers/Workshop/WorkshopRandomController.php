@@ -2,7 +2,7 @@
 
 namespace App\Controller\Workshop;
 
-use App\Enum\WorkshopType;
+use App\Enum\WorkshopCategory;
 
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
@@ -24,16 +24,16 @@ class WorkshopRandomController {
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $item_type
+        $item_category
     ){
-        $type = match($item_type){
-            default    => WorkshopType::Map,
-            'map'      => WorkshopType::Map,
-            'campaign' => WorkshopType::Campaign,
+        $category = match($item_category){
+            default    => WorkshopCategory::Map,
+            'map'      => WorkshopCategory::Map,
+            'campaign' => WorkshopCategory::Campaign,
         };
 
         $workshop_items = $em->getRepository(WorkshopItem::class)->findBy(
-            ['is_published' => true, 'type' => $type->value]
+            ['is_published' => true, 'category' => $category->value]
         );
 
         if(empty($workshop_items)){

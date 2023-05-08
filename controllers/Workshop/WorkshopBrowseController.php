@@ -7,7 +7,7 @@ use App\Entity\User;
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
 
-use App\Enum\WorkshopType;
+use App\Enum\WorkshopCategory;
 
 use App\FlashMessage;
 use App\Config\Config;
@@ -84,7 +84,7 @@ class WorkshopBrowseController {
                     $flash->warning('User not found.');
                     $response->getBody()->write(
                         $twig->render('workshop/alert.workshop.html.twig', [
-                            'types'          => WorkshopType::cases(),
+                            'categories'          => WorkshopCategory::cases(),
                             'tags'           => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
                             'builds'         => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
                         ])
@@ -222,14 +222,14 @@ class WorkshopBrowseController {
         // Render view
         $response->getBody()->write(
             $twig->render('workshop/browse.workshop.html.twig', [
-                'workshop_items'           => $workshop_items,
-                'types'                    => WorkshopType::cases(),
-                'types_without_difficulty' => Config::get('app.workshop.item_types_without_difficulty'),
-                'tags'                     => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-                'builds'                   => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
-                'pagination'               => $pagination,
-                'submitter'                => $submitter,
-                'org_author'               => $org_author,
+                'workshop_items'                => $workshop_items,
+                'categories'                    => WorkshopCategory::cases(),
+                'categories_without_difficulty' => Config::get('app.workshop.item_categories_without_difficulty'),
+                'tags'                          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+                'builds'                        => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
+                'pagination'                    => $pagination,
+                'submitter'                     => $submitter,
+                'org_author'                    => $org_author,
             ])
         );
 

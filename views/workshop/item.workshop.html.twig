@@ -82,9 +82,9 @@
                     <div class="workshop-info-box">
                         <table style="margin: 15px;">
                             <tr>
-                                <td>Type</td>
+                                <td>Category</td>
                                 <td class="text-stand-out" style="padding-left: 25px;">
-                                    {{ item.type.name|enum_beautify }}
+                                    {{ item.category.name|enum_beautify }}
                                 </td>
                             </tr>
                             <tr style="height: 15px;"><!-- Spacer row --></tr>
@@ -131,7 +131,7 @@
                                     </span>
                                 </td>
                             </tr>
-                            {% if item.type not in workshop_globals.types_without_difficulty %}
+                            {% if item.category not in workshop_globals.categories_without_difficulty %}
                             <tr style="height: 15px;">{# Empty table row spacer #}</tr>
                             <tr>
                                 <td style="vertical-align: top">Difficulty</td>

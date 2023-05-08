@@ -36,18 +36,18 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="type">
-                                Type
+                            <label for="category">
+                                Category
                                 <span class="text-danger">
                                     *
                                 </span>
                             </label>
-                            <select class="form-control form-select" id="type" name="type" required>
-                                <option value="" disabled hidden>Choose the type of this item</option>
-                                {% if workshop_globals.types|length > 0 %}
-                                    {% for type in workshop_globals.types %}
-                                        <option value="{{ type.value }}" {% if type.value == workshop_item.type.value %}selected=selected{% endif %}>
-                                            {{ type.name|enum_beautify }}
+                            <select class="form-control form-select" id="category" name="category" required>
+                                <option value="" disabled hidden>Choose the category of this item</option>
+                                {% if workshop_globals.categories|length > 0 %}
+                                    {% for category in workshop_globals.categories %}
+                                        <option value="{{ category.value }}" {% if category.value == workshop_item.category.value %}selected=selected{% endif %}>
+                                            {{ category.name|enum_beautify }}
                                         </option>
                                     {% endfor %}
                                 {% endif %}

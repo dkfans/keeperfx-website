@@ -4,7 +4,7 @@ namespace App\Controller\Workshop;
 
 
 use App\Enum\UserRole;
-use App\Enum\WorkshopType;
+use App\Enum\WorkshopCategory;
 
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
@@ -218,9 +218,9 @@ class WorkshopController {
         $workshop_item->setDescription($description);
         $workshop_item->setInstallInstructions($install_instructions);
 
-        // Set workshop item type
-        $type = WorkshopType::tryFrom((int) ($post['type'] ?? null));
-        $workshop_item->setType($type);
+        // Set workshop item category
+        $category = WorkshopCategory::tryFrom((int) ($post['category'] ?? null));
+        $workshop_item->setCategory($category);
 
         // Set minimum game build
         $min_game_build = $em->getRepository(GithubRelease::class)->find((int) ($post['min_game_build'] ?? null));

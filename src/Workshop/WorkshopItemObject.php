@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Entity\WorkshopItem;
 use App\Entity\GithubRelease;
 use App\Entity\WorkshopFile;
-use App\Enum\WorkshopType;
+use App\Enum\WorkshopCategory;
 
 use Doctrine\ORM\EntityManager;
 
@@ -15,7 +15,7 @@ use Doctrine\Common\Collections\Collection;
 
 class WorkshopItemObject {
 
-    public const DEFAULT_TYPE = WorkshopType::Other;
+    public const DEFAULT_CATEGORY = WorkshopCategory::Other;
 
     private Collection $files;
 
@@ -34,20 +34,20 @@ class WorkshopItemObject {
         return $this;
     }
 
-    public function setType(WorkshopType|int $type): self
+    public function setCategory(WorkshopCategory|int $category): self
     {
         if(!$this->item){
             throw new WorkshopException('Workshop item not set');
         }
 
-        if($type instanceof WorkshopType){
-            $this->item->setType($type);
+        if($category instanceof WorkshopCategory){
+            $this->item->setCategory($category);
         } else {
-            $try_type = WorkshopType::tryFrom($type);
-            if($try_type === null){
-                $this->item->setType(self::DEFAULT_TYPE);
+            $try_category = WorkshopCategory::tryFrom($category);
+            if($try_category === null){
+                $this->item->setCategory(self::DEFAULT_CATEGORY);
             } else {
-                $this->item->setType($try_type);
+                $this->item->setCategory($try_category);
             }
         }
 
