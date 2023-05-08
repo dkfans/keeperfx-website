@@ -32,14 +32,6 @@ class IndexController {
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 3);
         $release = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
 
-        // Show a notice to users with a Moderator role or higher if there's new workshop items
-        if($account->isLoggedIn() && $account->getUser()->getRole()->value >= UserRole::Moderator->value){
-            $open_workshop_submissions = $em->getRepository(WorkshopItem::class)->findBy(['is_published' => false]);
-            if($open_workshop_submissions && \count($open_workshop_submissions) > 0){
-                $flash->info('There are open workshop submissions. Click <a href="/moderate/workshop/list">here</a> to view them.');
-            }
-        }
-
         // Get Twitch stream
         $twitch_channel = null;
         $streams = $cache->get('twitch_streams', []);
