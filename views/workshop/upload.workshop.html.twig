@@ -33,33 +33,6 @@
                 <div class="row" style="margin-bottom: 50px;">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="file">
-                                File
-                                <span class="text-danger">
-                                    *
-                                </span>
-                            </label>
-                            <input type="file" class="form-control" id="file" name="file" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="version">
-                                Version
-                                <span class="text-danger">
-                                    *
-                                </span>
-                            </label>
-                            <input type="text" class="form-control" id="version" name="version" value=
-                                "{% if get_post_var('version') is not empty %}{{ get_post_var('version') }}{% else %}1.0.0{% endif %}"
-                                required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row" style="margin-bottom: 50px;">
-                    <div class="col-md-6">
-                        <div class="form-group">
                             <label for="category">
                                 Category
                                 <span class="text-danger">
@@ -96,6 +69,20 @@
                                     {% endfor %}
                                 {% endif %}
                             </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom: 50px;">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="file">
+                                File
+                                <span class="text-danger">
+                                    *
+                                </span>
+                            </label>
+                            <input type="file" class="form-control" id="file" name="file" required>
                         </div>
                     </div>
                 </div>
