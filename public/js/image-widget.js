@@ -31,6 +31,17 @@ function renderImageWidget()
     }
 }
 
+function getImageWidgetFileList()
+{
+        let dataTransfer = new DataTransfer();
+
+        $.each(imageWidgetData, function(i, image){
+            dataTransfer.items.add(image.file);
+        });
+
+        return dataTransfer.files;
+}
+
 $(function(){
 
     // Make sure image widget data has been defined
@@ -96,7 +107,8 @@ $(function(){
                     'id': null,
                     'name': file.name,
                     'size': file.size,
-                    'src': URL.createObjectURL(file)
+                    'src': URL.createObjectURL(file),
+                    'file': file
                 };
             });
 
@@ -106,5 +118,7 @@ $(function(){
         // Open browser file input
         $input.click();
     });
+
+    // TODO: change order in data object to match position on drag/drop
 
 });

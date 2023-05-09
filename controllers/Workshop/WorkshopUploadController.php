@@ -17,6 +17,7 @@ use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
 use App\Entity\WorkshopFile;
+use App\Entity\WorkshopImage;
 use App\UploadSizeHelper;
 
 use URLify;
@@ -106,57 +107,33 @@ class WorkshopUploadController {
             }
         }
 
-        // Check valid screenshot files
-        if(!empty($uploaded_files['screenshots'])){
-            /** @var UploadedFile $screenshot_file */
-            foreach($uploaded_files['screenshots'] as $screenshot_file){
+        // Check valid images files
+        if(!empty($uploaded_files['images'])){
+            /** @var UploadedFile $uploaded_image */
+            foreach($uploaded_files['images'] as $uploaded_image){
 
-                // NO screenshots were added
-                if ($screenshot_file->getError() === UPLOAD_ERR_NO_FILE) {
+                // NO images were added
+                if ($uploaded_image->getError() === UPLOAD_ERR_NO_FILE) {
                     continue;
                 }
 
-                $filename = $screenshot_file->getClientFilename();
+                $filename = $uploaded_image->getClientFilename();
                 $ext = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
                 if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
                     $success = false;
-                    $flash->warning('One or more screenshots are invalid. Allowed file types: jpg, jpeg, png, gif');
+                    $flash->warning('One or more images are invalid. Allowed file types: jpg, jpeg, png, gif');
                 } else {
 
-                    // Check screenshot filesize
-                    if($screenshot_file->getSize() > $upload_size_helper->getFinalWorkshopImageUploadSize()){
+                    // Check image filesize
+                    if($uploaded_image->getSize() > $upload_size_helper->getFinalWorkshopImageUploadSize()){
                         $flash->warning(
-                            'Maximum upload size for workshop screenshot exceeded. (' .
+                            'Maximum upload size for workshop image exceeded. (' .
                             BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopImageUploadSize())->format() .
                             ')'
                         );
                         $success = false;
                     }
 
-                }
-            }
-        }
-
-        // Check valid thumbnail file
-        if(!empty($uploaded_files['thumbnail']) && $uploaded_files['thumbnail']->getError() !== UPLOAD_ERR_NO_FILE){
-            /** @var UploadedFile $thumbnail_file */
-            $thumbnail_file = $uploaded_files['thumbnail'];
-
-            $filename = $thumbnail_file->getClientFilename();
-            $ext = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-            if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
-                $success = false;
-                $flash->warning('Invalid thumbnail. Allowed file types: jpg, jpeg, png, gif');
-            } else {
-
-                // Check filesize
-                if($uploaded_files['thumbnail']->getSize() > $upload_size_helper->getFinalWorkshopImageUploadSize()){
-                    $flash->warning(
-                        'Maximum upload size for workshop item exceeded. (' .
-                        BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopImageUploadSize())->format() .
-                        ')'
-                    );
-                    $success = false;
                 }
             }
         }
@@ -217,18 +194,21 @@ class WorkshopUploadController {
         $em->persist($workshop_item);
         $em->flush(); // flush because we need ID for creating storage directory
 
+
+        // Define directories for files
+        $workshop_item_dir        = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
+        $workshop_item_files_dir  = $workshop_item_dir . '/files';
+        $workshop_item_images_dir = $workshop_item_dir . '/images';
+
         // Create directories for files
-        $workshop_item_dir             = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
-        $workshop_item_files_dir       = $workshop_item_dir . '/files';
-        $workshop_item_screenshots_dir = $workshop_item_dir . '/screenshots';
         if(!DirectoryHelper::create($workshop_item_dir)){
             throw new \Exception('Failed to create workshop item storage dir');
         }
         if(!DirectoryHelper::create($workshop_item_files_dir)){
-            throw new \Exception('Failed to create workshop item files dir');
+            throw new \Exception('Failed to create workshop item files dir'); // TODO: move during migration
         }
-        if(!DirectoryHelper::create($workshop_item_screenshots_dir)){
-            throw new \Exception('Failed to create workshop item screenshots dir');
+        if(!DirectoryHelper::create($workshop_item_images_dir)){
+            throw new \Exception('Failed to create workshop item images dir');
         }
 
         // Get file and filename
@@ -254,60 +234,52 @@ class WorkshopUploadController {
         $em->flush();
 
         // Store any uploaded screenshots
-        $screenshot_files = $uploaded_files['screenshots'] ?? [];
-        if(!empty($screenshot_files)){
-            foreach($screenshot_files as $screenshot_file){
+        $images = $uploaded_files['images'] ?? [];
+        if(!empty($images)){
+            foreach($images as $weight => $uploaded_image){
                 // NO screenshots were added
-                if ($screenshot_file->getError() === \UPLOAD_ERR_NO_FILE) {
+                if ($uploaded_image->getError() === \UPLOAD_ERR_NO_FILE) {
                     continue;
                 }
 
-                // Generate screenshot output path
-                $ext = \strtolower(\pathinfo($screenshot_file->getClientFilename(), \PATHINFO_EXTENSION));
-                $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
-                $screenshot_filename = $str . '.' . $ext;
-                $path = $workshop_item_screenshots_dir . '/' . $screenshot_filename;
+                // Generate image output path
+                $ext            = \strtolower(\pathinfo($uploaded_image->getClientFilename(), \PATHINFO_EXTENSION));
+                $str            = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
+                $image_filename = $str . '.' . $ext;
+                $path           = $workshop_item_images_dir . '/' . $image_filename;
 
-                // Move screenshot
-                $screenshot_file->moveTo($path);
+                // Move image
+                $uploaded_image->moveTo($path);
                 if(!\file_exists($path)){
-                    throw new \Exception('Failed to move workshop item screenshot');
+                    throw new \Exception('Failed to move workshop item image');
                 }
+
+                // Get image width and height
+                $width  = null;
+                $height = null;
+                $size   = @\getimagesize($path);
+                if($size && \is_array($size)){
+                    $width  = $size[0];
+                    $height = $size[1];
+                }
+
+                // Create image entity
+                $image_entity = new WorkshopImage();
+                $image_entity->setItem($workshop_item);
+                $image_entity->setFilename($image_filename);
+                $image_entity->setWeight($weight);
+                $image_entity->setWidth($width);
+                $image_entity->setHeight($height);
+                $em->persist($image_entity);
             }
-        }
-
-        // Store thumbnail
-        $thumbnail_file = $uploaded_files['thumbnail'] ?? null;
-        if($thumbnail_file && $thumbnail_file->getError() !== UPLOAD_ERR_NO_FILE){
-
-            // Generate thumbnail output path
-            $ext = \strtolower(\pathinfo($thumbnail_file->getClientFilename(), \PATHINFO_EXTENSION));
-            $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
-            $thumbnail_filename = 'thumbnail_' . $str . '.' . $ext;
-            $path = $workshop_item_dir . '/' . $thumbnail_filename;
-
-            // Move thumbnail
-            $thumbnail_file->moveTo($path);
-            if(!\file_exists($path)){
-                throw new \Exception('Failed to move workshop item thumbnail');
-            }
-
-            $workshop_item->setThumbnail($thumbnail_filename);
         }
 
         // Flush again so filenames are added to DB entity
         $em->flush();
 
-        // Redirect accounts with a role higher than 'User' (because their item is automatically published)
-        if($account->getUser()->getRole()->value >= UserRole::Moderator->value) {
-            $flash->success('Workshop item successfully uploaded!');
-            $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
-        } else {
-
-            // Redirect normal accounts
-            $flash->success('Your workshop item has been submitted and will be soon be available for others to download.');
-            $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
-        }
+        // Show upload success message and redirect to workshop item page
+        $flash->success('Your workshop item has been submitted and is being processed. The files will be made available for download shortly.');
+        $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId() . '/' . URLify::slug($workshop_item->getName()))->withStatus(302);
 
         return $response;
     }

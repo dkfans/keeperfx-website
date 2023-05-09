@@ -2,6 +2,7 @@ $(function(){
 
     // Load image widget
     $('#image-uploader').show();
+    $('#images').hide();
 
     // Load popovers
     $.each($('[data-bs-toggle="popover"]'), function(i, element){
@@ -55,8 +56,6 @@ $(function(){
             $('#map_number').attr('required', true);
         }
     });
-
-    console.log('1f1');
 
     // Check map number
     $('#map_number').on('change keyup', function(e){
@@ -119,6 +118,24 @@ $(function(){
             }
         });
 
+    });
+
+    // Add images on from widget on form submit
+    $('#upload-item-form').on('submit', function(e){
+
+        // Prevent form from being submitted while we add the images
+        e.preventDefault();
+
+        // Check if image widget data is available
+        if(typeof imageWidgetData == 'undefined'){
+            return;
+        }
+
+        // Load images into form
+        $('#images')[0].files = getImageWidgetFileList();
+
+        // Submit the form
+        HTMLFormElement.prototype.submit.call(this);
     });
 
 });

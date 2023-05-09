@@ -126,6 +126,7 @@
                         </span>
 
                         <div class="image-widget-container" style="margin-top: 10px;" id="image-widget-container"></div>
+                        <input type="file" name="images" id="images" multiple />
                     </div>
                 </div>
 
@@ -218,7 +219,7 @@
 {% endblock %}
 
 {% block body_javascript %}
-    <script src="{{ asset('js/workshop.upload.js') }}"></script>
     <script>var imageWidgetData = {};</script>
+    <script src="{{ asset('js/workshop.upload.js') }}"></script>
     <script src="{{ asset('js/image-widget.js') }}"></script>
 {% endblock %}
