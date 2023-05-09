@@ -567,6 +567,11 @@ footer {
     border: 2px solid #333;
 }
 
+.workshop-info-box+.workshop-info-box,
+.workshop-file-list-box+.workshop-info-box {
+    margin-top: 30px;
+}
+
 .workshop-item-comment {
     background-color: rgba(6, 6, 6, 0.666);
     border: 1px solid #333;
