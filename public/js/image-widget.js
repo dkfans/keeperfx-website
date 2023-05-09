@@ -76,6 +76,36 @@ $(function(){
         tolerance: "pointer",
         distance: 1,
         appendTo: "body",
+        update: function(event, ui){
+
+            var oldIndex = ui.item.data('oldIndex');
+            var newIndex = ui.item.index();
+
+            let movingImage = imageWidgetData[oldIndex];
+            var newObject = {};
+            var index = 0;
+
+            for(let i = 0; i < Object.keys(imageWidgetData).length; i++) {
+
+                if(index === oldIndex){
+                    index++;
+                }
+
+                if(i === newIndex){
+                    newObject[i] = movingImage;
+                    continue;
+                }
+
+                newObject[i] = imageWidgetData[index];
+
+                index++;
+            }
+
+            imageWidgetData = newObject;
+        },
+        start: function(event, ui) {
+            ui.item.data('oldIndex', ui.item.index());
+        }
     });
 
     // Handle file uploading
