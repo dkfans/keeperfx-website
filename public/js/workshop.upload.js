@@ -132,7 +132,7 @@ $(function(){
         }
 
         // Load images into form
-        $('#images')[0].files = getImageWidgetFileList();
+        $('#images')[0].files = getImageWidgetUploadFileList();
 
         // Submit the form
         HTMLFormElement.prototype.submit.call(this);

@@ -31,12 +31,15 @@ function renderImageWidget()
     }
 }
 
-function getImageWidgetFileList()
+function getImageWidgetUploadFileList()
 {
         let dataTransfer = new DataTransfer();
 
         $.each(imageWidgetData, function(i, image){
-            dataTransfer.items.add(image.file);
+            if(file !== null){
+                dataTransfer.items.add(image.file);
+            }
+
         });
 
         return dataTransfer.files;
