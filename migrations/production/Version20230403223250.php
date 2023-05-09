@@ -26,7 +26,38 @@ final class Version20230403223250 extends AbstractMigration
         $items = $this->connection->fetchAllAssociative("SELECT * FROM workshop_item");
         if($items && \is_iterable($items)){
             foreach($items as $item){
-                $filesize = @\filesize($_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item['id'] . '/' . $item['filename']) ?? 0;
+
+                // Define directories
+                $storage_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item['id'];
+                $files_dir   = $storage_dir . '/files';
+
+                // Check if workshop dir exists
+                if(!\is_dir($storage_dir)){
+                    continue;
+                }
+
+                // Create new files dir
+                if(!\is_dir($files_dir)){
+                    \mkdir($files_dir);
+                    if(!\is_dir($files_dir)){
+                        throw new \Exception("failed to create 'files' dir: {$files_dir}");
+                    }
+                }
+
+                // Get file
+                $file_path = $storage_dir . '/' . $item['filename'];
+                if(!\file_exists($file_path)){
+                    continue;
+                }
+
+                // Move file
+                $new_file_path = $files_dir . '/' . $item['filename'];
+                \rename($file_path, $new_file_path);
+
+                // Get filesize
+                $filesize = @\filesize($new_file_path) ?? 0;
+
+                // Insert into DB
                 $this->addSql(
                     "INSERT INTO workshop_file (item_id, filename, storage_filename, size, download_count, scan_status, created_timestamp) VALUES ({$item['id']}, '{$item['filename']}', '{$item['filename']}', {$filesize}, {$item['download_count']}, 2, '{$item['created_timestamp']}')"
                 );
