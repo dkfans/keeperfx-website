@@ -204,7 +204,7 @@
                     {% if item.files|length > 0 %}
                         <div class="text-center" style="margin-bottom: 20px; width: 100%; margin-top: 30px;">
                             <a
-                                href="/workshop/download/{{ item.id }}/{{ item.files|first.filename|url_encode }}"
+                                href="/workshop/download/{{ item.id }}/{{ item.files|first.id }}/{{ item.files|first.filename|url_encode }}"
                                 class="btn btn-lg btn-medieval"
                                 style="width: 100%; max-width: 300px; min-height: 50px; padding-top: 9px; padding-bottom: 4px;"
                                 download>
@@ -239,7 +239,7 @@
                                 <tbody>
                                     {% for file in item.files %}
                                         <tr>
-                                            <td><a href="/workshop/">{{ file.filename }}</td>
+                                            <td><a href="/workshop/download/{{ item.id }}/{{ file.id }}/{{ file.filename|url_encode }}">{{ file.filename }}</td>
                                             <td>
                                                 {% if file.version is not empty %}
                                                         {{ file.version }}

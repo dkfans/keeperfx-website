@@ -122,7 +122,7 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     $group->get('/item/{id:\d+}[/{slug}]', [Workshop\WorkshopItemController::class, 'itemIndex']);
 
     // Download file
-    $group->get('/download/{id:\d+}/{filename}', [Workshop\WorkshopDownloadController::class, 'download']);
+    $group->get('/download/{item_id:\d+}/{file_id:\d+}/{filename}', [Workshop\WorkshopDownloadController::class, 'download']);
 
     // Image fallbacks
     // These should be served by the webserver
