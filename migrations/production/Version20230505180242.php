@@ -86,7 +86,7 @@ final class Version20230505180242 extends AbstractMigration
                                 }
 
                                 $this->addSql(
-                                    "INSERT INTO workshop_image (item_id, filename, x, y, weight, created_timestamp) VALUES ({$item['id']}, '{$screenshot_filename}', {$width}, {$height}, {$weight}, '{$item['created_timestamp']}')"
+                                    "INSERT INTO workshop_image (item_id, filename, width, height, weight, created_timestamp) VALUES ({$item['id']}, '{$screenshot_filename}', {$width}, {$height}, {$weight}, '{$item['created_timestamp']}')"
                                 );
 
                                 $weight++;
