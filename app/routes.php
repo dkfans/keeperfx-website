@@ -134,17 +134,17 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
     $group->get('/upload/map_number/{map_number:\d+}', [Workshop\WorkshopUploadController::class, 'checkMapNumber'])->add(LoggedInMiddleware::class);
 
     // Workshop item edit (LOGGED IN)
-    $group->get('/edit/{id:\d+}', [Workshop\WorkshopController::class, 'editIndex'])->add(LoggedInMiddleware::class);
-    $group->post('/edit/{id:\d+}', [Workshop\WorkshopController::class, 'edit'])->add(LoggedInMiddleware::class);
-    $group->get('/edit/{id:\d+}/thumbnail/delete/{token_name}/{token_value:.+}', [Workshop\WorkshopController::class, 'deleteThumbnail'])->add(LoggedInMiddleware::class);
-    $group->get('/edit/{id:\d+}/screenshot/delete/{filename}/{token_name}/{token_value:.+}', [Workshop\WorkshopController::class, 'deleteScreenshot']);
+    $group->get('/edit/{id:\d+}', [Workshop\WorkshopEditController::class, 'editIndex'])->add(LoggedInMiddleware::class);
+    $group->post('/edit/{id:\d+}', [Workshop\WorkshopEditController::class, 'edit'])->add(LoggedInMiddleware::class);
+    // $group->get('/edit/{id:\d+}/thumbnail/delete/{token_name}/{token_value:.+}', [Workshop\WorkshopImageController::class, 'deleteThumbnail'])->add(LoggedInMiddleware::class);
+    // $group->get('/edit/{id:\d+}/screenshot/delete/{filename}/{token_name}/{token_value:.+}', [Workshop\WorkshopImageController::class, 'deleteScreenshot']);
 
     // Workshop item rate
     $group->post('/rate/{id:\d+}/quality', [Workshop\WorkshopRatingController::class, 'rateQuality'])->add(LoggedInMiddleware::class);
     $group->post('/rate/{id:\d+}/difficulty', [Workshop\WorkshopRatingController::class, 'rateDifficulty'])->add(LoggedInMiddleware::class);
 
     // Workshop item comment
-    $group->post('/item/{id:\d+}/comment', [Workshop\WorkshopController::class, 'comment'])->add(LoggedInMiddleware::class);
+    $group->post('/item/{id:\d+}/comment', [Workshop\WorkshopCommentController::class, 'comment'])->add(LoggedInMiddleware::class);
 
     // Browse items
     $group->get('/browse', [Workshop\WorkshopBrowseController::class, 'browseIndex']);
