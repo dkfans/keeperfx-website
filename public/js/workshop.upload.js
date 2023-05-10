@@ -2,7 +2,6 @@ $(function(){
 
     // Load image widget
     $('#image-uploader').show();
-    $('#images').hide();
 
     // Load popovers
     $.each($('[data-bs-toggle="popover"]'), function(i, element){
@@ -131,8 +130,8 @@ $(function(){
             return;
         }
 
-        // Load images into form
-        $('#images')[0].files = getImageWidgetUploadFileList();
+        // Load image widget post data into form
+        $('#image-widget').val(getImageWidgetPostData());
 
         // Submit the form
         HTMLFormElement.prototype.submit.call(this);

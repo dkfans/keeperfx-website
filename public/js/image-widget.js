@@ -1,6 +1,14 @@
 
 var $imageBox = $('<div></div>').addClass('image-widget-box');
 
+// Convert blob to base64
+const blobToDataUrl = blob => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+});
+
 function renderImageWidget()
 {
     var imageCount = Object.keys(imageWidgetData).length;
@@ -12,9 +20,17 @@ function renderImageWidget()
 
     // Add pictures
     for(let i = 0; i < imageCount; i++){
+
+        let src = '';
+        if(typeof imageWidgetData[i].data !== 'undefined' && imageWidgetData[i].data.length > 0){
+            src = imageWidgetData[i].data;
+        } else if (typeof imageWidgetData[i].src !== 'undefined' && imageWidgetData[i].src.length > 0){
+            src = imageWidgetData[i].src;
+        }
+
         $container.append(
             $imageBox.clone().addClass('image-widget-image').append(
-                $('<img></img>').attr('src', imageWidgetData[i].src)
+                $('<img></img>').attr('src', src)
             )
         );
     }
@@ -31,18 +47,9 @@ function renderImageWidget()
     }
 }
 
-function getImageWidgetUploadFileList()
+function getImageWidgetPostData()
 {
-        let dataTransfer = new DataTransfer();
-
-        $.each(imageWidgetData, function(i, image){
-            if(file !== null){
-                dataTransfer.items.add(image.file);
-            }
-
-        });
-
-        return dataTransfer.files;
+    return JSON.stringify(imageWidgetData);
 }
 
 $(function(){
@@ -127,7 +134,7 @@ $(function(){
         $input.on('change', function(e){
 
             // Loop trough all files
-            $.each($(this)[0].files, function(i, file){
+            $.each($(this)[0].files, async function(i, file){
 
                 // Check file size
                 if(file.size > app_store.upload_limit.workshop_image.size){
@@ -135,17 +142,22 @@ $(function(){
                     return;
                 }
 
+                // let dataString = await blobToDataUrl(file);
+                // let data = dataString.split(',')[1];
+                let data = await blobToDataUrl(file);
+
                 // Add images to widget
                 imageWidgetData[Object.keys(imageWidgetData).length] = {
                     'id': null,
                     'name': file.name,
                     'size': file.size,
-                    'src': URL.createObjectURL(file),
-                    'file': file
+                    'src': null,
+                    'data': data
                 };
+
+                renderImageWidget();
             });
 
-            renderImageWidget();
         });
 
         // Open browser file input

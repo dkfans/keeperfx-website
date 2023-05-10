@@ -107,36 +107,46 @@ class WorkshopUploadController {
             }
         }
 
-        // Check valid images files
-        if(!empty($uploaded_files['images'])){
-            /** @var UploadedFile $uploaded_image */
-            foreach($uploaded_files['images'] as $uploaded_image){
-
-                // NO images were added
-                if ($uploaded_image->getError() === UPLOAD_ERR_NO_FILE) {
-                    continue;
-                }
-
-                $filename = $uploaded_image->getClientFilename();
-                $ext = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-                if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
-                    $success = false;
-                    $flash->warning('One or more images are invalid. Allowed file types: jpg, jpeg, png, gif');
-                } else {
-
-                    // Check image filesize
-                    if($uploaded_image->getSize() > $upload_size_helper->getFinalWorkshopImageUploadSize()){
-                        $flash->warning(
-                            'Maximum upload size for workshop image exceeded. (' .
-                            BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopImageUploadSize())->format() .
-                            ')'
-                        );
-                        $success = false;
-                    }
-
-                }
-            }
+        // Get image data
+        $image_post_data = $post['image-widget'] ?? '{}';
+        $image_data = @\json_decode($image_post_data);
+        if(\is_null($image_data)){
+            $flash->warning('Invalid image data');
+            $success = false;
         }
+
+        // TODO: set map number
+
+        // Check valid images files
+        // if(!empty($uploaded_files['images'])){
+        //     /** @var UploadedFile $uploaded_image */
+        //     foreach($uploaded_files['images'] as $uploaded_image){
+
+        //         // NO images were added
+        //         if ($uploaded_image->getError() === UPLOAD_ERR_NO_FILE) {
+        //             continue;
+        //         }
+
+        //         $filename = $uploaded_image->getClientFilename();
+        //         $ext = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
+        //         if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
+        //             $success = false;
+        //             $flash->warning('One or more images are invalid. Allowed file types: jpg, jpeg, png, gif');
+        //         } else {
+
+        //             // Check image filesize
+        //             if($uploaded_image->getSize() > $upload_size_helper->getFinalWorkshopImageUploadSize()){
+        //                 $flash->warning(
+        //                     'Maximum upload size for workshop image exceeded. (' .
+        //                     BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopImageUploadSize())->format() .
+        //                     ')'
+        //                 );
+        //                 $success = false;
+        //             }
+
+        //         }
+        //     }
+        // }
 
         // Return the page if submission is invalid
         if(!$success){
@@ -233,45 +243,58 @@ class WorkshopUploadController {
         $em->persist($workshop_file);
         $em->flush();
 
-        // Store any uploaded screenshots
-        $images = $uploaded_files['images'] ?? [];
-        if(!empty($images)){
-            foreach($images as $weight => $uploaded_image){
-                // NO screenshots were added
-                if ($uploaded_image->getError() === \UPLOAD_ERR_NO_FILE) {
-                    continue;
-                }
+        // Store any uploaded images
+        foreach($image_data as $weight => $image_obj){
 
-                // Generate image output path
-                $ext            = \strtolower(\pathinfo($uploaded_image->getClientFilename(), \PATHINFO_EXTENSION));
-                $str            = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
-                $image_filename = $str . '.' . $ext;
-                $path           = $workshop_item_images_dir . '/' . $image_filename;
-
-                // Move image
-                $uploaded_image->moveTo($path);
-                if(!\file_exists($path)){
-                    throw new \Exception('Failed to move workshop item image');
-                }
-
-                // Get image width and height
-                $width  = null;
-                $height = null;
-                $size   = @\getimagesize($path);
-                if($size && \is_array($size)){
-                    $width  = $size[0];
-                    $height = $size[1];
-                }
-
-                // Create image entity
-                $image_entity = new WorkshopImage();
-                $image_entity->setItem($workshop_item);
-                $image_entity->setFilename($image_filename);
-                $image_entity->setWeight($weight);
-                $image_entity->setWidth($width);
-                $image_entity->setHeight($height);
-                $em->persist($image_entity);
+            // Check if object is legit
+            if(
+                !property_exists($image_obj, 'id') || !is_null($image_obj->id) // id will be NULL during upload
+                || !property_exists($image_obj, 'name') || !is_string($image_obj->name)
+                || !property_exists($image_obj, 'size') || !is_int($image_obj->size)
+                || !property_exists($image_obj, 'src') || !is_null($image_obj->src) // src will be NULL during upload
+                || !property_exists($image_obj, 'data') || !is_string($image_obj->data) // data will be a base64 string during upload
+            ) {
+                continue;
             }
+
+            // Get and check extension
+            $ext = \strtolower(\pathinfo($image_obj->name, \PATHINFO_EXTENSION));
+            if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
+                continue;
+            }
+
+            // Generate image output path
+            $str            = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
+            $image_filename = $str . '.' . $ext;
+            $path           = $workshop_item_images_dir . '/' . $image_filename;
+
+            // Get image blob
+            $base64 = explode(',', $image_obj->data)[1];
+            $blob = \base64_decode($base64);
+
+            // Create image
+            if(\file_put_contents($path, $blob) === false){
+                continue;
+            }
+
+            // Get image width and height
+            $width  = null;
+            $height = null;
+            $size   = @\getimagesize($path);
+            if($size && \is_array($size)){
+                $width  = $size[0];
+                $height = $size[1];
+            }
+
+            // Create image entity
+            $image_entity = new WorkshopImage();
+            $image_entity->setItem($workshop_item);
+            $image_entity->setFilename($image_filename);
+            $image_entity->setWeight($weight);
+            $image_entity->setWidth($width);
+            $image_entity->setHeight($height);
+            $em->persist($image_entity);
+
         }
 
         // Flush again so filenames are added to DB entity
