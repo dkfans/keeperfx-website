@@ -246,11 +246,13 @@ class WorkshopUploadController {
         // Store any uploaded images
         foreach($image_data as $weight => $image_obj){
 
+            // TODO: check image upload filesizes (DO NOT USE size property on object)
+
             // Check if object is legit
             if(
                 !property_exists($image_obj, 'id') || !is_null($image_obj->id) // id will be NULL during upload
                 || !property_exists($image_obj, 'name') || !is_string($image_obj->name)
-                || !property_exists($image_obj, 'size') || !is_int($image_obj->size)
+                // || !property_exists($image_obj, 'size') || !is_int($image_obj->size)
                 || !property_exists($image_obj, 'src') || !is_null($image_obj->src) // src will be NULL during upload
                 || !property_exists($image_obj, 'data') || !is_string($image_obj->data) // data will be a base64 string during upload
             ) {

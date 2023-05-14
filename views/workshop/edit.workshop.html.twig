@@ -4,25 +4,21 @@
 
 {% block workshop_content %}
 
-    <div class="alert alert-info">
-        Updating your workshop item will temporary remove it until the new version has been accepted by the KeeperFX team.
-    </div>
-
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
-            <h2>Workshop Item: {{ workshop_item.name }}</h2>
+            <h2>Edit workshop item: {{ workshop_item.name }}</h2>
         </div>
 
         <div class="content-body">
 
-            <form action="/workshop/edit/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data">
+            <form action="/workshop/edit/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data" id="edit-item-form">
 
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
 
                 <div class="row" style="margin-bottom: 25px;">
 
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label for="name">
                                 Name
@@ -33,6 +29,9 @@
                             <input type="text" class="form-control" id="name" name="name" value="{{ workshop_item.name }}" required>
                         </div>
                     </div>
+                </div>
+
+                <div class="row" style="margin-bottom: 25px;">
 
                     <div class="col-md-6">
                         <div class="form-group">
@@ -54,11 +53,6 @@
                             </select>
                         </div>
                     </div>
-                </div>
-
-                <div class="row" style="margin-bottom: 25px;">
-
-                    <div class="col-md-6"></div>
 
                     <div class="col-md-6">
                         <div class="form-group">
@@ -80,98 +74,16 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="file">File</label>
-                            <p id="file">
-                                <a href="/workshop/download/{{ workshop_item.id }}/{{ workshop_item.filename|url_encode }}?no_download_increment" download>{{ workshop_item.filename }}</a>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="file">
-                                Update file
-                            </label>
-                            <input type="file" class="form-control" id="file" name="file">
-                        </div>
-                    </div>
-                </div>
+                <!-- TODO: hide on mobile -->
+                <div class="row" style="margin-bottom: 50px; display: none;" id="image-uploader">
 
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Thumbnail</label>
-                            {% if workshop_item.thumbnail is null %}
-                                <p>
-                                    No thumbnail
-                                </p>
-                            {% else %}
-                                <div class="workshop-item-thumbnail bd-keeper">
-                                    <img src="/workshop/thumbnail/{{ workshop_item.id }}/{{ workshop_item.thumbnail }}" />
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="thumbnail">
-                                Update thumbnail
-                            </label>
-                            <input type="file" class="form-control" id="thumbnail" name="thumbnail">
-                        </div>
-                        {% if workshop_item.thumbnail is not null %}
-                            <p style="margin-top: 15px;">
-                                <a href="/workshop/edit/{{ workshop_item.id }}/thumbnail/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove thumbnail</a>
-                            </p>
-                        {% endif %}
-                    </div>
-                </div>
+                    <div class="col-md-12">
+                        <span class="label">
+                            Images
+                        </span>
 
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="screenshots">Screenshots</label>
-
-                            {% if screenshots|length == 0 %}
-                                <p>
-                                    No screenshots
-                                </p>
-                            {% else %}
-                                <div class="workshop-screenshots" id="workshop-screenshots">
-                                    {% for screenshot in screenshots %}
-                                        <div class="workshop-screenshot">
-                                            <a href="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}"
-                                                data-pswp-width="{{ screenshot.width }}"
-                                                data-pswp-height="{{ screenshot.height }}"
-                                                data-cropped="true"
-                                                class="workshop-screenshot-item"
-                                                target="_blank">
-                                                    <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
-                                            </a>
-                                            {# Delete screenshot #}
-                                            <a
-                                                href="/workshop/edit/{{ workshop_item.id }}/screenshot/delete/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
-                                                onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
-                                                class="btn-medieval"
-                                                style="display: inline-block; position: relative; top: -98px; right: -78px;  width: 20px; height: 20px;"
-                                                alt="Remove screenshot" title="Remove screenshot">
-                                                <ion-icon name="close-outline" style="margin-left: 2px;" alt="Remove" title="Remove"></ion-icon>
-                                            </a>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="file">
-                                Add screenshot(s)
-                            </label>
-                            <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
-                        </div>
+                        <div class="image-widget-container" style="margin-top: 10px;" id="image-widget-container"></div>
+                        <input type="hidden" name="image-widget" id="image-widget" />
                     </div>
                 </div>
 
@@ -234,4 +146,37 @@
         </div>
     </div>
 
+{% endblock %}
+
+
+{% block body_javascript %}
+    <script>
+        var imageWidgetData = {{ image_widget_data|json_encode|raw }};
+
+        $(function(){
+
+            // Load image widget
+            $('#image-uploader').show();
+
+            // Add images on from widget on form submit
+            $('#edit-item-form').on('submit', function(e){
+
+                // Prevent form from being submitted while we add the images
+                e.preventDefault();
+
+                // Check if image widget data is available
+                if(typeof imageWidgetData == 'undefined'){
+                    return;
+                }
+
+                // Load image widget post data into form
+                $('#image-widget').val(getImageWidgetPostData());
+
+                // Submit the form
+                HTMLFormElement.prototype.submit.call(this);
+            });
+
+        });
+    </script>
+    <script src="{{ asset('js/image-widget.js') }}"></script>
 {% endblock %}

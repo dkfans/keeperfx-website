@@ -1,5 +1,7 @@
 
-var $imageBox = $('<div></div>').addClass('image-widget-box');
+var $imageBox = $('<div></div>').addClass('image-widget-box').append(
+    $('<button></button>').addClass('image-widget-delete-button')
+);
 
 // Convert blob to base64
 const blobToDataUrl = blob => new Promise((resolve, reject) => {
@@ -12,6 +14,7 @@ const blobToDataUrl = blob => new Promise((resolve, reject) => {
 function renderImageWidget()
 {
     var imageCount = Object.keys(imageWidgetData).length;
+    var shownImageCount = 0;
 
     var $container = $('#image-widget-container');
 
@@ -21,27 +24,35 @@ function renderImageWidget()
     // Add pictures
     for(let i = 0; i < imageCount; i++){
 
-        let src = '';
-        if(typeof imageWidgetData[i].data !== 'undefined' && imageWidgetData[i].data.length > 0){
-            src = imageWidgetData[i].data;
-        } else if (typeof imageWidgetData[i].src !== 'undefined' && imageWidgetData[i].src.length > 0){
-            src = imageWidgetData[i].src;
+        if(typeof imageWidgetData[i].data !== 'undefined' && imageWidgetData[i].data !== null){
+            $container.append(
+                $imageBox.clone().addClass('image-widget-image').append(
+                    $('<img></img>').attr('src', imageWidgetData[i].data)
+                )
+            );
+            shownImageCount++;
+        } else if (typeof imageWidgetData[i].src !== 'undefined' && imageWidgetData[i].src !== null){
+            $container.append(
+                $imageBox.clone().addClass('image-widget-image').append(
+                    $('<img></img>').attr('src', imageWidgetData[i].src)
+                )
+            );
+            shownImageCount++;
+        } else {
+            $container.append(
+                $imageBox.clone().addClass('image-widget-image').addClass('image-widget-image-invisible').hide()
+            );
         }
 
-        $container.append(
-            $imageBox.clone().addClass('image-widget-image').append(
-                $('<img></img>').attr('src', src)
-            )
-        );
     }
 
     // Show upload button
     $container.append($imageBox.clone().addClass('image-widget-upload-button'));
 
     // Add placeholders if image count is below threshold
-    if(imageCount < 2){
+    if(shownImageCount < 2){
         $container.append($imageBox.clone());
-        if(imageCount < 1){
+        if(shownImageCount < 1){
             $container.append($imageBox.clone());
         }
     }
@@ -56,17 +67,17 @@ $(function(){
 
     // Make sure image widget data has been defined
     if(typeof imageWidgetData == 'undefined'){
-        console.warning('imageWidgetData is not defined');
+        console.warn('imageWidgetData is not defined');
         return;
     }
 
     // Make sure browser API's exist
     if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
-        console.warning('The File APIs are not fully supported in this browser.');
+        console.warn('The File APIs are not fully supported in this browser.');
         return;
     }
     if (!URL || !URL.createObjectURL) {
-        console.warning('The URL APIs are not fully supported in this browser.');
+        console.warn('The URL APIs are not fully supported in this browser.');
         return;
     }
 
@@ -118,52 +129,58 @@ $(function(){
     // Handle file uploading
     $('#image-widget-container').on('click', function(e){
 
-        // Check if clicking on the upload button
+        // Check if clicking on the delete button
         let $target = $(e.target);
-        if(!$target.hasClass('image-widget-upload-button')){
-            return;
+        if($target.hasClass('image-widget-delete-button')){
+            e.preventDefault();
+            let imageIndex = $target.parent().index();
+            imageWidgetData[imageIndex].src = null;
+            imageWidgetData[imageIndex].data = null;
+            renderImageWidget();
         }
 
-        // Create dynamic file input
-        var $input = $('<input></input>')
-            .attr('type', 'file')
-            .attr('multiple', true)
-            .attr('accept', '.jpg,.jpeg,.png,.webp,.gif');
+        // Check if clicking on the upload button
+        if($target.hasClass('image-widget-upload-button')){
 
-        // Handle file input
-        $input.on('change', function(e){
+            // Create dynamic file input
+            var $input = $('<input></input>')
+                .attr('type', 'file')
+                .attr('multiple', true)
+                .attr('accept', '.jpg,.jpeg,.png,.webp,.gif');
 
-            // Loop trough all files
-            $.each($(this)[0].files, async function(i, file){
+            // Handle file input
+            $input.on('change', function(e){
 
-                // Check file size
-                if(file.size > app_store.upload_limit.workshop_image.size){
-                    toastr.warning('Image "' + file.name + '" exceeds maximum file size of ' + app_store.upload_limit.workshop_image.formatted);
-                    return;
-                }
+                // Loop trough all files
+                $.each($(this)[0].files, async function(i, file){
 
-                // let dataString = await blobToDataUrl(file);
-                // let data = dataString.split(',')[1];
-                let data = await blobToDataUrl(file);
+                    // Check file size
+                    if(file.size > app_store.upload_limit.workshop_image.size){
+                        toastr.warning('Image "' + file.name + '" exceeds maximum file size of ' + app_store.upload_limit.workshop_image.formatted);
+                        return;
+                    }
 
-                // Add images to widget
-                imageWidgetData[Object.keys(imageWidgetData).length] = {
-                    'id': null,
-                    'name': file.name,
-                    'size': file.size,
-                    'src': null,
-                    'data': data
-                };
+                    // let dataString = await blobToDataUrl(file);
+                    // let data = dataString.split(',')[1];
+                    let data = await blobToDataUrl(file);
 
-                renderImageWidget();
+                    // Add images to widget
+                    imageWidgetData[Object.keys(imageWidgetData).length] = {
+                        'id': null,
+                        'name': file.name,
+                        // 'size': file.size,
+                        'src': null,
+                        'data': data
+                    };
+
+                    renderImageWidget();
+                });
+
             });
 
-        });
-
-        // Open browser file input
-        $input.click();
+            // Open browser file input
+            $input.click();
+        }
     });
-
-    // TODO: change order in data object to match position on drag/drop
 
 });
