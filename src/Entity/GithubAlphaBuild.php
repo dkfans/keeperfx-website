@@ -21,6 +21,9 @@ class GithubAlphaBuild {
     #[ORM\Column]
     private string $workflow_title;
 
+    #[ORM\Column(type:"bigint", nullable:true)]
+    private null|string $workflow_run_id;
+
     #[ORM\Column]
     private string $filename;
 
@@ -177,6 +180,24 @@ class GithubAlphaBuild {
     public function setIsAvailable($is_available)
     {
         $this->is_available = $is_available;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of workflow_run_id
+     */
+    public function getWorkflowRunId(): null|string
+    {
+        return $this->workflow_run_id;
+    }
+
+    /**
+     * Set the value of workflow_run_id
+     */
+    public function setWorkflowRunId(null|string $workflow_run_id): self
+    {
+        $this->workflow_run_id = $workflow_run_id;
 
         return $this;
     }

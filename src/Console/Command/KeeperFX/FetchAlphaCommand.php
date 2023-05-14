@@ -261,6 +261,7 @@ class FetchAlphaCommand extends Command
             $build->setSizeInBytes(\filesize($output_path));
             $build->setTimestamp(new DateTime($artifact->created_at));
             $build->setWorkflowTitle($display_title);
+            $build->setWorkflowRunId($artifact->workflow_run?->id ?? null);
             $build->setIsAvailable(true);
 
             $this->em->persist($build);

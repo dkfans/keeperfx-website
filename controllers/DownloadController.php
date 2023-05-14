@@ -18,7 +18,7 @@ class DownloadController {
         EntityManager $em
     ){
         $stable_releases = $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC'], 3);
-        $alpha_builds    = $em->getRepository(GithubAlphaBuild::class)->findBy([], ['timestamp' => 'DESC'], 5);
+        $alpha_builds    = $em->getRepository(GithubAlphaBuild::class)->findBy([], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC'], 5);
 
         $response->getBody()->write(
             $twig->render('downloads.html.twig', [
