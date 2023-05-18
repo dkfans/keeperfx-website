@@ -8,20 +8,20 @@ use App\Enum\WorkshopCategory;
 
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
+use App\Entity\WorkshopFile;
+use App\Entity\WorkshopImage;
 use App\Entity\GithubRelease;
 use App\Entity\WorkshopRating;
 use App\Entity\WorkshopComment;
 use App\Entity\WorkshopDifficultyRating;
 
+use URLify;
+
 use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
-use App\Entity\WorkshopFile;
-use App\Entity\WorkshopImage;
 use App\UploadSizeHelper;
 
-use URLify;
-use Slim\Psr7\UploadedFile;
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use GuzzleHttp\Psr7\LazyOpenStream;
@@ -29,6 +29,7 @@ use geertw\IpAnonymizer\IpAnonymizer;
 use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
 
+use Slim\Psr7\UploadedFile;
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -115,38 +116,32 @@ class WorkshopUploadController {
             $success = false;
         }
 
-        // TODO: set map number
+        // Handle map number
+        $map_number = null;
+        if($category === WorkshopCategory::Map){
 
-        // Check valid images files
-        // if(!empty($uploaded_files['images'])){
-        //     /** @var UploadedFile $uploaded_image */
-        //     foreach($uploaded_files['images'] as $uploaded_image){
+            $check_map_number = (int) ($post['map_number'] ?? 0);
 
-        //         // NO images were added
-        //         if ($uploaded_image->getError() === UPLOAD_ERR_NO_FILE) {
-        //             continue;
-        //         }
+            // Check valid map number
+            if($check_map_number < 202 || $check_map_number > 32767){
+                $flash->warning('Invalid map number');
+                $success = false;
+            } else {
 
-        //         $filename = $uploaded_image->getClientFilename();
-        //         $ext = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-        //         if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
-        //             $success = false;
-        //             $flash->warning('One or more images are invalid. Allowed file types: jpg, jpeg, png, gif');
-        //         } else {
+                // Check if map with this map number already exists
+                $map_number_existing_item = $em->getRepository(WorkshopItem::class)->findOneBy([
+                    'category'   => WorkshopCategory::Map,
+                    'map_number' => $check_map_number
+                ]);
+                if($map_number_existing_item !== null){
+                    $flash->warning('Map number already in use');
+                    $success = false;
+                } else {
+                    $map_number = $check_map_number;
+                }
+            }
 
-        //             // Check image filesize
-        //             if($uploaded_image->getSize() > $upload_size_helper->getFinalWorkshopImageUploadSize()){
-        //                 $flash->warning(
-        //                     'Maximum upload size for workshop image exceeded. (' .
-        //                     BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopImageUploadSize())->format() .
-        //                     ')'
-        //                 );
-        //                 $success = false;
-        //             }
-
-        //         }
-        //     }
-        // }
+        }
 
         // Return the page if submission is invalid
         if(!$success){
@@ -166,6 +161,7 @@ class WorkshopUploadController {
         $workshop_item->setName($name);
         $workshop_item->setSubmitter($account->getUser());
         $workshop_item->setCategory($category);
+        $workshop_item->setMapNumber($map_number);
 
         if(!empty($description)){
             $workshop_item->setDescription($description);
