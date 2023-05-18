@@ -316,7 +316,9 @@ class WorkshopEditController {
                 if($datetime){
                     $workshop_item->setOriginalCreationDate($datetime);
                 }
-            } catch (\Exception $ex){}
+            } catch (\Exception $ex){
+                $workshop_item->setOriginalCreationDate(null);
+            }
         } else {
             $workshop_item->setOriginalCreationDate(null);
         }
