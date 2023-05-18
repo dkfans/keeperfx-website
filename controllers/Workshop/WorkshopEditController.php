@@ -261,49 +261,6 @@ class WorkshopEditController {
 
         }
 
-
-        // // Store any uploaded screenshots
-        // foreach($uploaded_files['screenshots'] as $screenshot_file){
-        //     // NO screenshots were added
-        //     if ($screenshot_file->getError() === UPLOAD_ERR_NO_FILE) {
-        //         continue;
-        //     }
-
-        //     // Generate screenshot output path
-        //     $ext = \strtolower(\pathinfo($screenshot_file->getClientFilename(), \PATHINFO_EXTENSION));
-        //     $str = \md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time());
-        //     $screenshot_filename = $str . '.' . $ext;
-        //     $path = $workshop_item_screenshots_dir . '/' . $screenshot_filename;
-
-        //     // Move screenshot
-        //     $screenshot_file->moveTo($path);
-        //     if(!\file_exists($path)){
-        //         throw new \Exception('Failed to move workshop item screenshot');
-        //     }
-        // }
-
-        // // Update or set thumbnail
-        // if(!empty($uploaded_files['thumbnail']) && $uploaded_files['thumbnail']->getError() !== UPLOAD_ERR_NO_FILE){
-
-        //     $thumbnail_file     = $uploaded_files['thumbnail'];
-        //     $thumbnail_filename = $thumbnail_file->getClientFilename();
-        //     $thumbnail_path     = $workshop_item_dir . '/' . $thumbnail_filename;
-
-        //     // Remove already existing thumbnail
-        //     if($workshop_item->getThumbnail() !== null){
-        //         $current_thumbnail_path = $workshop_item_dir . '/' . $workshop_item->getThumbnail();
-        //         if(\file_exists($current_thumbnail_path)){
-        //             \unlink($current_thumbnail_path);
-        //         }
-        //     }
-
-        //     $thumbnail_file->moveTo($thumbnail_path);
-
-        //     if(\file_exists($thumbnail_path)){
-        //         $workshop_item->setThumbnail($thumbnail_filename);
-        //     }
-        // }
-
         // Update original author
         if(\is_string($original_author) && !empty($original_author)){
             $workshop_item->setOriginalAuthor($original_author);
@@ -325,20 +282,14 @@ class WorkshopEditController {
             $workshop_item->setOriginalCreationDate(null);
         }
 
-        // Force the workshop item to be accepted again
-        // $workshop_item->setIsPublished(false);
-
         // Write changes to DB
         $em->flush();
 
-        $flash->success(
-            'Your workshop item has been updated and has been temporary removed from the workshop. ' .
-            'After it has been reviewed by the KeeperFX team it will be available in the workshop again.'
-        );
+        $flash->success('Your workshop item has been updated.');
 
-        $response->getBody()->write(
-            $twig->render('workshop/alert.workshop.html.twig')
-        );
+        $response = $response->withHeader(
+            'Location', '/workshop/item/' . $workshop_item->getId() . '/' . URLify::slug($workshop_item->getName())
+        )->withStatus(302);
 
         return $response;
     }
