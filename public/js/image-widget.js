@@ -24,6 +24,10 @@ function renderImageWidget()
     // Add pictures
     for(let i = 0; i < imageCount; i++){
 
+        if(typeof imageWidgetData[i] === 'undefined'){
+            continue;
+        }
+
         if(typeof imageWidgetData[i].data !== 'undefined' && imageWidgetData[i].data !== null){
             $container.append(
                 $imageBox.clone().addClass('image-widget-image').append(
