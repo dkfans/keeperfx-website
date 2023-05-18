@@ -33,7 +33,7 @@ final class Version20230505180242 extends AbstractMigration
 
                 if(\is_dir($storage_dir)){
 
-                    $weight = 1;
+                    $weight = 0;
 
                     // Create new images dir
                     if(!\is_dir($images_dir)){
