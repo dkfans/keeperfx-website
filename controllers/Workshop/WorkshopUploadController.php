@@ -223,7 +223,7 @@ class WorkshopUploadController {
 
         // Get and set some variables for the new file
         $file_ext              = \pathinfo($filename, PATHINFO_EXTENSION);
-        $file_storage_filename = \sha1($filename . time()) . $file_ext;
+        $file_storage_filename = \sha1($filename . time()) . '__' . $file_ext;
         $file_path             = $workshop_item_files_dir . '/' . $file_storage_filename;
 
         // Store the uploaded file
