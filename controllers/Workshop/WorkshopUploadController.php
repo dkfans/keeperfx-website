@@ -299,7 +299,7 @@ class WorkshopUploadController {
         $em->flush();
 
         // Show upload success message and redirect to workshop item page
-        $flash->success('Your workshop item has been submitted and is being processed. The files will be made available for download shortly.');
+        $flash->success('Your workshop item has been uploaded!');
         $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId() . '/' . URLify::slug($workshop_item->getName()))->withStatus(302);
 
         return $response;
