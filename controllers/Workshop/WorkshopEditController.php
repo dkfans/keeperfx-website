@@ -139,19 +139,19 @@ class WorkshopEditController {
         $workshop_item_images_dir = $workshop_item_dir . '/images';
 
         // Update workshop file
-        if(!empty($uploaded_files['file']) && $uploaded_files['file']->getError() !== UPLOAD_ERR_NO_FILE){
+        // if(!empty($uploaded_files['file']) && $uploaded_files['file']->getError() !== UPLOAD_ERR_NO_FILE){
 
-            $file     = $uploaded_files['file'];
-            $filename = $file->getClientFilename();
-            $path     = $workshop_item_dir . '/' . $filename;
+        //     $file     = $uploaded_files['file'];
+        //     $filename = $file->getClientFilename();
+        //     $path     = $workshop_item_dir . '/' . $filename;
 
-            $workshop_item->setFilename($filename);
+        //     $workshop_item->setFilename($filename);
 
-            $file->moveTo($path);
-            if(!\file_exists($path)){
-                throw new \Exception('Failed to move workshop item file');
-            }
-        }
+        //     $file->moveTo($path);
+        //     if(!\file_exists($path)){
+        //         throw new \Exception('Failed to move workshop item file');
+        //     }
+        // }
 
         // TODO: delete existing images
 
