@@ -206,11 +206,13 @@
                             <a
                                 href="/workshop/download/{{ item.id }}/{{ item.files|first.id }}/{{ item.files|first.filename|url_encode }}"
                                 class="btn btn-lg btn-medieval"
-                                style="width: 100%; max-width: 300px; min-height: 50px; padding-top: 9px; padding-bottom: 4px;"
+                                style="width: 100%; max-width: 300px; min-height: 50px; padding-top: 9px; padding-bottom: 4px; font-size: 22px;"
                                 download>
                                     Download
-                                    {% if item.files|first.version is not empty %}
-                                        <span style="display: block; position: relative; top: -3px; font-size: 12px; font-family: 'Nunito';">{{ item.files|first.version }}</span>
+                                    {% if item.files|first is not empty %}
+                                        <span style="display: block; position: relative; top: -3px; font-size: 14px; font-family: 'Nunito';">
+                                            {{ item.files|first.filename }}
+                                        </span>
                                     {% endif %}
                             </a>
                             <div style="display:none; margin-top: 10px;" class="text-muted" id="show-all-downloads">
