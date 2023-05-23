@@ -20,7 +20,7 @@
             <h2 class="workshop-item-title">{{ item.name }}</h2>
 
             {# Submitted by & Rating #}
-            <div class="d-flex justify-content-between" style="margin-top: 10px;  margin-bottom: 15px; padding: 0 5px;">
+            <div class="d-flex justify-content-between" style="margin-top: 10px;  margin-bottom: 16px; padding: 0 5px;">
 
                 {# Submitted by #}
                 <div class="">
@@ -35,15 +35,27 @@
                 {# Edit #}
                 <div class="">
                 {% if account != null %}
-                    {% if account.role >= roles.moderator %}
-                        <a href="/moderate/workshop/{{ item.id }}">Edit as moderator</a>
-                    {% endif %}
-                    {% if item.submitter != null and item.submitter.id == account.id and account.role >= roles.moderator %}
-                        <span style="margin: 0 3px" class="text-muted">&bull;</span>
-                    {% endif %}
-                    {% if item.submitter != null and item.submitter.id == account.id %}
-                        <a href="/workshop/edit/{{ item.id }}">Edit your workshop item</a>
-                    {% endif %}
+                    <div style="margin-bottom: -16px; top: -8px; position: relative; right: -5px;">
+                        {% if account.role >= roles.moderator %}
+                            <a href="/moderate/workshop/{{ item.id }}">
+                                <button class="btn btn-medieval btn-medieval-gray">
+                                    Edit as moderator
+                                </button>
+                            </a>
+                        {% endif %}
+                        {% if item.submitter != null and item.submitter.id == account.id %}
+                            <a href="/workshop/edit/{{ item.id }}/files">
+                                <button class="btn btn-medieval">
+                                    Edit files
+                                </button>
+                            </a>
+                            <a href="/workshop/edit/{{ item.id }}">
+                                <button class="btn btn-medieval">
+                                    Edit your workshop item
+                                </button>
+                            </a>
+                        {% endif %}
+                    </div>
                 {% endif %}
                 </div>
             </div>
@@ -220,6 +232,19 @@
                         {% endif %}
 
                     </div>
+
+                    {# <div style="margin-bottom: 15px;">
+                        <button href="#" class="btn btn-medieval d-block" style="margin-top: 15px;">
+                            Edit your workshop item
+                        </button>
+                        <button href="#" class="btn btn-medieval d-block" style="margin-top: 15px;">
+                            Edit files
+                        </button>
+                        <button href="#" class="btn btn-medieval btn-medieval-gray d-block" style="margin-top: 15px;">
+                            Edit as moderator
+                        </button>
+                    </div> #}
+
                 </div>
 
             </div>
