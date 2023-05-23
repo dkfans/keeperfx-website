@@ -210,7 +210,7 @@
                                 download>
                                     Download
                                     {% if item.files|first is not empty %}
-                                        <span style="display: block; position: relative; top: -3px; font-size: 14px; font-family: 'Nunito';">
+                                        <span class="btn-download-filename">
                                             {{ item.files|first.filename }}
                                         </span>
                                     {% endif %}
