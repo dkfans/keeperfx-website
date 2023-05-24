@@ -138,26 +138,6 @@ class WorkshopEditController {
         $workshop_item_dir        = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
         $workshop_item_images_dir = $workshop_item_dir . '/images';
 
-        // Update workshop file
-        // if(!empty($uploaded_files['file']) && $uploaded_files['file']->getError() !== UPLOAD_ERR_NO_FILE){
-
-        //     $file     = $uploaded_files['file'];
-        //     $filename = $file->getClientFilename();
-        //     $path     = $workshop_item_dir . '/' . $filename;
-
-        //     $workshop_item->setFilename($filename);
-
-        //     $file->moveTo($path);
-        //     if(!\file_exists($path)){
-        //         throw new \Exception('Failed to move workshop item file');
-        //     }
-        // }
-
-        // TODO: delete existing images
-
-        // Get currently existing images
-        // $current_images = $em->getRepository(WorkshopImage::class)->findAll(['item' => $workshop_item], ['weight' => 'ASC']);
-
         // Image variables
         $images_to_keep = [];
         $current_weight = -1;
