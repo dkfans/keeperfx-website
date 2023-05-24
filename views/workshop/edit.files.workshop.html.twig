@@ -90,4 +90,17 @@
 
 {% block body_javascript %}
 
+<script>
+$(function(){
+    // Item max upload filesize check
+    $('#file').on('change', function(){
+        fileFileSize = 0;
+        if(this.files[0].size > app_store.upload_limit.workshop_item.size){
+            toastr.warning('File exceeds maximum filesize of ' + app_store.upload_limit.workshop_item.formatted);
+            this.value = null;
+        }
+    });
+});
+</script>
+
 {% endblock %}
