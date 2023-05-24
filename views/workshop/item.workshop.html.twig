@@ -233,18 +233,6 @@
 
                     </div>
 
-                    {# <div style="margin-bottom: 15px;">
-                        <button href="#" class="btn btn-medieval d-block" style="margin-top: 15px;">
-                            Edit your workshop item
-                        </button>
-                        <button href="#" class="btn btn-medieval d-block" style="margin-top: 15px;">
-                            Edit files
-                        </button>
-                        <button href="#" class="btn btn-medieval btn-medieval-gray d-block" style="margin-top: 15px;">
-                            Edit as moderator
-                        </button>
-                    </div> #}
-
                 </div>
 
             </div>
@@ -258,7 +246,6 @@
                                 <thead>
                                     <tr>
                                         <th>File</th>
-                                        <th>Version</th>
                                         <th>Downloads</th>
                                         <th>Date</th>
                                     </tr>
@@ -267,13 +254,6 @@
                                     {% for file in item.files %}
                                         <tr>
                                             <td><a href="/workshop/download/{{ item.id }}/{{ file.id }}/{{ file.filename|url_encode }}">{{ file.filename }}</td>
-                                            <td>
-                                                {% if file.version is not empty %}
-                                                        {{ file.version }}
-                                                    {% else %}
-                                                        <span class="text-muted">N/A</span>
-                                                {% endif %}
-                                                </td>
                                             <td>{{ file.downloadCount }}</td>
                                             <td>{{ file.createdTimestamp|date('Y-m-d') }}</td>
                                         </tr>

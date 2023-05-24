@@ -32,9 +32,6 @@ class WorkshopFile {
     #[ORM\Column(type: 'integer')]
     private int $download_count = 0;
 
-    #[ORM\Column(nullable: true)]
-    private string|null $version = null;
-
     #[ORM\Column(type: 'integer', enumType: WorkshopScanStatus::class)]
     private WorkshopScanStatus $scan_status = WorkshopScanStatus::NOT_SCANNED_YET;
 
@@ -152,24 +149,6 @@ class WorkshopFile {
     public function setDownloadCount(int $download_count): self
     {
         $this->download_count = $download_count;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of version
-     */
-    public function getVersion(): ?string
-    {
-        return $this->version;
-    }
-
-    /**
-     * Set the value of version
-     */
-    public function setVersion(?string $version): self
-    {
-        $this->version = $version;
 
         return $this;
     }
