@@ -76,6 +76,9 @@
         {# Javascript #}
         {% block body_javascript %}{% endblock %}
 
+        {# Disable form resubmission (little hack) #}
+        <script>if(window.history.replaceState){ window.history.replaceState(null, null, window.location.href); }</script>
+
     </body>
 
 </html>
