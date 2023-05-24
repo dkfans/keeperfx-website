@@ -88,7 +88,7 @@ class AccountController {
         $token_name,
         $token_value
     ){
-        // Check for valid logout request
+        // Make sure CSRF check is valid
         $valid = $csrf_guard->validateToken($token_name, $token_value);
         if(!$valid){
             $flash->error('Invalid CSRF token.');
@@ -232,7 +232,7 @@ class AccountController {
         $token_name,
         $token_value
     ){
-        // Check for valid logout request
+        // Check for valid CSRF check
         $valid = $csrf_guard->validateToken($token_name, $token_value);
         if(!$valid){
             $flash->error('Invalid CSRF token.');
@@ -283,7 +283,7 @@ class AccountController {
         $token_name,
         $token_value,
     ){
-        // Check for valid logout request
+        // Check for valid CSRF check
         $valid = $csrf_guard->validateToken($token_name, $token_value);
         if(!$valid){
             throw new HttpNotFoundException($request);
