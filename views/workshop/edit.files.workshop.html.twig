@@ -55,6 +55,7 @@
                         <tr>
                             <th style="width: 70px;"></th>
                             <th>File</th>
+                            <th>Filesize</th>
                             <th>Downloads</th>
                             <th>Date</th>
                             <th>Action</th>
@@ -96,6 +97,9 @@
                                         (main download)
                                     {% endif %}
                                 </td>
+
+                                {# File size #}
+                                <td style="vertical-align: middle;">{{ file.size|format_bytes }}</td>
 
                                 {# Downoad count #}
                                 <td style="vertical-align: middle;">{{ file.downloadCount }}</td>
