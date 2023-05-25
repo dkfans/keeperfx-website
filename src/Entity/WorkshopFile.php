@@ -30,6 +30,9 @@ class WorkshopFile {
     private int $size = 0;
 
     #[ORM\Column(type: 'integer')]
+    private int $weight = 0;
+
+    #[ORM\Column(type: 'integer')]
     private int $download_count = 0;
 
     #[ORM\Column(type: 'integer', enumType: WorkshopScanStatus::class)]
@@ -43,7 +46,6 @@ class WorkshopFile {
     {
         $this->created_timestamp = new \DateTime("now");
     }
-
 
     /**
      * Get the value of id
@@ -131,6 +133,24 @@ class WorkshopFile {
     public function setSize(int $size): self
     {
         $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of weight
+     */
+    public function getWeight(): int
+    {
+        return $this->weight;
+    }
+
+    /**
+     * Set the value of weight
+     */
+    public function setWeight(int $weight): self
+    {
+        $this->weight = $weight;
 
         return $this;
     }

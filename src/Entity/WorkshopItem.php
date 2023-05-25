@@ -57,7 +57,7 @@ class WorkshopItem {
     private \DateTime|null $original_creation_date = null;
 
     #[ORM\OneToMany(targetEntity: WorkshopFile::class, mappedBy: 'item')]
-    #[ORM\OrderBy(["created_timestamp" => "DESC"])]
+    #[ORM\OrderBy(["weight" => "ASC"])]
     private Collection $files;
 
     #[ORM\OneToMany(targetEntity: WorkshopImage::class, mappedBy: 'item')]
