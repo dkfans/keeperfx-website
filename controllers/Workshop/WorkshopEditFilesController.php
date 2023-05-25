@@ -51,8 +51,7 @@ class WorkshopEditFilesController {
         // Show edit page
         $response->getBody()->write(
             $twig->render('workshop/edit.files.workshop.html.twig', [
-                'workshop_item' => $workshop_item,
-                'files'         => $em->getRepository(WorkshopFile::class)->findBy(['item' => $workshop_item]),
+                'workshop_item' => $workshop_item
             ])
         );
         return $response;
@@ -93,7 +92,7 @@ class WorkshopEditFilesController {
 
         // Make sure uploaded file is set
         if(empty($uploaded_files['file']) || $uploaded_files['file']->getError() === UPLOAD_ERR_NO_FILE){
-            $flash->warning('You can not edit the files for this workshop item because you did not submit it.');
+            $flash->warning('No file was uploaded...');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
