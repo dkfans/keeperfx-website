@@ -5,21 +5,16 @@
 {% block workshop_content %}
 
     <div class="content-box bg-keeper bd-keeper">
+
         <div class="content-header">
-        <div class="row">
-            <div class="row">
-
-            </div>
-            <div class="row">
-
-            </div>
-        </div>
-            <h2>Edit files: {{ workshop_item.name }}</h2>
-                <div class="pull-right">
-                <a href="/workshop/item/{{ workshop_item.id }}/{{ workshop_item.name|slugify }}" >
-                    Back to workshop item
-                </a>
+            <div class="d-flex justify-content-between">
+                <h2>Edit files: {{ workshop_item.name }}</h2>
+                <div>
+                    <a href="/workshop/item/{{ workshop_item.id }}/{{ workshop_item.name|slugify }}" >
+                        Back to workshop item
+                    </a>
                 </div>
+            </div>
         </div>
 
         <div class="content-body">
