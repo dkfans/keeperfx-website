@@ -24,6 +24,12 @@
 
         <div class="content-body">
 
+            <div class="alert bg-dark">
+                You can upload a new file here which will be added to the top of the list.
+                This list of files is meant for different versions of a specific item.
+                <strong>It should not be used to group different creations</strong>.
+            </div>
+
                 <form action="/workshop/edit/{{ workshop_item.id }}/files" method="POST" enctype="multipart/form-data" id="edit-item-form">
 
                     <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
