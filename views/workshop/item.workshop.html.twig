@@ -37,22 +37,16 @@
                 {% if account != null %}
                     <div style="margin-bottom: -16px; top: -8px; position: relative; right: -5px;">
                         {% if account.role >= roles.moderator %}
-                            <a href="/moderate/workshop/{{ item.id }}">
-                                <button class="btn btn-medieval btn-medieval-gray">
-                                    Edit as moderator
-                                </button>
+                            <a href="/moderate/workshop/{{ item.id }}" class="btn btn-medieval btn-medieval-gray">
+                                Edit as moderator
                             </a>
                         {% endif %}
                         {% if item.submitter != null and item.submitter.id == account.id %}
-                            <a href="/workshop/edit/{{ item.id }}/files">
-                                <button class="btn btn-medieval">
-                                    Edit files
-                                </button>
+                            <a href="/workshop/edit/{{ item.id }}/files" class="btn btn-medieval">
+                                Edit files
                             </a>
-                            <a href="/workshop/edit/{{ item.id }}">
-                                <button class="btn btn-medieval">
-                                    Edit your workshop item
-                                </button>
+                            <a href="/workshop/edit/{{ item.id }}" class="btn btn-medieval">
+                                Edit your workshop item
                             </a>
                         {% endif %}
                     </div>
