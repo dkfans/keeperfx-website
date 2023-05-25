@@ -59,7 +59,7 @@
                 <div class="col-md-5">
 
                     {# Images #}
-                    <div class="workshop-item-images" id="workshop-images" style="margin-bottom: 30px;">
+                    <div class="workshop-item-images" id="workshop-images">
                         {% if item.images|length == 0 %}
                             <div class="workshop-item-image bd-keeper">
                                 <img src="/img/horny-face.png" />
@@ -217,7 +217,7 @@
 
                         {# Download button #}
                         {% if item.files|length > 0 %}
-                            <div class="text-center" style="margin-bottom: 20px; width: 100%; margin-top: 30px;">
+                            <div class="text-center" style="margin-bottom: 10px; width: 100%; margin-top: 30px;">
                                 <a
                                     href="/workshop/download/{{ item.id }}/{{ item.files|first.id }}/{{ item.files|first.filename|url_encode }}"
                                     class="btn btn-lg btn-medieval"
@@ -244,7 +244,7 @@
                 <div class="col-12">
 
                     {% if item.files|length > 0 %}
-                        <div id="all-downloads-list" class="workshop-file-list-box">
+                        <div id="all-downloads-list" class="workshop-file-list-box" style="margin-top: 30px;">
                             <table class="table" style="margin-bottom: 0px;">
                                 <thead>
                                     <tr>
