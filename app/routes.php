@@ -142,6 +142,7 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
         $group->get('/{item_id:\d+}/files', [Workshop\WorkshopEditFilesController::class, 'index']);
         $group->post('/{item_id:\d+}/files', [Workshop\WorkshopEditFilesController::class, 'upload']);
         $group->get('/{item_id:\d+}/files/{file_id:\d+}/delete/{token_name}/{token_value:.+}', [Workshop\WorkshopEditFilesController::class, 'delete']);
+        $group->get('/{item_id:\d+}/files/{file_id:\d+}/move/{direction}/{token_name}/{token_value:.+}', [Workshop\WorkshopEditFilesController::class, 'move']);
 
     })->add(LoggedInMiddleware::class);
 

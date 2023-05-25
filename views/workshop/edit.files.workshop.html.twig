@@ -53,6 +53,7 @@
                 <table class="table" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
+                            <th style="width: 70px;"></th>
                             <th>File</th>
                             <th>Downloads</th>
                             <th>Date</th>
@@ -62,17 +63,56 @@
                     <tbody>
                         {% for file in workshop_item.files %}
                             <tr>
-                                <td style="padding-top: 15px"><a href="/workshop/download/{{ workshop_item.id }}/{{ file.id }}/{{ file.filename|url_encode }}">{{ file.filename }}</td>
-                                <td style="padding-top: 15px">{{ file.downloadCount }}</td>
-                                <td style="padding-top: 15px">{{ file.createdTimestamp|date('Y-m-d') }}</td>
-                                <td>
-                                    <a href="/workshop/edit/{{ workshop_item.id }}/files/{{ file.id }}/delete/{{ csrf.name }}/{{ csrf.value }}">
-                                        <button
-                                            class="btn btn-medieval btn-medieval-gray"
-                                            onclick="if (confirm('Are you sure you want to delete this file?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
-                                        >
+
+                                <td style="vertical-align: middle;">
+
+                                    {# Move up #}
+                                    {% if not loop.first %}
+                                        <a href="/workshop/edit/{{ workshop_item.id }}/files/{{ file.id }}/move/up/{{ csrf.name }}/{{ csrf.value }}" class="btn btn-medieval" style="padding: 0; padding-top: 6px;">
+                                            <ion-icon name="chevron-up-outline" style="font-size: 22px;"></ion-icon>
+                                        </a>
+                                    {% else %}
+                                        <div class="btn btn-medieval btn-medieval-gray btn-disabled" style="padding: 0; padding-top: 6px;">
+                                            <ion-icon name="chevron-up-outline" style="font-size: 22px;"></ion-icon>
+                                        </div>
+                                    {% endif %}
+
+                                    {# Move down #}
+                                    {% if not loop.last %}
+                                        <a href="/workshop/edit/{{ workshop_item.id }}/files/{{ file.id }}/move/down/{{ csrf.name }}/{{ csrf.value }}" class="btn btn-medieval" style="padding: 0; padding-top: 6px;">
+                                            <ion-icon name="chevron-down-outline" style="font-size: 22px;"></ion-icon>
+                                        </a>
+                                    {% else %}
+                                        <div class="btn btn-medieval btn-medieval-gray btn-disabled" style="padding: 0; padding-top: 6px;">
+                                            <ion-icon name="chevron-down-outline" style="font-size: 22px;"></ion-icon>
+                                        </div>
+                                    {% endif %}
+                                </td>
+
+                                {# File name #}
+                                <td style="vertical-align: middle;">
+                                    <a href="/workshop/download/{{ workshop_item.id }}/{{ file.id }}/{{ file.filename|url_encode }}">{{ file.filename }}</a>
+                                    {% if loop.first %}
+                                        (main download)
+                                    {% endif %}
+                                </td>
+
+                                {# Downoad count #}
+                                <td style="vertical-align: middle;">{{ file.downloadCount }}</td>
+
+                                {# Timestamp #}
+                                <td style="vertical-align: middle;">{{ file.createdTimestamp|date('Y-m-d') }}</td>
+
+                                {# Actions #}
+                                <td style="vertical-align: middle;">
+
+                                    {# Delete button #}
+                                    <a
+                                        href="/workshop/edit/{{ workshop_item.id }}/files/{{ file.id }}/delete/{{ csrf.name }}/{{ csrf.value }}"
+                                        class="btn btn-medieval btn-medieval-gray"
+                                        onclick="if (confirm('Are you sure you want to delete this file?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
+                                    >
                                         Delete
-                                    </button>
                                     </a>
                                 </td>
                             </tr>

@@ -133,12 +133,21 @@ class WorkshopEditFilesController {
             throw new \Exception('Failed to move workshop item file');
         }
 
-        // Create DB entity
+        // Increase weight for existing files
+        $query_builder = $em->getConnection()->createQueryBuilder();
+        $query_builder
+            ->update('workshop_file')
+            ->where('item_id = ' . $workshop_item->getId())
+            ->set('weight', 'weight + 1');
+        $query_builder->executeQuery();
+
+        // Create new DB entity
         $workshop_file = new WorkshopFile();
         $workshop_file->setItem($workshop_item);
         $workshop_file->setFilename($filename);
         $workshop_file->setStorageFilename($storage_filename);
         $workshop_file->setSize(\filesize($storage_path));
+        $workshop_file->setWeight(0);
 
         // Save to DB
         $em->persist($workshop_file);
@@ -212,9 +221,24 @@ class WorkshopEditFilesController {
             throw new \Exception("Workshop file still exists after removal...: '{$workshop_file_path}'");
         }
 
+        // Remember weight so we can keep the numbering without jumps
+        $deleted_weight = $workshop_file->getWeight();
+
         // Remove from DB
         $em->remove($workshop_file);
         $em->flush();
+
+        // Fix weights for existing files
+        $query_builder = $em->getConnection()->createQueryBuilder();
+        $query_builder
+            ->update('workshop_file')
+            ->where(
+                $query_builder->expr()->and(
+                    $query_builder->expr()->eq('item_id', $workshop_item->getId()),
+                    $query_builder->expr()->gt('weight', $deleted_weight)
+                ))
+            ->set('weight', 'weight - 1');
+        $query_builder->executeQuery();
 
         // Show success notice to user
         $flash->success(\sprintf(
@@ -225,5 +249,94 @@ class WorkshopEditFilesController {
         // Redirect back to file list
         $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId() . '/files')->withStatus(302);
         return $response;
+    }
+
+    public function move(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        TwigEnvironment $twig,
+        Account $account,
+        EntityManager $em,
+        UploadSizeHelper $upload_size_helper,
+        CsrfGuard $csrf_guard,
+        $item_id,
+        $file_id,
+        $direction,
+        $token_name,
+        $token_value,
+    )
+    {
+        // Check for valid direction
+        if(!\in_array($direction, ['up', 'down'])){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check for valid CSRF token
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if user is workshop item submitter
+        if($workshop_item->getSubmitter() !== $account->getUser()){
+            // TODO: change to "not allowed" response
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if workshop file exists
+        $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
+        if(!$workshop_file){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Make sure we can move up
+        if($direction === 'up' && $workshop_file->getWeight() <= 0){
+            $flash->error('Failed to move workshop file.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig')
+            );
+            return $response;
+        }
+
+        // Make sure we can move down
+        if($direction === 'down' && $workshop_file->getWeight() >= (\count($workshop_item->getFiles()) - 1)){
+            $flash->error('Failed to move workshop file.');
+            $response->getBody()->write(
+                $twig->render('workshop/alert.workshop.html.twig')
+            );
+            return $response;
+        }
+
+        // Determine wanted new weight
+        $wanted_weight = $direction === 'up' ? $workshop_file->getWeight() - 1 : $workshop_file->getWeight() + 1;
+
+        // Check if we can change with the file with the wanted weight
+        $workshop_file_at_wanted_weight = $em->getRepository(WorkshopFile::class)->findOneBy(['item' => $workshop_item, 'weight' => $wanted_weight]);
+        if(!$workshop_file_at_wanted_weight || $workshop_file_at_wanted_weight == $workshop_file){
+            throw new \Exception('something went wrong..');
+        }
+
+        // Change weights between files
+        $workshop_file_at_wanted_weight->setWeight($workshop_file->getWeight());
+        $workshop_file->setWeight($wanted_weight);
+
+        // Save changes to DB
+        $em->flush();
+
+
+        $flash->success('The file has been successfully moved.');
+
+
+        // Redirect back to file list
+        $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId() . '/files')->withStatus(302);
+        return $response;
+
     }
 }
