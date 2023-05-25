@@ -284,15 +284,20 @@ class WorkshopEditFilesController {
             throw new HttpNotFoundException($request);
         }
 
-        // Check if user is workshop item submitter
-        if($workshop_item->getSubmitter() !== $account->getUser()){
-            // TODO: change to "not allowed" response
-            throw new HttpNotFoundException($request);
-        }
-
         // Check if workshop file exists
         $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
         if(!$workshop_file){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if file is attached to item
+        if($workshop_file->getItem() !== $workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if file is submitted by user
+        if($workshop_file->getItem()->getSubmitter() !== $account->getUser()){
+            // TODO: change to "not allowed" response
             throw new HttpNotFoundException($request);
         }
 
@@ -338,5 +343,81 @@ class WorkshopEditFilesController {
         $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId() . '/files')->withStatus(302);
         return $response;
 
+    }
+
+    public function rename(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        TwigEnvironment $twig,
+        Account $account,
+        EntityManager $em,
+        CsrfGuard $csrf_guard,
+        $item_id,
+        $file_id
+    )
+    {
+
+        $post     = $request->getParsedBody();
+        $new_name = \trim((string) ($post['name'] ?? null));
+
+        // Make sure new name is valid
+        if(!$new_name || \strlen($new_name) > 64 || \strlen($new_name) < 1){
+            return $request;
+        }
+
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if workshop file exists
+        $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
+        if(!$workshop_file){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if file is attached to item
+        if($workshop_file->getItem() !== $workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if file is owned by user
+        if($workshop_file->getItem()->getSubmitter() !== $account->getUser()){
+            // TODO: change to "not allowed" response
+            throw new HttpNotFoundException($request);
+        }
+
+        // Get current filename name and extension
+        $filename = $workshop_file->getFilename();
+        $ext      = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
+
+        // Define new filename
+        $new_filename = $new_name . '.' . $ext;
+
+        // TODO: check valid filename
+
+        // Save to DB
+        $workshop_file->setFilename($new_filename);
+        $em->flush();
+
+        // Return
+        $response->getBody()->write(
+            \json_encode([
+                'success'  => true,
+                'filename' => $workshop_file->getFilename(),
+                'csrf'     => [
+                    'keys' => [
+                        'name'  => $csrf_guard->getTokenNameKey(),
+                        'value' => $csrf_guard->getTokenValueKey(),
+                    ],
+                    'name'  => $csrf_guard->getTokenName(),
+                    'value' => $csrf_guard->getTokenValue()
+                ],
+            ])
+        );
+
+        return $response;
     }
 }
