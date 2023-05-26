@@ -31,11 +31,7 @@ class GithubRelease {
     #[ORM\Column]
     private bool $commits_handled = false;
 
-    #[ORM\OneToMany(
-        targetEntity: "GitCommit",
-        mappedBy: "release"
-    )
-    ]
+    #[ORM\OneToMany(targetEntity: GitCommit::class, mappedBy: "release")]
     private $commits;
 
     /**
