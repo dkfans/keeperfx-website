@@ -77,6 +77,7 @@ class WorkshopItem {
     private float|null $difficulty_rating_score = null;
 
     #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'item')]
+    #[ORM\OrderBy(["created_timestamp" => "DESC"])]
     private Collection $comments;
 
     public function __construct() {

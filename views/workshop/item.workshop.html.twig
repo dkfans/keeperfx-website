@@ -299,6 +299,30 @@
             <h2>Comments</h2>
         </div>
         <div class="content-body">
+
+            {# Comment area #}
+            {% if account is null %}
+                <p>
+                    <a href="/login?redirect={{ get_path() }}">Login</a> or <a href="/register">register</a> to comment on this workshop item.
+                </p>
+            {% else %}
+                <form action="/workshop/item/{{ item.id }}/comment" method="POST">
+                    <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+                    <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+                    <div class="" style="width: 100%; margin-left: 7px; padding: 0;">
+                            <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
+                                <textarea class="form-control" name="content" rows="4" placeholder="Write a comment" required></textarea>
+                                <div class="pull-right" style="margin-top: 15px;">
+                                    <input type="submit" class="btn btn-medieval" value="Comment" />
+                                </div>
+                            </div>
+                    </div>
+                </form>
+                <hr />
+            {% endif %}
+
+
+            {# Comments #}
             {% if item.comments|length == 0 %}
                 <p>
                     No comments yet.
@@ -337,23 +361,6 @@
 
                     </div>
                 {% endfor %}
-            {% endif %}
-            <h5 style="border-bottom: 0; margin-top: 30px;">Comment</h5>
-            {% if account is null %}
-            <p>
-                <a href="/login?redirect={{ get_path() }}">Login</a> or <a href="/register">register</a> to comment on this workshop item.
-            </p>
-            {% else %}
-                <form action="/workshop/item/{{ item.id }}/comment" method="POST">
-                    <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
-                    <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
-                    <div class="form-group">
-                        <textarea class="form-control" name="content" rows="4" placeholder="Write a comment" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" class="btn btn-medieval" value="Submit" />
-                    </div>
-                </form>
             {% endif %}
         </div>
     </div>
