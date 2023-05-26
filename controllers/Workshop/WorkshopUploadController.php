@@ -186,9 +186,16 @@ class WorkshopUploadController {
 
         // Set optional minimum game build
         if(isset($post['min_game_build']) && !empty($post['min_game_build'])){
-            $min_game_build = $em->getRepository(GithubRelease::class)->find((int) ($post['min_game_build'] ?? null));
-            if($min_game_build){
-                $workshop_item->setMinGameBuild($min_game_build);
+            $min_build = (int) $post['min_game_build'];
+            if($min_build === -1){
+                // Latest alpha patch
+                $workshop_item->setMinGameBuild(-1);
+            } elseif ($min_build > 0) {
+                // Stable build
+                $min_game_build = $em->getRepository(GithubRelease::class)->find($min_build);
+                if($min_game_build){
+                    $workshop_item->setMinGameBuild($min_build);
+                }
             }
         }
 

@@ -130,9 +130,21 @@ class WorkshopEditController {
         $category = WorkshopCategory::tryFrom((int) ($post['category'] ?? null));
         $workshop_item->setCategory($category);
 
-        // Set minimum game build
-        $min_game_build = $em->getRepository(GithubRelease::class)->find((int) ($post['min_game_build'] ?? null));
-        $workshop_item->setMinGameBuild($min_game_build ?? null);
+        // Set optional minimum game build
+        $workshop_item->setMinGameBuild(null);
+        if(isset($post['min_game_build']) && !empty($post['min_game_build'])){
+            $min_build = (int) $post['min_game_build'];
+            if($min_build === -1){
+                // Latest alpha patch
+                $workshop_item->setMinGameBuild(-1);
+            } elseif ($min_build > 0) {
+                // Stable build
+                $min_game_build = $em->getRepository(GithubRelease::class)->find($min_build);
+                if($min_game_build){
+                    $workshop_item->setMinGameBuild($min_build);
+                }
+            }
+        }
 
         // Set directories for files
         $workshop_item_dir        = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();

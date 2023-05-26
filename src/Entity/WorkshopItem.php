@@ -29,8 +29,8 @@ class WorkshopItem {
     #[ORM\Column(type: 'integer', enumType: WorkshopCategory::class)]
     private WorkshopCategory $category;
 
-    #[ORM\ManyToOne(targetEntity: GithubRelease::class)]
-    private GithubRelease|null $min_game_build = null;
+    #[ORM\Column(nullable: true)]
+    private int|null $min_game_build = null;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
@@ -224,7 +224,7 @@ class WorkshopItem {
     /**
      * Get the value of min_game_build
      */
-    public function getMinGameBuild(): GithubRelease|null
+    public function getMinGameBuild(): int|null
     {
         return $this->min_game_build;
     }
@@ -232,7 +232,7 @@ class WorkshopItem {
     /**
      * Set the value of min_game_build
      */
-    public function setMinGameBuild(GithubRelease|null $min_game_build): self
+    public function setMinGameBuild(int|null $min_game_build): self
     {
         $this->min_game_build = $min_game_build;
         $this->updateLastUpdatedTimestamp();

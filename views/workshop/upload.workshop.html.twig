@@ -61,6 +61,7 @@
                             </label>
                             <select class="form-control form-select" id="min_game_build" name="min_game_build">
                                 <option selected="selected"></option>
+                                <option value="-1">Latest alpha patch</option>
                                 {% if workshop_globals.stable_builds|length > 0 %}
                                     {% for build in workshop_globals.stable_builds %}
                                         <option value="{{ build.id }}">

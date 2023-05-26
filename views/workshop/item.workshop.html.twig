@@ -197,11 +197,14 @@
                                 <tr>
                                     <td>Min. game version</td>
                                     <td class="text-stand-out" style="padding-left: 25px;">
-                                        {{ item.minGameBuild.name }}
-                                        {# <span class="text-muted" style="margin-left: 5px;">(and up)</span> #}
+                                        {% if item.minGameBuild == -1 %}
+                                            Latest alpha patch
+                                        {% else %}
+                                            {{ workshop_globals.stable_builds[item.minGameBuild].name }}
+                                        {% endif %}
                                     </td>
                                 </tr>
-                            {% endif %}
+                            {% endif %}e
 
                             {% if item.files|length > 0 %}
                                 <tr style="height: 15px;"><!-- Spacer row --></tr>
