@@ -8,6 +8,8 @@ This is the suggested crontab for the automated tasks.
 - Fetch the Wiki 
 - Pull a local copy of the repo (for grabbing commit history)
 - Handle commit history between stable releases (for the changelog)
+- Fetch Keeper Klan forum activity
+- Scan workshop files (new ones and a daily)
 
 
 ```
@@ -17,6 +19,8 @@ This is the suggested crontab for the automated tasks.
 */10 * * * * php /var/www/keeperfx/console kfx:pull-repo
 */10 * * * * php /var/www/keeperfx/console kfx:handle-commits
 */10 * * * * php /var/www/keeperfx/console kfx:fetch-forum-activity
+* * * * * php /var/www/keeperfx/console clamav:scan-workshop-new
+0 0 * * * php /var/www/keeperfx/console clamav:scan-workshop-all
 ```
 
 This list has a race condition between pulling the repo and handling the commits.

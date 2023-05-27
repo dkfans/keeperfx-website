@@ -30,4 +30,8 @@ return [
     \App\Console\Command\Maintenance\MaintenanceStartCommand::class,
     \App\Console\Command\Maintenance\MaintenanceStopCommand::class,
 
+    // ClamAV scanner
+    \App\Console\Command\ClamAV\ScanWorkshopNewCommand::class,
+    \App\Console\Command\ClamAV\ScanWorkshopAllCommand::class,
+
 ];
