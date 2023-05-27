@@ -213,7 +213,7 @@ $(function(){
 
                 $renameButton.attr('data-rename-filename', data.filename);
                 $filenameAnchor.text(data.filename);
-                $filenameAnchor.attr('src', '/workshop/download/' + workshop_item.id + '/' + fileId + '/' + data.filenname);
+                $filenameAnchor.attr('href', '/workshop/download/' + workshop_item.id + '/' + fileId + '/' + data.filename);
 
                 // Update CSRF tokens
                 app_store.csrf.name = data.csrf.name;
