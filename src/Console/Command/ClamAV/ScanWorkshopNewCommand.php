@@ -101,7 +101,7 @@ class ScanWorkshopNewCommand extends Command
             // Virus found !!
             if($result === false){
 
-                $output->writeln("[!] <error>Virus found!</error>");
+                $output->writeln("[!] <error>Malware found!</error>");
 
                 // Remove from DB
                 $this->em->remove($file);
@@ -129,7 +129,7 @@ class ScanWorkshopNewCommand extends Command
             $this->em->flush();
 
             // Yay!
-            $output->writeln("[+] <question>File is safe!</question>");
+            $output->writeln("[+] <question>No malware found</question>");
 
         } catch (\Exception $ex) {
 
