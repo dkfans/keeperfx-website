@@ -164,8 +164,8 @@ class AccountController {
         // Check file extension
         $filename = $file->getClientFilename();
         $file_extension = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-        if(!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif'])){
-            $flash->warning('Invalid avatar image file. Allowed file types: jpg, jpeg, png, gif');
+        if(!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])){
+            $flash->warning('Invalid avatar image file. Allowed file types: jpg, jpeg, png, gif, webp');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
         }

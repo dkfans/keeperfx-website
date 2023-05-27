@@ -276,9 +276,9 @@ class ModerateWorkshopController {
 
                 $filename = $screenshot_file->getClientFilename();
                 $ext = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-                if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
+                if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])){
                     $success = false;
-                    $flash->warning('One or more screenshots are invalid. Allowed file types: jpg, jpeg, png, gif');
+                    $flash->warning('One or more screenshots are invalid. Allowed file types: jpg, jpeg, png, gif, webp');
                 }
             }
         }
@@ -290,9 +290,9 @@ class ModerateWorkshopController {
 
             $filename = $thumbnail_file->getClientFilename();
             $ext = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-            if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
+            if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])){
                 $success = false;
-                $flash->warning('Invalid thumbnail. Allowed file types: jpg, jpeg, png, gif');
+                $flash->warning('Invalid thumbnail. Allowed file types: jpg, jpeg, png, gif, webp');
             }
         }
 
