@@ -6,6 +6,7 @@ use App\Enum\WorkshopScanStatus;
 
 use App\Entity\WorkshopFile;
 
+use Appwrite\ClamAV\Pipe;
 use Appwrite\ClamAV\Network;
 use Doctrine\ORM\EntityManager;
 
