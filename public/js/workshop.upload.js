@@ -35,14 +35,18 @@ $(function(){
 
     // Show original author input if selected
     $('#is_not_original_author').on('change', function(e){
-        let checked = $('#is_not_original_author').attr('checked');
         $('#original_author_box').slideToggle("fast");
+        if($('#is_not_original_author').is(":checked") === false){
+            $('#original_author').val('');
+        }
     });
 
     // Show original creation date input if selected
     $('#is_not_original_creationdate').on('change', function(e){
-        let checked = $('#is_not_original_creationdate').attr('checked');
         $('#original_creationdate_box').slideToggle("fast");
+        if($('#is_not_original_creationdate').is(":checked") === false){
+            $('#original_creation_date').val('');
+        }
     });
 
     // Show map number input when category is Map
