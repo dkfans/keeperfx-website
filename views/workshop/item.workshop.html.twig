@@ -183,15 +183,6 @@
                                     </td>
                                 </tr>
                             {% endif %}
-                            <tr style="height: 15px;"><!-- Spacer row --></tr>
-                            {# <tr>
-                                <td>Filesize</td>
-                                <td class="text-stand-out" style="padding-left: 25px;">{{ filesize|format_bytes }}</td>
-                            </tr> #}
-                            <tr>
-                                <td>Downloads</td>
-                                <td class="text-stand-out" style="padding-left: 25px;">{{ item.downloadCount }}</td>
-                            </tr>
                             {% if item.minGameBuild is not null %}
                                 <tr style="height: 15px;"><!-- Spacer row --></tr>
                                 <tr>
@@ -215,6 +206,11 @@
                                     </td>
                                 </tr>
                             {% endif %}
+
+                            <tr>
+                                <td>Downloads</td>
+                                <td class="text-stand-out" style="padding-left: 25px;">{{ item.downloadCount }}</td>
+                            </tr>
 
                         </table>
 
