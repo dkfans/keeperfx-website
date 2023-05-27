@@ -88,6 +88,7 @@ $(function(){
             dataType: 'json', // return type data,
             error: function(data){
                 toastr.error('Something went wrong.');
+                $mapNumberInput[0].setCustomValidity('Something went wrong');
             },
             success: function(data){
 
@@ -106,11 +107,13 @@ $(function(){
                 // Map is not available
                 if(!data.available){
                     $mapNumberInput.addClass('is-invalid');
+                    $mapNumberInput[0].setCustomValidity('Map number unavailable');
                     return;
                 }
 
                 // Map is available!
                 $mapNumberInput.addClass('is-valid');
+                $mapNumberInput[0].setCustomValidity('');
             },
             complete:  function(data){
                 $('#map-number-loader').hide();
