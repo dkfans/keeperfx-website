@@ -2,13 +2,13 @@
 
 namespace App\Controller\Workshop;
 
+use App\Enum\WorkshopCategory;
+
 use App\Entity\GithubRelease;
 use App\Entity\User;
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
 use App\Entity\WorkshopImage;
-
-use App\Enum\WorkshopCategory;
 
 use URLify;
 use App\Account;
@@ -19,6 +19,8 @@ use Twig\Environment as TwigEnvironment;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
+use App\Workshop\Exception\WorkshopException;
 
 class WorkshopEditController {
 
@@ -111,24 +113,56 @@ class WorkshopEditController {
         $original_author        = $post['original_author'] ?? null;
         $original_creation_date = $post['original_creation_date'] ?? null;
 
+        // Get category
+        $category = WorkshopCategory::tryFrom((int) ($post['category'] ?? null));
+        if($category === null){
+            throw new WorkshopException('invalid category');
+        }
+
         // Get and validate image data
         $image_post_data = $post['image-widget'] ?? '{}';
         $image_data = @\json_decode($image_post_data, true);
         if(!\is_array($image_data)){
-            $flash->error('Invalid image data');
-            $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig')
-            );
-            return $response;
+            throw new WorkshopException('invalid image data');
+        }
+
+        // Handle map number
+        $map_number = null;
+        if($category === WorkshopCategory::Map){
+
+            $check_map_number = (int) ($post['map_number'] ?? 0);
+
+            // Check valid map number
+            if($check_map_number < 202 || $check_map_number > 32767){
+                $flash->warning('Invalid map number');
+                $response = $response->withHeader(
+                    'Location', '/workshop/edit/' . $workshop_item->getId()
+                )->withStatus(302);
+                return $response;
+            } else {
+
+                // Check if map with this map number already exists
+                $map_number_existing_item = $em->getRepository(WorkshopItem::class)->findOneBy([
+                    'category'   => WorkshopCategory::Map,
+                    'map_number' => $check_map_number
+                ]);
+                if($map_number_existing_item !== null && $workshop_item !== $map_number_existing_item){
+                    $flash->warning('Map number already in use');
+                    $response = $response->withHeader(
+                        'Location', '/workshop/edit/' . $workshop_item->getId()
+                    )->withStatus(302);
+                    return $response;
+                } else {
+                    $map_number = $check_map_number;
+                }
+            }
         }
 
         $workshop_item->setName($name);
         $workshop_item->setDescription($description);
         $workshop_item->setInstallInstructions($install_instructions);
-
-        // Set workshop item category
-        $category = WorkshopCategory::tryFrom((int) ($post['category'] ?? null));
         $workshop_item->setCategory($category);
+        $workshop_item->setMapNumber($map_number);
 
         // Set optional minimum game build
         $workshop_item->setMinGameBuild(null);

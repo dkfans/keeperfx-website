@@ -16,7 +16,7 @@
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
 
-                <div class="row" style="margin-bottom: 25px;">
+                <div class="row" style="margin-bottom: 50px;">
 
                     <div class="col-md-12">
                         <div class="form-group">
@@ -31,7 +31,7 @@
                     </div>
                 </div>
 
-                <div class="row" style="margin-bottom: 25px;">
+                <div class="row" style="margin-bottom: 50px;">
 
                     <div class="col-md-6">
                         <div class="form-group">
@@ -75,6 +75,36 @@
                     </div>
                 </div>
 
+                <div class="row" style="margin-bottom: 40px; {% if workshop_item.category.value !=  10 %}display:none;{% endif %}" id="map-number-box">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="map_number">
+                                Map number
+                                <span class="text-danger">
+                                    *
+                                </span>
+                                <span class="text-muted">
+                                    (between 202 and 32767)
+                                </span>
+                            </label>
+
+                            <div id="map-number-loader" class="spinner-border text-muted" role="status"
+                                style="height: 16px; width: 16px; font-size: 8px; position: relative; float: right; top: 46px; right: 15px; display: none;"
+                            ></div>
+
+                            <input type="text" class="form-control" id="map_number" name="map_number" value="{{ workshop_item.mapNumber }}"
+                                min="202" max="32767" step="1" pattern="\d+"
+                                oninput="this.value= ['','-'].includes(this.value) ? this.value : this.value|0"
+                                />
+                        </div>
+                        <div class="alert bg-dark" style="margin-top: 15px;">
+                            Your map should have a unique map number. This is required so there are no conflicts with other maps.
+                            This is done because of the old game engine working with numbers and it allows players to track their completion of maps in-game.
+                            Make sure the filenames of your map match an available number and have 5 numbers in total. Example: <strong>map00001</strong>.
+                        </div>
+                    </div>
+                </div>
+
                 <!-- TODO: hide on mobile -->
                 <div class="row" style="margin-bottom: 50px; display: none;" id="image-uploader">
 
@@ -98,7 +128,7 @@
                     <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 50px;">
                     <label for="install_instructions">
                         Installation instructions
                         <span class="text-muted">
@@ -108,9 +138,25 @@
                     <textarea class="form-control" name="install_instructions" rows="4">{{ workshop_item.installInstructions }}</textarea>
                 </div>
 
-                <div class="row" style="margin-top: 25px; margin-bottom: 30px;">
+                <div class="row" style="margin-bottom: 25px;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input" type="checkbox" name="is_not_original_author" id="is_not_original_author"
+                                    {% if workshop_item.originalAuthor is not null %}checked=checked{% endif %}
+                                >
+                                <label class="form-check-label" for="is_not_original_author">
+                                    Optional: I am not the original author of this item
+                                    <span data-bs-toggle="popover" data-bs-placement="top" data-bs-content="If you are not the original author of this workshop item, you can add their name to give credit.">
+                                        <ion-icon name="information-circle-outline" class="text-info" style="position: relative; top: 3px;"></ion-icon>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="col-md-6">
+                    <div class="col-6" style="margin-top: 15px; {% if workshop_item.originalAuthor is null %}display:none;{% endif %}" id="original_author_box">
                         <div class="form-group">
                             <label for="original_author">
                                 Original Author
@@ -121,8 +167,28 @@
                             <input type="text" class="form-control" id="original_author" name="original_author" value="{{ workshop_item.originalAuthor }}">
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 35px;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input" type="checkbox" name="is_not_creationdate" id="is_not_original_creationdate"
+                                    {% if workshop_item.originalCreationDate is not null %}checked=checked{% endif %}
+                                >
+                                <label class="form-check-label" for="is_not_original_creationdate">
+                                    Optional: I would like to define a different creation date for this item
+                                    <span data-bs-toggle="popover" data-bs-placement="top"
+                                        data-bs-content="If you made this content in the past, or it was made by somebody else, you can enable this and define the original creation date.">
+                                            <ion-icon name="information-circle-outline" class="text-info" style="position: relative; top: 3px;"></ion-icon>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6" style="margin-top: 15px; {% if workshop_item.originalCreationDate is null %}display:none;{% endif %}" id="original_creationdate_box">
                         <div class="form-group">
                             <label for="original_creation_date">
                                 Original Creation Date
@@ -130,15 +196,10 @@
                                     (Optional)
                                 </span>
                             </label>
-                            <div class="input-group mb-3">
-                                <input type="date" class="form-control" id="original_creation_date" name="original_creation_date"
-                                    value="{% if workshop_item.originalCreationDate %}{{ workshop_item.originalCreationDate|date('Y-m-d') }}{% endif %}">
-                                <button class="btn btn-outline-secondary" type="button" onclick="javascript:original_creation_date.value=''">Clear</button>
-                            </div>
+                            <input type="date" class="form-control" id="original_creation_date" name="original_creation_date" value="{{ workshop_item.originalCreationDate|date('Y-m-d') }}">
                         </div>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <input type="submit" class="btn btn-medieval" value="Save" />
                 </div>
