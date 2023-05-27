@@ -177,7 +177,7 @@ class WorkshopEditController {
 
                 // Get and check extension
                 $ext = \strtolower(\pathinfo($image_obj['name'], \PATHINFO_EXTENSION));
-                if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])){
+                if(!\in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])){
                     continue;
                 }
 
