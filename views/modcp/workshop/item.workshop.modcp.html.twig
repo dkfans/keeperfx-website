@@ -2,33 +2,7 @@
 
 {% set page_title = workshop_item.name ~ ' - Admin' %}
 
-{% block body_javascript %}
-    <script type="module">
-        import PhotoSwipeLightbox from 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe-lightbox.esm.min.js';
-
-        // Initialize image lightbox
-        const lightbox = new PhotoSwipeLightbox({
-            bgOpacity: 0.8,
-            gallery: '#workshop-screenshots',
-            children: 'a.workshop-screenshot-item',
-            pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.esm.min.js'),
-            mainClass: 'pswp-with-perma-preloader',
-            initialZoomLevel: 'fit',
-            showHideAnimationType: 'zoom'
-        });
-
-        // Init lightbox
-        lightbox.init();
-    </script>
-{% endblock %}
-
 {% block page %}
-
-    {% if workshop_item.isPublished != true %}
-        <div class="alert alert-info">
-            This workshop item has not been published yet.
-        </div>
-    {% endif %}
 
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
@@ -42,52 +16,57 @@
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
 
-                <div class="row form-group">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="submitter">Submitter</label>
-                            <p id="submitter">
-                                {% if workshop_item.submitter is not null %}
-                                    <a href="/admin/user/{{ workshop_item.submitter.id }}">
-                                        {{ workshop_item.submitter.username }}
-                                    </a>
-                                {% else %}
-                                    KeeperFX Team
-                                {% endif %}
-                            </p>
-                        </div>
-                        <div class="form-group">
-                            <label for="downloads">Downloads</label>
-                            <p id="downloads">
-                                {{ workshop_item.downloadCount }}
-                            </p>
-                        </div>
+                <div class="form-group" style="margin-bottom: 50px;">
+                    <label>
+                        Submitter
+                        <span class="text-danger">
+                            *
+                        </span>
+                    </label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="submitter" value="current_user" id="submitter_current_user" {% if workshop_item.submitter is not null and workshop_item.submitter.id == account.id %}checked=checked{% endif %} />
+                        <label class="form-check-label" for="submitter_current_user">
+                            Yani
+                        </label>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="submitter">Submission date</label>
-                            <p id="submitter">
-                                {{ workshop_item.createdTimestamp|date('Y-m-d') }}
-                            </p>
-                        </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="submitter" value="kfx" id="submitter_kfx" {% if workshop_item.submitter is null %}checked=checked{% endif %} />
+                        <label class="form-check-label" for="submitter_kfx">
+                            KeeperFX Team
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="submitter" value="username" id="submitter_username" {% if workshop_item.submitter is not null and workshop_item.submitter.id != account.id %}checked=checked{% endif %} />
+                        <label class="form-check-label">
+                            <input class="form-control" type="text" name="submitter_username" placeholder="Username" id="submitter_username_input" style="max-width: 200px;" />
+                        </label>
                     </div>
                 </div>
 
-                <div class="row" style="margin-bottom: 25px;">
+                <div class="row" style="margin-bottom: 50px;">
 
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label for="name">
                                 Name
+                                <span class="text-danger">
+                                    *
+                                </span>
                             </label>
                             <input type="text" class="form-control" id="name" name="name" value="{{ workshop_item.name }}" required>
                         </div>
                     </div>
+                </div>
+
+                <div class="row" style="margin-bottom: 50px;">
 
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="category">
                                 Category
+                                <span class="text-danger">
+                                    *
+                                </span>
                             </label>
                             <select class="form-control form-select" id="category" name="category" required>
                                 <option value="" disabled hidden>Choose the category of this item</option>
@@ -101,11 +80,6 @@
                             </select>
                         </div>
                     </div>
-                </div>
-
-                <div class="row" style="margin-bottom: 25px;">
-
-                    <div class="col-md-6"></div>
 
                     <div class="col-md-6">
                         <div class="form-group">
@@ -116,10 +90,11 @@
                                 </span>
                             </label>
                             <select class="form-control form-select" id="min_game_build" name="min_game_build">
-                                <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="-1"></option>
+                                <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="0"></option>
+                                <option {% if workshop_item.minGameBuild == -1 %}selected=selected{% endif %} value="-1">Lastest alpha patch</option>
                                 {% if workshop_globals.stable_builds|length > 0 %}
                                     {% for build in workshop_globals.stable_builds %}
-                                        <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild.id == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
+                                        <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
                                     {% endfor %}
                                 {% endif %}
                             </select>
@@ -127,93 +102,46 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 40px; {% if workshop_item.category.value !=  10 %}display:none;{% endif %}" id="map-number-box">
+                    <div class="col-md-12">
                         <div class="form-group">
-                            <label for="file">File</label>
-                            <p id="file">
-                                <a href="/workshop/download/{{ workshop_item.id }}/{{ workshop_item.filename|url_encode }}?no_download_increment" download>{{ workshop_item.filename }}</a>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="file">Update file</label>
-                            <input type="file" class="form-control" id="file" name="file">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Thumbnail</label>
-                            {% if workshop_item.thumbnail is null %}
-                                <p>
-                                    No thumbnail
-                                </p>
-                            {% else %}
-                                <div class="workshop-item-thumbnail bd-keeper">
-                                    <img src="/workshop/thumbnail/{{ workshop_item.id }}/{{ workshop_item.thumbnail }}" />
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="thumbnail">Update thumbnail</label>
-                            <input type="file" class="form-control" id="thumbnail" name="thumbnail">
-                        </div>
-                        {% if workshop_item.thumbnail is not null %}
-                            <p style="margin-top: 15px;">
-                                <a href="/moderate/workshop/{{ workshop_item.id }}/thumbnail/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove thumbnail</a>
-                            </p>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="screenshots">Screenshots</label>
-
-                            {% if screenshots|length == 0 %}
-                                <p>
-                                    No screenshots
-                                </p>
-                            {% else %}
-                                <div class="workshop-screenshots" id="workshop-screenshots">
-                                    {% for screenshot in screenshots %}
-                                        <div class="workshop-screenshot">
-                                            <a href="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}"
-                                                data-pswp-width="{{ screenshot.width }}"
-                                                data-pswp-height="{{ screenshot.height }}"
-                                                data-cropped="true"
-                                                class="workshop-screenshot-item"
-                                                target="_blank">
-                                                    <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
-                                            </a>
-                                            <a
-                                                href="/moderate/workshop/{{ workshop_item.id }}/screenshot/delete/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
-                                                onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
-                                                class="btn-medieval"
-                                                style="display: inline-block; position: relative; top: -98px; right: -78px;  width: 20px; height: 20px;"
-                                                alt="Remove" title="Remove">
-                                                <ion-icon name="close-outline" style="margin-left: 2px;" alt="Remove" title="Remove"></ion-icon>
-                                            </a>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="file">
-                                Add screenshot(s)
+                            <label for="map_number">
+                                Map number
+                                <span class="text-danger">
+                                    *
+                                </span>
+                                <span class="text-muted">
+                                    (between 202 and 32767)
+                                </span>
                             </label>
-                            <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
+
+                            <div id="map-number-loader" class="spinner-border text-muted" role="status"
+                                style="height: 16px; width: 16px; font-size: 8px; position: relative; float: right; top: 46px; right: 15px; display: none;"
+                            ></div>
+
+                            <input type="text" class="form-control" id="map_number" name="map_number" value="{{ workshop_item.mapNumber }}"
+                                min="202" max="32767" step="1" pattern="\d+"
+                                oninput="this.value= ['','-'].includes(this.value) ? this.value : this.value|0"
+                                />
                         </div>
+                        {# <div class="alert bg-dark" style="margin-top: 15px;">
+                            Your map should have a unique map number. This is required so there are no conflicts with other maps.
+                            This is done because of the old game engine working with numbers and it allows players to track their completion of maps in-game.
+                            Make sure the filenames of your map match an available number and have 5 numbers in total. Example: <strong>map00001</strong>.
+                        </div> #}
+                    </div>
+                </div>
+
+                <!-- TODO: hide on mobile -->
+                <div class="row" style="margin-bottom: 50px; display: none;" id="image-uploader">
+
+                    <div class="col-md-12">
+                        <span class="label">
+                            Images
+                        </span>
+
+                        <div class="image-widget-container" style="margin-top: 10px;" id="image-widget-container"></div>
+                        <input type="hidden" name="image-widget" id="image-widget" />
                     </div>
                 </div>
 
@@ -227,7 +155,7 @@
                     <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 50px;">
                     <label for="install_instructions">
                         Installation instructions
                         <span class="text-muted">
@@ -237,29 +165,26 @@
                     <textarea class="form-control" name="install_instructions" rows="4">{{ workshop_item.installInstructions }}</textarea>
                 </div>
 
-                <div class="row" style="margin-top: 25px; margin-bottom: 30px;">
-
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 25px;">
+                    <div class="col-6" style="margin-top: 15px;">
                         <div class="form-group">
                             <label for="original_author">
-                                Original Author
-                                <span class="text-muted">
-                                    (Optional)
-                                </span>
+                                Original author
+                                <span class="text-muted">(Optional)</span>
                             </label>
                             <input type="text" class="form-control" id="original_author" name="original_author" value="{{ workshop_item.originalAuthor }}">
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 25px;">
+                    <div class="col-6" style="margin-top: 15px;">
                         <div class="form-group">
                             <label for="original_creation_date">
-                                Original Creation Date
-                                <span class="text-muted">
-                                    (Optional)
-                                </span>
+                                Original creation date
+                                <span class="text-muted">(Optional)</span>
                             </label>
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3" id="original_creation_date">
                                 <input type="date" class="form-control" id="original_creation_date" name="original_creation_date"
                                     value="{% if workshop_item.originalCreationDate %}{{ workshop_item.originalCreationDate|date('Y-m-d') }}{% endif %}">
                                 <button class="btn btn-outline-secondary" type="button" onclick="javascript:original_creation_date.value=''">Clear</button>
@@ -268,20 +193,15 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="form-check">
-                        <input
-                            class="form-check-input" type="checkbox" name="is_published" id="is_published"
-                            {% if workshop_item.isPublished == true %}checked=checked{% endif %}
-                        />
-                        <label class="form-check-label" for="is_published">
-                            Published
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <input type="submit" class="btn btn-medieval" value="Save" />
+                <div class="form-group pull-right">
+                    <a
+                        class="btn btn-medieval btn-medieval-gray" style="margin-right: 10px;"
+                        href="/workshop/edit/{{ workshop_item.id }}/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}"
+                        id="deleteWorkshopItem"
+                    >
+                        Delete
+                    </a>
+                    <input type="submit" class="btn btn-medieval" value="Save workshop item" />
                 </div>
 
             </form>
