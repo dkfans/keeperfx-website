@@ -15,8 +15,10 @@ use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
 use Doctrine\ORM\EntityManager;
+use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
 
+use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -317,6 +319,46 @@ class WorkshopEditController {
             'Location', '/workshop/item/' . $workshop_item->getId() . '/' . URLify::slug($workshop_item->getName())
         )->withStatus(302);
 
+        return $response;
+    }
+
+    public function delete(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        TwigEnvironment $twig,
+        Account $account,
+        EntityManager $em,
+        CsrfGuard $csrf_guard,
+        $id,
+        $token_name,
+        $token_value,
+    ){
+        // Check for valid CSRF check
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if user is workshop item submitter
+        if($workshop_item->getSubmitter() !== $account->getUser()){
+            // TODO: change to "not allowed" response
+            throw new HttpNotFoundException($request);
+        }
+
+        // Remove from DB
+        $em->remove($workshop_item);
+        $em->flush();
+
+        $flash->success('Your workshop item has been removed.');
+
+        $response = $response->withHeader('Location', '/workshop/browse')->withStatus(302);
         return $response;
     }
 }

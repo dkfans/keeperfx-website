@@ -122,4 +122,16 @@ $(function(){
         HTMLFormElement.prototype.submit.call(this);
     });
 
+    // Delete item confirmation
+    $('#deleteWorkshopItem').on('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        let deleteString = window.prompt("Are you sure you want to delete this workshop item?\n\nWrite 'delete' to confirm:\n\n");
+
+        if(deleteString !== null && deleteString.toLowerCase() === 'delete'){
+            window.location = $(this).attr('href');
+        }
+    });
+
 });

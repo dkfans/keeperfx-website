@@ -135,9 +135,12 @@ $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) 
 
     // Workshop edit (LOGGED IN)
     $group->group('/edit', function (RouteCollectorProxy $group) use ($container) {
+
         // Workshop item edit
         $group->get('/{id:\d+}', [Workshop\WorkshopEditController::class, 'editIndex']);
         $group->post('/{id:\d+}', [Workshop\WorkshopEditController::class, 'edit']);
+        $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Workshop\WorkshopEditController::class, 'delete']);
+
         // Workshop file edit
         $group->get('/{item_id:\d+}/files', [Workshop\WorkshopEditFilesController::class, 'index']);
         $group->post('/{item_id:\d+}/files', [Workshop\WorkshopEditFilesController::class, 'upload']);
