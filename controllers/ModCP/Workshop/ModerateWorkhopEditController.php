@@ -1,21 +1,17 @@
 <?php
 
-namespace App\Controller\Workshop;
+namespace App\Controller\ModCP\Workshop;
 
 use App\Enum\WorkshopCategory;
 
-use App\Entity\GithubRelease;
-use App\Entity\User;
-use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
+use App\Entity\GithubRelease;
 use App\Entity\WorkshopImage;
 
-use URLify;
 use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
 use Doctrine\ORM\EntityManager;
-use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
 
 use Slim\Exception\HttpNotFoundException;
@@ -23,37 +19,22 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use App\Workshop\Exception\WorkshopException;
+use App\Entity\User;
 
-use Xenokore\Utility\Helper\DirectoryHelper;
+class ModerateWorkshopEditController {
 
-class WorkshopEditController {
 
-    public function editIndex(
+    public function itemIndex(
         Request $request,
         Response $response,
-        FlashMessage $flash,
         TwigEnvironment $twig,
-        Account $account,
         EntityManager $em,
         $id
     ){
-        // Check if workshop item exists
+        // Get workshop item
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
         if(!$workshop_item){
-            $flash->warning('The requested workshop item could not be found.');
-            $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig')
-            );
-            return $response;
-        }
-
-        // Check if user is workshop item submitter
-        if($workshop_item->getSubmitter() !== $account->getUser()){
-            $flash->warning('You can not edit this workshop item because you did not submit it.');
-            $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig')
-            );
-            return $response;
+            throw new HttpNotFoundException($request);
         }
 
         // Get image widget data
@@ -68,23 +49,23 @@ class WorkshopEditController {
             ];
         }
 
-        // Show edit page
         $response->getBody()->write(
-            $twig->render('workshop/edit.workshop.html.twig', [
+            $twig->render('modcp/workshop/item.workshop.modcp.html.twig', [
                 'workshop_item'     => $workshop_item,
                 'image_widget_data' => $image_widget_data,
             ])
         );
+
         return $response;
     }
 
-    public function edit(
+    public function itemUpdate(
         Request $request,
         Response $response,
-        FlashMessage $flash,
         TwigEnvironment $twig,
-        Account $account,
         EntityManager $em,
+        FlashMessage $flash,
+        Account $account,
         UploadSizeHelper $upload_size_helper,
         $id
     ){
@@ -94,16 +75,6 @@ class WorkshopEditController {
             throw new HttpNotFoundException($request);
         }
 
-        // Check if user is workshop item submitter
-        if($workshop_item->getSubmitter() !== $account->getUser()){
-            $flash->warning('You can not edit this workshop item because you did not submit it.');
-            $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig')
-            );
-            return $response;
-        }
-
-        $uploaded_files = $request->getUploadedFiles();
         $post           = $request->getParsedBody();
 
         $name                  = \trim((string) ($post['name'] ?? null));
@@ -112,6 +83,48 @@ class WorkshopEditController {
 
         $original_author        = $post['original_author'] ?? null;
         $original_creation_date = $post['original_creation_date'] ?? null;
+
+        $submitter          = null;
+        $submitter_value    = $post['submitter'] ?? null;
+
+        // Handle submitter
+        if(!\in_array($submitter_value, ['current_user', 'kfx', 'username'])){
+            throw new WorkshopException('invalid submitter');
+            $success = false;
+        } else {
+            if($submitter_value === 'current_user'){
+                // Current logged in user
+                $submitter = $account->getUser();
+            } elseif($submitter_value === 'kfx') {
+                // KeeperFX Team
+                $submitter = null;
+            } elseif($submitter_value === 'username') {
+                // Custom user
+                $submitter_username = (string) ($post['submitter_username'] ?? '');
+
+                // Check valid username for custom user
+                if(empty($submitter_username)){
+                    $flash->warning('No username given for custom submitter.');
+                    $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
+                    return $response;
+                } else {
+                    // Search user
+                    $submitter_user = $em->getRepository(User::class)->findOneBy(['username' => $submitter_username]);
+                    if(!$submitter_user){
+                        $flash->warning("User '{$submitter_username}' not found ");
+                        $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
+                        return $response;
+                    } else {
+                        $submitter = $submitter_user;
+                    }
+                }
+
+            } else {
+                // Invalid submitter value
+                throw new WorkshopException('invalid submitter');
+            }
+
+        }
 
         // Get category
         $category = WorkshopCategory::tryFrom((int) ($post['category'] ?? null));
@@ -135,9 +148,7 @@ class WorkshopEditController {
             // Check valid map number
             if($check_map_number < 202 || $check_map_number > 32767){
                 $flash->warning('Invalid map number');
-                $response = $response->withHeader(
-                    'Location', '/workshop/edit/' . $workshop_item->getId()
-                )->withStatus(302);
+                $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
                 return $response;
             } else {
 
@@ -149,7 +160,7 @@ class WorkshopEditController {
                 if($map_number_existing_item !== null && $workshop_item !== $map_number_existing_item){
                     $flash->warning('Map number already in use');
                     $response = $response->withHeader(
-                        'Location', '/workshop/edit/' . $workshop_item->getId()
+                        'Location', '/moderate/workshop/' . $workshop_item->getId()
                     )->withStatus(302);
                     return $response;
                 } else {
@@ -163,6 +174,7 @@ class WorkshopEditController {
         $workshop_item->setInstallInstructions($install_instructions);
         $workshop_item->setCategory($category);
         $workshop_item->setMapNumber($map_number);
+        $workshop_item->setSubmitter($submitter);
 
         // Set optional minimum game build
         $workshop_item->setMinGameBuild(null);
@@ -311,68 +323,9 @@ class WorkshopEditController {
         // Write changes to DB
         $em->flush();
 
-        $flash->success('Your workshop item has been updated.');
-
-        $response = $response->withHeader(
-            'Location', '/workshop/item/' . $workshop_item->getId() . '/' . URLify::slug($workshop_item->getName())
-        )->withStatus(302);
-
+        $flash->success('Workshop item updated!');
+        $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
         return $response;
     }
 
-    public function delete(
-        Request $request,
-        Response $response,
-        FlashMessage $flash,
-        TwigEnvironment $twig,
-        Account $account,
-        EntityManager $em,
-        CsrfGuard $csrf_guard,
-        $id,
-        $token_name,
-        $token_value,
-    ){
-        // Check for valid CSRF check
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request);
-        }
-
-        // Check if workshop item exists
-        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
-        if(!$workshop_item){
-            throw new HttpNotFoundException($request);
-        }
-
-        // Check if user is workshop item submitter
-        if($workshop_item->getSubmitter() !== $account->getUser()){
-            // TODO: change to "not allowed" response
-            throw new HttpNotFoundException($request);
-        }
-
-        // Get workshop item dir and check if it exists
-        $workshop_item_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
-        if(!\is_dir($workshop_item_dir)){
-            throw new WorkshopException('workshop item dir does not exist');
-        }
-
-        // Clear workshop item dir
-        if(!DirectoryHelper::clear($workshop_item_dir)){
-            throw new WorkshopException('failed to clear and remove workshop item dir');
-        }
-
-        // Remove workshop item dir
-        if(\is_dir($workshop_item_dir)){
-            @\rmdir($workshop_item_dir);
-        }
-
-        // Remove from DB
-        $em->remove($workshop_item);
-        $em->flush();
-
-        $flash->success('Your workshop item has been removed.');
-
-        $response = $response->withHeader('Location', '/workshop/browse')->withStatus(302);
-        return $response;
-    }
 }

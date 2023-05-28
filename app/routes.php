@@ -101,14 +101,15 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
         // Moderate: WORKSHOP
         $group->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
-            $group->get('/list', [ModCP\ModerateWorkshopController::class, 'listIndex']);
-            $group->get('/add', [ModCP\ModerateWorkshopController::class, 'itemAddIndex']);
-            $group->post('/add', [ModCP\ModerateWorkshopController::class, 'itemAdd']);
-            $group->get('/{id:\d+}', [ModCP\ModerateWorkshopController::class, 'itemIndex']);
-            $group->post('/{id:\d+}', [ModCP\ModerateWorkshopController::class, 'itemUpdate']);
-            // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [ModCP\ModerateWorkshopController::class, 'itemDelete']);
-            $group->get('/{id:\d+}/screenshot/delete/{filename}/{token_name}/{token_value:.+}', [ModCP\ModerateWorkshopController::class, 'deleteScreenshot']);
-            $group->get('/{id:\d+}/thumbnail/delete/{token_name}/{token_value:.+}', [ModCP\ModerateWorkshopController::class, 'deleteThumbnail']);
+            $group->get('/list', [ModCP\Workshop\ModerateWorkshopController::class, 'listIndex']);
+
+            $group->get('/add', [ModCP\Workshop\ModerateWorkshopAddController::class, 'itemAddIndex']);
+            $group->post('/add', [ModCP\Workshop\ModerateWorkshopAddController::class, 'itemAdd']);
+
+            $group->get('/{id:\d+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'itemIndex']);
+            $group->post('/{id:\d+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'itemUpdate']);
+
+            // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [ModCP\Workshop\ModerateWorkshopController::class, 'itemDelete']);
         });
 
     })->add(AuthModCPMiddleware::class);

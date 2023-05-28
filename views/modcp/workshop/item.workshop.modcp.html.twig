@@ -6,12 +6,19 @@
 
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
-            <h2>Workshop Item: {{ workshop_item.name }}</h2>
+            <div class="d-flex justify-content-between">
+                <h2>[MOD] Edit workshop item: {{ workshop_item.name }}</h2>
+                <div>
+                    <a href="/moderate/workshop/{{ workshop_item.id }}/files">Edit files</a>
+                    <span style="margin: 0 3px" class="text-muted"> • </span>
+                    <a href="/workshop/item/{{ workshop_item.id }}/{{ workshop_item.name|slugify }}">View workshop item</a>
+                </div>
+            </div>
         </div>
 
         <div class="content-body">
 
-            <form action="/moderate/workshop/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data">
+            <form action="/moderate/workshop/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data" id="moderator-edit-item-form">
 
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
@@ -38,7 +45,10 @@
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="submitter" value="username" id="submitter_username" {% if workshop_item.submitter is not null and workshop_item.submitter.id != account.id %}checked=checked{% endif %} />
                         <label class="form-check-label">
-                            <input class="form-control" type="text" name="submitter_username" placeholder="Username" id="submitter_username_input" style="max-width: 200px;" />
+                            <input
+                                class="form-control" type="text" name="submitter_username" placeholder="Username" id="submitter_username_input" style="max-width: 200px;"
+                                value="{% if workshop_item.submitter is not null and workshop_item.submitter.id != account.id %}{{ workshop_item.submitter.username }}{% endif %}"
+                            />
                         </label>
                     </div>
                 </div>
@@ -209,4 +219,10 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block body_javascript %}
+    <script>var imageWidgetData = {{ image_widget_data|json_encode|raw }};</script>
+    <script src="{{ asset('js/workshop.js') }}"></script>
+    <script src="{{ asset('js/image-widget.js') }}"></script>
 {% endblock %}

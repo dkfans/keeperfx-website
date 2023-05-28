@@ -15,7 +15,7 @@ $(function(){
     });
 
     // Handle form submits
-    $('#upload-item-form, #edit-item-form').on('submit', function(e){
+    $('#upload-item-form, #edit-item-form, #moderator-edit-item-form').on('submit', function(e){
 
         e.preventDefault();
 
