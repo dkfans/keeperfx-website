@@ -35,7 +35,7 @@ class User {
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
-    #[ORM\OneToMany(targetEntity: NewsArticle::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: NewsArticle::class, mappedBy: 'author', cascade: ["remove"])]
     private Collection $news_articles;
 
     #[ORM\OneToMany(targetEntity: UserOAuthToken::class, mappedBy: 'user', cascade: ["remove"])]
