@@ -33,13 +33,13 @@
                     <div class="row" style="margin-bottom: 30px;">
                         <div class="col-sm-10">
                             <div class="form-group">
-                                <label for="file">
+                                <label for="workshop-file">
                                     File
                                     <span class="text-danger">
                                         *
                                     </span>
                                 </label>
-                                <input type="file" class="form-control" id="file" name="file" required>
+                                <input type="file" class="form-control" id="workshop-file" name="file" required>
                             </div>
                         </div>
                         <div class="col-sm-2" style="padding-top: 35px;">
@@ -148,84 +148,7 @@
         id: {{ workshop_item.id }},
     }
 </script>
-<script>
-$(function(){
-
-    // Item max upload filesize check
-    $('#file').on('change', function(){
-        fileFileSize = 0;
-        if(this.files[0].size > app_store.upload_limit.workshop_item.size){
-            toastr.warning('File exceeds maximum filesize of ' + app_store.upload_limit.workshop_item.formatted);
-            this.value = null;
-        }
-    });
-
-    // Show rename button when javascript is enabled
-    $('[data-rename-id]').show();
-
-    // Handle renames
-    $('[data-rename-id]').on('click', function(e){
-
-        e.preventDefault();
-
-        var $renameButton   = $(this);
-        var fileId          = $renameButton.attr('data-rename-id');
-
-        let currentFilename   = $renameButton.attr('data-rename-filename');
-        let filenameParts     = currentFilename.split('.');
-        let filenameExtension = filenameParts.pop();
-        let filenameName      = filenameParts.join('.');
-
-        var newName = window.prompt("New filename (without file extension)", filenameName);
-
-        if(newName.length < 1 || newName == filenameName){
-            return;
-        }
-
-        if(newName.length > 64){
-            alert('Filename too long. 64 characters max');
-            return;
-        }
-
-        // TODO: check valid filename
-
-        $.ajax({
-            type: 'POST',
-            url: '/workshop/edit/'+ workshop_item.id + '/files/' + fileId + '/rename',
-            data: {
-                name: newName,
-                [app_store.csrf.keys.name]: app_store.csrf.name,
-                [app_store.csrf.keys.value]: app_store.csrf.value
-            },
-            dataType: 'json', // return type data,
-            error: function(data){
-                toastr.error('Something went wrong.');
-            },
-            success: function(data){
-
-                // Make sure rename went successful
-                if(typeof data.success === 'undefined' || data.success !== true){
-                    toastr.error('Something went wrong.');
-                    return;
-                }
-
-                var $filenameAnchor   = $renameButton.parent().find('a:first');
-
-                $renameButton.attr('data-rename-filename', data.filename);
-                $filenameAnchor.text(data.filename);
-                $filenameAnchor.attr('href', '/workshop/download/' + workshop_item.id + '/' + fileId + '/' + data.filename);
-
-                // Update CSRF tokens
-                app_store.csrf.name = data.csrf.name;
-                app_store.csrf.value = data.csrf.value;
-
-                toastr.success('File has been renamed!');
-            }
-        });
-
-    });
-
-});
-</script>
+<script src="{{ asset('js/workshop.js') }}"></script>
+<script src="{{ asset('js/workshop.edit-files.js') }}"></script>
 
 {% endblock %}

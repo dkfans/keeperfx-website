@@ -1,13 +1,46 @@
 
-
+// Document ready
 $(function(){
 
-    // Load image widget
+    // Load the image widget if it is present
     $('#image-uploader').show();
 
-    // Load popovers
-    $.each($('[data-bs-toggle="popover"]'), function(i, element){
-        new bootstrap.Popover(element, {trigger: 'hover'})
+    // Item max upload file size check
+    $('#workshop-file').on('change', function(){
+        fileFileSize = 0;
+        if(this.files[0].size > app_store.upload_limit.workshop_item.size){
+            toastr.warning('File exceeds maximum file size of ' + app_store.upload_limit.workshop_item.formatted);
+            this.value = null;
+        }
+    });
+
+    // Handle form submits
+    $('#upload-item-form, #edit-item-form').on('submit', function(e){
+
+        e.preventDefault();
+
+        // Check total upload size
+        var totalUploadSize = 0;
+
+        // TODO: CHECK IMAGE WIDGET
+        // TODO: CHECK FILE SIZE
+
+        // var totalUploadSize = fileFileSize + thumbnailFileSize + screenshotsTotalFileSize;
+        if(totalUploadSize > app_store.upload_limit.total.size){
+            toastr.warning(
+                'Maximum total upload size of ' + app_store.upload_limit.total.formatted + ' is exceeded. ' +
+                'If you have many images, try uploading the item without them and then add them later.'
+            );
+            return false;
+        }
+
+        // Load image widget post data into form
+        if(typeof imageWidgetData !== 'undefined'){
+            $('#image-widget').val(getImageWidgetPostData());
+        }
+
+        // Submit the form
+        HTMLFormElement.prototype.submit.call(this);
     });
 
     // Show original author input if selected
@@ -36,6 +69,7 @@ $(function(){
             $('#map_number').attr('required', true);
         }
     });
+
 
     // Check map number
     $('#map_number').on('change keyup', function(e){
@@ -101,25 +135,6 @@ $(function(){
             }
         });
 
-    });
-
-
-    // Add images on from widget on form submit
-    $('#edit-item-form').on('submit', function(e){
-
-        // Prevent form from being submitted while we add the images
-        e.preventDefault();
-
-        // Check if image widget data is available
-        if(typeof imageWidgetData == 'undefined'){
-            return;
-        }
-
-        // Load image widget post data into form
-        $('#image-widget').val(getImageWidgetPostData());
-
-        // Submit the form
-        HTMLFormElement.prototype.submit.call(this);
     });
 
     // Delete item confirmation
