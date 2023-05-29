@@ -15,7 +15,7 @@ $(function(){
     });
 
     // Handle form submits
-    $('#upload-item-form, #edit-item-form, #moderator-edit-item-form').on('submit', function(e){
+    $('#upload-item-form, #edit-item-form, #moderator-upload-item-form, #moderator-edit-item-form').on('submit', function(e){
 
         e.preventDefault();
 
@@ -147,6 +147,11 @@ $(function(){
         if(deleteString !== null && deleteString.toLowerCase() === 'delete'){
             window.location = $(this).attr('href');
         }
+    });
+
+    // Select submitter radio button when selecting the input
+    $('#submitter_username_input').on('focus', function(e){
+        $('#submitter_username').prop('checked', true);
     });
 
 });

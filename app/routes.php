@@ -103,8 +103,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
             $group->get('/list', [ModCP\Workshop\ModerateWorkshopController::class, 'listIndex']);
 
-            $group->get('/add', [ModCP\Workshop\ModerateWorkshopAddController::class, 'itemAddIndex']);
-            $group->post('/add', [ModCP\Workshop\ModerateWorkshopAddController::class, 'itemAdd']);
+            $group->get('/upload', [ModCP\Workshop\ModerateWorkshopUploadController::class, 'index']);
+            $group->post('/upload', [ModCP\Workshop\ModerateWorkshopUploadController::class, 'upload']);
 
             $group->get('/{id:\d+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'index']);
             $group->post('/{id:\d+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'edit']);

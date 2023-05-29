@@ -1,0 +1,225 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Add Workshop Item - ModCP' %}
+
+{% block page %}
+
+
+
+<div class="content-box bg-keeper bd-keeper">
+<div class="content-header">
+    <h2>Upload a new workshop item</h2>
+</div>
+
+<div class="content-body">
+
+    <form action="/moderate/workshop/upload" method="POST" enctype="multipart/form-data" id="moderator-upload-item-form">
+
+        <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+        <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+        <div class="form-group" style="margin-bottom: 50px;">
+            <label>
+                Submitter
+                <span class="text-danger">
+                    *
+                </span>
+            </label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="submitter" value="current_user" id="submitter_current_user" checked=checked />
+                <label class="form-check-label" for="submitter_current_user">
+                    Yani
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="submitter" value="kfx" id="submitter_kfx" />
+                <label class="form-check-label" for="submitter_kfx">
+                    KeeperFX Team
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="submitter" value="username" id="submitter_username" />
+                <label class="form-check-label">
+                    <input class="form-control" type="text" name="submitter_username" placeholder="Username" id="submitter_username_input" style="max-width: 200px;" />
+                </label>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 50px;">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="name">
+                    Name
+                    <span class="text-danger">
+                        *
+                    </span>
+                </label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ get_post_var('name') }}" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 50px;">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="category">
+                    Category
+                    <span class="text-danger">
+                        *
+                    </span>
+                </label>
+                <select class="form-control form-select" id="category" name="category" required>
+                    <option value="" disabled selected hidden>Choose the category of this item</option>
+                    {% if workshop_globals.categories|length > 0 %}
+                        {% for category in workshop_globals.categories %}
+                            <option value="{{ category.value }}">
+                                {{ category.name|enum_beautify }}
+                            </option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="min_game_build">
+                    Minimum game version
+                    <span class="text-muted">
+                        (Optional)
+                    </span>
+                </label>
+                <select class="form-control form-select" id="min_game_build" name="min_game_build">
+                    <option selected="selected"></option>
+                    <option value="-1">Latest KeeperFX alpha patch</option>
+                    {% if workshop_globals.stable_builds|length > 0 %}
+                        {% for build in workshop_globals.stable_builds %}
+                            <option value="{{ build.id }}">
+                                {{ build.name }}
+                            </option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 40px; display:none;" id="map-number-box">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="map_number">
+                    Map number
+                    <span class="text-danger">
+                        *
+                    </span>
+                    <span class="text-muted">
+                        (between 202 and 32767)
+                    </span>
+                </label>
+
+                <div id="map-number-loader" class="spinner-border text-muted" role="status"
+                    style="height: 16px; width: 16px; font-size: 8px; position: relative; float: right; top: 46px; right: 15px; display: none;"
+                ></div>
+
+                <input type="text" class="form-control" id="map_number" name="map_number" value="{{ get_post_var('map_number') }}"
+                    min="202" max="32767" step="1" pattern="\d+"
+                    oninput="this.value= ['','-'].includes(this.value) ? this.value : this.value|0"
+                    />
+            </div>
+            <div class="alert bg-dark" style="margin-top: 15px;">
+                Your map should have a unique map number. This is required so there are no conflicts with other maps.
+                This is done because of the old game engine working with numbers and it allows players to track their completion of maps in-game.
+                Make sure the filenames of your map match an available number and have 5 numbers in total. Example: <strong>map00001</strong>.
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 50px;">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="workshop-file">
+                    File
+                    <span class="text-danger">
+                        *
+                    </span>
+                </label>
+                <input type="file" class="form-control" id="workshop-file" name="file" required>
+            </div>
+        </div>
+    </div>
+
+    <!-- TODO: hide on mobile -->
+    <div class="row" style="margin-bottom: 50px; display: none;" id="image-uploader">
+
+        <div class="col-md-12">
+            <span class="label">
+                Images
+            </span>
+
+            <div class="image-widget-container" style="margin-top: 10px;" id="image-widget-container"></div>
+            <input type="hidden" name="image-widget" id="image-widget" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="description">
+            Description
+            <span class="text-muted">
+                (Optional)
+            </span>
+        </label>
+        <textarea class="form-control" name="description" rows="6">{{ get_post_var('description') }}</textarea>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 50px;">
+        <label for="install_instructions">
+            Installation instructions
+            <span class="text-muted">
+                (Optional)
+            </span>
+        </label>
+        <textarea class="form-control" name="install_instructions" rows="4">{{ get_post_var('install_instructions') }}</textarea>
+    </div>
+
+    <div class="row" style="margin-bottom: 25px;">
+        <div class="col-6" style="margin-top: 15px;">
+            <div class="form-group">
+                <label for="original_author">
+                    Original author
+                    <span class="text-muted">(Optional)</span>
+                </label>
+                <input type="text" class="form-control" id="original_author" name="original_author" value="{{ get_post_var('original_author') }}">
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 25px;">
+        <div class="col-6" style="margin-top: 15px;">
+            <div class="form-group">
+                <label for="original_creation_date">
+                    Original creation date
+                    <span class="text-muted">(Optional)</span>
+                </label>
+                <div class="input-group mb-3" id="original_creation_date">
+                    <input type="date" class="form-control" id="original_creation_date" name="original_creation_date" value="{{ get_post_var('original_creation_date') }}">
+                    <button class="btn btn-outline-secondary" type="button" onclick="javascript:original_creation_date.value=''">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" class="btn btn-medieval" value="Submit" id="submit" />
+    </div>
+
+</form>
+
+</div>
+</div>
+
+{% endblock %}
+
+{% block body_javascript %}
+<script>var imageWidgetData = {};</script>
+<script src="{{ asset('js/workshop.js') }}"></script>
+<script src="{{ asset('js/image-widget.js') }}"></script>
+{% endblock %}
