@@ -626,6 +626,17 @@ footer {
     grid-row: 1 / 4;
 }
 
+#difficulty-rating-info .rating-remove,
+#quality-rating-info .rating-remove {
+    margin-left: 3px;
+    display: none;
+}
+
+#difficulty-rating-info:hover .rating-remove,
+#quality-rating-info:hover .rating-remove {
+    display: inline-block;
+}
+
 .btn-download-filename {
     display: block;
     position: relative;

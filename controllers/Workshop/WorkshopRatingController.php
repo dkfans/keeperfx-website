@@ -198,5 +198,165 @@ class WorkshopRatingController {
         return $response;
     }
 
+    public function removeQualityRating(
+        Request $request,
+        Response $response,
+        Account $account,
+        EntityManager $em,
+        CsrfGuard $csrf_guard,
+        WorkshopRatingTwigExtension $workshop_rating_extension,
+        $id
+    )
+    {
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            return $response;
+        }
 
+        // Get rating
+        $rating = $em->getRepository(WorkshopRating::class)->findOneBy([
+            'item' => $workshop_item,
+            'user' => $account->getUser()
+        ]);
+        if(!$rating) {
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'Rating not found',
+                    'csrf'    => [
+                        'keys' => [
+                            'name'  => $csrf_guard->getTokenNameKey(),
+                            'value' => $csrf_guard->getTokenValueKey(),
+                        ],
+                        'name'  => $csrf_guard->getTokenName(),
+                        'value' => $csrf_guard->getTokenValue()
+                    ],
+                ])
+            );
+            return $response;
+        }
+
+        // Remove rating
+        $em->remove($rating);
+        $em->flush();
+
+        // Get updated rating
+        $rating_score = null;
+        $ratings = $workshop_item->getRatings();
+        if($ratings && \count($ratings) > 0){
+            $rating_scores = [];
+            foreach($ratings as $rating){
+                $rating_scores[] = $rating->getScore();
+            }
+            $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
+            $rating_score  = \round($rating_average, 2);
+        }
+
+        // Set updated rating in item
+        // This way we don't always have to calculate the rating when doing stuff like
+        //   ordering workshop items by rating score
+        $workshop_item->setRatingScore($rating_score);
+        $em->flush();
+
+        // Return
+        $response->getBody()->write(
+            \json_encode([
+                'success'      => true,
+                'rating_score' => $rating_score,
+                'rating_count' => \count($ratings),
+                'html'         => $workshop_rating_extension->renderWorkshopQualityRating($id, $rating_score),
+                'csrf'         => [
+                    'keys' => [
+                        'name'  => $csrf_guard->getTokenNameKey(),
+                        'value' => $csrf_guard->getTokenValueKey(),
+                    ],
+                    'name'  => $csrf_guard->getTokenName(),
+                    'value' => $csrf_guard->getTokenValue()
+                ],
+            ])
+        );
+        return $response;
+    }
+
+    public function removeDifficultyRating(
+        Request $request,
+        Response $response,
+        Account $account,
+        EntityManager $em,
+        CsrfGuard $csrf_guard,
+        WorkshopRatingTwigExtension $workshop_rating_extension,
+        $id
+    )
+    {
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            return $response;
+        }
+
+        // Get rating
+        $rating = $em->getRepository(WorkshopDifficultyRating::class)->findOneBy([
+            'item' => $workshop_item,
+            'user' => $account->getUser()
+        ]);
+        if(!$rating) {
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'Rating not found',
+                    'csrf'    => [
+                        'keys' => [
+                            'name'  => $csrf_guard->getTokenNameKey(),
+                            'value' => $csrf_guard->getTokenValueKey(),
+                        ],
+                        'name'  => $csrf_guard->getTokenName(),
+                        'value' => $csrf_guard->getTokenValue()
+                    ],
+                ])
+            );
+            return $response;
+        }
+
+        // Remove rating
+        $em->remove($rating);
+        $em->flush();
+
+        // Get updated rating
+        $rating_score = null;
+        $ratings = $workshop_item->getDifficultyRatings();
+        if($ratings && \count($ratings) > 0){
+            $rating_scores = [];
+            foreach($ratings as $rating){
+                $rating_scores[] = $rating->getScore();
+            }
+            $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
+            $rating_score  = \round($rating_average, 2);
+        }
+
+        // Set updated rating in item
+        // This way we don't always have to calculate the rating when doing stuff like
+        //   ordering workshop items by rating score
+        $workshop_item->setDifficultyRatingScore($rating_score);
+        $em->flush();
+
+        // Return
+        $response->getBody()->write(
+            \json_encode([
+                'success'      => true,
+                'rating_score' => $rating_score,
+                'rating_count' => \count($ratings),
+                'html'         => $workshop_rating_extension->renderWorkshopDifficultyRating($id, $rating_score),
+                'csrf'         => [
+                    'keys' => [
+                        'name'  => $csrf_guard->getTokenNameKey(),
+                        'value' => $csrf_guard->getTokenValueKey(),
+                    ],
+                    'name'  => $csrf_guard->getTokenName(),
+                    'value' => $csrf_guard->getTokenValue()
+                ],
+            ])
+        );
+        return $response;
+    }
 }

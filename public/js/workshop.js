@@ -120,7 +120,7 @@ $(function(){
             },
             success: function(data){
 
-                // Make sure rating went successful
+                // Make sure request went successful
                 if(typeof data.success === 'undefined' || data.success !== true){
                     toastr.error('Something went wrong.');
                     return;
