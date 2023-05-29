@@ -59,12 +59,25 @@ $(function(){
         }
     });
 
-    // Show map number input when category is Map
+    // Handle category changes
     $('#category').on('change', function(e){
-        if($('#map-number-box').is(':visible') === true && $(this).val() !== '10'){
+
+        let categoryValue = parseInt($(this).val());
+
+        // Show/hide difficulty rating
+        if(app_store.workshop.categories_without_difficulty.indexOf(categoryValue) === -1){
+            $('#difficulty-rating-box').show();
+            $('#difficulty-rating').prop('checked', true);
+        } else {
+            $('#difficulty-rating-box').hide();
+            $('#difficulty-rating').prop('checked', false);
+        }
+
+        // Show/hide map number input when category is Map
+        if($('#map-number-box').is(':visible') === true && categoryValue !== 10){
             $('#map-number-box').slideUp("fast");
             $('#map_number').removeAttr('required');
-        } else if($('#map-number-box').is(':visible') === false && $(this).val() === '10') {
+        } else if($('#map-number-box').is(':visible') === false && categoryValue === 10) {
             $('#map-number-box').slideDown("fast");
             $('#map_number').attr('required', true);
         }

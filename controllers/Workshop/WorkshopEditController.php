@@ -163,6 +163,7 @@ class WorkshopEditController {
         $workshop_item->setInstallInstructions($install_instructions);
         $workshop_item->setCategory($category);
         $workshop_item->setMapNumber($map_number);
+        $workshop_item->setDifficultyRatingEnabled(\array_key_exists('enable_difficulty_rating', $post));
 
         // Set optional minimum game build
         $workshop_item->setMinGameBuild(null);

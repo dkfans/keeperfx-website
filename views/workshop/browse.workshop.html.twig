@@ -102,7 +102,7 @@
                                     {% endif %}
 
                                     {# Difficulty Rating #}
-                                    {% if item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
+                                    {% if item.difficultyRatingEnabled and item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
                                         {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
                                     {% endif %}
 

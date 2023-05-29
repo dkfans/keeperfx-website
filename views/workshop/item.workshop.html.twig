@@ -137,7 +137,7 @@
                                     </span>
                                 </td>
                             </tr>
-                            {% if item.category not in workshop_globals.categories_without_difficulty %}
+                            {% if item.category not in workshop_globals.categories_without_difficulty and item.difficultyRatingEnabled %}
                             <tr style="height: 15px;">{# Empty table row spacer #}</tr>
                             <tr>
                                 <td style="vertical-align: top">Difficulty</td>

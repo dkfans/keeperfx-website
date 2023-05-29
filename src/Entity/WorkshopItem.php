@@ -47,6 +47,9 @@ class WorkshopItem {
     #[ORM\Column]
     private bool $is_published = false;
 
+    #[ORM\Column]
+    private bool $difficulty_rating_enabled = true;
+
     #[ORM\Column(type: 'integer')]
     private int $download_count = 0;
 
@@ -427,5 +430,23 @@ class WorkshopItem {
     public function getImages(): Collection
     {
         return $this->images;
+    }
+
+    /**
+     * Get the value of difficulty_rating_enabled
+     */
+    public function isDifficultyRatingEnabled(): bool
+    {
+        return $this->difficulty_rating_enabled;
+    }
+
+    /**
+     * Set the value of difficulty_rating_enabled
+     */
+    public function setDifficultyRatingEnabled(bool $difficulty_rating_enabled): self
+    {
+        $this->difficulty_rating_enabled = $difficulty_rating_enabled;
+
+        return $this;
     }
 }

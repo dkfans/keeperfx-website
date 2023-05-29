@@ -178,6 +178,19 @@
                     <textarea class="form-control" name="install_instructions" rows="4">{{ workshop_item.installInstructions }}</textarea>
                 </div>
 
+                <div class="row" style="margin-bottom: 25px; {% if workshop_item.category in workshop_globals.categories_without_difficulty %}display:none;{% endif %}" id="difficulty-rating-box">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="enable_difficulty_rating" id="difficulty-rating" {% if workshop_item.difficultyRatingEnabled %}checked=checked{% endif %}>
+                                <label class="form-check-label" for="difficulty-rating">
+                                    Enable difficulty rating
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row" style="margin-bottom: 25px;">
                     <div class="col-6">
                         <div class="form-group">
