@@ -4,6 +4,7 @@ namespace App\Controller\ModCP\Workshop;
 
 use App\Enum\WorkshopCategory;
 
+use App\Entity\User;
 use App\Entity\WorkshopItem;
 use App\Entity\GithubRelease;
 use App\Entity\WorkshopImage;
@@ -12,14 +13,16 @@ use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
 use Doctrine\ORM\EntityManager;
+use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
 
 use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+use Xenokore\Utility\Helper\DirectoryHelper;
+
 use App\Workshop\Exception\WorkshopException;
-use App\Entity\User;
 
 class ModerateWorkshopEditController {
 
@@ -325,6 +328,55 @@ class ModerateWorkshopEditController {
 
         $flash->success('Workshop item updated!');
         $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
+        return $response;
+    }
+
+    public function delete(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        TwigEnvironment $twig,
+        Account $account,
+        EntityManager $em,
+        CsrfGuard $csrf_guard,
+        $id,
+        $token_name,
+        $token_value,
+    ){
+        // Check for valid CSRF check
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Get workshop item dir and check if it exists
+        $workshop_item_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
+        if(!\is_dir($workshop_item_dir)){
+            throw new WorkshopException('workshop item dir does not exist');
+        }
+
+        // Clear workshop item dir
+        if(!DirectoryHelper::clear($workshop_item_dir)){
+            throw new WorkshopException('failed to clear and remove workshop item dir');
+        }
+
+        // Remove workshop item dir
+        if(\is_dir($workshop_item_dir)){
+            @\rmdir($workshop_item_dir);
+        }
+
+        // Remove from DB
+        $em->remove($workshop_item);
+        $em->flush();
+
+        $flash->success('The workshop item has been removed.');
+        $response = $response->withHeader('Location', '/moderate/workshop/list')->withStatus(302);
         return $response;
     }
 
