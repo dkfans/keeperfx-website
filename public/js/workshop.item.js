@@ -103,20 +103,20 @@ $(function(e){
         handleRatingHtml(el);
     });
 
-    // Show 'Show all downloads' and hide 'Downloads list'
+    // Show 'Show all versions' and hide 'Versions list'
     // This is users with javascript disabled can still view all files
-    $('#show-all-downloads').show();
-    $('#all-downloads-list').hide();
+    $('#show-all-versions').show();
+    $('#all-versions-list').hide();
 
-    // Handle 'Show all downloads'
-    $('#show-all-downloads a').on('click', function(e){
+    // Handle 'Show all versions'
+    $('#show-all-versions a').on('click', function(e){
         e.preventDefault();
         if($('#all-downloads-list').is(':visible') === true){
-            $(this).text('Show all downloads (' + $('#all-downloads-list tbody tr').length + ')');
-            $('#all-downloads-list').slideUp("fast");
+            $(this).text('Show all versions (' + $('#all-versions-list tbody tr').length + ')');
+            $('#all-versions-list').slideUp("fast");
         } else if($('#all-downloads-list').is(':visible') === false) {
-            $(this).text('Hide all downloads (' + $('#all-downloads-list tbody tr').length + ')');
-            $('#all-downloads-list').slideDown("fast");
+            $(this).text('Hide all versions (' + $('#all-versions-list tbody tr').length + ')');
+            $('#all-versions-list').slideDown("fast");
         }
     });
 
