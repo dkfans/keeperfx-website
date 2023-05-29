@@ -39,10 +39,18 @@ class WorkshopBrowseController {
         $submitter = null;
         $org_author = null;
 
-        $page = (int)($q['page'] ?? 1);
+        $page = $q['page'] ?? 1;
+        if(!\is_numeric($page)){
+            $page = 1;
+        }
+
+        $order_by_param = $q['order_by'] ?? '';
+        if(!\is_string($order_by_param)){
+            $order_by_param = 'latest';
+        }
 
         // Decide 'ORDER BY'
-        switch(\strtolower((string)($q['order_by'] ?? ''))){
+        switch(\strtolower($order_by_param)){
             case 'name':
                 $order_by = ['name' => 'ASC'];
                 $url_params['order_by'] = 'name';
@@ -65,6 +73,14 @@ class WorkshopBrowseController {
         // Create query for total workshop item count
         $query = $em->getRepository(WorkshopItem::class)->createQueryBuilder('a')
             ->where('a.is_published = 1');
+
+
+        // Add category criteria
+        if(isset($q['category']) && \is_numeric($q['category'])){
+            $criteria['category']   = $q['category'];
+            $url_params['category'] = $q['category'];
+            $query                  = $query->andWhere('a.category = :category')->setParameter('category', $q['category']);
+        }
 
         // Add user criteria
         if(isset($q['user']) && \is_string($q['user'])){

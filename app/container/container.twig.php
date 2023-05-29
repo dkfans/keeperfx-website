@@ -32,6 +32,28 @@ return [
         $loader = new \Twig\Loader\FilesystemLoader(Config::get('twig.views_dir'));
         $twig   = new \Twig\Environment($loader, Config::get('twig.options'));
 
+        // Add simple tests
+        $twig->addTest(
+            new \Twig\TwigTest('string', function($value){
+                return \is_string($value);
+            })
+        );
+        $twig->addTest(
+            new \Twig\TwigTest('int', function($value){
+                return \is_int($value);
+            })
+        );
+        $twig->addTest(
+            new \Twig\TwigTest('float', function($value){
+                return \is_float($value);
+            })
+        );
+        $twig->addTest(
+            new \Twig\TwigTest('array', function($value){
+                return \is_array($value);
+            })
+        );
+
         // Add Twig extensions
         foreach($container->get(TwigExtensionLoader::class)->getExtensions() as $extension){
             $twig->addExtension($extension);
