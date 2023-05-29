@@ -20,8 +20,7 @@ class ModerateWorkshopController {
     ){
         $response->getBody()->write(
             $twig->render('modcp/workshop/workshop.modcp.html.twig', [
-                'workshop_items'   => $em->getRepository(WorkshopItem::class)->findBy(['is_published' => true], ['id' => 'DESC']),
-                'open_submissions' => $em->getRepository(WorkshopItem::class)->findBy(['is_published' => false], ['id' => 'DESC']),
+                'workshop_items'   => $em->getRepository(WorkshopItem::class)->findBy([],['id' => 'DESC'])
             ])
         );
 
