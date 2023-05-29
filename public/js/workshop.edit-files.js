@@ -27,11 +27,15 @@ $(function(){
             return;
         }
 
-        // TODO: check valid filename
+        // Get correct rename URL
+        let renameUrl = '/workshop/edit/'+ workshop_item.id + '/files/' + fileId + '/rename';
+        if(typeof isModeratorRenameURL !== 'undefined' && isModeratorRenameURL === true){
+            renameUrl = '/moderate/workshop/'+ workshop_item.id + '/files/' + fileId + '/rename';
+        }
 
         $.ajax({
             type: 'POST',
-            url: '/workshop/edit/'+ workshop_item.id + '/files/' + fileId + '/rename',
+            url: renameUrl,
             data: {
                 name: newName,
                 [app_store.csrf.keys.name]: app_store.csrf.name,
