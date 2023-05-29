@@ -245,6 +245,7 @@ class WorkshopUploadController {
         $workshop_file->setStorageFilename($file_storage_filename);
         $workshop_file->setItem($workshop_item);
         $workshop_file->setWeight(0);
+        $workshop_file->setSize(\filesize($file_path));
         $em->persist($workshop_file);
         $em->flush();
 
