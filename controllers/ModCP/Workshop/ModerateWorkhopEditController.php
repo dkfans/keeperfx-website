@@ -24,7 +24,7 @@ use App\Entity\User;
 class ModerateWorkshopEditController {
 
 
-    public function itemIndex(
+    public function index(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
@@ -50,7 +50,7 @@ class ModerateWorkshopEditController {
         }
 
         $response->getBody()->write(
-            $twig->render('modcp/workshop/item.workshop.modcp.html.twig', [
+            $twig->render('modcp/workshop/edit.workshop.modcp.html.twig', [
                 'workshop_item'     => $workshop_item,
                 'image_widget_data' => $image_widget_data,
             ])
@@ -59,7 +59,7 @@ class ModerateWorkshopEditController {
         return $response;
     }
 
-    public function itemUpdate(
+    public function edit(
         Request $request,
         Response $response,
         TwigEnvironment $twig,

@@ -106,8 +106,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->get('/add', [ModCP\Workshop\ModerateWorkshopAddController::class, 'itemAddIndex']);
             $group->post('/add', [ModCP\Workshop\ModerateWorkshopAddController::class, 'itemAdd']);
 
-            $group->get('/{id:\d+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'itemIndex']);
-            $group->post('/{id:\d+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'itemUpdate']);
+            $group->get('/{id:\d+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'index']);
+            $group->post('/{id:\d+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'edit']);
 
             // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [ModCP\Workshop\ModerateWorkshopController::class, 'itemDelete']);
         });
