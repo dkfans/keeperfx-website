@@ -2,17 +2,21 @@
 
 namespace App\Controller\ModCP\Workshop;
 
+use App\Enum\UserRole;
 use App\Enum\WorkshopCategory;
 
 use App\Entity\User;
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
 use App\Entity\GithubRelease;
+use App\Entity\WorkshopImage;
+use App\Entity\WorkshopFile;
 
 use App\Account;
-use Slim\Csrf\Guard;
 use App\FlashMessage;
+use App\UploadSizeHelper;
 use Doctrine\ORM\EntityManager;
+use ByteUnits\Binary as BinaryFormatter;
 use Twig\Environment as TwigEnvironment;
 
 use Slim\Exception\HttpNotFoundException;
@@ -21,13 +25,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
+
 use App\Workshop\Exception\WorkshopException;
-use App\Entity\WorkshopImage;
-use App\UploadSizeHelper;
-use URLify;
-use App\Entity\WorkshopFile;
-use App\Enum\UserRole;
-use ByteUnits\Binary as BinaryFormatter;
 
 class ModerateWorkshopUploadController {
 
