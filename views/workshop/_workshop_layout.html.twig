@@ -26,11 +26,11 @@
                     </a>
                     <div class="nav-sidebar-sub-container" id="browseMenu">
                         <nav class="nav nav-sidebar-sub">
-                            <a class="nav-link {% if path_equals('/workshop/browse*') and not get_query_param('category') %}active{% endif %}" href="/workshop/browse">All</a>
+                            <a class="nav-link {% if path_equals('/workshop/browse*') and not get_query_param('category') %}active{% endif %}" href="/workshop/browse" data-browse-filter-type="category" data-browse-filter-value="">All</a>
                             {% for category in workshop_globals.categories %}
                                 <a
                                     class="nav-link
-                                    {% if (item is defined and item.category is defined and item.category.value == category.value) or path_equals('/workshop/browse?*category=' ~ category.value) %}
+                                    {% if (item is defined and item.category is defined and item.category.value == category.value) or path_equals('/workshop/browse?*category=' ~ category.value ~ '*') %}
                                         active
                                     {% endif %}
                                     "
