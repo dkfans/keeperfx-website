@@ -111,10 +111,10 @@ $(function(e){
     // Handle 'Show all versions'
     $('#show-all-versions a').on('click', function(e){
         e.preventDefault();
-        if($('#all-downloads-list').is(':visible') === true){
+        if($('#all-versions-list').is(':visible') === true){
             $(this).text('Show all versions (' + $('#all-versions-list tbody tr').length + ')');
             $('#all-versions-list').slideUp("fast");
-        } else if($('#all-downloads-list').is(':visible') === false) {
+        } else if($('#all-versions-list').is(':visible') === false) {
             $(this).text('Hide all versions (' + $('#all-versions-list tbody tr').length + ')');
             $('#all-versions-list').slideDown("fast");
         }
