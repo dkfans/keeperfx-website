@@ -14,6 +14,9 @@
                     <span class="text-white">{{ org_author }}</span>'s
                 {% endif %}
                 Workshop items
+                {% if get_query_param('category') and workshop_globals.categories_map[get_query_param('category')] is defined %}
+                    : {{ workshop_globals.categories_map[get_query_param('category')]|enum_beautify }}
+                {% endif %}
             </h2>
         </div>
 
