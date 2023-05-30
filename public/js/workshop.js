@@ -2,6 +2,38 @@
 // Document ready
 $(function(){
 
+    // Get query params for navigating
+    var queryParams = new URLSearchParams(location.search);
+
+    // Handle browse filters and the category menu
+    $('#browse-filters a, #browseMenu a').on('click', function(e){
+        let filterType = $(this).attr('data-browse-filter-type');
+
+        if(typeof filterType !== 'undefined'){
+            e.preventDefault();
+            let filterValue = $(this).attr('data-browse-filter-value');
+            queryParams.set(filterType, filterValue);
+            queryParams.delete('page');
+            window.location.href = '/workshop/browse?' + queryParams.toString();
+        }
+    });
+
+    // Show rating overviews
+    $.each($('span[data-workshop-rating-score]'), function(index, element){
+
+        let ratingType = $(this).attr('data-workshop-rating-type');
+        ratingType = ratingType.charAt(0).toUpperCase() + ratingType.slice(1);
+
+        let string = ratingType + ' rating: ' + $(this).attr('data-workshop-rating-score');
+
+        new bootstrap.Popover(element, {
+            'placement': 'top',
+            'trigger': 'hover',
+            'content': string,
+            'offset': '5px'
+        });
+    });
+
     // Load the image widget if it is present
     $('#image-uploader').show();
 
@@ -166,5 +198,7 @@ $(function(){
     $('#submitter_username_input').on('focus', function(e){
         $('#submitter_username').prop('checked', true);
     });
+
+
 
 });

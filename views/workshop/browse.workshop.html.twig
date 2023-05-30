@@ -17,10 +17,9 @@
             </h2>
         </div>
 
-
         <div class="content-menu d-flex justify-content-between">
 
-            <div class="d-flex" id="browse-buttons">
+            <div class="d-flex" id="browse-filters">
 
                 {# Order by #}
                 <div class="dropdown me-2">
@@ -39,7 +38,7 @@
                         </button>
                     {% else %}
                         <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            Order by
+                            Order by: Latest
                         </button>
                     {% endif %}
                     <ul class="dropdown-menu dropdown-menu-dark">
@@ -55,7 +54,7 @@
                 </div>
 
                 {# Category #}
-                <div class="dropdown me-2">
+                {# <div class="dropdown me-2">
                     {% if get_query_param('category') and get_query_param('category') is string and workshop_globals.categories_map[get_query_param('category')] is defined %}
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Category:
@@ -75,32 +74,7 @@
                             <li><a class="dropdown-item" href="#" data-browse-filter-type="category" data-browse-filter-value="{{ category.value }}">{{ category.name|enum_beautify }}</a></li>
                         {% endfor %}
                     </ul>
-                </div>
-
-                {# <form method="GET"> #}
-
-                    {# Category #}
-                    {# <span>Category:</span>
-                    <select class="form-control form-select" id="order-by" name="order_by" style="width: inherit; display: inline-block;">
-                        <option value="latest" {% if get_query_param('order_by') == 'latest' %}selected=selected{% endif %}>Latest</option>
-                        <option value="most-downloaded" {% if get_query_param('order_by') == 'most-downloaded' %}selected=selected{% endif %}>Most Downloaded</option>
-                        <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
-                        <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
-                    </select> #}
-
-                    {# Order by #}
-                    {# <span>Order by:</span>
-                    <select class="form-control form-select" id="order-by" name="order_by" style="width: inherit; display: inline-block;">
-                        <option value="latest" {% if get_query_param('order_by') == 'latest' %}selected=selected{% endif %}>Latest</option>
-                        <option value="most-downloaded" {% if get_query_param('order_by') == 'most-downloaded' %}selected=selected{% endif %}>Most Downloaded</option>
-                        <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
-                        <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
-                    </select>
-
-                    <noscript>
-                        <input class="btn btn-primary" type="submit" value="Change" style="display: inline-block;" />
-                    </noscript>
-                </form> #}
+                </div> #}
 
             </div>
 
@@ -216,34 +190,8 @@
 
     </div>
 
-<script>
-    $(function(){
+{% endblock %}
 
-        var queryParams = new URLSearchParams(location.search);
-
-        $('#browse-buttons a').on('click', function(e){
-            let filterType = $(this).attr('data-browse-filter-type');
-            let filterValue = $(this).attr('data-browse-filter-value');
-            queryParams.set(filterType, filterValue);
-            queryParams.delete('page');
-            window.location.href = '/workshop/browse?' + queryParams.toString();
-        });
-
-        $.each($('span[data-workshop-rating-score]'), function(index, element){
-
-            let ratingType = $(this).attr('data-workshop-rating-type');
-            ratingType = ratingType.charAt(0).toUpperCase() + ratingType.slice(1);
-
-            let string = ratingType + ' rating: ' + $(this).attr('data-workshop-rating-score');
-
-            new bootstrap.Popover(element, {
-                'placement': 'top',
-                'trigger': 'hover',
-                'content': string,
-                'offset': '5px'
-            });
-        });
-    });
-</script>
-
+{% block body_javascript %}
+    <script src="{{ asset('js/workshop.js') }}"></script>
 {% endblock %}

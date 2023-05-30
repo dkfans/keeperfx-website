@@ -892,6 +892,27 @@ a.user-link:hover span {
     padding: 20px 0px 20px 0px;
 }
 
+.nav-sidebar-sub {
+    margin: 5px 10px 0px 10px;
+    /* margin: 5px 0px 0px 0px; */
+    flex-direction: column;
+}
+
+.nav-sidebar-sub .nav-link {
+    background-color: rgba(35, 35, 35, 0.5);
+    padding: 5px 20px;
+}
+
+.nav-sidebar-sub .active {
+    background-color: rgba(135, 135, 135, 0.3);
+    font-weight: 600;
+    color: white;
+}
+
+.nav-sidebar-sub-container+.nav-link {
+    margin-top: 5px;
+}
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
