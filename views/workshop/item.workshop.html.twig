@@ -311,15 +311,14 @@
                     <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                     <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
                     <div class="" style="width: 100%; margin-left: 7px; padding: 0;">
-                            <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
-                                <textarea class="form-control" name="content" rows="4" placeholder="Write a comment" required></textarea>
-                                <div class="pull-right" style="margin-top: 15px;">
-                                    <input type="submit" class="btn btn-medieval" value="Comment" />
-                                </div>
-                            </div>
+                        <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
+                            <textarea class="form-control" name="content" rows="2" placeholder="Write a comment" required id="comment-input"></textarea>
+                        </div>
+                    </div>
+                    <div class="pull-right" style="margin-top: 15px;" id="comment-submit-button">
+                        <input type="submit" class="btn btn-medieval" value="Comment" />
                     </div>
                 </form>
-                <hr />
             {% endif %}
 
 

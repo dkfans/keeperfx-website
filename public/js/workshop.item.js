@@ -120,6 +120,23 @@ $(function(e){
         }
     });
 
+    // Hide comment submit button
+    $('#comment-submit-button').hide();
+
+    // Show comment submit button when clicking in the comment box
+    $('#comment-input').on('focus', function(e){
+        if($(this).val().length === 0){
+            $('#comment-submit-button').slideDown('fast');
+        }
+    });
+    $('#comment-input').on('focusout', function(e){
+        if($(this).val().length === 0){
+            $('#comment-submit-button').slideUp('fast');
+        } else {
+            $('#comment-submit-button').slideDown('fast');
+        }
+    });
+
     // Handle remove rating
     $('body').on('click', function(e){
 
