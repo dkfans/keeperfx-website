@@ -30,7 +30,7 @@
                             {% for category in workshop_globals.categories %}
                                 <a
                                     class="nav-link
-                                    {% if (item is defined and item.category is defined and item.category.value == category.value) or path_equals('/workshop/browse?*category=' ~ category.value ~ '*') %}
+                                    {% if (item is defined and item.category is defined and item.category.value == category.value) or (get_query_param('category') and get_query_param('category') == category.value) %}
                                         active
                                     {% endif %}
                                     "
