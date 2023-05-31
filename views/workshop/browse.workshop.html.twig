@@ -6,18 +6,25 @@
 
     <div class="content-box bd-keeper bg-keeper">
         <div class="content-header">
-            <h2>
-                {% if submitter != null %}
-                    <span class="text-special">{{ submitter }}</span>'s
-                {% endif %}
-                {% if org_author != null %}
-                    <span class="text-white">{{ org_author }}</span>'s
-                {% endif %}
-                Workshop items
-                {% if get_query_param('category') and workshop_globals.categories_map[get_query_param('category')] is defined %}
-                    : {{ workshop_globals.categories_map[get_query_param('category')]|enum_beautify }}
-                {% endif %}
-            </h2>
+            <div class="d-flex justify-content-between">
+                <h2>
+                    {% if submitter != null %}
+                        <span class="text-special">{{ submitter }}</span>'s
+                    {% endif %}
+                    {% if org_author != null %}
+                        <span class="text-white">{{ org_author }}</span>'s
+                    {% endif %}
+                    Workshop items
+                    {% if get_query_param('category') and workshop_globals.categories_map[get_query_param('category')] is defined %}
+                        : {{ workshop_globals.categories_map[get_query_param('category')]|enum_beautify }}
+                    {% endif %}
+                </h2>
+                <div>
+                    {% if submitter != null or org_author != null %}
+                        <a href="/workshop/browse">Back to workshop browse</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
 
         <div class="content-menu d-flex justify-content-between">
