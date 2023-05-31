@@ -25,3 +25,12 @@ This is the suggested crontab for the automated tasks.
 
 This list has a race condition between pulling the repo and handling the commits.
 Right now this just makes it so the commits come 10 minutes later.
+
+
+### Backups
+
+```
+0 8 * * * mysqldump -u DBUSER -pDBPASS DBNAME > /var/keeperfx-backup/$(date +"%Y-%m-%d")-keeperfx.sql
+0 8 * * * tar -czf /var/keeperfx-backup/$(date +"%Y-%m-%d")-avatars.tar.gz /var/www/keeperfx/storage/avatars
+0 8 * * 3 tar -czf /var/keeperfx-backup/$(date +"%Y-%m-%d")-workshop.tar.gz /var/www/keeperfx/storage/workshop
+```
