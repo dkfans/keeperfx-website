@@ -34,4 +34,6 @@ return [
     \App\Console\Command\ClamAV\ScanWorkshopNewCommand::class,
     \App\Console\Command\ClamAV\ScanWorkshopAllCommand::class,
 
+    // Lubiki
+    \App\Console\Command\Lubiki\LubikiAddFileDumpToWorkshopCommand::class,
 ];
