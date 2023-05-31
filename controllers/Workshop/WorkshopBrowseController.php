@@ -66,7 +66,7 @@ class WorkshopBrowseController {
             default:
             case 'latest':
                 $order_by = ['created_timestamp' => 'DESC'];
-                $url_params['order_by'] = 'latest';
+                // $url_params['order_by'] = 'latest'; // This is the default, so it should not be present in the URL
                 break;
         }
 
