@@ -98,7 +98,9 @@
                                 {% if item.originalAuthor is not empty %}
                                     <tr>
                                         <td>Original author</td>
-                                        <td class="text-stand-out" style="padding-left: 25px;">{{ item.originalAuthor }}</td>
+                                        <td class="text-stand-out" style="padding-left: 25px;">
+                                            <a href="/workshop/browse?org_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
+                                        </td>
                                     </tr>
                                 {% endif %}
                                 {% if item.originalCreationDate %}
