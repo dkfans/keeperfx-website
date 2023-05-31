@@ -82,8 +82,8 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
             $data['author'] = $matches[1];
         }
 
-        if(\preg_match('/Author\: .+?\, Created on ([\w\ ]+)/', $contents, $matches)){
-            $date = \DateTime::createFromFormat("d M Y", $matches[1]);
+        if(\preg_match('/Author\: .+?\, Created (on )?([\w\ ]+)/', $contents, $matches)){
+            $date = \DateTime::createFromFormat("d M Y", $matches[2]);
             if($date){
                 $data['creation_date'] = $date;
             }
