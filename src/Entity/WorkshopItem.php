@@ -83,6 +83,9 @@ class WorkshopItem {
     #[ORM\OrderBy(["created_timestamp" => "DESC"])]
     private Collection $comments;
 
+    #[ORM\Column]
+    private \DateTime $creation_orderby_timestamp;
+
     public function __construct() {
         $this->files              = new ArrayCollection();
         $this->images             = new ArrayCollection();
@@ -96,6 +99,10 @@ class WorkshopItem {
     {
         $this->created_timestamp = new \DateTime("now");
         $this->updated_timestamp = new \DateTime("now");
+
+        if($this->creation_orderby_timestamp === null){
+            $this->creation_orderby_timestamp = new \DateTime("now");
+        }
     }
 
     private function updateLastUpdatedTimestamp()
@@ -359,6 +366,13 @@ class WorkshopItem {
     public function setOriginalCreationDate(?\DateTime $original_creation_date): self
     {
         $this->original_creation_date = $original_creation_date;
+
+        if($original_creation_date === null){
+            $this->creation_orderby_timestamp = $this->created_timestamp;
+        } else {
+            $this->creation_orderby_timestamp = $original_creation_date;
+        }
+
         $this->updateLastUpdatedTimestamp();
 
         return $this;
@@ -446,6 +460,24 @@ class WorkshopItem {
     public function setDifficultyRatingEnabled(bool $difficulty_rating_enabled): self
     {
         $this->difficulty_rating_enabled = $difficulty_rating_enabled;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of creation_orderby_timestamp
+     */
+    public function getCreationOrderbyTimestamp(): \DateTime
+    {
+        return $this->creation_orderby_timestamp;
+    }
+
+    /**
+     * Set the value of creation_orderby_timestamp
+     */
+    public function setCreationOrderbyTimestamp(\DateTime $creation_orderby_timestamp): self
+    {
+        $this->creation_orderby_timestamp = $creation_orderby_timestamp;
 
         return $this;
     }
