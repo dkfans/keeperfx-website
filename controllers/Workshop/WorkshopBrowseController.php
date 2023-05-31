@@ -43,6 +43,7 @@ class WorkshopBrowseController {
         if(!\is_numeric($page)){
             $page = 1;
         }
+        $page = (int) $page;
 
         $order_by_param = $q['order_by'] ?? '';
         if(!\is_string($order_by_param)){
