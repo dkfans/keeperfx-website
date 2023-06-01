@@ -21,20 +21,20 @@ class UserOAuthToken {
     #[ORM\Column(type: 'string', enumType: OAuthProviderType::class)]
     private OAuthProviderType $provider_type;
 
-    #[ORM\Column]
-    private string $token;
+    #[ORM\Column(nullable: true)]
+    private string|null $token = null;
 
     #[ORM\Column]
     private string $uid;
 
-    #[ORM\Column]
-    private string $refresh_token;
+    #[ORM\Column(nullable: true)]
+    private string|null $refresh_token = null;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
-    #[ORM\Column]
-    private \DateTime $expires_timestamp;
+    #[ORM\Column(nullable: true)]
+    private \DateTime|null $expires_timestamp = null;
 
     #[ORM\PrePersist]
     public function onPrePersist()
@@ -69,7 +69,7 @@ class UserOAuthToken {
     }
 
     /**
-     * Get the value of provider
+     * Get the value of provider_type
      */
     public function getProviderType(): OAuthProviderType
     {
@@ -77,11 +77,11 @@ class UserOAuthToken {
     }
 
     /**
-     * Set the value of provider
+     * Set the value of provider_type
      */
-    public function setProviderType(OAuthProviderType $provider): self
+    public function setProviderType(OAuthProviderType $provider_type): self
     {
-        $this->provider_type = $provider;
+        $this->provider_type = $provider_type;
 
         return $this;
     }
@@ -89,7 +89,7 @@ class UserOAuthToken {
     /**
      * Get the value of token
      */
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
@@ -97,7 +97,7 @@ class UserOAuthToken {
     /**
      * Set the value of token
      */
-    public function setToken(string $token): self
+    public function setToken(?string $token): self
     {
         $this->token = $token;
 
@@ -125,7 +125,7 @@ class UserOAuthToken {
     /**
      * Get the value of refresh_token
      */
-    public function getRefreshToken(): string
+    public function getRefreshToken(): ?string
     {
         return $this->refresh_token;
     }
@@ -133,7 +133,7 @@ class UserOAuthToken {
     /**
      * Set the value of refresh_token
      */
-    public function setRefreshToken(string $refresh_token): self
+    public function setRefreshToken(?string $refresh_token): self
     {
         $this->refresh_token = $refresh_token;
 
@@ -161,7 +161,7 @@ class UserOAuthToken {
     /**
      * Get the value of expires_timestamp
      */
-    public function getExpiresTimestamp(): \DateTime
+    public function getExpiresTimestamp(): ?\DateTime
     {
         return $this->expires_timestamp;
     }
@@ -169,7 +169,7 @@ class UserOAuthToken {
     /**
      * Set the value of expires_timestamp
      */
-    public function setExpiresTimestamp(\DateTime $expires_timestamp): self
+    public function setExpiresTimestamp(?\DateTime $expires_timestamp): self
     {
         $this->expires_timestamp = $expires_timestamp;
 

@@ -10,11 +10,13 @@ use App\Enum\OAuthProviderType;
 use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
+use App\Entity\UserCookieToken;
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
 use App\OAuth\OAuthProviderService;
 use Twig\Environment as TwigEnvironment;
+use Dflydev\FigCookies\FigResponseCookies;
 
 use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -55,7 +57,7 @@ class OAuthUserController {
                 'provider_type' => $provider_type,
                 'user'          => $account->getUser(),
             ]);
-            if($existing_oauth_token){
+            if($existing_oauth_token && $existing_oauth_token->getToken() !== null){
                 $flash->error("This user account is already connected to {$provider_type->name}");
                 $response = $response->withHeader('Location', '/account/connections')->withStatus(302);
                 return $response;
@@ -127,22 +129,24 @@ class OAuthUserController {
                 return $response;
             }
 
-            // Map entity to AccessToken (for expire check)
-            $access_token = new AccessToken([
-                'access_token'      => $user_oauth_token->getToken(),
-                'refresh_token'     => $user_oauth_token->getRefreshToken(),
-                'resource_owner_id' => $user_oauth_token->getUid(),
-                'expires'           => $user_oauth_token->getExpiresTimestamp()->getTimestamp(),
-            ]);
+            // handle invalidated oauth token
+            if($user_oauth_token->getToken() === null || $user_oauth_token->getRefreshToken() === null){
+                $user_oauth_token->setToken($token->getToken());
+                $user_oauth_token->setRefreshToken($token->getRefreshToken());
+                $user_oauth_token->setExpiresTimestamp(
+                    \DateTime::createFromFormat('U', (int) $token->getExpires())
+                );
+                $em->flush();
+            }
 
             // Refresh expired OAuth Token
-            if($access_token->hasExpired()){
+            if($user_oauth_token->getExpiresTimestamp()->getTimestamp() < time()){
 
                 try {
 
                     // Get new OAuth Token from provider
                     $new_access_token = $provider->getAccessToken('refresh_token', [
-                        'refresh_token' => $access_token->getRefreshToken()
+                        'refresh_token' => $user_oauth_token->getRefreshToken()
                     ]);
 
                     // Update OAuth Token in DB
@@ -155,13 +159,29 @@ class OAuthUserController {
                     $em->flush();
 
                 } catch (\Exception $ex){
-                    // TODO: log error
+
+                    // Invalidate token in DB
+                    $user_oauth_token->setToken(null);
+                    $user_oauth_token->setRefreshToken(null);
+                    $user_oauth_token->setExpiresTimestamp(null);
+                    $em->persist($user_oauth_token);
+                    $em->flush();
+
+                    // Show notice on error
+                    $flash->warning('Something went wrong while refreshing your OAuth token. You will have to log in again.');
+                    // TODO: check session for redirect-after-login
+                    $response = $response->withHeader('Location', '/login')->withStatus(302);
+                    return $response;
                 }
             }
 
             // Login the user
+            $account->setUser($user_oauth_token->getUser());
             $session['uid'] = $user_oauth_token->getUser()->getId();
             $flash->success('You have successfully logged in!');
+
+            // Add a 'remember me' cookie for OAuth login
+            $response = FigResponseCookies::set($response, $account->createRememberMeSetCookie($user_oauth_token));
 
             // Redirect user
             // TODO: check session for redirect-after-login
@@ -272,6 +292,10 @@ class OAuthUserController {
             throw new HttpNotFoundException($request);
         }
 
+        // TODO: MAKE SURE THAT OUR ACCOUNT WILL NOT GET DELETED !
+        // - CHECK IF THE ACCOUNT HAS A NORMAL PASSWORD
+        // - OR THERE MUST BE OTHER CONNECTIONS!
+
         $oauth_token = $em->getRepository(UserOAuthToken::class)->findOneBy([
             'provider_type' => $provider_type,
             'user'          => $account->getUser(),
@@ -283,12 +307,41 @@ class OAuthUserController {
             return $response;
         }
 
+        $cookie_tokens = $em->getRepository(UserCookieToken::class)->findBy([
+            'oauth_token' => $oauth_token,
+        ]);
+
+        $user_has_been_logged_out = false;
+
+        if($cookie_tokens){
+            foreach($cookie_tokens as $cookie_token) {
+
+                // Check if we need to logout
+                $cookies = $request->getCookieParams();
+                $token = (string) ($cookies['user_cookie_token'] ?? '');
+                if($token && \preg_match('~^[a-zA-Z0-9]+$~', $token) && $token === $cookie_token->getToken()){
+
+                    // Log out user from the current session
+                    $account->setUser(null);
+                    $session['uid'] = null;
+                    $user_has_been_logged_out = true;
+                }
+
+                $em->remove($cookie_token);
+            }
+        }
+
         $em->remove($oauth_token);
         $em->flush();
 
-        $flash->success("Removed account connection with {$provider_type->name}");
-        $response = $response->withHeader('Location', '/account/connections')->withStatus(302);
-        return $response;
+        $flash->success("Successfully removed {$provider_type->name} account connection.");
+
+        if($user_has_been_logged_out){
+            $flash->info('You have been logged out because the OAuth connection was used for your login session.');
+            $response = $response->withHeader('Location', '/')->withStatus(302);
+        } else {
+            $response = $response->withHeader('Location', '/account/connections')->withStatus(302);
+        }
 
         return $response;
     }
@@ -427,6 +480,9 @@ class OAuthUserController {
         // Immediately log in the user
         $account->setUser($user);
         $session['uid'] = $user->getId();
+
+        // Add a 'remember me' cookie for OAuth login
+        $response = FigResponseCookies::set($response, $account->createRememberMeSetCookie($user_oauth_token));
 
         // Show message and navigate the user
         $flash->success('Successfully registered. You are now logged in.');

@@ -4,13 +4,15 @@ namespace App;
 
 use App\Entity\User;
 use App\Entity\UserCookieToken;
+use App\Entity\UserOAuthToken;
 
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
+
+use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\Modifier\SameSite;
 
 use Xenokore\Utility\Helper\StringHelper;
-use Dflydev\FigCookies\SetCookie;
 
 class Account {
 
@@ -28,7 +30,7 @@ class Account {
         }
     }
 
-    public function createRememberMeSetCookie(): SetCookie
+    public function createRememberMeSetCookie(?UserOAuthToken $oauth_token = null): SetCookie
     {
         if(!$this->user){
             throw new \Exception('user not set');
@@ -44,10 +46,17 @@ class Account {
             }
         }
 
-        // Create cookie token in DB
+        // Create cookie token entity
         $token = new UserCookieToken();
         $token->setUser($this->user);
         $token->setToken($cookie_token);
+
+        // Add possible OAuth token to cookie token
+        if($oauth_token){
+            $token->setOAuthToken($oauth_token);
+        }
+
+        // Add cookie to database
         $this->em->persist($token);
         $this->em->flush();
 

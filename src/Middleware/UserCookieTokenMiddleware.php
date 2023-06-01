@@ -8,16 +8,17 @@ use App\Entity\UserOAuthToken;
 use App\Entity\UserCookieToken;
 
 use App\Account;
+use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
 use App\OAuth\OAuthProviderService;
-
-use League\OAuth2\Client\Token\AccessToken;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class UserCookieTokenMiddleware implements MiddlewareInterface {
 
@@ -25,6 +26,7 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
         private EntityManager $em,
         private Account $account,
         private Session $session,
+        private FlashMessage $flash,
         private OAuthProviderService $provider_service
     ) {}
 
@@ -49,23 +51,51 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
                 if($cookie_token){
 
                     // Check if cookie is linked to an OAuth Token
-                    /** @var UserOAuthToken $oauth_token_entity */
+                    /** @var UserOAuthToken $oauth_token */
                     $oauth_token = $cookie_token->getOAuthToken();
                     if($oauth_token){
 
-                        // Get OAuth provider
-                        $provider = $this->provider_service->getProvider($oauth_token_entity->getProviderType());
+                        // Handle invalidated tokens
+                        if($oauth_token->getToken() === null || $oauth_token->getRefreshToken() === null){
+
+                            // Remove cookie token from DB
+                            // **NOT** the OAuth token as this belongs to an account and not to a login session
+                            $this->em->remove($cookie_token);
+                            $this->em->flush();
+
+                            // Continue request without logging in
+                            $response = $handler->handle($request);
+                            return $response;
+                        }
 
                         // Refresh expired OAuth Token
                         if($oauth_token->getExpiresTimestamp()->getTimestamp() < time()){
 
-                            // TODO: handle errors
-                            // TODO: remove invalid cookies
+                            // Get OAuth provider
+                            $provider = $this->provider_service->getProvider($oauth_token->getProviderType());
 
                             // Get new OAuth Token from provider
-                            $new_access_token = $provider->getAccessToken('refresh_token', [
-                                'refresh_token' => $oauth_token->getRefreshToken()
-                            ]);
+                            try {
+                                $new_access_token = $provider->getAccessToken('refresh_token', [
+                                    'refresh_token' => $oauth_token->getRefreshToken()
+                                ]);
+                            } catch (IdentityProviderException $ex) {
+
+                                // Invalidate OAuth token in DB
+                                $oauth_token->setToken(null);
+                                $oauth_token->setRefreshToken(null);
+                                $oauth_token->setExpiresTimestamp(null);
+
+                                // Remove cookie token
+                                $this->em->remove($cookie_token);
+
+                                // Flush changes to DB
+                                $this->em->flush();
+
+                                // Continue request without logging in
+                                $response = $handler->handle($request);
+                                return $response;
+                            }
 
                             // Update OAuth Token in DB
                             $oauth_token->setToken($new_access_token->getToken());
