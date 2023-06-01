@@ -16,6 +16,15 @@
             <img src="/img/top-banner.png" width="100%" />
         </div>
 
+        {# 'dev' environment banner #}
+        {% if get_env('APP_ENV') == 'dev' %}
+        <div class="content-box bd-keeper hazard-background d-flex justify-content-end" style="margin-top: 30px;">
+            <a href="#" class="btn btn-sm btn-medieval btn-medieval-gray" onclick="this.parentNode.remove();">
+                <ion-icon name="close-outline" style="font-size: 16px; padding-top: 1px;"></ion-icon>
+            </a>
+        </div>
+        {% endif %}
+
         <nav class="navbar justify-content-between content-box bg-keeper bd-keeper header">
             <div>
 
