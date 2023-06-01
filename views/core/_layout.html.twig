@@ -115,6 +115,12 @@
             <a href="/terms-of-service">Terms of Service</a>
             -
             <a href="/privacy-policy">Privacy Policy</a>
+            {% if globals.web_git_hash is defined and globals.web_git_hash is not empty %}
+                <br />
+                <span class="text-footer" style="display: block; font-size: 12px;">
+                    Website version: <a href="{{ get_env('APP_GITHUB_REPO_URL') }}/commit/{{ globals.web_git_hash.long }}">{{ globals.web_git_hash.short }}</a>
+                </span>
+            {% endif %}
         </footer>
 
     </div>
