@@ -93,7 +93,7 @@ class ScanWorkshopAllCommand extends Command
 
                 $output->writeln("[>] Scanning: <comment>{$file->getFilename()}</comment> [<info>{$file->getItem()->getName()}</info>]");
 
-                $path = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $file->getItem()->getId() . '/files/' . $file->getStorageFilename();
+                $path = $storage_dir. '/' . $file->getItem()->getId() . '/files/' . $file->getStorageFilename();
                 $output->writeln("[>] File: <info>{$path}</info>");
 
                 // Update scan status
