@@ -109,10 +109,12 @@ class WorkshopBrowseController {
                     return $response;
                 }
 
-                $criteria['submitter'] = $user;
-                $query                 = $query->andWhere('a.submitter = ' . $user->getId());
-                $submitter             = $user->getUsername();
-                $url_params['user']    = $user->getUsername();
+                $criteria['submitter']       = $user;
+                $criteria['original_author'] = null;
+                $query                       = $query->andWhere('a.submitter = ' . $user->getId());
+                $query                       = $query->andWhere('a.original_author IS NULL');
+                $submitter                   = $user->getUsername();
+                $url_params['user']          = $user->getUsername();
             }
         }
 
