@@ -26,7 +26,6 @@ use Slim\Exception\HttpNotFoundException;
 
 class WorkshopDownloadController {
 
-
     public function download(
         Request $request,
         Response $response,
