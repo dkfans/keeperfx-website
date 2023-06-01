@@ -8,7 +8,7 @@
     and not (workshop_item.submitter != null and workshop_item.originalAuthor|lower == workshop_item.submitter.username|lower)
 %}
     {# <strong>{{ workshop_item.originalAuthor }}</strong> #}
-    <a href="/workshop/browse?org_author={{ workshop_item.originalAuthor|url_encode }}" class="username-link-org-author">
+    <a href="/workshop/browse?original_author={{ workshop_item.originalAuthor|url_encode }}" class="username-link-org-author">
         {{ workshop_item.originalAuthor }}
     </a>
 {% else %}

@@ -28,7 +28,7 @@
                     {# User #}
                     {% if item.originalAuthor is not null %}
                         Created by
-                        <a href="/workshop/browse?org_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
+                        <a href="/workshop/browse?original_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
                     {% else %}
                         <span style="margin-right: 3px;">
                             Submitted by
@@ -104,7 +104,7 @@
                                     <tr>
                                         <td>Original author</td>
                                         <td class="text-stand-out" style="padding-left: 25px;">
-                                            <a href="/workshop/browse?org_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
+                                            <a href="/workshop/browse?original_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
                                         </td>
                                     </tr>
                                 {% endif %} #}
