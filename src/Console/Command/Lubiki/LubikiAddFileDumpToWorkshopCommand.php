@@ -128,7 +128,17 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
     }
 
     protected function execute(Input $input, Output $output)
-    {
+    {        // Define workshop storage dir
+        if(!empty($_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'])){
+            $storage_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'];
+        } elseif (!empty($_ENV['APP_WORKSHOP_STORAGE'])){
+            $storage_dir = $_ENV['APP_WORKSHOP_STORAGE'];
+        } else {
+            $output->writeln("[-] Workshop storage directory is not set");
+            $output->writeln("[>] ENV VAR: 'APP_WORKSHOP_STORAGE_CLI_PATH' or 'APP_WORKSHOP_STORAGE'");
+            return Command::FAILURE;
+        }
+
         $output->writeln("[>] Getting stable releases from DB");
 
         $gh_releases = $this->em->getRepository(GithubRelease::class)->findAll();
@@ -247,7 +257,7 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
             $output->writeln("[+] Added to database!");
 
             // Define directories for files
-            $workshop_item_dir        = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
+            $workshop_item_dir        = $storage_dir . '/' . $workshop_item->getId();
             $workshop_item_files_dir  = $workshop_item_dir . '/files';
             $workshop_item_images_dir = $workshop_item_dir . '/images';
 

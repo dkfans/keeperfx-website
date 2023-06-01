@@ -27,9 +27,18 @@ final class Version20230403223250 extends AbstractMigration
         if($items && \is_iterable($items)){
             foreach($items as $item){
 
-                // Define directories
-                $storage_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item['id'];
-                $files_dir   = $storage_dir . '/files';
+                // Define storage dir
+                if(!empty($_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'])){
+                    $storage_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'];
+                } elseif (!empty($_ENV['APP_WORKSHOP_STORAGE'])){
+                    $storage_dir = $_ENV['APP_WORKSHOP_STORAGE'];
+                } else {
+                    die('invalid storage dir');
+                }
+
+                // Define files directories
+                $storage_dir .= '/' . $item['id'];
+                $files_dir    = $storage_dir . '/files';
 
                 // Check if workshop dir exists
                 if(!\is_dir($storage_dir)){

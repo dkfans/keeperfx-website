@@ -32,7 +32,17 @@ class ScanWorkshopNewCommand extends Command
     }
 
     protected function execute(Input $input, Output $output)
-    {
+    {        // Define workshop storage dir
+        if(!empty($_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'])){
+            $storage_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'];
+        } elseif (!empty($_ENV['APP_WORKSHOP_STORAGE'])){
+            $storage_dir = $_ENV['APP_WORKSHOP_STORAGE'];
+        } else {
+            $output->writeln("[-] Workshop storage directory is not set");
+            $output->writeln("[>] ENV VAR: 'APP_WORKSHOP_STORAGE_CLI_PATH' or 'APP_WORKSHOP_STORAGE'");
+            return Command::FAILURE;
+        }
+
         $output->writeln("[>] Setting up ClamAV client...");
 
         // Setup client
@@ -82,7 +92,7 @@ class ScanWorkshopNewCommand extends Command
 
             $output->writeln("[>] Scanning: <comment>{$file->getFilename()}</comment> [<info>{$file->getItem()->getName()}</info>]");
 
-            $path = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $file->getItem()->getId() . '/files/' . $file->getStorageFilename();
+            $path = $storage_dir . '/' . $file->getItem()->getId() . '/files/' . $file->getStorageFilename();
             $output->writeln("[>] File: <info>{$path}</info>");
 
             // Update scan status
