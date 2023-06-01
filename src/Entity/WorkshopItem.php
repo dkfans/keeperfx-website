@@ -84,7 +84,7 @@ class WorkshopItem {
     private Collection $comments;
 
     #[ORM\Column]
-    private \DateTime $creation_orderby_timestamp;
+    private ?\DateTime $creation_orderby_timestamp = null;
 
     public function __construct() {
         $this->files              = new ArrayCollection();

@@ -24,12 +24,17 @@
 
                 {# Submitted by #}
                 <div class="">
-                    <span style="margin-right: 3px;">
-                        Submitted by
-                    </span>
 
                     {# User #}
-                    {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: false} %}
+                    {% if item.originalAuthor is not null %}
+                        Created by
+                        <a href="/workshop/browse?org_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
+                    {% else %}
+                        <span style="margin-right: 3px;">
+                            Submitted by
+                        </span>
+                        {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: false} %}
+                    {% endif %}
                 </div>
 
                 {# Edit #}
@@ -94,7 +99,7 @@
                                 </td>
                             </tr>
                             <tr style="height: 15px;"><!-- Spacer row --></tr>
-                            {% if item.originalAuthor is not empty or item.originalCreationDate is not empty %}
+                            {# {% if (item.originalAuthor is not empty and item.submitter is not null) or item.originalCreationDate is not empty %}
                                 {% if item.originalAuthor is not empty %}
                                     <tr>
                                         <td>Original author</td>
@@ -102,15 +107,15 @@
                                             <a href="/workshop/browse?org_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
                                         </td>
                                     </tr>
-                                {% endif %}
+                                {% endif %} #}
                                 {% if item.originalCreationDate %}
                                     <tr>
                                         <td>Original creation date</td>
                                         <td class="text-stand-out" style="padding-left: 25px;">{{ item.originalCreationDate|date('Y-m-d') }}</td>
                                     </tr>
+                                    <tr style="height: 15px;"><!-- Spacer row --></tr>
                                 {% endif %}
-                                <tr style="height: 15px;"><!-- Spacer row --></tr>
-                            {% endif %}
+                            {# {% endif %} #}
                             <tr>
                                 <td style="vertical-align: top">Rating</td>
                                 <td class="text-stand-out" style="padding-left: 25px;">
@@ -173,6 +178,14 @@
                             </tr>
                             {% endif %}
                             <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                            {% if item.originalAuthor is not empty and item.submitter is not null %}
+                                <tr>
+                                    <td>Submitted by</td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: false} %}
+                                    </td>
+                                </tr>
+                            {% endif %}
                             <tr>
                                 <td>Submission date</td>
                                 <td class="text-stand-out time-ago" style="padding-left: 25px;">

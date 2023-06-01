@@ -8,13 +8,16 @@
         <div class="content-header">
             <div class="d-flex justify-content-between">
                 <h2>
-                    {% if submitter != null %}
-                        <span class="text-special">{{ submitter }}</span>'s
-                    {% endif %}
-                    {% if org_author != null %}
-                        <span class="text-white">{{ org_author }}</span>'s
-                    {% endif %}
                     Workshop items
+                    {% if submitter is not null or org_author is not null %}
+                        by
+                        {% if submitter != null %}
+                            <span class="text-special">{{ submitter }}</span>
+                        {% endif %}
+                        {% if org_author != null %}
+                            <span class="username-link-org-author">{{ org_author }}</span>
+                        {% endif %}
+                    {% endif %}
                     {% if get_query_param('category') and workshop_globals.categories_map[get_query_param('category')] is defined %}
                         : {{ workshop_globals.categories_map[get_query_param('category')]|enum_beautify }}
                     {% endif %}
