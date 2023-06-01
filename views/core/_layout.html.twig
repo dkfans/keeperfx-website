@@ -118,7 +118,11 @@
             {% if globals.web_git_hash is defined and globals.web_git_hash is not empty %}
                 <br />
                 <span class="text-footer" style="display: block; font-size: 12px;">
-                    Website version: <a href="{{ get_env('APP_GITHUB_REPO_URL') }}/commit/{{ globals.web_git_hash.long }}">{{ globals.web_git_hash.short }}</a>
+                    Website version:
+                    <a href="{{ get_env('APP_GITHUB_REPO_URL') }}/commit/{{ globals.web_git_hash.long }}" target="_blank">
+                        {{ globals.web_git_hash.short }}
+                        <ion-icon name="open-outline" class="outgoing" style="font-size: 13px;"></ion-icon>
+                    </a>
                 </span>
             {% endif %}
         </footer>
