@@ -29,18 +29,12 @@ class IndexController {
         FlashMessage $flash,
         Account $account
     ){
-        $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 3);
-        $release = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
+        // Grab some stuff from DB to show on main page
+        $articles              = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 3);
+        $release               = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
+        $latest_workshop_items = $em->getRepository(WorkshopItem::class)->findBy([], ['created_timestamp' => 'DESC'], 3);
 
-        // Show a notice to users with a Moderator role or higher if there's new workshop items
-        if($account->isLoggedIn() && $account->getUser()->getRole()->value >= UserRole::Moderator->value){
-            $open_workshop_submissions = $em->getRepository(WorkshopItem::class)->findBy(['is_accepted' => false]);
-            if($open_workshop_submissions && \count($open_workshop_submissions) > 0){
-                $flash->info('There are open workshop submissions. Click <a href="/moderate/workshop/list">here</a> to view them.');
-            }
-        }
-
-        // Get Twitch stream
+        // Get featured Twitch stream
         $twitch_channel = null;
         $streams = $cache->get('twitch_streams', []);
         if(!empty($streams)){
@@ -49,11 +43,12 @@ class IndexController {
 
         $response->getBody()->write(
             $twig->render('index.html.twig', [
-                'articles'           => $articles,
-                'release'            => $release,
-                'forum_threads'      => $cache->get('keeperfx_forum_threads', []),
-                'twitch_channel'     => $twitch_channel,
-                'twitch_parent_host' => \parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_HOST),
+                'articles'                  => $articles,
+                'release'                   => $release,
+                'latest_workshop_items'     => $latest_workshop_items,
+                'forum_threads'             => $cache->get('keeperfx_forum_threads', []),
+                'twitch_channel'            => $twitch_channel,
+                'twitch_parent_host'        => \parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_HOST),
             ])
         );
 

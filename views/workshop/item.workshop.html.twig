@@ -7,7 +7,7 @@
     description: item.description ?? '',
     og: {
         url: '/workshop/item/' ~ item.id ~ '/' ~ item.name|slugify,
-        image: item.thumbnail ? '/workshop/thumbnail/' ~ item.id ~ '/' ~ item.thumbnail : '/img/horny-face.png'
+        image: item.images|first ? '/workshop/image/' ~ item.id ~ '/' ~ item.images|first.filename : '/img/horny-face.png'
     }
 } %}
 
@@ -19,31 +19,42 @@
             {# Title #}
             <h2 class="workshop-item-title">{{ item.name }}</h2>
 
-            {# Submitted by & Rating #}
-            <div class="d-flex justify-content-between" style="margin-top: 10px;  margin-bottom: 15px; padding: 0 5px;">
+            {# Submitted by & Edit buttons #}
+            <div class="d-flex justify-content-between" style="margin-top: 10px;  margin-bottom: 16px; padding: 0 5px;">
 
                 {# Submitted by #}
                 <div class="">
-                    <span style="margin-right: 3px;">
-                        Submitted by
-                    </span>
 
                     {# User #}
-                    {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: false} %}
+                    {% if item.originalAuthor is not null %}
+                        Created by
+                        <a href="/workshop/browse?org_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
+                    {% else %}
+                        <span style="margin-right: 3px;">
+                            Submitted by
+                        </span>
+                        {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: false} %}
+                    {% endif %}
                 </div>
 
                 {# Edit #}
                 <div class="">
                 {% if account != null %}
-                    {% if account.role >= roles.moderator %}
-                        <a href="/moderate/workshop/{{ item.id }}">Edit as moderator</a>
-                    {% endif %}
-                    {% if item.submitter != null and item.submitter.id == account.id and account.role >= roles.moderator %}
-                        <span style="margin: 0 3px" class="text-muted">&bull;</span>
-                    {% endif %}
-                    {% if item.submitter != null and item.submitter.id == account.id %}
-                        <a href="/workshop/edit/{{ item.id }}">Edit your workshop item</a>
-                    {% endif %}
+                    <div style="margin-bottom: -16px; top: -8px; position: relative; right: -5px;">
+                        {% if account.role >= roles.moderator %}
+                            <a href="/moderate/workshop/{{ item.id }}" class="btn btn-medieval btn-medieval-gray">
+                                Edit as moderator
+                            </a>
+                        {% endif %}
+                        {% if item.submitter != null and item.submitter.id == account.id %}
+                            <a href="/workshop/edit/{{ item.id }}/files" class="btn btn-medieval">
+                                Edit files
+                            </a>
+                            <a href="/workshop/edit/{{ item.id }}" class="btn btn-medieval">
+                                Edit your workshop item
+                            </a>
+                        {% endif %}
+                    </div>
                 {% endif %}
                 </div>
             </div>
@@ -52,32 +63,27 @@
 
                 <div class="col-md-5">
 
-                    {# Thumbnail #}
-                    <div class="workshop-item-thumbnail bd-keeper">
-                        {% if item.thumbnail is not null %}
-                            <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
+                    {# Images #}
+                    <div class="workshop-item-images" id="workshop-images">
+                        {% if item.images|length == 0 %}
+                            <div class="workshop-item-image bd-keeper">
+                                <img src="/img/horny-face.png" />
+                            </div>
                         {% else %}
-                            <img src="/img/horny-face.png" />
-                        {% endif %}
-                    </div>
-
-                    {# Screenshots #}
-                    {% if screenshots|length > 0 %}
-                        <div class="workshop-screenshots" id="workshop-screenshots" style="margin-top: 15px;">
-                            {% for screenshot in screenshots %}
-                                <div class="workshop-screenshot">
-                                    <a href="/workshop/screenshot/{{ item.id }}/{{ screenshot.filename }}"
-                                        data-pswp-width="{{ screenshot.width }}"
-                                        data-pswp-height="{{ screenshot.height }}"
+                            {% for image in item.images %}
+                                <div class="workshop-item-image bd-keeper">
+                                    <a href="/workshop/image/{{ item.id }}/{{ image.filename }}"
+                                        data-pswp-width="{{ image.width }}"
+                                        data-pswp-height="{{ image.height }}"
                                         data-cropped="true"
-                                        class="workshop-screenshot-item"
+                                        class="workshop-image"
                                         target="_blank">
-                                            <img src="/workshop/screenshot/{{ item.id }}/{{ screenshot.filename }}" alt="" />
+                                            <img src="/workshop/image/{{ item.id }}/{{ image.filename }}" alt="" />
                                     </a>
                                 </div>
                             {% endfor %}
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    </div>
 
                 </div>
 
@@ -87,27 +93,29 @@
                     <div class="workshop-info-box">
                         <table style="margin: 15px;">
                             <tr>
-                                <td>Type</td>
+                                <td>Category</td>
                                 <td class="text-stand-out" style="padding-left: 25px;">
-                                    {{ item.type.name|enum_beautify }}
+                                    {{ item.category.name|enum_beautify }}
                                 </td>
                             </tr>
                             <tr style="height: 15px;"><!-- Spacer row --></tr>
-                            {% if item.originalAuthor is not empty or item.originalCreationDate is not empty %}
+                            {# {% if (item.originalAuthor is not empty and item.submitter is not null) or item.originalCreationDate is not empty %}
                                 {% if item.originalAuthor is not empty %}
                                     <tr>
                                         <td>Original author</td>
-                                        <td class="text-stand-out" style="padding-left: 25px;">{{ item.originalAuthor }}</td>
+                                        <td class="text-stand-out" style="padding-left: 25px;">
+                                            <a href="/workshop/browse?org_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
+                                        </td>
                                     </tr>
-                                {% endif %}
+                                {% endif %} #}
                                 {% if item.originalCreationDate %}
                                     <tr>
                                         <td>Original creation date</td>
                                         <td class="text-stand-out" style="padding-left: 25px;">{{ item.originalCreationDate|date('Y-m-d') }}</td>
                                     </tr>
+                                    <tr style="height: 15px;"><!-- Spacer row --></tr>
                                 {% endif %}
-                                <tr style="height: 15px;"><!-- Spacer row --></tr>
-                            {% endif %}
+                            {# {% endif %} #}
                             <tr>
                                 <td style="vertical-align: top">Rating</td>
                                 <td class="text-stand-out" style="padding-left: 25px;">
@@ -116,7 +124,7 @@
 
                                     <span id="quality-rating-info" class="text-muted" style="display: block; margin-top: 3px;">
                                         {% if item.ratingScore is not null %}
-                                            <span id="quality-rating-score" class="text-muted">{{ item.ratingScore|round(2, 'floor') }}</span> out of 5
+                                            <span id="quality-rating-score" class="text-muted">{{ item.ratingScore|round(2, 'floor') }}</span> / 5
                                             <span style="margin: 0 3px" class="text-muted">&bull;</span>
                                             <span id="quality-rating-count" class="text-muted">
                                                 {% if rating_amount == 1 %}
@@ -129,6 +137,7 @@
                                                 <span style="margin: 0 3px" class="text-muted">&bull;</span>
                                                 Your rating:
                                                 <span id="quality-rating-self" class="text-muted">{{ user_rating }}</span>
+                                                <a href="#" data-workshop-rating-type="quality" class="rating-remove text-stand-out">Remove</a>
                                             {% endif %}
                                         {% else %}
                                             Not rated yet
@@ -136,7 +145,7 @@
                                     </span>
                                 </td>
                             </tr>
-                            {% if item.type not in types_without_difficulty %}
+                            {% if item.category not in workshop_globals.categories_without_difficulty and item.difficultyRatingEnabled %}
                             <tr style="height: 15px;">{# Empty table row spacer #}</tr>
                             <tr>
                                 <td style="vertical-align: top">Difficulty</td>
@@ -146,7 +155,7 @@
 
                                     <span id="difficulty-rating-info" class="text-muted" style="display: block; margin-top: 3px;">
                                         {% if item.difficultyRatingScore is not null %}
-                                            <span id="difficulty-rating-score" class="text-muted">{{ item.difficultyRatingScore|round(2, 'floor') }}</span> out of 5
+                                            <span id="difficulty-rating-score" class="text-muted">{{ item.difficultyRatingScore|round(2, 'floor') }}</span> / 5
                                             <span style="margin: 0 3px" class="text-muted">&bull;</span>
                                             <span id="difficulty-rating-total" class="text-muted">
                                                 {% if difficulty_rating_amount == 1 %}
@@ -159,6 +168,7 @@
                                                 <span style="margin: 0 3px" class="text-muted">&bull;</span>
                                                 Your rating:
                                                 <span id="difficulty-rating-self" class="text-muted">{{ user_difficulty_rating }}</span>
+                                                <a href="#" data-workshop-rating-type="difficulty" class="rating-remove text-stand-out">Remove</a>
                                             {% endif %}
                                         {% else %}
                                             Not rated yet
@@ -168,6 +178,14 @@
                             </tr>
                             {% endif %}
                             <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                            {% if item.originalAuthor is not empty and item.submitter is not null %}
+                                <tr>
+                                    <td>Submitted by</td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: false} %}
+                                    </td>
+                                </tr>
+                            {% endif %}
                             <tr>
                                 <td>Submission date</td>
                                 <td class="text-stand-out time-ago" style="padding-left: 25px;">
@@ -182,37 +200,55 @@
                                     </td>
                                 </tr>
                             {% endif %}
-                            <tr style="height: 15px;"><!-- Spacer row --></tr>
-                            <tr>
-                                <td>Filesize</td>
-                                <td class="text-stand-out" style="padding-left: 25px;">{{ filesize|format_bytes }}</td>
-                            </tr>
-                            <tr>
-                                <td>Downloads</td>
-                                <td class="text-stand-out" style="padding-left: 25px;">{{ item.downloadCount }}</td>
-                            </tr>
                             {% if item.minGameBuild is not null %}
                                 <tr style="height: 15px;"><!-- Spacer row --></tr>
                                 <tr>
                                     <td>Min. game version</td>
                                     <td class="text-stand-out" style="padding-left: 25px;">
-                                        {{ item.minGameBuild.name }}
-                                        {# <span class="text-muted" style="margin-left: 5px;">(and up)</span> #}
+                                        {% if item.minGameBuild == -1 %}
+                                            Latest KeeperFX alpha patch
+                                        {% else %}
+                                            {{ workshop_globals.stable_builds[item.minGameBuild].name }}
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endif %}
+
+                            {% if item.files|length > 0 %}
+                                <tr style="height: 15px;"><!-- Spacer row --></tr>
+                                <tr>
+                                    <td>Filesize</td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {{ item.files|first.size|format_bytes }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+
+                            <tr>
+                                <td>Downloads</td>
+                                <td class="text-stand-out" style="padding-left: 25px;">{{ item.downloadCount }}</td>
+                            </tr>
+
                         </table>
 
                         {# Download button #}
-                        <div class="text-center" style="margin-bottom: 20px; width: 100%;">
-                            <a
-                                href="/workshop/download/{{ item.id }}/{{ item.filename|url_encode }}"
-                                class="btn btn-lg btn-medieval"
-                                style="width: 100%; max-width: 300px;"
-                                download>
-                                    Download
-                            </a>
-                        </div>
+                        {% if item.files|length > 0 %}
+                            <div class="text-center" style="margin-bottom: 10px; width: 100%; margin-top: 30px;">
+                                <a
+                                    href="/workshop/download/{{ item.id }}/{{ item.files|first.id }}/{{ item.files|first.filename|url_encode }}"
+                                    class="btn btn-lg btn-medieval"
+                                    style="width: 100%; max-width: 300px; min-height: 50px; padding-top: 9px; padding-bottom: 4px; font-size: 22px;"
+                                    download>
+                                        Download
+                                        <span class="btn-download-filename">
+                                            {{ item.files|first.filename }}
+                                        </span>
+                                </a>
+                                <div style="display:none; margin-top: 10px;" class="text-muted" id="show-all-versions">
+                                    <a href="#">Show all versions ({{ item.files|length }})</a>
+                                </div>
+                            </div>
+                        {% endif %}
 
                     </div>
 
@@ -220,23 +256,51 @@
 
             </div>
 
-
-            <div class="row" style="margin-top: 40px;">
+            <div class="row" style="">
                 <div class="col-12">
+
+                    {% if item.files|length > 0 %}
+                        <div id="all-versions-list" class="workshop-file-list-box" style="margin-top: 30px;">
+                            <table class="table" style="margin-bottom: 0px;">
+                                <thead>
+                                    <tr>
+                                        <th>File</th>
+                                        <th>Filesize</th>
+                                        <th>Downloads</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for file in item.files %}
+                                        <tr>
+                                            <td><a href="/workshop/download/{{ item.id }}/{{ file.id }}/{{ file.filename|url_encode }}">{{ file.filename }}</td>
+                                            <td>{{ file.size|format_bytes }}</td>
+                                            <td>{{ file.downloadCount }}</td>
+                                            <td>{{ file.createdTimestamp|date('Y-m-d') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
 
                     {# Description #}
                     {% if item.description is not empty %}
-                        <h5 style="margin-top: 0px; border-bottom: 0;">Description</h5>
-                        <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
-                            {{ item.description|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
+                        <div class="workshop-info-box" style="padding: 25px; margin-top: 30px;">
+                            <h5 style="border-bottom: 0;">Description</h5>
+                            <div class="workshop-item-text-content force-wordwrap" style="margin-top: 25px;">
+                                {{ item.description|preg_replace("~([\r]?\n[\s]*){3,}~", "\n")|trim|markdown_to_html }}
+                            </div>
                         </div>
                     {% endif %}
 
                     {# Install Instructions #}
                     {% if item.installInstructions is not empty %}
-                        <h5 style="margin-top: 0px; border-bottom: 0;">Installation Intructions</h5>
-                        <div class="workshop-item-text-content force-wordwrap" style="margin-top: 15px;">
-                            {{ item.installInstructions|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|markdown_to_html|nl2br }}
+                        <div class="workshop-info-box" style="padding: 25px; margin-top: 30px;">
+                            <h5 style="border-bottom: 0;">Installation Intructions</h5>
+                            <div class="workshop-item-text-content force-wordwrap" style="margin-top: 25px;">
+                                {{ item.installInstructions|preg_replace("~([\r]?\n[\s]*){3,}~", "\n")|trim|markdown_to_html }}
+                            </div>
                         </div>
                     {% endif %}
 
@@ -251,8 +315,31 @@
             <h2>Comments</h2>
         </div>
         <div class="content-body">
-            {% if item.comments|length == 0 %}
+
+            {# Comment area #}
+            {% if account is null %}
                 <p>
+                    <a href="/login?redirect={{ get_path() }}">Login</a> or <a href="/register">register</a> to comment on this workshop item.
+                </p>
+            {% else %}
+                <form action="/workshop/item/{{ item.id }}/comment" method="POST">
+                    <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+                    <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+                    <div class="" style="width: 100%; margin-left: 7px; padding: 0;">
+                        <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
+                            <textarea class="form-control" name="content" rows="2" placeholder="Write a comment" required id="comment-input"></textarea>
+                        </div>
+                    </div>
+                    <div class="pull-right" style="margin-top: 15px;" id="comment-submit-button">
+                        <input type="submit" class="btn btn-medieval" value="Comment" />
+                    </div>
+                </form>
+            {% endif %}
+
+
+            {# Comments #}
+            {% if item.comments|length == 0 %}
+                <p style="margin-top: 20px;">
                     No comments yet.
                 </p>
             {% else %}
@@ -280,7 +367,7 @@
                                     </span>
                                 </div>
 
-                                <div class="force-wordwrap" style="margin-bottom: 15px; margin-top: 3px;">
+                                <div class="force-wordwrap" style="margin-bottom: 15px; margin-top: 3px; margin-right: 10px;">
                                     {{ comment.content|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|nl2br }}
                                 </div>
                         </div>
@@ -289,23 +376,6 @@
 
                     </div>
                 {% endfor %}
-            {% endif %}
-            <h5 style="border-bottom: 0; margin-top: 30px;">Comment</h5>
-            {% if account is null %}
-            <p>
-                <a href="/login?redirect={{ get_path() }}">Login</a> or <a href="/register">register</a> to comment on this workshop item.
-            </p>
-            {% else %}
-                <form action="/workshop/item/{{ item.id }}/comment" method="POST">
-                    <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
-                    <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
-                    <div class="form-group">
-                        <textarea class="form-control" name="content" rows="4" placeholder="Write a comment" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" class="btn btn-medieval" value="Submit" />
-                    </div>
-                </form>
             {% endif %}
         </div>
     </div>
@@ -328,8 +398,8 @@
     // Initialize image lightbox
     const lightbox = new PhotoSwipeLightbox({
         bgOpacity: 0.8,
-        gallery: '#workshop-screenshots',
-        children: 'a.workshop-screenshot-item',
+        gallery: '#workshop-images',
+        children: 'a.workshop-image',
         pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.esm.min.js'),
         mainClass: 'pswp-with-perma-preloader',
         initialZoomLevel: 'fit',
@@ -339,107 +409,5 @@
     // Init lightbox
     lightbox.init();
 </script>
-<script>
-
-    function handleRatingHtml(el){
-
-        var $ratingBox     = $(el);
-        var workshopItemId = $ratingBox.attr('data-workshop-item-id');
-        var ratingType     = $ratingBox.attr('data-workshop-rating-type');
-
-        $.each($(el).find('img'), function(index, element){
-
-            var ratingScore = parseInt($(element).attr('data-rating-score'));
-
-            $(element).css('cursor', 'pointer');
-
-            $(element).on('click', function(e){
-
-                // Hide open popover
-                $('.popover').hide();
-
-                // Make sure we are logged in
-                if(app_store.account === null){
-                    window.location = '/login'
-                        + '?redirect=/workshop/item/' + workshop_item.id + '/' + workshop_item.slug
-                        + '&msg=workshop-rate';
-                    return;
-                }
-
-                // Disable rating own account items
-                if(ratingType === 'quality' && app_store.account.id === workshop_item.submitter_id){
-                    toastr.warning('You can not rate your own workshop items!');
-                    return;
-                }
-
-                // Rate the workshop item
-                $.ajax({
-                    type: 'POST',
-                    url: '/workshop/rate/' + workshopItemId + '/' + ratingType,
-                    data: {
-                        score: ratingScore,
-                        [app_store.csrf.keys.name]: app_store.csrf.name,
-                        [app_store.csrf.keys.value]: app_store.csrf.value
-                    },
-                    dataType: 'json', // return type data,
-                    error: function(data){
-                        toastr.error('Something went wrong.');
-                    },
-                    success: function(data){
-
-                        // Make sure rating went successful
-                        if(typeof data.success === 'undefined' || data.success !== true){
-                            toastr.error('Something went wrong.');
-                            return;
-                        }
-
-                        // Update rating stars HTML
-                        $ratingBox.html(data.html);
-                        handleRatingHtml($ratingBox);
-
-                        // Set template for rating info
-                        $('#' + ratingType + '-rating-info').html('<span id="' + ratingType + '-rating-score" class="text-muted"></span> out of 5' +
-                            '<span style="margin: 0 3px" class="text-muted"> &bull; </span>' +
-                            '<span id="' + ratingType + '-rating-count" class="text-muted"></span>' +
-                            '<span style="margin: 0 3px" class="text-muted"> &bull; </span>' +
-                            'Your rating: ' +
-                            '<span id="' + ratingType + '-rating-self" class="text-muted"></span>');
-
-                        // Update rating score
-                        $('#' + ratingType + '-rating-score').text(data.rating_score);
-
-                        // Update rating count
-                        if(data.rating_count === 1){
-                            $('#' + ratingType + '-rating-count').text('1 rating');
-                        } else {
-                            $('#' + ratingType + '-rating-count').text('' + data.rating_count + ' ratings');
-                        }
-
-                        // Update self rating
-                        $('#' + ratingType + '-rating-self').text(ratingScore);
-
-                        // Update CSRF tokens
-                        app_store.csrf.name = data.csrf.name;
-                        app_store.csrf.value = data.csrf.value;
-
-                        toastr.success('You have succesfuly rated this workshop item!');
-
-                    },
-                });
-            });
-
-            new bootstrap.Popover(element, {
-                'placement': 'top',
-                'trigger': 'hover',
-                'content': 'Rate this item ' + ratingScore + ' out of 5'
-            });
-        });
-    }
-
-    $(function(e){
-        $.each($('[data-workshop-rating-type]'), function(i, el){
-            handleRatingHtml(el);
-        });
-    });
-</script>
+<script src="{{ asset('js/workshop.item.js') }}"></script>
 {% endblock %}

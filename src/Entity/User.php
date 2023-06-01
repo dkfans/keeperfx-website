@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Enum\UserRole;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
@@ -32,6 +34,37 @@ class User {
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
+
+    #[ORM\OneToMany(targetEntity: NewsArticle::class, mappedBy: 'author', cascade: ["remove"])]
+    private Collection $news_articles;
+
+    #[ORM\OneToMany(targetEntity: UserOAuthToken::class, mappedBy: 'user', cascade: ["remove"])]
+    private Collection $connection_tokens;
+
+    #[ORM\OneToMany(targetEntity: UserCookieToken::class, mappedBy: 'user', cascade: ["remove"])]
+    private Collection $cookie_tokens;
+
+    #[ORM\OneToMany(targetEntity: WorkshopItem::class, mappedBy: 'submitter', cascade: ["remove"])]
+    private Collection $workshop_items;
+
+    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'user', cascade: ["remove"])]
+    private Collection $workshop_comments;
+
+    #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'user', cascade: ["remove"])]
+    private Collection $workshop_ratings;
+
+    #[ORM\OneToMany(targetEntity: WorkshopDifficultyRating::class, mappedBy: 'user', cascade: ["remove"])]
+    private Collection $workshop_difficulty_ratings;
+
+    public function __construct() {
+        $this->news_articles               = new ArrayCollection();
+        $this->connection_tokens           = new ArrayCollection();
+        $this->cookie_tokens               = new ArrayCollection();
+        $this->workshop_items              = new ArrayCollection();
+        $this->workshop_comments           = new ArrayCollection();
+        $this->workshop_ratings            = new ArrayCollection();
+        $this->workshop_difficulty_ratings = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function onPrePersist()
@@ -168,5 +201,61 @@ class User {
         $this->created_timestamp = $created_timestamp;
 
         return $this;
+    }
+
+    /**
+     * Get the value of news_articles
+     */
+    public function getNewsArticles(): Collection
+    {
+        return $this->news_articles;
+    }
+
+    /**
+     * Get the value of connection_tokens
+     */
+    public function getConnectionTokens(): Collection
+    {
+        return $this->connection_tokens;
+    }
+
+    /**
+     * Get the value of cookie_tokens
+     */
+    public function getCookieTokens(): Collection
+    {
+        return $this->cookie_tokens;
+    }
+
+    /**
+     * Get the value of workshop_items
+     */
+    public function getWorkshopItems(): Collection
+    {
+        return $this->workshop_items;
+    }
+
+    /**
+     * Get the value of workshop_comments
+     */
+    public function getWorkshopComments(): Collection
+    {
+        return $this->workshop_comments;
+    }
+
+    /**
+     * Get the value of workshop_ratings
+     */
+    public function getWorkshopRatings(): Collection
+    {
+        return $this->workshop_ratings;
+    }
+
+    /**
+     * Get the value of workshop_difficulty_ratings
+     */
+    public function getWorkshopDifficultyRatings(): Collection
+    {
+        return $this->workshop_difficulty_ratings;
     }
 }

@@ -10,64 +10,69 @@
     </div>
     <div class="content-body">
 
-    <table class="table" style="vertical-align: middle;">
-        <thead>
-            <tr>
-                <th>Service</th>
-                <th>User ID</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
+        <div class="alert bg-dark">
+            By linking your Twitch handle you will be able to have your streams featured on the KeeperFX.net homepage.
+            You need to be streaming "Dungeon Keeper" and have "KeeperFX" in your stream title or as a tag to get automatically featured.
+        </div>
 
-            {# Discord #}
-            <tr>
-                <td>
-                    <span style="width: 130px; display: block; padding: 5px; text-align: center; background-color: #5865F2;">
-                        <img src="/img/discord-logo-white.svg" style="height: 18px;" />
-                    </span>
-                </td>
-                <td>
-                    {% if connections.discord.is_connected %}
-                        {{ connections.discord.uid }}
-                    {% else %}
-                        <span class="text-muted">Not connected</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if connections.discord.is_connected %}
-                        <a href="/oauth/disconnect/discord/{{ csrf.name }}/{{ csrf.value|url_encode }}">Disconnect</a>
-                    {% else %}
-                        <a href="/oauth/connect/discord/{{ csrf.name }}/{{ csrf.value|url_encode }}">Connect</a>
-                    {% endif %}
-                </td>
-            </tr>
+        <table class="table" style="vertical-align: middle;">
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>User ID</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
 
-            {# Twitch #}
-            <tr>
-                <td>
-                    <span style="width: 130px; display: block; padding: 5px; text-align: center; background-color: rgb(169, 112, 255);">
-                        <img src="/img/twitch-logo.svg" style="height: 19px;" />
-                    </span>
-                </td>
-                <td>
-                    {% if connections.twitch.is_connected %}
-                        {{ connections.twitch.uid }}
-                    {% else %}
-                        <span class="text-muted">Not connected</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if connections.twitch.is_connected %}
-                        <a href="/oauth/disconnect/twitch/{{ csrf.name }}/{{ csrf.value|url_encode }}">Disconnect</a>
-                    {% else %}
-                        <a href="/oauth/connect/twitch/{{ csrf.name }}/{{ csrf.value|url_encode }}">Connect</a>
-                    {% endif %}
-                </td>
-            </tr>
+                {# Discord #}
+                <tr>
+                    <td>
+                        <span style="width: 130px; display: block; padding: 5px; text-align: center; background-color: #5865F2;">
+                            <img src="/img/discord-logo-white.svg" style="height: 18px;" />
+                        </span>
+                    </td>
+                    <td>
+                        {% if connections.discord.is_connected %}
+                            {{ connections.discord.uid }}
+                        {% else %}
+                            <span class="text-muted">Not connected</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if connections.discord.is_connected %}
+                            <a href="/oauth/disconnect/discord/{{ csrf.name }}/{{ csrf.value|url_encode }}">Disconnect</a>
+                        {% else %}
+                            <a href="/oauth/connect/discord/{{ csrf.name }}/{{ csrf.value|url_encode }}">Connect</a>
+                        {% endif %}
+                    </td>
+                </tr>
 
-        </tbody>
-    </table>
+                {# Twitch #}
+                <tr>
+                    <td>
+                        <span style="width: 130px; display: block; padding: 5px; text-align: center; background-color: rgb(169, 112, 255);">
+                            <img src="/img/twitch-logo.svg" style="height: 19px;" />
+                        </span>
+                    </td>
+                    <td>
+                        {% if connections.twitch.is_connected %}
+                            {{ connections.twitch.uid }}
+                        {% else %}
+                            <span class="text-muted">Not connected</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if connections.twitch.is_connected %}
+                            <a href="/oauth/disconnect/twitch/{{ csrf.name }}/{{ csrf.value|url_encode }}">Disconnect</a>
+                        {% else %}
+                            <a href="/oauth/connect/twitch/{{ csrf.name }}/{{ csrf.value|url_encode }}">Connect</a>
+                        {% endif %}
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
 
     </div>
 </div>

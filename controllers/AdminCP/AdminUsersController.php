@@ -2,15 +2,20 @@
 
 namespace App\Controller\AdminCP;
 
+use App\Enum\UserRole;
+
+use App\Entity\User;
+
 use App\Account;
 use App\FlashMessage;
+
+use Slim\Csrf\Guard;
 use Doctrine\ORM\EntityManager;
+use Twig\Environment as TwigEnvironment;
+
+use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Twig\Environment as TwigEnvironment;
-use Slim\Csrf\Guard;
-use App\Entity\User;
-use App\Enum\UserRole;
 
 class AdminUsersController {
 
@@ -264,16 +269,18 @@ class AdminUsersController {
 
         // Check for valid CSRF token
         $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if($valid){
-
-            $user = $em->getRepository(User::class)->find($id);
-            if($user){
-
-                $em->remove($user);
-                $em->flush();
-                $flash->success('User successfully removed!');
-            }
+        if(!$valid){
+            throw new HttpNotFoundException($request);
         }
+
+        $user = $em->getRepository(User::class)->find($id);
+        if(!$user){
+            throw new HttpNotFoundException($request);
+        }
+
+        $em->remove($user);
+        $em->flush();
+        $flash->success('User successfully removed!');
 
         $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
         return $response;

@@ -46,31 +46,52 @@ class FetchStableCommand extends Command
             return Command::FAILURE;
         }
 
+        $new_release = null;
+
         foreach($gh_releases as $gh_release){
+
+            // Make sure github release data is valid
+            if(empty($gh_release->tag_name) || empty($gh_release->assets) || empty($gh_release->assets[0]->browser_download_url)){
+                $output->writeln("[-] Invalid github release data...");
+                continue;
+            }
 
             $tag = (string) $gh_release->tag_name;
             $output->writeln("[>] Checking if exists locally: {$tag}");
 
+            // Check if release already exists in DB
             $db_release = $this->em->getRepository(GithubRelease::class)->findOneBy(['tag' => $tag]);
             if($db_release){
+                $output->writeln("[>] {$tag} already exists");
                 continue;
             }
 
-            if(empty($gh_release->assets) || empty($gh_release->assets[0]->browser_download_url)){
-                continue;
-            }
-
-            $release = new GithubRelease();
-            $release->setTag($tag);
-            $release->setName($gh_release->name);
-            $release->setTimestamp(new \DateTime($gh_release->published_at));
-            $release->setDownloadUrl($gh_release->assets[0]->browser_download_url);
-            $release->setSizeInBytes($gh_release->assets[0]->size);
-
-            $this->em->persist($release);
+            // Add release to DB
+            $github_release = new GithubRelease();
+            $github_release->setTag($tag);
+            $github_release->setName($gh_release->name);
+            $github_release->setTimestamp(new \DateTime($gh_release->published_at));
+            $github_release->setDownloadUrl($gh_release->assets[0]->browser_download_url);
+            $github_release->setSizeInBytes($gh_release->assets[0]->size);
+            $this->em->persist($github_release);
             $this->em->flush();
 
+            // Remember latest new release
+            if($new_release === null || $github_release->getTimestamp() > $new_release->getTimestamp()) {
+                $new_release = $github_release;
+            }
+
             $output->writeln("[+] {$tag} ADDED!");
+        }
+
+        // Update workshop items with a minimum game build set to alpha patch to the new stable version
+        if($new_release !== null){
+            $query_builder = $this->em->getConnection()->createQueryBuilder();
+            $query_builder
+                ->update('workshop_item')
+                ->where('min_game_build = -1')
+                ->set('min_game_build', $new_release->getId());
+            $query_builder->executeQuery();
         }
 
         return Command::SUCCESS;

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Workshop;
 
 use App\Entity\GithubRelease;
 use App\Entity\User;
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
 
-use App\Enum\WorkshopType;
+use App\Enum\WorkshopCategory;
 
 use App\FlashMessage;
 use App\Config\Config;
@@ -31,7 +31,7 @@ class WorkshopBrowseController {
 
         $url_params = [];
 
-        $criteria  = ['is_accepted' => true];
+        $criteria  = ['is_published' => true];
         $order_by  = null;
         $offset    = 0;
         $limit     = 40;
@@ -39,10 +39,19 @@ class WorkshopBrowseController {
         $submitter = null;
         $org_author = null;
 
-        $page = (int)($q['page'] ?? 1);
+        $page = $q['page'] ?? 1;
+        if(!\is_numeric($page)){
+            $page = 1;
+        }
+        $page = (int) $page;
+
+        $order_by_param = $q['order_by'] ?? '';
+        if(!\is_string($order_by_param)){
+            $order_by_param = 'latest';
+        }
 
         // Decide 'ORDER BY'
-        switch(\strtolower((string)($q['order_by'] ?? ''))){
+        switch(\strtolower($order_by_param)){
             case 'name':
                 $order_by = ['name' => 'ASC'];
                 $url_params['order_by'] = 'name';
@@ -57,14 +66,22 @@ class WorkshopBrowseController {
                 break;
             default:
             case 'latest':
-                $order_by = ['created_timestamp' => 'DESC'];
-                $url_params['order_by'] = 'latest';
+                $order_by = ['creation_orderby_timestamp' => 'DESC'];
+                // $url_params['order_by'] = 'latest'; // This is the default, so it should not be present in the URL
                 break;
         }
 
         // Create query for total workshop item count
         $query = $em->getRepository(WorkshopItem::class)->createQueryBuilder('a')
-            ->where('a.is_accepted = 1');
+            ->where('a.is_published = 1');
+
+
+        // Add category criteria
+        if(isset($q['category']) && \is_numeric($q['category'])){
+            $criteria['category']   = $q['category'];
+            $url_params['category'] = $q['category'];
+            $query                  = $query->andWhere('a.category = :category')->setParameter('category', $q['category']);
+        }
 
         // Add user criteria
         if(isset($q['user']) && \is_string($q['user'])){
@@ -84,7 +101,7 @@ class WorkshopBrowseController {
                     $flash->warning('User not found.');
                     $response->getBody()->write(
                         $twig->render('workshop/alert.workshop.html.twig', [
-                            'types'          => WorkshopType::cases(),
+                            'categories'          => WorkshopCategory::cases(),
                             'tags'           => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
                             'builds'         => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
                         ])
@@ -92,10 +109,12 @@ class WorkshopBrowseController {
                     return $response;
                 }
 
-                $criteria['submitter'] = $user;
-                $query                 = $query->andWhere('a.submitter = ' . $user->getId());
-                $submitter             = $user->getUsername();
-                $url_params['user']    = $user->getUsername();
+                $criteria['submitter']       = $user;
+                $criteria['original_author'] = null;
+                $query                       = $query->andWhere('a.submitter = ' . $user->getId());
+                $query                       = $query->andWhere('a.original_author IS NULL');
+                $submitter                   = $user->getUsername();
+                $url_params['user']          = $user->getUsername();
             }
         }
 
@@ -222,14 +241,14 @@ class WorkshopBrowseController {
         // Render view
         $response->getBody()->write(
             $twig->render('workshop/browse.workshop.html.twig', [
-                'workshop_items'           => $workshop_items,
-                'types'                    => WorkshopType::cases(),
-                'types_without_difficulty' => Config::get('app.workshop.item_types_without_difficulty'),
-                'tags'                     => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-                'builds'                   => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
-                'pagination'               => $pagination,
-                'submitter'                => $submitter,
-                'org_author'               => $org_author,
+                'workshop_items'                => $workshop_items,
+                'categories'                    => WorkshopCategory::cases(),
+                'categories_without_difficulty' => Config::get('app.workshop.item_categories_without_difficulty'),
+                'tags'                          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+                'builds'                        => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
+                'pagination'                    => $pagination,
+                'submitter'                     => $submitter,
+                'org_author'                    => $org_author,
             ])
         );
 

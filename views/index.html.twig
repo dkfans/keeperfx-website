@@ -150,11 +150,67 @@
             </div>
         </div>
 
+        {# Latest workshop items #}
+        {% if latest_workshop_items|length > 0  %}
+            <div class="content-box bg-keeper bd-keeper">
+                <div class="content-header">
+                    <h2>Latest workshop items</h2>
+                </div>
+                <div class="content-body" style="padding-top: 10px;">
+                    {% for item in latest_workshop_items %}
+                        <div class="workshop-grid-item" style="margin-top: 10px;">
+
+                            {# Thumbnail #}
+                            <div class="workshop-grid-item-image-container">
+                                <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                    {% if item.images|length > 0 %}
+                                        <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}" />
+                                    {% else %}
+                                        <img src="/img/horny-face.png" />
+                                    {% endif %}
+                                </a>
+                            </div>
+
+                            <div class="workshop-grid-item-info">
+
+                                {# Title #}
+                                <div class="workshop-grid-item-title">
+                                    <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                        {{ item.name }}
+                                    </a>
+                                </div>
+
+                                {# Info #}
+                                <div class="row" style="margin-top: 10px;">
+
+                                    <div class="col-12">
+
+                                        {# Type #}
+                                        {# <span class="text-warning"> #}
+                                        <span style="margin-top: 2px; display: block; margin-bottom: 5px">
+                                            {{ item.category.name|enum_beautify }}
+                                        </span>
+
+                                        {# User or Original Author #}
+                                        {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: true} %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <div style="padding-top: 16px; text-align: left;">
+                        <a href="/workshop/browse" style="margin: 0 auto;">Browse workshop</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
         {# Forum Threads #}
         {% if forum_threads|length > 0  %}
             <div class="content-box bg-keeper bd-keeper">
                 <div class="content-header">
-                    <h2>Latest Forum Activity</h2>
+                    <h2>Forum Activity</h2>
                 </div>
                 <div class="content-body">
                     {% for thread in forum_threads %}

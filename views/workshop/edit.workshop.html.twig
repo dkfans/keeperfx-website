@@ -4,25 +4,29 @@
 
 {% block workshop_content %}
 
-    <div class="alert alert-info">
-        Updating your workshop item will temporary remove it until the new version has been accepted by the KeeperFX team.
-    </div>
-
     <div class="content-box bg-keeper bd-keeper">
+
         <div class="content-header">
-            <h2>Workshop Item: {{ workshop_item.name }}</h2>
+            <div class="d-flex justify-content-between">
+                <h2>Edit workshop item: {{ workshop_item.name }}</h2>
+                <div>
+                    <a href="/workshop/edit/{{ workshop_item.id }}/files">Edit files</a>
+                    <span style="margin: 0 3px" class="text-muted"> • </span>
+                    <a href="/workshop/item/{{ workshop_item.id }}/{{ workshop_item.name|slugify }}">Back to workshop item</a>
+                </div>
+            </div>
         </div>
 
         <div class="content-body">
 
-            <form action="/workshop/edit/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data">
+            <form action="/workshop/edit/{{ workshop_item.id }}" method="POST" enctype="multipart/form-data" id="edit-item-form">
 
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
 
-                <div class="row" style="margin-bottom: 25px;">
+                <div class="row" style="margin-bottom: 50px;">
 
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label for="name">
                                 Name
@@ -33,32 +37,30 @@
                             <input type="text" class="form-control" id="name" name="name" value="{{ workshop_item.name }}" required>
                         </div>
                     </div>
+                </div>
+
+                <div class="row" style="margin-bottom: 50px;">
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="type">
-                                Type
+                            <label for="category">
+                                Category
                                 <span class="text-danger">
                                     *
                                 </span>
                             </label>
-                            <select class="form-control form-select" id="type" name="type" required>
-                                <option value="" disabled hidden>Choose the type of this item</option>
-                                {% if types|length > 0 %}
-                                    {% for type in types %}
-                                        <option value="{{ type.value }}" {% if type.value == workshop_item.type.value %}selected=selected{% endif %}>
-                                            {{ type.name|enum_beautify }}
+                            <select class="form-control form-select" id="category" name="category" required>
+                                <option value="" disabled hidden>Choose the category of this item</option>
+                                {% if workshop_globals.categories|length > 0 %}
+                                    {% for category in workshop_globals.categories %}
+                                        <option value="{{ category.value }}" {% if category.value == workshop_item.category.value %}selected=selected{% endif %}>
+                                            {{ category.name|enum_beautify }}
                                         </option>
                                     {% endfor %}
                                 {% endif %}
                             </select>
                         </div>
                     </div>
-                </div>
-
-                <div class="row" style="margin-bottom: 25px;">
-
-                    <div class="col-md-6"></div>
 
                     <div class="col-md-6">
                         <div class="form-group">
@@ -69,10 +71,11 @@
                                 </span>
                             </label>
                             <select class="form-control form-select" id="min_game_build" name="min_game_build">
-                                <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="-1"></option>
-                                {% if builds|length > 0 %}
-                                    {% for build in builds %}
-                                        <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild.id == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
+                                <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="0"></option>
+                                <option {% if workshop_item.minGameBuild == -1 %}selected=selected{% endif %} value="-1">Lastest alpha patch</option>
+                                {% if workshop_globals.stable_builds|length > 0 %}
+                                    {% for build in workshop_globals.stable_builds %}
+                                        <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
                                     {% endfor %}
                                 {% endif %}
                             </select>
@@ -80,98 +83,46 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 40px; {% if workshop_item.category.value !=  10 %}display:none;{% endif %}" id="map-number-box">
+                    <div class="col-md-12">
                         <div class="form-group">
-                            <label for="file">File</label>
-                            <p id="file">
-                                <a href="/workshop/download/{{ workshop_item.id }}/{{ workshop_item.filename|url_encode }}?no_download_increment" download>{{ workshop_item.filename }}</a>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="file">
-                                Update file
+                            <label for="map_number">
+                                Map number
+                                <span class="text-danger">
+                                    *
+                                </span>
+                                <span class="text-muted">
+                                    (between 202 and 32767)
+                                </span>
                             </label>
-                            <input type="file" class="form-control" id="file" name="file">
+
+                            <div id="map-number-loader" class="spinner-border text-muted" role="status"
+                                style="height: 16px; width: 16px; font-size: 8px; position: relative; float: right; top: 46px; right: 15px; display: none;"
+                            ></div>
+
+                            <input type="text" class="form-control" id="map_number" name="map_number" value="{{ workshop_item.mapNumber }}"
+                                min="202" max="32767" step="1" pattern="\d+"
+                                oninput="this.value= ['','-'].includes(this.value) ? this.value : this.value|0"
+                                />
+                        </div>
+                        <div class="alert bg-dark" style="margin-top: 15px;">
+                            Your map should have a unique map number. This is required so there are no conflicts with other maps.
+                            This is done because of the old game engine working with numbers and it allows players to track their completion of maps in-game.
+                            Make sure the filenames of your map match an available number and have 5 numbers in total. Example: <strong>map00001</strong>.
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Thumbnail</label>
-                            {% if workshop_item.thumbnail is null %}
-                                <p>
-                                    No thumbnail
-                                </p>
-                            {% else %}
-                                <div class="workshop-item-thumbnail bd-keeper">
-                                    <img src="/workshop/thumbnail/{{ workshop_item.id }}/{{ workshop_item.thumbnail }}" />
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="thumbnail">
-                                Update thumbnail
-                            </label>
-                            <input type="file" class="form-control" id="thumbnail" name="thumbnail">
-                        </div>
-                        {% if workshop_item.thumbnail is not null %}
-                            <p style="margin-top: 15px;">
-                                <a href="/workshop/edit/{{ workshop_item.id }}/thumbnail/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove thumbnail</a>
-                            </p>
-                        {% endif %}
-                    </div>
-                </div>
+                <!-- TODO: hide on mobile -->
+                <div class="row" style="margin-bottom: 50px; display: none;" id="image-uploader">
 
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="screenshots">Screenshots</label>
+                    <div class="col-md-12">
+                        <span class="label">
+                            Images
+                        </span>
 
-                            {% if screenshots|length == 0 %}
-                                <p>
-                                    No screenshots
-                                </p>
-                            {% else %}
-                                <div class="workshop-screenshots" id="workshop-screenshots">
-                                    {% for screenshot in screenshots %}
-                                        <div class="workshop-screenshot">
-                                            <a href="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}"
-                                                data-pswp-width="{{ screenshot.width }}"
-                                                data-pswp-height="{{ screenshot.height }}"
-                                                data-cropped="true"
-                                                class="workshop-screenshot-item"
-                                                target="_blank">
-                                                    <img src="/workshop/screenshot/{{ workshop_item.id }}/{{ screenshot.filename }}" alt="" />
-                                            </a>
-                                            {# Delete screenshot #}
-                                            <a
-                                                href="/workshop/edit/{{ workshop_item.id }}/screenshot/delete/{{ screenshot.filename }}/{{ csrf.name }}/{{ csrf.value|url_encode }}"
-                                                onclick="if (confirm('Delete this screenshot?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
-                                                class="btn-medieval"
-                                                style="display: inline-block; position: relative; top: -98px; right: -78px;  width: 20px; height: 20px;"
-                                                alt="Remove screenshot" title="Remove screenshot">
-                                                <ion-icon name="close-outline" style="margin-left: 2px;" alt="Remove" title="Remove"></ion-icon>
-                                            </a>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="file">
-                                Add screenshot(s)
-                            </label>
-                            <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
-                        </div>
+                        <div class="image-widget-container" style="margin-top: 10px;" id="image-widget-container"></div>
+                        <input type="hidden" name="image-widget" id="image-widget" />
                     </div>
                 </div>
 
@@ -185,7 +136,7 @@
                     <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 50px;">
                     <label for="install_instructions">
                         Installation instructions
                         <span class="text-muted">
@@ -195,9 +146,41 @@
                     <textarea class="form-control" name="install_instructions" rows="4">{{ workshop_item.installInstructions }}</textarea>
                 </div>
 
-                <div class="row" style="margin-top: 25px; margin-bottom: 30px;">
+                <div class="row" style="margin-bottom: 25px; {% if workshop_item.category in workshop_globals.categories_without_difficulty %}display:none;{% endif %}" id="difficulty-rating-box">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="enable_difficulty_rating" id="difficulty-rating" {% if workshop_item.difficultyRatingEnabled %}checked=checked{% endif %}>
+                                <label class="form-check-label" for="difficulty-rating">
+                                    Enable difficulty rating
+                                    <span data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Allow people to rate the difficulty of this item.">
+                                        <ion-icon name="information-circle-outline" class="text-info" style="position: relative; top: 3px;"></ion-icon>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 25px;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input" type="checkbox" name="is_not_original_author" id="is_not_original_author"
+                                    {% if workshop_item.originalAuthor is not null %}checked=checked{% endif %}
+                                >
+                                <label class="form-check-label" for="is_not_original_author">
+                                    Optional: I am not the original author of this item
+                                    <span data-bs-toggle="popover" data-bs-placement="top" data-bs-content="If you are not the original author of this workshop item, you can add their name to give credit.">
+                                        <ion-icon name="information-circle-outline" class="text-info" style="position: relative; top: 3px;"></ion-icon>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6" style="margin-top: 15px; {% if workshop_item.originalAuthor is null %}display:none;{% endif %}" id="original_author_box">
                         <div class="form-group">
                             <label for="original_author">
                                 Original Author
@@ -208,8 +191,28 @@
                             <input type="text" class="form-control" id="original_author" name="original_author" value="{{ workshop_item.originalAuthor }}">
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 25px;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input" type="checkbox" name="is_not_creationdate" id="is_not_original_creationdate"
+                                    {% if workshop_item.originalCreationDate is not null %}checked=checked{% endif %}
+                                >
+                                <label class="form-check-label" for="is_not_original_creationdate">
+                                    Optional: I would like to define a different creation date for this item
+                                    <span data-bs-toggle="popover" data-bs-placement="top"
+                                        data-bs-content="If you made this content in the past, or it was made by somebody else, you can enable this and define the original creation date.">
+                                            <ion-icon name="information-circle-outline" class="text-info" style="position: relative; top: 3px;"></ion-icon>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6" style="margin-top: 15px; {% if workshop_item.originalCreationDate is null %}display:none;{% endif %}" id="original_creationdate_box">
                         <div class="form-group">
                             <label for="original_creation_date">
                                 Original Creation Date
@@ -217,21 +220,31 @@
                                     (Optional)
                                 </span>
                             </label>
-                            <div class="input-group mb-3">
-                                <input type="date" class="form-control" id="original_creation_date" name="original_creation_date"
-                                    value="{% if workshop_item.originalCreationDate %}{{ workshop_item.originalCreationDate|date('Y-m-d') }}{% endif %}">
-                                <button class="btn btn-outline-secondary" type="button" onclick="javascript:original_creation_date.value=''">Clear</button>
-                            </div>
+                            <input type="date" class="form-control" id="original_creation_date" name="original_creation_date" value="{{ workshop_item.originalCreationDate|date('Y-m-d') }}">
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <input type="submit" class="btn btn-medieval" value="Save" />
+                <div class="form-group pull-right">
+                    <a
+                        class="btn btn-medieval btn-medieval-gray" style="margin-right: 10px;"
+                        href="/workshop/edit/{{ workshop_item.id }}/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}"
+                        id="deleteWorkshopItem"
+                    >
+                        Delete
+                    </a>
+                    <input type="submit" class="btn btn-medieval" value="Save workshop item" />
                 </div>
 
             </form>
         </div>
     </div>
 
+{% endblock %}
+
+
+{% block body_javascript %}
+    <script>var imageWidgetData = {{ image_widget_data|json_encode|raw }};</script>
+    <script src="{{ asset('js/workshop.js') }}"></script>
+    <script src="{{ asset('js/image-widget.js') }}"></script>
 {% endblock %}

@@ -36,6 +36,8 @@ body {
     --bs-popover-bg: #090909 !important;
     --bs-popover-body-color: #fff;
     --bs-popover-border-radius: 0 !important;
+
+    --bs-alert-color: #fff !important;
 }
 
 ul {
@@ -436,6 +438,24 @@ input:focus {
     box-shadow: none;
 }
 
+.form-control::file-selector-button {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    height: 44px;
+    margin-bottom: -10px;
+    margin-top: -10px;
+    margin-right: 15px;
+    color: #fff;
+    background-color: #121212 !important;
+    border-right: 1px solid #424242;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.form-control:hover::file-selector-button {
+    filter: brightness(1.3);
+}
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -496,6 +516,17 @@ footer {
     background: url(../img/bg-button.png) repeat;
 }
 
+.btn-disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.btn-disabled:hover {
+    cursor: default;
+    color: inherit;
+    background-color: inherit;
+}
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -520,6 +551,11 @@ footer {
     color: orangered;
 }
 
+.label {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -532,35 +568,6 @@ footer {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-.workshop-screenshots {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.workshop-screenshot {
-    height: 100px;
-    width: 100px;
-    margin: 3px;
-    border: 1px solid black;
-    background-image: url(/img/bg-black.png);
-}
-
-.workshop-screenshot img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    aspect-ratio: 1;
-}
-
-.workshop-item-thumbnail {
-    background-image: url(/img/bg-black.png);
-}
-
-.workshop-item-thumbnail img {
-    width: 100%;
-    height: 100%;
-}
-
 .workshop-item-title {
     font-family: inherit;
     border-bottom: 0 !important;
@@ -569,6 +576,11 @@ footer {
 .workshop-info-box {
     background-color: rgba(6, 6, 6, 0.666);
     border: 2px solid #333;
+}
+
+.workshop-info-box+.workshop-info-box,
+.workshop-file-list-box+.workshop-info-box {
+    margin-top: 30px;
 }
 
 .workshop-item-comment {
@@ -589,6 +601,52 @@ footer {
     margin-left: 30px;
     margin-right: 30px;
     margin-bottom: 20px; */
+}
+
+.workshop-item-images {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.workshop-item-image {
+    background-image: url(/img/bg-black.png);
+    aspect-ratio: 1;
+}
+
+.workshop-item-image img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    user-select: none;
+}
+
+.workshop-item-image:first-child {
+    grid-column: 1 / 4;
+    grid-row: 1 / 4;
+}
+
+#difficulty-rating-info .rating-remove,
+#quality-rating-info .rating-remove {
+    margin-left: 3px;
+    display: none;
+}
+
+#difficulty-rating-info:hover .rating-remove,
+#quality-rating-info:hover .rating-remove {
+    display: inline-block;
+}
+
+.btn-download-filename {
+    display: block;
+    position: relative;
+    top: -3px;
+    font-size: 14px;
+    font-family: 'Nunito';
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -834,6 +892,27 @@ a.user-link:hover span {
     padding: 20px 0px 20px 0px;
 }
 
+.nav-sidebar-sub {
+    margin: 5px 10px 0px 10px;
+    /* margin: 5px 0px 0px 0px; */
+    flex-direction: column;
+}
+
+.nav-sidebar-sub .nav-link {
+    background-color: rgba(35, 35, 35, 0.5);
+    padding: 5px 20px;
+}
+
+.nav-sidebar-sub .active {
+    background-color: rgba(135, 135, 135, 0.3);
+    font-weight: 600;
+    color: white;
+}
+
+.nav-sidebar-sub-container+.nav-link {
+    margin-top: 5px;
+}
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -861,8 +940,10 @@ a.user-link:hover span {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-a.username-link-org-author {
-    color: rgb(215, 197, 182);
+.username-link-org-author {
+    /* color: rgb(215, 197, 182); */
+    color: #e25130;
+    font-style: italic;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -906,4 +987,75 @@ a.username-link-org-author {
 
 .btn-oauth:hover {
     filter: brightness(1.3);
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.image-widget-container {
+    min-height: 250px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+}
+
+.image-widget-box {
+    border: 2px dashed #777777;
+    border-radius: 3px;
+    aspect-ratio: 1;
+}
+
+.image-widget-container .image-widget-box:not(.ui-sortable-helper):not(.image-widget-image-invisible):first-child {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+}
+
+.image-widget-image {
+    border: 1px solid #666;
+    position: relative;
+}
+
+.image-widget-image img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    user-select: none;
+}
+
+.image-widget-image-invisible {}
+
+.image-widget-upload-button {
+    /* Plus icon */
+    background: url('data:image/svg+xml,<svg color="hsl(0, 0%, 35%)" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 112v288M400 256H112"/></svg>') 50% 50% no-repeat;
+    background-size: 100px 100px;
+}
+
+.image-widget-upload-button:hover {
+    filter: brightness(1.5);
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.03)
+}
+
+.image-widget-container .ui-sortable-placeholder:first-child {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+}
+
+.image-widget-delete-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 10;
+    display: none;
+    border: 0;
+    width: 28px;
+    height: 28px;
+    fill: #ace63c;
+    filter: drop-shadow(1px 1px 1px rgb(255, 255, 255, 0.5));
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") 50% 50% no-repeat;
+}
+
+.image-widget-image:hover .image-widget-delete-button {
+    display: block;
 }

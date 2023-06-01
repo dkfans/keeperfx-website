@@ -101,14 +101,21 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
         // Moderate: WORKSHOP
         $group->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
-            $group->get('/list', [ModCP\ModerateWorkshopController::class, 'listIndex']);
-            $group->get('/add', [ModCP\ModerateWorkshopController::class, 'itemAddIndex']);
-            $group->post('/add', [ModCP\ModerateWorkshopController::class, 'itemAdd']);
-            $group->get('/{id:\d+}', [ModCP\ModerateWorkshopController::class, 'itemIndex']);
-            $group->post('/{id:\d+}', [ModCP\ModerateWorkshopController::class, 'itemUpdate']);
-            // $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [ModCP\ModerateWorkshopController::class, 'itemDelete']);
-            $group->get('/{id:\d+}/screenshot/delete/{filename}/{token_name}/{token_value:.+}', [ModCP\ModerateWorkshopController::class, 'deleteScreenshot']);
-            $group->get('/{id:\d+}/thumbnail/delete/{token_name}/{token_value:.+}', [ModCP\ModerateWorkshopController::class, 'deleteThumbnail']);
+            $group->get('/list', [ModCP\Workshop\ModerateWorkshopController::class, 'listIndex']);
+
+            $group->get('/upload', [ModCP\Workshop\ModerateWorkshopUploadController::class, 'index']);
+            $group->post('/upload', [ModCP\Workshop\ModerateWorkshopUploadController::class, 'upload']);
+
+            $group->get('/{id:\d+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'index']);
+            $group->post('/{id:\d+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'edit']);
+
+            $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [ModCP\Workshop\ModerateWorkshopEditController::class, 'delete']);
+
+            $group->get('/{item_id:\d+}/files', [ModCP\Workshop\ModerateWorkshopEditFilesController::class, 'index']);
+            $group->post('/{item_id:\d+}/files', [ModCP\Workshop\ModerateWorkshopEditFilesController::class, 'upload']);
+            $group->get('/{item_id:\d+}/files/{file_id:\d+}/delete/{token_name}/{token_value:.+}', [ModCP\Workshop\ModerateWorkshopEditFilesController::class, 'delete']);
+            $group->get('/{item_id:\d+}/files/{file_id:\d+}/move/{direction}/{token_name}/{token_value:.+}', [ModCP\Workshop\ModerateWorkshopEditFilesController::class, 'move']);
+            $group->post('/{item_id:\d+}/files/{file_id:\d+}/rename', [ModCP\Workshop\ModerateWorkshopEditFilesController::class, 'rename']);
         });
 
     })->add(AuthModCPMiddleware::class);
@@ -118,37 +125,52 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 // Workshop
 $app->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
 
-    // Public view and download
-    $group->get('/item/{id:\d+}[/{slug}]', [WorkshopController::class, 'itemIndex']);
-    $group->get('/download/{id:\d+}/{filename}', [WorkshopController::class, 'download']);
+    // Public view
+    $group->get('/item/{id:\d+}[/{slug}]', [Workshop\WorkshopItemController::class, 'itemIndex']);
 
-    // Screenshot & thumbnail fallbacks
+    // Download file
+    $group->get('/download/{item_id:\d+}/{file_id:\d+}/{filename}', [Workshop\WorkshopDownloadController::class, 'download']);
+
+    // Image fallbacks
     // These should be served by the webserver
-    $group->get('/screenshot/{id:\d+}/{filename}', [WorkshopController::class, 'outputScreenshot']);
-    $group->get('/thumbnail/{id:\d+}/{filename}', [WorkshopController::class, 'outputThumbnail']);
+    $group->get('/image/{id:\d+}/{filename}', [Workshop\WorkshopImageController::class, 'outputImage']);
 
     // Workshop item upload (LOGGED IN)
-    $group->get('/upload', [WorkshopController::class, 'uploadIndex'])->add(LoggedInMiddleware::class);
-    $group->post('/upload', [WorkshopController::class, 'upload'])->add(LoggedInMiddleware::class);
+    $group->get('/upload', [Workshop\WorkshopUploadController::class, 'uploadIndex'])->add(LoggedInMiddleware::class);
+    $group->post('/upload', [Workshop\WorkshopUploadController::class, 'upload'])->add(LoggedInMiddleware::class);
+    $group->get('/upload/map_number/{map_number:\d+}', [Workshop\WorkshopUploadController::class, 'checkMapNumber'])->add(LoggedInMiddleware::class);
 
-    // Workshop item edit (LOGGED IN)
-    $group->get('/edit/{id:\d+}', [WorkshopController::class, 'editIndex'])->add(LoggedInMiddleware::class);
-    $group->post('/edit/{id:\d+}', [WorkshopController::class, 'edit'])->add(LoggedInMiddleware::class);
-    $group->get('/edit/{id:\d+}/thumbnail/delete/{token_name}/{token_value:.+}', [WorkshopController::class, 'deleteThumbnail'])->add(LoggedInMiddleware::class);
-    $group->get('/edit/{id:\d+}/screenshot/delete/{filename}/{token_name}/{token_value:.+}', [WorkshopController::class, 'deleteScreenshot']);
+    // Workshop edit (LOGGED IN)
+    $group->group('/edit', function (RouteCollectorProxy $group) use ($container) {
+
+        // Workshop item edit
+        $group->get('/{id:\d+}', [Workshop\WorkshopEditController::class, 'editIndex']);
+        $group->post('/{id:\d+}', [Workshop\WorkshopEditController::class, 'edit']);
+        $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [Workshop\WorkshopEditController::class, 'delete']);
+
+        // Workshop file edit
+        $group->get('/{item_id:\d+}/files', [Workshop\WorkshopEditFilesController::class, 'index']);
+        $group->post('/{item_id:\d+}/files', [Workshop\WorkshopEditFilesController::class, 'upload']);
+        $group->get('/{item_id:\d+}/files/{file_id:\d+}/delete/{token_name}/{token_value:.+}', [Workshop\WorkshopEditFilesController::class, 'delete']);
+        $group->get('/{item_id:\d+}/files/{file_id:\d+}/move/{direction}/{token_name}/{token_value:.+}', [Workshop\WorkshopEditFilesController::class, 'move']);
+        $group->post('/{item_id:\d+}/files/{file_id:\d+}/rename', [Workshop\WorkshopEditFilesController::class, 'rename']);
+
+    })->add(LoggedInMiddleware::class);
 
     // Workshop item rate
-    $group->post('/rate/{id:\d+}/quality', [WorkshopItemRateController::class, 'rateQuality'])->add(LoggedInMiddleware::class);
-    $group->post('/rate/{id:\d+}/difficulty', [WorkshopItemRateController::class, 'rateDifficulty'])->add(LoggedInMiddleware::class);
+    $group->post('/rate/{id:\d+}/quality', [Workshop\WorkshopRatingController::class, 'rateQuality'])->add(LoggedInMiddleware::class);
+    $group->post('/rate/{id:\d+}/difficulty', [Workshop\WorkshopRatingController::class, 'rateDifficulty'])->add(LoggedInMiddleware::class);
+    $group->post('/rate/{id:\d+}/quality/remove', [Workshop\WorkshopRatingController::class, 'removeQualityRating'])->add(LoggedInMiddleware::class);
+    $group->post('/rate/{id:\d+}/difficulty/remove', [Workshop\WorkshopRatingController::class, 'removeDifficultyRating'])->add(LoggedInMiddleware::class);
 
     // Workshop item comment
-    $group->post('/item/{id:\d+}/comment', [WorkshopController::class, 'comment'])->add(LoggedInMiddleware::class);
+    $group->post('/item/{id:\d+}/comment', [Workshop\WorkshopCommentController::class, 'comment'])->add(LoggedInMiddleware::class);
 
     // Browse items
-    $group->get('/browse', [WorkshopBrowseController::class, 'browseIndex']);
+    $group->get('/browse', [Workshop\WorkshopBrowseController::class, 'browseIndex']);
 
     // Random workshop item
-    $group->get('/random/{item_type}', [WorkshopRandomController::class, 'navRandomItem']);
+    $group->get('/random/{item_category}', [Workshop\WorkshopRandomController::class, 'navRandomItem']);
 
     // Redirect '/workshop' to '/workshop/browse'
     $group->get('', function (Request $request, Response $response){

@@ -16,9 +16,8 @@
                 <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
 
-                <div class="row" style="margin-bottom: 25px;">
-
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 50px;">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label for="name">
                                 Name
@@ -26,46 +25,32 @@
                                     *
                                 </span>
                             </label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ get_post_var('name') }}" required>
                         </div>
                     </div>
+                </div>
 
+                <div class="row" style="margin-bottom: 50px;">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="type">
-                                Type
+                            <label for="category">
+                                Category
                                 <span class="text-danger">
                                     *
                                 </span>
                             </label>
-                            <select class="form-control form-select" id="type" name="type" required>
-                                <option value="" disabled selected hidden>Choose the type of this item</option>
-                                {% if types|length > 0 %}
-                                    {% for type in types %}
-                                        <option value="{{ type.value }}">
-                                            {{ type.name|enum_beautify }}
+                            <select class="form-control form-select" id="category" name="category" required>
+                                <option value="" disabled selected hidden>Choose the category of this item</option>
+                                {% if workshop_globals.categories|length > 0 %}
+                                    {% for category in workshop_globals.categories %}
+                                        <option value="{{ category.value }}">
+                                            {{ category.name|enum_beautify }}
                                         </option>
                                     {% endfor %}
                                 {% endif %}
                             </select>
                         </div>
                     </div>
-                </div>
-
-                <div class="row" style="margin-bottom: 25px;">
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="file">
-                                File
-                                <span class="text-danger">
-                                    *
-                                </span>
-                            </label>
-                            <input type="file" class="form-control" id="file" name="file" required>
-                        </div>
-                    </div>
-
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="min_game_build">
@@ -76,8 +61,9 @@
                             </label>
                             <select class="form-control form-select" id="min_game_build" name="min_game_build">
                                 <option selected="selected"></option>
-                                {% if builds|length > 0 %}
-                                    {% for build in builds %}
+                                <option value="-1">Latest KeeperFX alpha patch</option>
+                                {% if workshop_globals.stable_builds|length > 0 %}
+                                    {% for build in workshop_globals.stable_builds %}
                                         <option value="{{ build.id }}">
                                             {{ build.name }}
                                         </option>
@@ -88,31 +74,60 @@
                     </div>
                 </div>
 
-                <div class="row" style="margin-bottom: 25px;">
-
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 40px; display:none;" id="map-number-box">
+                    <div class="col-md-12">
                         <div class="form-group">
-                            <label for="thumbnail">
-                                Thumbnail
+                            <label for="map_number">
+                                Map number
+                                <span class="text-danger">
+                                    *
+                                </span>
                                 <span class="text-muted">
-                                    (Optional)
+                                    (between 202 and 32767)
                                 </span>
                             </label>
-                            <input type="file" class="form-control" id="thumbnail" name="thumbnail">
+
+                            <div id="map-number-loader" class="spinner-border text-muted" role="status"
+                                style="height: 16px; width: 16px; font-size: 8px; position: relative; float: right; top: 46px; right: 15px; display: none;"
+                            ></div>
+
+                            <input type="text" class="form-control" id="map_number" name="map_number" value="{{ get_post_var('map_number') }}"
+                                min="202" max="32767" step="1" pattern="\d+"
+                                oninput="this.value= ['','-'].includes(this.value) ? this.value : this.value|0"
+                                />
+                        </div>
+                        <div class="alert bg-dark" style="margin-top: 15px;">
+                            Your map should have a unique map number. This is required so there are no conflicts with other maps.
+                            This is done because of the old game engine working with numbers and it allows players to track their completion of maps in-game.
+                            Make sure the filenames of your map match an available number and have 5 numbers in total. Example: <strong>map00001</strong>.
                         </div>
                     </div>
+                </div>
 
+                <div class="row" style="margin-bottom: 50px;">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="screenshots">
-                                Screenshots
-                                (Multiple)
-                                <span class="text-muted">
-                                    (Optional)
+                            <label for="workshop-file">
+                                File
+                                <span class="text-danger">
+                                    *
                                 </span>
                             </label>
-                            <input type="file" class="form-control" id="screenshots" name="screenshots[]" multiple="multiple">
+                            <input type="file" class="form-control" id="workshop-file" name="file" required>
                         </div>
+                    </div>
+                </div>
+
+                <!-- TODO: hide on mobile -->
+                <div class="row" style="margin-bottom: 50px; display: none;" id="image-uploader">
+
+                    <div class="col-md-12">
+                        <span class="label">
+                            Images
+                        </span>
+
+                        <div class="image-widget-container" style="margin-top: 10px;" id="image-widget-container"></div>
+                        <input type="hidden" name="image-widget" id="image-widget" />
                     </div>
                 </div>
 
@@ -126,7 +141,7 @@
                     <textarea class="form-control" name="description" rows="6"></textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 50px;">
                     <label for="install_instructions">
                         Installation instructions
                         <span class="text-muted">
@@ -136,24 +151,67 @@
                     <textarea class="form-control" name="install_instructions" rows="4"></textarea>
                 </div>
 
-                <div class="row" style="margin-top: 25px; margin-bottom: 30px;">
+                <div class="row" style="margin-bottom: 25px; display:none;" id="difficulty-rating-box">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="enable_difficulty_rating" id="difficulty-rating">
+                                <label class="form-check-label" for="difficulty-rating">
+                                    Enable difficulty rating
+                                    <span data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Allow people to rate the difficulty of this item.">
+                                        <ion-icon name="information-circle-outline" class="text-info" style="position: relative; top: 3px;"></ion-icon>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 25px;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_not_original_author" id="is_not_original_author">
+                                <label class="form-check-label" for="is_not_original_author">
+                                    Optional: I am not the original author of this item
+                                    <span data-bs-toggle="popover" data-bs-placement="top" data-bs-content="If you are not the original author of this workshop item, you can add their name to give credit.">
+                                        <ion-icon name="information-circle-outline" class="text-info" style="position: relative; top: 3px;"></ion-icon>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6" style="margin-top: 15px; display:none;" id="original_author_box">
                         <div class="form-group">
                             <label for="original_author">
                                 Original Author
                                 <span class="text-muted">
                                     (Optional)
                                 </span>
-                                <span data-bs-toggle="popover" data-bs-placement="top" data-bs-content="If you are not the original author of this item, you can add their name to give credit.">
-                                    <ion-icon name="information-circle-outline" class="text-info" style="position: relative; top: 3px;"></ion-icon>
-                                </span>
                             </label>
                             <input type="text" class="form-control" id="original_author" name="original_author">
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-md-6">
+                <div class="row" style="margin-bottom: 35px;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_not_creationdate" id="is_not_original_creationdate">
+                                <label class="form-check-label" for="is_not_original_creationdate">
+                                    Optional: I would like to define a different creation date for this item
+                                    <span data-bs-toggle="popover" data-bs-placement="top"
+                                        data-bs-content="If you made this content in the past, or it was made by somebody else, you can enable this and define the original creation date.">
+                                            <ion-icon name="information-circle-outline" class="text-info" style="position: relative; top: 3px;"></ion-icon>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6" style="margin-top: 15px; display:none;" id="original_creationdate_box">
                         <div class="form-group">
                             <label for="original_creation_date">
                                 Original Creation Date
@@ -167,7 +225,7 @@
                 </div>
 
                 <div class="form-group">
-                    <input type="submit" class="btn btn-medieval" value="Submit" />
+                    <input type="submit" class="btn btn-medieval" value="Submit" id="submit" />
                 </div>
 
             </form>
@@ -178,69 +236,7 @@
 {% endblock %}
 
 {% block body_javascript %}
-    <script>
-
-        var popover = new bootstrap.Popover($('[data-bs-toggle="popover"]'), {trigger: 'hover'});
-
-        $(function(){
-
-            var fileFileSize = 0;
-            var thumbnailFileSize = 0;
-            var screenshotsTotalFileSize = 0;
-
-            // Item max upload filesize check
-            $('#file').on('change', function(){
-                fileFileSize = 0;
-                if(this.files[0].size > app_store.upload_limit.workshop_item.size){
-                    toastr.warning('File exceeds maximum filesize of ' + app_store.upload_limit.workshop_item.formatted);
-                    this.value = null;
-                } else {
-                    fileFileSize = this.files[0].size;
-                }
-            });
-
-            // Thumbnail max upload filesize check
-            $('#thumbnail').on('change', function(){
-                thumbnailFileSize = 0;
-                if(this.files[0].size > app_store.upload_limit.workshop_image.size){
-                    toastr.warning('Thumbnail exceeds maximum filesize of ' + app_store.upload_limit.workshop_image.formatted);
-                    this.value = null;
-                } else {
-                    thumbnailFileSize = this.files[0].size;
-                }
-            });
-
-            // Screenshots max upload filesize check
-            $('#screenshots').on('change', function(){
-                screenshotsTotalFileSize = 0;
-                var valid = true;
-                var totalUploadSize = 0;
-                $.each(this.files, function(index, file){
-                    totalUploadSize += file.size;
-                    if(file.size > app_store.upload_limit.workshop_image.size){
-                        toastr.warning('Image "' + file.name + '" exceeds maximum filesize of ' + app_store.upload_limit.workshop_image.formatted);
-                        valid = false;
-                    }
-                });
-                if(!valid){
-                    this.value = null;
-                    totalUploadSize = 0;
-                }
-                screenshotsTotalFileSize = totalUploadSize;
-            });
-
-            // Check total upload size on form submit
-            $('#upload-item-form').on('submit', function(e){
-                var totalUploadSize = fileFileSize + thumbnailFileSize + screenshotsTotalFileSize;
-                if(totalUploadSize > app_store.upload_limit.total.size){
-                    toastr.warning(
-                        'Maximum total upload size of ' + app_store.upload_limit.total.formatted + ' is exceeded. ' +
-                        'If you have many screenshots, try uploading the item without them and then add the screenshots later.'
-                    );
-                    e.preventDefault();
-                }
-            });
-
-        });
-    </script>
+    <script>var imageWidgetData = {};</script>
+    <script src="{{ asset('js/workshop.js') }}"></script>
+    <script src="{{ asset('js/image-widget.js') }}"></script>
 {% endblock %}

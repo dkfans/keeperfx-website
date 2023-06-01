@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Workshop;
 
-use App\Enum\WorkshopType;
+use App\Enum\WorkshopCategory;
 
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
@@ -18,44 +18,28 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class WorkshopRandomController {
 
-    private EntityManager $em;
-
-    public function __construct(EntityManager $em){
-        $this->em = $em;
-    }
-
-    private function getWorkshopOptions(): array
-    {
-        // TODO: improve the name of this function
-        return [
-            'types'  => WorkshopType::cases(),
-            'tags'   => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-            'builds' => $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
-        ];
-    }
-
     public function navRandomItem(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $item_type
+        $item_category
     ){
-        $type = match($item_type){
-            default    => WorkshopType::Map,
-            'map'      => WorkshopType::Map,
-            'campaign' => WorkshopType::Campaign,
+        $category = match($item_category){
+            default    => WorkshopCategory::Map,
+            'map'      => WorkshopCategory::Map,
+            'campaign' => WorkshopCategory::Campaign,
         };
 
         $workshop_items = $em->getRepository(WorkshopItem::class)->findBy(
-            ['is_accepted' => true, 'type' => $type->value]
+            ['is_published' => true, 'category' => $category->value]
         );
 
         if(empty($workshop_items)){
             $flash->warning('Random workshop item not found.');
             $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig', $this->getWorkshopOptions())
+                $twig->render('workshop/alert.workshop.html.twig')
             );
             return $response;
         }

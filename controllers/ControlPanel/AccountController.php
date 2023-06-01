@@ -88,7 +88,7 @@ class AccountController {
         $token_name,
         $token_value
     ){
-        // Check for valid logout request
+        // Make sure CSRF check is valid
         $valid = $csrf_guard->validateToken($token_name, $token_value);
         if(!$valid){
             $flash->error('Invalid CSRF token.');
@@ -164,8 +164,8 @@ class AccountController {
         // Check file extension
         $filename = $file->getClientFilename();
         $file_extension = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-        if(!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif'])){
-            $flash->warning('Invalid avatar image file. Allowed file types: jpg, jpeg, png, gif');
+        if(!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])){
+            $flash->warning('Invalid avatar image file. Allowed file types: jpg, jpeg, png, gif, webp');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
         }
@@ -232,7 +232,7 @@ class AccountController {
         $token_name,
         $token_value
     ){
-        // Check for valid logout request
+        // Check for valid CSRF check
         $valid = $csrf_guard->validateToken($token_name, $token_value);
         if(!$valid){
             $flash->error('Invalid CSRF token.');
@@ -283,7 +283,7 @@ class AccountController {
         $token_name,
         $token_value,
     ){
-        // Check for valid logout request
+        // Check for valid CSRF check
         $valid = $csrf_guard->validateToken($token_name, $token_value);
         if(!$valid){
             throw new HttpNotFoundException($request);

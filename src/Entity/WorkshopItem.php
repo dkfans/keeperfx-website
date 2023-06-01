@@ -2,10 +2,9 @@
 
 namespace App\Entity;
 
-use App\Enum\WorkshopType;
-use App\Entity\WorkshopRating;
-use Doctrine\ORM\Mapping as ORM;
+use App\Enum\WorkshopCategory;
 
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -27,11 +26,11 @@ class WorkshopItem {
     #[ORM\Column(nullable: true)]
     private int|null $map_number = null;
 
-    #[ORM\Column(type: 'integer', enumType: WorkshopType::class)]
-    private WorkshopType $type;
+    #[ORM\Column(type: 'integer', enumType: WorkshopCategory::class)]
+    private WorkshopCategory $category;
 
-    #[ORM\ManyToOne(targetEntity: GithubRelease::class)]
-    private GithubRelease|null $min_game_build = null;
+    #[ORM\Column(nullable: true)]
+    private int|null $min_game_build = null;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
@@ -39,20 +38,17 @@ class WorkshopItem {
     #[ORM\Column]
     private \DateTime $updated_timestamp;
 
-    #[ORM\Column(type: 'text')]
-    private string $description = '';
+    #[ORM\Column(type: 'text', nullable: true)]
+    private string|null $description = null;
 
-    #[ORM\Column(type: 'text')]
-    private string $install_instructions = '';
-
-    #[ORM\Column(nullable: true)]
-    private string|null $filename = null;
-
-    #[ORM\Column(nullable: true)]
-    private string|null $thumbnail = null;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private string|null $install_instructions = null;
 
     #[ORM\Column]
-    private bool $is_accepted = false;
+    private bool $is_published = false;
+
+    #[ORM\Column]
+    private bool $difficulty_rating_enabled = true;
 
     #[ORM\Column(type: 'integer')]
     private int $download_count = 0;
@@ -63,22 +59,36 @@ class WorkshopItem {
     #[ORM\Column(nullable: true)]
     private \DateTime|null $original_creation_date = null;
 
-    #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'item')]
+    #[ORM\OneToMany(targetEntity: WorkshopFile::class, mappedBy: 'item', cascade: ["remove"])]
+    #[ORM\OrderBy(["weight" => "ASC"])]
+    private Collection $files;
+
+    #[ORM\OneToMany(targetEntity: WorkshopImage::class, mappedBy: 'item', cascade: ["remove"])]
+    #[ORM\OrderBy(["weight" => "ASC"])]
+    private Collection $images;
+
+    #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'item', cascade: ["remove"])]
     private Collection $ratings;
 
     #[ORM\Column(type: "decimal", precision: 3, scale: 2, nullable: true)]
     private float|null $rating_score = null;
 
-    #[ORM\OneToMany(targetEntity: WorkshopDifficultyRating::class, mappedBy: 'item')]
+    #[ORM\OneToMany(targetEntity: WorkshopDifficultyRating::class, mappedBy: 'item', cascade: ["remove"])]
     private Collection $difficulty_ratings;
 
     #[ORM\Column(type: "decimal", precision: 3, scale: 2, nullable: true)]
     private float|null $difficulty_rating_score = null;
 
-    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'item')]
+    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'item', cascade: ["remove"])]
+    #[ORM\OrderBy(["created_timestamp" => "DESC"])]
     private Collection $comments;
 
+    #[ORM\Column]
+    private ?\DateTime $creation_orderby_timestamp = null;
+
     public function __construct() {
+        $this->files              = new ArrayCollection();
+        $this->images             = new ArrayCollection();
         $this->ratings            = new ArrayCollection();
         $this->difficulty_ratings = new ArrayCollection();
         $this->comments           = new ArrayCollection();
@@ -89,6 +99,10 @@ class WorkshopItem {
     {
         $this->created_timestamp = new \DateTime("now");
         $this->updated_timestamp = new \DateTime("now");
+
+        if($this->creation_orderby_timestamp === null){
+            $this->creation_orderby_timestamp = new \DateTime("now");
+        }
     }
 
     private function updateLastUpdatedTimestamp()
@@ -162,37 +176,37 @@ class WorkshopItem {
     }
 
     /**
-     * Get the value of is_accepted
+     * Get the value of is_published
      */
-    public function getIsAccepted(): bool
+    public function getIsPublished(): bool
     {
-        return $this->is_accepted;
+        return $this->is_published;
     }
 
     /**
-     * Set the value of is_accepted
+     * Set the value of is_published
      */
-    public function setIsAccepted(bool $is_accepted): self
+    public function setIsPublished(bool $is_published): self
     {
-        $this->is_accepted = $is_accepted;
+        $this->is_published = $is_published;
 
         return $this;
     }
 
     /**
-     * Get the value of type
+     * Get the value of category
      */
-    public function getType(): WorkshopType
+    public function getCategory(): WorkshopCategory
     {
-        return $this->type;
+        return $this->category;
     }
 
     /**
-     * Set the value of type
+     * Set the value of category
      */
-    public function setType(WorkshopType $type): self
+    public function setCategory(WorkshopCategory $category): self
     {
-        $this->type = $type;
+        $this->category = $category;
         $this->updateLastUpdatedTimestamp();
 
         return $this;
@@ -220,7 +234,7 @@ class WorkshopItem {
     /**
      * Get the value of min_game_build
      */
-    public function getMinGameBuild(): GithubRelease|null
+    public function getMinGameBuild(): int|null
     {
         return $this->min_game_build;
     }
@@ -228,7 +242,7 @@ class WorkshopItem {
     /**
      * Set the value of min_game_build
      */
-    public function setMinGameBuild(GithubRelease|null $min_game_build): self
+    public function setMinGameBuild(int|null $min_game_build): self
     {
         $this->min_game_build = $min_game_build;
         $this->updateLastUpdatedTimestamp();
@@ -239,7 +253,7 @@ class WorkshopItem {
     /**
      * Get the value of install_instructions
      */
-    public function getInstallInstructions(): string
+    public function getInstallInstructions(): string|null
     {
         return $this->install_instructions;
     }
@@ -247,7 +261,7 @@ class WorkshopItem {
     /**
      * Set the value of install_instructions
      */
-    public function setInstallInstructions(string $install_instructions): self
+    public function setInstallInstructions(string|null $install_instructions): self
     {
         $this->install_instructions = $install_instructions;
         $this->updateLastUpdatedTimestamp();
@@ -258,7 +272,7 @@ class WorkshopItem {
     /**
      * Get the value of description
      */
-    public function getDescription(): string
+    public function getDescription(): string|null
     {
         return $this->description;
     }
@@ -266,28 +280,9 @@ class WorkshopItem {
     /**
      * Set the value of description
      */
-    public function setDescription(string $description): self
+    public function setDescription(string|null $description): self
     {
         $this->description = $description;
-        $this->updateLastUpdatedTimestamp();
-
-        return $this;
-    }
-
-    /**
-     * Get the value of filename
-     */
-    public function getFilename(): string|null
-    {
-        return $this->filename;
-    }
-
-    /**
-     * Set the value of filename
-     */
-    public function setFilename(string $filename): self
-    {
-        $this->filename = $filename;
         $this->updateLastUpdatedTimestamp();
 
         return $this;
@@ -326,25 +321,6 @@ class WorkshopItem {
     public function setDownloadCount(int $download_count): self
     {
         $this->download_count = $download_count;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of thumbnail
-     */
-    public function getThumbnail(): ?string
-    {
-        return $this->thumbnail;
-    }
-
-    /**
-     * Set the value of thumbnail
-     */
-    public function setThumbnail(?string $thumbnail): self
-    {
-        $this->thumbnail = $thumbnail;
-        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
@@ -390,6 +366,13 @@ class WorkshopItem {
     public function setOriginalCreationDate(?\DateTime $original_creation_date): self
     {
         $this->original_creation_date = $original_creation_date;
+
+        if($original_creation_date === null){
+            $this->creation_orderby_timestamp = $this->created_timestamp;
+        } else {
+            $this->creation_orderby_timestamp = $original_creation_date;
+        }
+
         $this->updateLastUpdatedTimestamp();
 
         return $this;
@@ -445,5 +428,57 @@ class WorkshopItem {
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+
+    /**
+     * Get the value of files
+     */
+    public function getFiles(): Collection
+    {
+        return $this->files;
+    }
+
+    /**
+     * Get the value of images
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    /**
+     * Get the value of difficulty_rating_enabled
+     */
+    public function isDifficultyRatingEnabled(): bool
+    {
+        return $this->difficulty_rating_enabled;
+    }
+
+    /**
+     * Set the value of difficulty_rating_enabled
+     */
+    public function setDifficultyRatingEnabled(bool $difficulty_rating_enabled): self
+    {
+        $this->difficulty_rating_enabled = $difficulty_rating_enabled;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of creation_orderby_timestamp
+     */
+    public function getCreationOrderbyTimestamp(): \DateTime
+    {
+        return $this->creation_orderby_timestamp;
+    }
+
+    /**
+     * Set the value of creation_orderby_timestamp
+     */
+    public function setCreationOrderbyTimestamp(\DateTime $creation_orderby_timestamp): self
+    {
+        $this->creation_orderby_timestamp = $creation_orderby_timestamp;
+
+        return $this;
     }
 }

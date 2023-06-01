@@ -48,6 +48,7 @@ return [
         \App\Twig\Extension\PathTwigExtension::class,
         \App\Twig\Extension\RequestVarTwigExtension::class,
         \App\Twig\Extension\PregReplaceTwigExtension::class,
+        \App\Twig\Extension\WorkshopGlobalsTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
 

@@ -6,45 +6,97 @@
 
     <div class="content-box bd-keeper bg-keeper">
         <div class="content-header">
-            <h2>
-                {% if submitter != null %}
-                    <span class="text-special">{{ submitter }}</span>'s
-                {% endif %}
-                {% if org_author != null %}
-                    <span class="text-white">{{ org_author }}</span>'s
-                {% endif %}
-                Workshop items
-            </h2>
+            <div class="d-flex justify-content-between">
+                <h2>
+                    Workshop items
+                    {% if submitter is not null or org_author is not null %}
+                        by
+                        {% if submitter != null %}
+                            <span class="text-special">{{ submitter }}</span>
+                        {% endif %}
+                        {% if org_author != null %}
+                            <span class="username-link-org-author">{{ org_author }}</span>
+                        {% endif %}
+                    {% endif %}
+                    {% if get_query_param('category') and workshop_globals.categories_map[get_query_param('category')] is defined %}
+                        : {{ workshop_globals.categories_map[get_query_param('category')]|enum_beautify }}
+                    {% endif %}
+                </h2>
+                <div>
+                    {% if submitter != null or org_author != null %}
+                        <a href="/workshop/browse">Back to workshop browse</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
 
+        <div class="content-menu d-flex justify-content-between">
 
-        {% if workshop_items|length != 0 %}
-            <div class="content-menu d-flex justify-content-between">
+            <div class="d-flex" id="browse-filters">
 
-                <div class="" style="margin-top: 4px;">
-                    {# Pagination #}
-                    {% include 'workshop/_workshop_browse_pagination.html.twig' %}
+                {# Order by #}
+                <div class="dropdown me-2">
+                    {% if get_query_param('order_by') and get_query_param('order_by') is string %}
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Order by:
+                            {% if get_query_param('order_by') == 'latest' %}
+                                Latest
+                            {% elseif get_query_param('order_by') == 'most-downloaded' %}
+                                Most Downloaded
+                            {% elseif get_query_param('order_by') == 'highest-rated' %}
+                                Highest Rated
+                            {% elseif get_query_param('order_by') == 'name' %}
+                                Name
+                            {% endif %}
+                        </button>
+                    {% else %}
+                        <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Order by: Latest
+                        </button>
+                    {% endif %}
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        {% if get_query_param('order_by') %}
+                            <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="">Remove filter</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                        {% endif %}
+                        <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="latest">Latest</a></li>
+                        <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="most-downloaded">Most Downloaded</a></li>
+                        <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="highest-rated">Highest Rated</a></li>
+                        <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="name">Name</a></li>
+                    </ul>
                 </div>
 
-                <div class="">
-                    {# Order by #}
-                    <form method="GET">
-                        <span>Order by:</span>
-                        <select class="form-control form-select" id="order-by" name="order_by" style="width: inherit; display: inline-block;">
-                            <option value="latest" {% if get_query_param('order_by') == 'latest' %}selected=selected{% endif %}>Latest</option>
-                            <option value="most-downloaded" {% if get_query_param('order_by') == 'most-downloaded' %}selected=selected{% endif %}>Most Downloaded</option>
-                            <option value="highest-rated" {% if get_query_param('order_by') == 'highest-rated' %}selected=selected{% endif %}>Highest Rated</option>
-                            <option value="name" {% if get_query_param('order_by') == 'name' %}selected=selected{% endif %}>Name</option>
-                        </select>
-                        <noscript>
-                            <input class="btn btn-primary" type="submit" value="Change" style="display: inline-block;" />
-                        </noscript>
-                    </form>
-
-                </div>
+                {# Category #}
+                {# <div class="dropdown me-2">
+                    {% if get_query_param('category') and get_query_param('category') is string and workshop_globals.categories_map[get_query_param('category')] is defined %}
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Category:
+                            {{ workshop_globals.categories_map[get_query_param('category')]|enum_beautify }}
+                        </button>
+                    {% else %}
+                        <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Category
+                        </button>
+                    {% endif %}
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        {% if get_query_param('category') %}
+                            <li><a class="dropdown-item" href="#" data-browse-filter-type="category" data-browse-filter-value="">Remove filter</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                        {% endif %}
+                        {% for category in categories %}
+                            <li><a class="dropdown-item" href="#" data-browse-filter-type="category" data-browse-filter-value="{{ category.value }}">{{ category.name|enum_beautify }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div> #}
 
             </div>
-        {% endif %}
+
+            <div class="" style="margin-top: 4px;">
+                {# Pagination #}
+                {% include 'workshop/_workshop_browse_pagination.html.twig' %}
+            </div>
+
+        </div>
 
         <div class="content-body" style="padding-top: 0px;">
 
@@ -61,8 +113,8 @@
                         {# Thumbnail #}
                         <div class="workshop-grid-item-image-container">
                             <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
-                                {% if item.thumbnail is not null %}
-                                    <img src="/workshop/thumbnail/{{ item.id }}/{{ item.thumbnail }}" />
+                                {% if item.images|length > 0 %}
+                                    <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}" />
                                 {% else %}
                                     <img src="/img/horny-face.png" />
                                 {% endif %}
@@ -86,7 +138,7 @@
                                     {# Type #}
                                     {# <span class="text-warning"> #}
                                     <span style="margin-top: 2px; display: block; margin-bottom: 5px">
-                                        {{ item.type.name|enum_beautify }}
+                                        {{ item.category.name|enum_beautify }}
                                     </span>
 
                                     {# User or Original Author #}
@@ -102,7 +154,7 @@
                                     {% endif %}
 
                                     {# Difficulty Rating #}
-                                    {% if item.difficultyRatingScore is not null and item.type not in types_without_difficulty %}
+                                    {% if item.difficultyRatingEnabled and item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
                                         {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
                                     {% endif %}
 
@@ -151,33 +203,8 @@
 
     </div>
 
-<script>
-    $(function(){
+{% endblock %}
 
-        var queryParams = new URLSearchParams(location.search);
-
-        $('#order-by').on('change', function(e){
-            queryParams.set('order_by', $(this).val());
-            queryParams.delete('page');
-            window.location.href = '/workshop/browse?' + queryParams.toString();
-        });
-
-
-        $.each($('span[data-workshop-rating-score]'), function(index, element){
-
-            let ratingType = $(this).attr('data-workshop-rating-type');
-            ratingType = ratingType.charAt(0).toUpperCase() + ratingType.slice(1);
-
-            let string = ratingType + ' rating: ' + $(this).attr('data-workshop-rating-score');
-
-            new bootstrap.Popover(element, {
-                'placement': 'top',
-                'trigger': 'hover',
-                'content': string,
-                'offset': '5px'
-            });
-        });
-    });
-</script>
-
+{% block body_javascript %}
+    <script src="{{ asset('js/workshop.js') }}"></script>
 {% endblock %}
