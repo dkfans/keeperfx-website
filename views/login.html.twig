@@ -10,6 +10,8 @@
 
         <h2 class="login-title">Login</h2>
 
+        {{ render_flash_messages() }}
+
         <p style="margin: 0; padding: 0 0 5px 5px;">
             Connect with
         </p>
@@ -31,8 +33,6 @@
             <span>Or use your local account</span>
             <hr />
         </div>
-
-        {{ render_flash_messages() }}
 
         <form method="POST">
 
