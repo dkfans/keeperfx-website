@@ -117,11 +117,11 @@
             <a href="/privacy-policy">Privacy Policy</a>
             {% if globals.web_git_hash is defined and globals.web_git_hash is not empty %}
                 <br />
-                <span class="text-footer" style="display: block; font-size: 12px;">
+                <span class="text-footer" style="display: block; font-size: 11px;">
                     Website version:
                     <a href="{{ get_env('APP_GITHUB_REPO_URL') }}/commit/{{ globals.web_git_hash.long }}" target="_blank">
                         {{ globals.web_git_hash.short }}
-                        <ion-icon name="open-outline" class="outgoing" style="font-size: 13px;"></ion-icon>
+                        <ion-icon name="open-outline" class="outgoing" style="font-size: 11px;"></ion-icon>
                     </a>
                 </span>
             {% endif %}
