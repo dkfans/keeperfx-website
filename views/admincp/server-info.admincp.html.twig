@@ -15,10 +15,18 @@
         <table class="table">
             <tr>
                 <td>
-                    Workshop total storage size
+                    Workshop total files
                 </td>
                 <td class="text-info">
-                    {{ workshop_storage_size|format_bytes }}
+                    {{ workshop_file_count }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Workshop total file storage size
+                </td>
+                <td class="text-info">
+                    {{ workshop_file_storage_size|format_bytes }}
                 </td>
             </tr>
         </table>

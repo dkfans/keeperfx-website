@@ -2,6 +2,8 @@
 
 namespace App\Controller\AdminCP;
 
+use App\Entity\GithubAlphaBuild;
+use App\Entity\WorkshopFile;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
@@ -22,36 +24,30 @@ class AdminServerInfoController {
         $php_memory_limit          = (int)(\ini_get('memory_limit')) * 1024 * 1024;
         $upload_calculated_minimum = \min($php_max_upload, $php_max_post, $php_memory_limit);
 
-        // Alpha build vars
-        $alpha_build_count = 0;
+        // Get alpha builds size
         $alpha_build_storage_size = 0;
-        $alpha_build_storage_path = $_ENV['APP_ALPHA_PATCH_STORAGE'];
-
-        // Check if alpha build dir exists
-        if(!\is_dir($alpha_build_storage_path)){
-            return $response;
+        $alpha_builds = $em->getRepository(GithubAlphaBuild::class)->findAll();
+        if($alpha_builds){
+            foreach($alpha_builds as $alpha_build) {
+                $alpha_build_storage_size += $alpha_build->getSizeInBytes();
+            }
         }
 
-        // Get count and size of alpha builds
-        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($alpha_build_storage_path)) as $file) {
-            $alpha_build_count++;
-            $alpha_build_storage_size += $file->getSize();
-        }
-
-        // Get size for workshop
-        $workshop_storage_size = 0;
-        $workshop_storage = $_ENV['APP_WORKSHOP_STORAGE'];
-        if(\is_dir($workshop_storage)){
-            foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($workshop_storage)) as $file) {
-                $workshop_storage_size += $file->getSize();
+        // Get workshop files total storage size
+        $workshop_file_storage_size = 0;
+        $workshop_files = $em->getRepository(WorkshopFile::class)->findAll();
+        if($workshop_files){
+            foreach($workshop_files as $workshop_file) {
+                $workshop_file_storage_size += $workshop_file->getSize();
             }
         }
 
         $response->getBody()->write(
             $twig->render('admincp/server-info.admincp.html.twig', [
-                'alpha_build_count'             => $alpha_build_count,
+                'alpha_build_count'             => \count($alpha_builds),
                 'alpha_build_storage_size'      => $alpha_build_storage_size,
-                'workshop_storage_size'         => $workshop_storage_size,
+                'workshop_file_count'           => \count($workshop_files),
+                'workshop_file_storage_size'    => $workshop_file_storage_size,
                 'php_max_upload'                => $php_max_upload,
                 'php_max_post'                  => $php_max_post,
                 'php_memory_limit'              => $php_memory_limit,
