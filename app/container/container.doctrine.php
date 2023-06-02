@@ -1,8 +1,8 @@
 <?php
 
 use App\Config\Config;
-
 use Doctrine\ORM\ORMSetup;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 use Psr\Cache\CacheItemPoolInterface;
 
@@ -43,7 +43,15 @@ return [
         DI\get(\Doctrine\ORM\Configuration::class)
     ),
 
-    \Doctrine\Migrations\DependencyFactory::class => function(\Doctrine\ORM\EntityManager $em) {
+    \Doctrine\Migrations\DependencyFactory::class => function(\Doctrine\DBAL\Connection $conn, \Doctrine\ORM\Configuration $config) {
+
+        // Bypass any caching
+        $config->setAutoGenerateProxyClasses(\Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_EVAL);
+        $config->setMetadataCache(new ArrayAdapter());
+
+        // Create non caching entity manager
+        $em = new \Doctrine\ORM\EntityManager($conn, $config);
+
         return Doctrine\Migrations\DependencyFactory::fromEntityManager(
             new \Doctrine\Migrations\Configuration\Migration\ConfigurationArray(Config::get('doctrine.migration_config')),
             new \Doctrine\Migrations\Configuration\EntityManager\ExistingEntityManager($em)
