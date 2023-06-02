@@ -38,10 +38,20 @@ class AdminServerInfoController {
             $alpha_build_storage_size += $file->getSize();
         }
 
+        // Get size for workshop
+        $workshop_storage_size = 0;
+        $workshop_storage = $_ENV['APP_WORKSHOP_STORAGE'];
+        if(\is_dir($workshop_storage)){
+            foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($workshop_storage)) as $file) {
+                $workshop_storage_size += $file->getSize();
+            }
+        }
+
         $response->getBody()->write(
             $twig->render('admincp/server-info.admincp.html.twig', [
                 'alpha_build_count'             => $alpha_build_count,
                 'alpha_build_storage_size'      => $alpha_build_storage_size,
+                'workshop_storage_size'         => $workshop_storage_size,
                 'php_max_upload'                => $php_max_upload,
                 'php_max_post'                  => $php_max_post,
                 'php_memory_limit'              => $php_memory_limit,
