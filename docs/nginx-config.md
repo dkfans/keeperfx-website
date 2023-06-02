@@ -47,11 +47,11 @@ location /downloads/ {
 
 ***Symlinks** can also be use but are not recommended.*
 
-## Workshop screenshots
+## Workshop images
 
 ```
-location ~ /workshop/screenshot/([0-9]+)/(.+)$ {
-    alias /var/www/keeperfx-website/workshop/$1/screenshots/$2;
+location ~ /workshop/image/([0-9]+)/(.+)$ {
+    alias /var/www/keeperfx-website/workshop/$1/images/$2;
 }
 ```
 
