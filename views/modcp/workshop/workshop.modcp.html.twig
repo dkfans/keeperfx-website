@@ -27,11 +27,15 @@
             <tbody>
                 {% for workshop_item in workshop_items %}
                     <tr>
-                        <td>{{ workshop_item.id }}</td>
-                        <td>{{ workshop_item.name }}</td>
-                        <td>{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, includeOriginalAuthor: false} %}</td>
-                        <td>{{ workshop_item.createdTimestamp|date('Y-m-d H:i') }}</td>
-                        <td><a href="/moderate/workshop/{{ workshop_item.id }}">Edit</a></td>
+                        <td style="vertical-align: middle;">{{ workshop_item.id }}</td>
+                        <td style="vertical-align: middle;">{{ workshop_item.name }}</td>
+                        <td style="vertical-align: middle;">{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, includeOriginalAuthor: false} %}</td>
+                        <td style="vertical-align: middle;">{{ workshop_item.createdTimestamp|date('Y-m-d H:i') }}</td>
+                        <td style="vertical-align: middle;">
+                            <a class="btn btn-sm btn-medieval" href="/workshop/item/{{ workshop_item.id }}/{{ workshop_item.name|slugify }}" target="_blank">View</a>
+                            <a class="btn btn-sm btn-medieval btn-medieval-gray" href="/moderate/workshop/{{ workshop_item.id }}">Edit</a>
+                            <a class="btn btn-sm btn-medieval btn-medieval-gray" href="/moderate/workshop/{{ workshop_item.id }}/files">Edit Files</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
