@@ -32,6 +32,7 @@ class WorkshopRandomController {
             'campaign' => WorkshopCategory::Campaign,
         };
 
+        // TODO: order by rand maybe?
         $workshop_items = $em->getRepository(WorkshopItem::class)->findBy(
             ['is_published' => true, 'category' => $category->value]
         );
