@@ -30,6 +30,11 @@ return [
         if(\is_object(Config::get('doctrine.orm_naming_strategy'))){
             $orm_config->setNamingStrategy(Config::get('doctrine.orm_naming_strategy'));
         }
+        if(Config::get('doctrine.dev_mode')){
+            $orm_config->setAutoGenerateProxyClasses(\Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_ALWAYS);
+        } else {
+            $orm_config->setAutoGenerateProxyClasses(\Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
+        }
         return $orm_config;
     },
 
