@@ -28,16 +28,12 @@
                     {# User #}
                     {% if item.originalAuthor is not null %}
                         Created by
-                        <div class="workshop-grid-item-user">
-                            <a href="/workshop/browse?original_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
-                        </div>
+                        <a href="/workshop/browse?original_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
                     {% else %}
                         <span style="margin-right: 3px;">
                             Submitted by
                         </span>
-                        <div class="workshop-grid-item-user">
-                            {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: false} %}
-                        </div>
+                        {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: false} %}
                     {% endif %}
                 </div>
 
