@@ -47,7 +47,7 @@ class WorkshopRandomController {
         $item = $workshop_items[\random_int(0, \count($workshop_items) - 1)];
 
         $response = $response->withHeader('Location',
-            '/workshop/item/' . $item->getId() . '/' . URLify::slug($item->getName())
+            '/workshop/item/' . $item->getId() . '/' . URLify::slug($item->getName()) . '#nav-top'
         )->withStatus(302);
 
         return $response;
