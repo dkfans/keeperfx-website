@@ -163,6 +163,7 @@ class WorkshopUploadController {
         $workshop_item->setCategory($category);
         $workshop_item->setMapNumber($map_number);
         $workshop_item->setDifficultyRatingEnabled(\array_key_exists('enable_difficulty_rating', $post));
+        $workshop_item->setIsPublished(true);
 
         if(!empty($description)){
             $workshop_item->setDescription($description);
@@ -198,11 +199,6 @@ class WorkshopUploadController {
                     $workshop_item->setMinGameBuild($min_build);
                 }
             }
-        }
-
-        // Automatically publish item for accounts with a role of 'Moderator' or higher
-        if($account->getUser()->getRole()->value >= UserRole::Moderator->value){
-            $workshop_item->setIsPublished(true);
         }
 
         $em->persist($workshop_item);
