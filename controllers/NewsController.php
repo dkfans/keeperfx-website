@@ -47,4 +47,24 @@ class NewsController {
         return $response;
     }
 
+    public function newsListIndex(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        EntityManager $em,
+    ){
+
+        // Get news article
+        $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC']);
+
+        // Return news article view
+        $response->getBody()->write(
+            $twig->render('news.list.html.twig', [
+                'articles' => $articles,
+            ])
+        );
+
+        return $response;
+    }
+
 }

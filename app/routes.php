@@ -18,6 +18,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $app->get('/', [IndexController::class, 'index']);
 $app->get('/screenshots', [ScreenshotController::class, 'screenshotsIndex']);
 $app->get('/changelog/{tag}', [ChangelogController::class, 'changelogIndex']);
+
+$app->get('/news', [NewsController::class, 'newsListIndex']);
 $app->get('/news/{id:\d+}[/{date_str}[/{slug}]]', [NewsController::class, 'newsArticleIndex']);
 
 $app->get('/downloads', [DownloadController::class, 'downloadsIndex']);
