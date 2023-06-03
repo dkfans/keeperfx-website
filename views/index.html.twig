@@ -66,16 +66,16 @@
                     </div>
                 </div>
                 <div class="content-body">
-                        {% for article in articles %}
-                            <div class="news">
-                                <h3 class="news-title">{{ article.title }}</h3>
-                                <span class="news-date">{{ article.createdTimestamp|date('Y-m-d') }}</span>
-                                <p class="news-content">{{ article.excerpt|markdown_to_html }}</p>
-                                <p style="margin-bottom: 0px;">
-                                    <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}">Read more</a>
-                                </p>
-                            </div>
-                        {% endfor %}
+                    {% for article in articles %}
+                        <div class="news">
+                            <h3 class="news-title">{{ article.title }}</h3>
+                            <span class="news-date">{{ article.createdTimestamp|date('Y-m-d') }}</span>
+                            <p class="news-content">{{ article.excerpt|markdown_to_html }}</p>
+                            <p style="margin-bottom: 0px;">
+                                <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}">Read more</a>
+                            </p>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         {% endif %}
