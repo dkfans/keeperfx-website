@@ -272,11 +272,13 @@ nav {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 .news {
-    padding: 10px 10px 10px 10px;
+    padding: 20px;
+    background-color: rgba(6, 6, 6, 0.666);
+    border: 2px solid #333;
 }
 
 .news+.news {
-    margin-top: 40px;
+    margin-top: 15px;
 }
 
 .news-title {

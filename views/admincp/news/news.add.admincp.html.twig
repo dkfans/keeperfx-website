@@ -15,9 +15,30 @@
             <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
             <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
 
-            <input type="text" class="form-control" placeholder="Title" name="title" />
+            <div class="form-group">
+                <label for="title">
+                    Title
+                </label>
+                <input type="text" class="form-control" id="title" name="title"/>
+            </div>
 
-            <textarea class="form-control" name="contents" rows="12" placeholder="Content" style="margin-top: 15px;"></textarea>
+            <div class="form-group" style="margin-top: 30px;">
+                <label for="contents">
+                    Content
+                    <span class="text-muted">
+                        (Optional)
+                    </span>
+                </label>
+                <textarea class="form-control" name="contents" id="contents" rows="10"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="excerpt">
+                    Excerpt (Short Text to show on home page with a "Read more" link) -
+                    <a href="https://chat.openai.com/" target="_blank">ChatGPT</a>
+                </label>
+                <textarea class="form-control" name="excerpt" id="excerpt" rows="3"></textarea>
+            </div>
 
             <span class="text-muted">
                 News articles use the markdown format.

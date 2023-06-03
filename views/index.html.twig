@@ -56,19 +56,22 @@
         {% if articles %}
             <div class="content-box bg-keeper bd-keeper">
                 <div class="content-header">
-                    <h2>News</h2>
+                    <div class="d-flex justify-content-between">
+                        <h2>
+                            Latest News
+                        </h2>
+                        <div>
+                            <a href="/news">Browse all</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="content-body">
                         {% for article in articles %}
                             <div class="news">
                                 <h3 class="news-title">{{ article.title }}</h3>
                                 <span class="news-date">{{ article.createdTimestamp|date('Y-m-d') }}</span>
-                                {% if article.shortText %}
-                                    <p class="news-content">{{ article.text|markdown_to_html }}</p>
-                                {% else %}
-                                    <p class="news-content">{{ article.shortText|markdown_to_html }}</p>
-                                {% endif %}
-                                <p>
+                                <p class="news-content">{{ article.excerpt|markdown_to_html }}</p>
+                                <p style="margin-bottom: 0px;">
                                     <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}">Read more</a>
                                 </p>
                             </div>

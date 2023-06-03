@@ -54,20 +54,33 @@ class AdminNewsController {
 
         $post     = $request->getParsedBody();
         $title    = (string) ($post['title'] ?? null);
+
         $contents = (string) ($post['contents'] ?? null);
+        $excerpt = (string) ($post['excerpt'] ?? null);
 
-        if($contents && $title){
-            $article = new NewsArticle();
-            $article->setTitle($title);
-            $article->setText($contents);
-            $article->setShortText($contents);
-            $article->setAuthor($account->getUser());
-
-            $em->persist($article);
-            $em->flush();
-
-            $flash->success('News article posted!');
+        if(!$contents || !$title){
+            $flash->warning('Missing title or contents.');
+            $response->getBody()->write(
+                $twig->render('admincp/news/news.add.admincp.html.twig')
+            );
+            return $response;
         }
+
+        $article = new NewsArticle();
+        $article->setTitle($title);
+        $article->setContents($contents);
+        $article->setAuthor($account->getUser());
+
+        if($excerpt){
+            $article->setExcerpt($excerpt);
+        } else {
+            $article->setExcerpt($contents);
+        }
+
+        $em->persist($article);
+        $em->flush();
+
+        $flash->success('News article posted!');
 
         $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
         return $response;
@@ -115,6 +128,7 @@ class AdminNewsController {
         $post     = $request->getParsedBody();
         $title    = (string) ($post['title'] ?? null);
         $contents = (string) ($post['contents'] ?? null);
+        $excerpt  = (string) ($post['excerpt'] ?? null);
 
         if(!$article){
             $flash->warning('News article not found.');
@@ -122,8 +136,14 @@ class AdminNewsController {
 
             // Update article in DB
             $article->setTitle($title);
-            $article->setText($contents);
-            $article->setShortText($contents);
+            $article->setContents($contents);
+
+            if($excerpt){
+                $article->setExcerpt($excerpt);
+            } else {
+                $article->setExcerpt($contents);
+            }
+
             $em->flush();
 
             $flash->success('News article updated!');

@@ -25,10 +25,10 @@ class NewsArticle {
     private \DateTime $created_timestamp;
 
     #[ORM\Column(type: 'text')]
-    private string $short_text;
+    private string $contents;
 
     #[ORM\Column(type: 'text')]
-    private string $text;
+    private string $excerpt;
 
     #[ORM\PrePersist]
     public function onPrePersist()
@@ -104,47 +104,43 @@ class NewsArticle {
         return $this;
     }
 
-    /**
-     * Get the value of short_text
-     */
-    public function getShortText()
-    {
-        return $this->short_text;
-    }
-
-    /**
-     * Set the value of short_text
-     *
-     * @return  self
-     */
-    public function setShortText($short_text): self
-    {
-        $this->short_text = $short_text;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of text
-     */
-    public function getText(): string
-    {
-        return $this->text;
-    }
-
-    /**
-     * Set the value of text
-     *
-     * @return  self
-     */
-    public function setText(string $text): self
-    {
-        $this->text = $text;
-
-        return $this;
-    }
-
     public function getTitleSlug(): string {
         return URLify::slug($this->title);
+    }
+
+    /**
+     * Get the value of contents
+     */
+    public function getContents(): string
+    {
+        return $this->contents;
+    }
+
+    /**
+     * Set the value of contents
+     */
+    public function setContents(string $contents): self
+    {
+        $this->contents = $contents;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of excerpt
+     */
+    public function getExcerpt(): string
+    {
+        return $this->excerpt;
+    }
+
+    /**
+     * Set the value of excerpt
+     */
+    public function setExcerpt(string $excerpt): self
+    {
+        $this->excerpt = $excerpt;
+
+        return $this;
     }
 }
