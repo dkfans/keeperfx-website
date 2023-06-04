@@ -39,6 +39,15 @@
 
             <div class="d-flex" id="browse-filters">
 
+                {# Search #}
+                <div class="me-2">
+                    <form id="workshop-search-form">
+                        <input
+                        class="form-control form-control-sm {% if get_query_param('search') %}border-primary{% endif %}"
+                        type="text" name="search" id="workshop-search" placeholder="Search" style="font-size: 16px; height: 38px; min-width: 250px" value="{{ get_query_param('search') }}" />
+                    </form>
+                </div>
+
                 {# Order by #}
                 <div class="dropdown me-2">
                     {% if get_query_param('order_by') and get_query_param('order_by') is string %}
@@ -78,15 +87,6 @@
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="lowest-rated">Lowest Rated</a></li>
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="name">Name</a></li>
                     </ul>
-                </div>
-
-                {# Search #}
-                <div class="me-2">
-                    <form id="workshop-search-form">
-                        <input
-                        class="form-control form-control-sm {% if get_query_param('search') %}border-primary{% endif %}"
-                        type="text" name="search" id="workshop-search" placeholder="Search" style="font-size: 16px; height: 38px; min-width: 150px" value="{{ get_query_param('search') }}" />
-                    </form>
                 </div>
 
             </div>
