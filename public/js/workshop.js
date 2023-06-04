@@ -199,6 +199,11 @@ $(function(){
         $('#submitter_username').prop('checked', true);
     });
 
-
+    $('#workshop-search-form').on('submit', function(e){
+        e.preventDefault();
+        queryParams.set('search', $('#workshop-search').val());
+        queryParams.delete('page');
+        window.location.href = '/workshop/browse?' + queryParams.toString();
+    });
 
 });

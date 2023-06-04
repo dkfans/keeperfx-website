@@ -2,12 +2,14 @@
 
 namespace App\Controller\Workshop;
 
+use App\Enum\WorkshopCategory;
+
 use App\Entity\GithubRelease;
 use App\Entity\User;
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
 
-use App\Enum\WorkshopCategory;
+use Doctrine\Common\Collections\ArrayCollection;
 
 use App\FlashMessage;
 use App\Config\Config;
@@ -27,24 +29,32 @@ class WorkshopBrowseController {
         FlashMessage $flash
 
     ){
+        // Get queries
         $q = $request->getQueryParams();
 
+        // Remember URL params to return for links
         $url_params = [];
 
-        $criteria  = ['is_published' => true];
-        $order_by  = null;
-        $offset    = 0;
-        $limit     = 40;
-
-        $submitter = null;
-        $original_author = null;
-
+        // Get current page
         $page = $q['page'] ?? 1;
         if(!\is_numeric($page)){
             $page = 1;
         }
         $page = (int) $page;
 
+        // Create query
+        $query = $em->getRepository(WorkshopItem::class)->createQueryBuilder('item')
+            ->where('item.is_published = 1');
+
+        // Get show item limit
+        // TODO: make this user configurable
+        $limit     = 50;
+
+        // Set variables for author so we can show nice pages for them
+        $submitter = null;
+        $original_author = null;
+
+        // Get order by param
         $order_by_param = $q['order_by'] ?? '';
         if(!\is_string($order_by_param)){
             $order_by_param = 'latest';
@@ -53,32 +63,48 @@ class WorkshopBrowseController {
         // Decide 'ORDER BY'
         switch(\strtolower($order_by_param)){
             case 'name':
-                $order_by = ['name' => 'ASC'];
+                $query = $query->orderBy('item.name', 'ASC');
                 $url_params['order_by'] = 'name';
                 break;
             case 'most-downloaded':
-                $order_by = ['download_count' => 'DESC'];
+                $query = $query->orderBy('item.download_count', 'DESC');
                 $url_params['order_by'] = 'most-downloaded';
                 break;
+            case 'least-downloaded':
+                $query = $query->orderBy('item.download_count', 'ASC');
+                $url_params['order_by'] = 'least-downloaded';
+                break;
             case 'highest-rated':
-                $order_by  = ['rating_score' => 'DESC'];
+                $query = $query->orderBy('item.rating_score', 'DESC');
                 $url_params['order_by'] = 'highest-rated';
+                break;
+            case 'lowest-rated':
+                $query = $query->orderBy('item.rating_score', 'ASC');
+                $url_params['order_by'] = 'lowest-rated';
+                break;
+            case 'oldest':
+                $query = $query->orderBy('item.creation_orderby_timestamp', 'ASC');
+                $url_params['order_by'] = 'latest';
                 break;
             default:
             case 'latest':
-                $order_by = ['creation_orderby_timestamp' => 'DESC'];
-                // $url_params['order_by'] = 'latest'; // This is the default, so it should not be present in the URL
+                $query = $query->orderBy('item.creation_orderby_timestamp', 'DESC');
+                $url_params['order_by'] = 'oldest';
                 break;
         }
 
-        // Create query for total workshop item count
-        $query = $em->getRepository(WorkshopItem::class)->createQueryBuilder('a')
-            ->where('a.is_published = 1');
-
+        // Add search criteria
+        if(isset($q['search']) && \is_string($q['search'])){
+            $url_params['search'] = $q['search'];
+            $query                = $query->andWhere($query->expr()->orX(
+                $query->expr()->like('item.name', ':search'),
+                $query->expr()->like('item.original_author', ':search')
+            ))->setParameter('search', '%' . $q['search'] . '%');
+            // TODO: implement search by submitter username
+        }
 
         // Add category criteria
         if(isset($q['category']) && \is_numeric($q['category'])){
-            $criteria['category']   = $q['category'];
             $url_params['category'] = $q['category'];
             $query                  = $query->andWhere('a.category = :category')->setParameter('category', $q['category']);
         }
@@ -88,9 +114,7 @@ class WorkshopBrowseController {
             $username = $q['user'];
 
             if($username === 'keeperfx-team'){
-
-                $criteria['submitter'] = null;
-                $query                 = $query->andWhere('a.submitter IS NULL');
+                $query                 = $query->andWhere('item.submitter IS NULL');
                 $submitter             = 'KeeperFX Team';
                 $url_params['user']    = 'keeperfx-team';
 
@@ -109,10 +133,8 @@ class WorkshopBrowseController {
                     return $response;
                 }
 
-                $criteria['submitter']       = $user;
-                $criteria['original_author'] = null;
-                $query                       = $query->andWhere('a.submitter = ' . $user->getId());
-                $query                       = $query->andWhere('a.original_author IS NULL');
+                $query                       = $query->andWhere('item.submitter = ' . $user->getId());
+                $query                       = $query->andWhere('item.original_author IS NULL');
                 $submitter                   = $user->getUsername();
                 $url_params['user']          = $user->getUsername();
             }
@@ -120,14 +142,13 @@ class WorkshopBrowseController {
 
         // Add original author criteria
         if(!isset($q['user']) && isset($q['original_author']) && \is_string($q['original_author'])){
-            $criteria['original_author']   = $q['original_author'];
             $url_params['original_author'] = $q['original_author'];
-            $query                         = $query->andWhere('a.original_author = :original_author')->setParameter('original_author', $q['original_author']);
+            $query                         = $query->andWhere('item.original_author = :original_author')->setParameter('original_author', $q['original_author']);
             $original_author               = $q['original_author'];
         }
 
         // Get total workshop item count
-        $workshop_item_count = $query->select('count(a.id)')->getQuery()->getSingleScalarResult();
+        $workshop_item_count = (clone $query)->select('count(item.id)')->getQuery()->getSingleScalarResult();
 
         // Get total pages
         $total_pages = \intval(\ceil($workshop_item_count / $limit));
@@ -230,13 +251,12 @@ class WorkshopBrowseController {
 
         }
 
+        // Add offset and limit
+        $query = $query->setFirstResult($offset)->setMaxResults($limit);
+
         // Get workshop items
-        $workshop_items = $em->getRepository(WorkshopItem::class)->findBy(
-            $criteria,
-            $order_by,
-            $limit,
-            $offset
-        );
+        $result = $query->getQuery()->getResult();
+        $workshop_items = new ArrayCollection($result);
 
         // Render view
         $response->getBody()->write(
