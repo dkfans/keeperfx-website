@@ -62,6 +62,8 @@ $(function(){
                 // Update CSRF tokens
                 app_store.csrf.name = data.csrf.name;
                 app_store.csrf.value = data.csrf.value;
+                $('input[name=csrf_name]').val(data.csrf.name);
+                $('input[name=csrf_value]').val(data.csrf.value);
 
                 toastr.success('File has been renamed!');
             }
