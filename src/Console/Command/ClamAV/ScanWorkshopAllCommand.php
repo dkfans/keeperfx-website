@@ -80,7 +80,10 @@ class ScanWorkshopAllCommand extends Command
         $output->writeln("[+] ClamAV version: {$version}");
 
         // Get all files to scan
-        $files = $this->em->getRepository(WorkshopFile::class)->findBy(['scan_status' => WorkshopScanStatus::SCANNED], ['created_timestamp' => 'DESC']);
+        $files = $this->em->getRepository(WorkshopFile::class)->findBy(
+            ['scan_status' => [WorkshopScanStatus::NOT_SCANNED_YET, WorkshopScanStatus::SCANNED]],
+            ['created_timestamp' => 'DESC']
+        );
         if(!$files || \count($files) === 0){
             $output->writeln("[?] No files found to scan");
             $output->writeln("[>] Done!");
