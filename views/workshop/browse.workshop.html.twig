@@ -89,29 +89,6 @@
                     </form>
                 </div>
 
-                {# Category #}
-                {# <div class="dropdown me-2">
-                    {% if get_query_param('category') and get_query_param('category') is string and workshop_globals.categories_map[get_query_param('category')] is defined %}
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            Category:
-                            {{ workshop_globals.categories_map[get_query_param('category')]|enum_beautify }}
-                        </button>
-                    {% else %}
-                        <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            Category
-                        </button>
-                    {% endif %}
-                    <ul class="dropdown-menu dropdown-menu-dark">
-                        {% if get_query_param('category') %}
-                            <li><a class="dropdown-item" href="#" data-browse-filter-type="category" data-browse-filter-value="">Remove filter</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                        {% endif %}
-                        {% for category in categories %}
-                            <li><a class="dropdown-item" href="#" data-browse-filter-type="category" data-browse-filter-value="{{ category.value }}">{{ category.name|enum_beautify }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div> #}
-
             </div>
 
             <div class="" style="margin-top: 4px;">
