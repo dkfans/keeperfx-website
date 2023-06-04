@@ -106,7 +106,7 @@ class WorkshopBrowseController {
         // Add category criteria
         if(isset($q['category']) && \is_numeric($q['category'])){
             $url_params['category'] = $q['category'];
-            $query                  = $query->andWhere('a.category = :category')->setParameter('category', $q['category']);
+            $query                  = $query->andWhere('item.category = :category')->setParameter('category', $q['category']);
         }
 
         // Add user criteria
