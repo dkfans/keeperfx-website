@@ -12,19 +12,34 @@ This should be done automatically.
 
 Default Ubuntu installation:
 
-```bash
+```sh
 apt install clamav clamav-daemon libclamunrar9
 ```
 
 ***libclamunrar9*** is used to scan RAR archives.
 
+Then run the following command to setup the ClamAV daemon if it did not automatically start a configuration wizard:
 
+```sh
+dpkg-reconfigure clamav-daemon
+```
+
+During the configuration, be sure to add the clamav user to the usergroup that has access to the KeeperFX workshop files.
 
 ## App Configuration
 
-Edit the `.env` file and set `APP_CLAMAV_DSN` to the correct one ClamAV Daemon. Example:
-```
+Edit the `.env` file and set `APP_CLAMAV_DSN` to the correct connection details for the ClamAV Daemon.
+
+Example UNIX socket:
+
+```sh
 APP_CLAMAV_DSN=unix:///var/run/clamav/clamd.ctl
+```
+
+Example TCP socket:
+
+```sh
+APP_CLAMAV_DSN=tcp://127.0.0.1:3310
 ```
 
 
