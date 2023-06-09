@@ -19,17 +19,17 @@ return [
     'strength' => 16,
 
     /**
-     * Whether or not to create a new token for every request.
-     * Created tokens up will be remembered (max = 'storage_limit').
-     * This means that if a form is submitted, other open tabs will still work.
-     */
-    'persistent_token_mode' => false,
-
-    /**
      * This is the maximum amount of tokens that are remembered.
      * This setting is ignored when using persistent tokens.
      */
     'storage_limit' => 200,
+
+    /**
+     * Whether or not to keep the same CSRF token throughout the whole session.
+     * Created tokens up will be remembered (max = 'storage_limit').
+     * This means that if a form is submitted, other open tabs will still work.
+     */
+    'persistent_token_mode' => true,
 
     /**
      * A handler for CSRF validation failures. Must be a callable.
