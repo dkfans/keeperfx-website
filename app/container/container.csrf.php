@@ -15,13 +15,22 @@ return [
 
     \Slim\Csrf\Guard::class => function(ContainerInterface $container) {
 
-        // Session object/array needs to be passed as a variable
+        // Get session
         $session = $container->get(Session::class);
 
+        // Make sure we have a CSRF storage array in the session
+        if(!isset($session['csrf'])) {
+            $session['csrf'] = [];
+        }
+
+        // We need to pass the sub-array as a reference to the CSRF Guard class
+        $csrf_storage = &$session['csrf'];
+
+        // Create CSRF Guard
         return new \Slim\Csrf\Guard(
             $container->get(ResponseFactory::class),
             Config::get('csrf.prefix'),
-            $session,
+            $csrf_storage,
             Config::get('csrf.failure_handler'),
             Config::get('csrf.storage_limit'),
             Config::get('csrf.strength'),
