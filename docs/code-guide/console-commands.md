@@ -3,15 +3,32 @@ Console Commands
 
 The KeeperFX website uses the Symfony Console library and comes with a set of pre-configured commands.
 
+
+
 ## Default Commands
 
 ```
  cache
   cache:clear                       Clear the cache directory
-laradock
-  laradock:setup                    Setup a Laradock stack for this project
-  laradock:start                    Start the Laradock stack
-  laradock:stop                     Stop the Laradock stack
+  cache:warm                        Warm the cache
+ clamav
+  clamav:scan-workshop-all          Use ClamAV to scan all workshop files.
+  clamav:scan-workshop-new          Use ClamAV to scan new workshop files.
+ controller
+  controller:create                 Create a new blank controller
+ kfx
+  kfx:fetch-alpha                   Fetch the latest alpha releases
+  kfx:fetch-forum-activity          Fetch the latest KeeperFX forum threads from Keeper Klan
+  kfx:fetch-stable                  Fetch the latest stable release
+  kfx:fetch-wiki                    Fetch the latest wiki pages
+  kfx:handle-commits                Handle the commit history of the KeeperFX project
+  kfx:handle-twitch-streams         Fetch and handle Twitch streams to broadcast on homepage
+  kfx:pull-repo                     Pull the latest master branch of KeeperFX
+ lubiki
+  lubiki:add-file-dump-to-workshop  Add Lubiki file dump to Workshop
+ maintenance
+  maintenance:start                 Start maintenance mode. Disables any client interaction with the app.
+  maintenance:stop                  Stop maintenance mode.
  migrations
   migrations:current                Outputs the current version
   migrations:diff                   Generate a migration by comparing your current database to your mapping information.
@@ -25,7 +42,11 @@ laradock
   migrations:status                 View the status of a set of migrations.
   migrations:sync-metadata-storage  Ensures that the metadata storage is at the latest version.
   migrations:version                Manually add and delete migration versions from the version table.
+ user
+  user:create                       Create a user
 ```
+
+
 
 ## Creating own commands
 
@@ -36,6 +57,8 @@ You'll have to add your command to the command definitions here: `<APP_ROOT>/app
 
 For documentation on creating your own commands you should have a look at the official Symfony Console docs:  
 https://symfony.com/doc/current/console.html#creating-a-command
+
+
 
 ### Example
 
