@@ -84,12 +84,12 @@ class WorkshopBrowseController {
                 break;
             case 'oldest':
                 $query = $query->orderBy('item.creation_orderby_timestamp', 'ASC');
-                $url_params['order_by'] = 'latest';
+                $url_params['order_by'] = 'oldest';
                 break;
             default:
             case 'latest':
                 $query = $query->orderBy('item.creation_orderby_timestamp', 'DESC');
-                $url_params['order_by'] = 'oldest';
+                $url_params['order_by'] = 'latest';
                 break;
         }
 
