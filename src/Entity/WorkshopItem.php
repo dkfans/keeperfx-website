@@ -48,6 +48,9 @@ class WorkshopItem {
     private bool $is_published = false;
 
     #[ORM\Column]
+    private bool $is_bundled_with_game = false;
+
+    #[ORM\Column]
     private bool $difficulty_rating_enabled = true;
 
     #[ORM\Column(type: 'integer')]
@@ -478,6 +481,24 @@ class WorkshopItem {
     public function setCreationOrderbyTimestamp(\DateTime $creation_orderby_timestamp): self
     {
         $this->creation_orderby_timestamp = $creation_orderby_timestamp;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of is_bundled_with_game
+     */
+    public function isIsBundledWithGame(): bool
+    {
+        return $this->is_bundled_with_game;
+    }
+
+    /**
+     * Set the value of is_bundled_with_game
+     */
+    public function setIsBundledWithGame(bool $is_bundled_with_game): self
+    {
+        $this->is_bundled_with_game = $is_bundled_with_game;
 
         return $this;
     }

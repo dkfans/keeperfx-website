@@ -206,6 +206,7 @@ class ModerateWorkshopUploadController {
         $workshop_item->setCategory($category);
         $workshop_item->setMapNumber($map_number);
         $workshop_item->setDifficultyRatingEnabled(\array_key_exists('enable_difficulty_rating', $post));
+        $workshop_item->setIsBundledWithGame(\array_key_exists('is_bundled_with_game', $post));
 
         if(!empty($description)){
             $workshop_item->setDescription($description);

@@ -236,10 +236,14 @@
                             <div class="text-center" style="margin-bottom: 10px; width: 100%; margin-top: 30px;">
                                 <a
                                     href="/workshop/download/{{ item.id }}/{{ item.files|first.id }}/{{ item.files|first.filename|url_encode }}"
-                                    class="btn btn-lg btn-medieval"
-                                    style="width: 100%; max-width: 300px; min-height: 50px; padding-top: 9px; padding-bottom: 4px; font-size: 22px;"
+                                    class="btn btn-lg btn-medieval {% if item.isBundledWithGame %}btn-grayscale{% endif %}"
+                                    style="width: 100%; max-width: 300px; min-height: 50px; padding-top: 9px; padding-bottom: 4px; font-size: {% if item.isBundledWithGame %}18{% else %}22{% endif %}px;"
                                     download>
-                                        Download
+                                        {% if item.isBundledWithGame %}
+                                            Included with KeeperFX
+                                        {% else %}
+                                            Download
+                                        {% endif %}
                                         <span class="btn-download-filename">
                                             {{ item.files|first.filename }}
                                         </span>

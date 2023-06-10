@@ -179,6 +179,7 @@ class ModerateWorkshopEditController {
         $workshop_item->setMapNumber($map_number);
         $workshop_item->setSubmitter($submitter);
         $workshop_item->setDifficultyRatingEnabled(\array_key_exists('enable_difficulty_rating', $post));
+        $workshop_item->setIsBundledWithGame(\array_key_exists('is_bundled_with_game', $post));
 
         // Set optional minimum game build
         $workshop_item->setMinGameBuild(null);
