@@ -34,6 +34,9 @@ return [
     \App\Console\Command\ClamAV\ScanWorkshopNewCommand::class,
     \App\Console\Command\ClamAV\ScanWorkshopAllCommand::class,
 
+    // Mail
+    \App\Console\Command\Mail\SendMailCommand::class,
+
     // Lubiki
     \App\Console\Command\Lubiki\LubikiAddFileDumpToWorkshopCommand::class,
 ];
