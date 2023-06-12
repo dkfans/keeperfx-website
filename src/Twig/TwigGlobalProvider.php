@@ -38,19 +38,27 @@ class TwigGlobalProvider {
                 'upload_limit' => [
                     'avatar' => [
                         'size'      => $upload_size_helper->getFinalAvatarUploadSize(),
-                        'formatted' => BinaryFormatter::bytes($upload_size_helper->getFinalAvatarUploadSize())->format()
+                        'formatted' => ($upload_size_helper->getFinalAvatarUploadSize() > 0) ?
+                            BinaryFormatter::bytes($upload_size_helper->getFinalAvatarUploadSize())->format() :
+                            'N/A'
                     ],
                     'workshop_item' => [
                         'size'      => $upload_size_helper->getFinalWorkshopItemUploadSize(),
-                        'formatted' => BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopItemUploadSize())->format()
+                        'formatted' => ($upload_size_helper->getFinalWorkshopItemUploadSize() > 0) ?
+                            BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopItemUploadSize())->format() :
+                            'N/A'
                     ],
                     'workshop_image' => [
                         'size'      => $upload_size_helper->getFinalWorkshopImageUploadSize(),
-                        'formatted' => BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopImageUploadSize())->format()
+                        'formatted' => ($upload_size_helper->getFinalWorkshopImageUploadSize() > 0) ?
+                            BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopImageUploadSize())->format() :
+                            'N/A'
                     ],
                     'total' => [
                         'size'      => $upload_size_helper->getMaxCalculatedTotalUpload(),
-                        'formatted' => BinaryFormatter::bytes($upload_size_helper->getMaxCalculatedTotalUpload())->format()
+                        'formatted' => ($upload_size_helper->getMaxCalculatedTotalUpload() > 0) ?
+                            BinaryFormatter::bytes($upload_size_helper->getMaxCalculatedTotalUpload())->format() :
+                            'N/A'
                     ],
                 ]
             ]
