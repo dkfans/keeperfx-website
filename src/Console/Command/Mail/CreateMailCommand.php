@@ -3,13 +3,15 @@
 namespace App\Console\Command\Mail;
 
 use App\Mailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\PHPMailer;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
-class SendMailCommand extends Command
+class CreateMailCommand extends Command
 {
     public function __construct(
         private Mailer $mailer
@@ -19,8 +21,8 @@ class SendMailCommand extends Command
 
     protected function configure()
     {
-        $this->setName("mail:send")
-            ->setDescription("Send a mail using the configured SMTP server. (noreply@....)")
+        $this->setName("mail:create")
+            ->setDescription("Create a mail that will be added to the queue for sending")
             ->addArgument('email', InputArgument::REQUIRED, 'Email address to send the mail to')
             ->addArgument('subject', InputArgument::REQUIRED, 'Subject of the email')
             ->addArgument('body', InputArgument::REQUIRED, 'Body of the email');
@@ -49,16 +51,15 @@ class SendMailCommand extends Command
             return Command::FAILURE;
         }
 
-        $output->writeln("[>] Sending email...");
+        $output->writeln("[>] Adding mail to queue...");
 
-        try {
+        $mail_id = $this->mailer->createMailInQueue($email, $subject, $body);
 
-            $mail = $this->mailer->createPhpMailerInstanceWithData($email, $subject, $body);
-            $mail->send();
-            $output->writeln("[+] Mail sent!");
-        } catch (\Exception $e) {
-            $output->writeln("[-] Failed to send mail...");
-            $output->writeln("[-] {$mail->ErrorInfo}");
+        if($mail_id !== false){
+            $output->writeln("[>] Added! (id: {$mail_id})");
+        } else {
+            $output->writeln("[-] Failed to add mail to queue");
+            return Command::FAILURE;
         }
 
         $output->writeln("[+] Done!");

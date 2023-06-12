@@ -48,6 +48,8 @@
         "psysh",
         "regexes",
         "samesite",
+        "SMTPS",
+        "STARTTLS",
         "statusses",
         "symfony",
         "TINYINT",

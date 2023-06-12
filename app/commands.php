@@ -35,7 +35,10 @@ return [
     \App\Console\Command\ClamAV\ScanWorkshopAllCommand::class,
 
     // Mail
+    \App\Console\Command\Mail\CreateMailCommand::class,
     \App\Console\Command\Mail\SendMailCommand::class,
+    // \App\Console\Command\Mail\SendMailFromQueueCommand::class,
+    \App\Console\Command\Mail\SendAllMailFromQueueCommand::class,
 
     // Lubiki
     \App\Console\Command\Lubiki\LubikiAddFileDumpToWorkshopCommand::class,
