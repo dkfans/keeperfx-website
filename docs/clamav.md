@@ -26,6 +26,13 @@ dpkg-reconfigure clamav-daemon
 
 During the configuration, be sure to add the clamav user to the usergroup that has access to the KeeperFX workshop files.
 
+Then change the following values in `/etc/clamav/clamd.conf` to be equal or higher than the max upload size:
+```
+StreamMaxLength = "xxxx"
+MaxScanSize = "xxxxx"
+MaxFileSize = "xxxx"
+```
+
 ## App Configuration
 
 Edit the `.env` file and set `APP_CLAMAV_DSN` to the correct connection details for the ClamAV Daemon.
