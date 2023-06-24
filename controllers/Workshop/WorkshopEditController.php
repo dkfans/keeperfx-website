@@ -248,7 +248,7 @@ class WorkshopEditController {
                 $image_entity = new WorkshopImage();
                 $image_entity->setItem($workshop_item);
                 $image_entity->setFilename($image_filename);
-                $image_entity->setWeight($weight);
+                $image_entity->setWeight($current_weight);
                 $image_entity->setWidth($width);
                 $image_entity->setHeight($height);
                 $em->persist($image_entity);
