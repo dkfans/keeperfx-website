@@ -60,7 +60,7 @@ class RSSController {
 
             // Create HTML content from markdown
             $converter = new CommonMarkConverter();
-            $content   = $converter->convert($article->getText());
+            $content   = $converter->convert($article->getContents());
 
             // Create feed item
             $item = $feed->createNewItem();
