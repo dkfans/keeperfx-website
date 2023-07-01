@@ -191,3 +191,11 @@ $app->group('/rss', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/stable', [RSSController::class, 'stableBuildFeed']);
     $group->get('/alpha', [RSSController::class, 'alphaPatchFeed']);
 });
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////// API
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$app->group('/api', function (RouteCollectorProxy $group) use ($container) {
+    $group->get('/v1/news/latest', [Api\v1\NewsApiController::class, 'listLatest']);
+});
