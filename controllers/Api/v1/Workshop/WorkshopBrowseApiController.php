@@ -24,7 +24,17 @@ class WorkshopBrowseApiController {
         $workshop_item_entities = $em->getRepository(WorkshopItem::class)->findBy([], ['creation_orderby_timestamp' => 'DESC'], 10);
 
         if($workshop_item_entities){
+            /** @var WorkshopItem $entity */
             foreach($workshop_item_entities as $entity){
+
+                // Get submitter username
+                $submitter = $entity->getSubmitter();
+                if(!$submitter){
+                    $username = 'KeeperFX Team';
+                } else {
+                    $username = $submitter->getUsername();
+                }
+
                 $workshop_items[] = [
                     'name'              => $entity->getName(),
                     'created_timestamp' => $entity->getCreatedTimestamp()->format('Y-m-d'),
@@ -32,6 +42,9 @@ class WorkshopBrowseApiController {
                         $_ENV['APP_ROOT_URL'] . '/workshop/image/' . $entity->getId() . '/' . $entity->getImages()[0]->getFilename() :
                         $_ENV['APP_ROOT_URL'] . '/img/horny-face.png',
                     'url'               => $_ENV['APP_ROOT_URL'] . '/workshop/item/' . $entity->getId() . '/' . URLify::slug($entity->getName()),
+                    'submitter' => [
+                        'username' => $username,
+                    ]
                 ];
             }
         }
