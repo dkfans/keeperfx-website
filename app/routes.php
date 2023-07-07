@@ -199,4 +199,7 @@ $app->group('/rss', function (RouteCollectorProxy $group) use ($container) {
 $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/v1/news/latest', [Api\v1\NewsApiController::class, 'listLatest']);
     $group->get('/v1/workshop/latest', [Api\v1\Workshop\WorkshopBrowseApiController::class, 'listLatest']);
+    $group->get('/v1/stable/latest', [Api\v1\ReleaseApiController::class, 'latestStable']);
+    $group->get('/v1/alpha/latest', [Api\v1\ReleaseApiController::class, 'latestAlpha']);
+
 });
