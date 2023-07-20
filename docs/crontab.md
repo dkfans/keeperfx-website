@@ -10,6 +10,7 @@ This is the suggested crontab for the automated tasks.
 - Handle commit history between stable releases (for the changelog)
 - Fetch Keeper Klan forum activity
 - Scan workshop files (new ones and a daily)
+- Get latest Unearth release
 
 
 ```
@@ -21,6 +22,7 @@ This is the suggested crontab for the automated tasks.
 */10 * * * * php /var/www/keeperfx/console kfx:fetch-forum-activity
 * * * * * php /var/www/keeperfx/console clamav:scan-workshop-new
 0 0 * * * php /var/www/keeperfx/console clamav:scan-workshop-all
+*/10 * * * * php /var/www/keeperfx/console workshop:fetch-unearth
 ```
 
 This list has a race condition between pulling the repo and handling the commits.
