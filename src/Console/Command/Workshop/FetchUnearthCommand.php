@@ -235,7 +235,7 @@ class FetchUnearthCommand extends Command
         ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
 
-        $workshop_files_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/files';
+        $workshop_files_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'] . '/' . $workshop_item->getId() . '/files';
 
         // Remove already existing workshop files
         $workshop_file = null;
@@ -243,8 +243,9 @@ class FetchUnearthCommand extends Command
         foreach($workshop_files as $workshop_file){
             $file_path = $workshop_files_dir . '/' . $workshop_file->getStorageFilename();
             if(\file_exists($file_path)){
-                @unlink($file_path);
-                $output->writeln("[+] Existing file removed: {$file_path}");
+                if(@unlink($file_path)){
+                    $output->writeln("[+] Existing file removed: {$file_path}");
+                }
             }
             $this->em->remove($workshop_file);
         }
@@ -254,8 +255,8 @@ class FetchUnearthCommand extends Command
 
         // Move Windows file
         $windows_new_archive_storage_path = $workshop_files_dir . '/' . $windows_new_archive_filename;
-        if(!@copy($windows_new_archive_path, $windows_new_archive_storage_path)){
-            $output->writeln("[-] Failed to copy Windows release to workshop 'files' dir: {$windows_new_archive_storage_path}");
+        if(!\rename($windows_new_archive_path, $windows_new_archive_storage_path)){
+            $output->writeln("[-] Failed to move Windows release to workshop 'files' dir: {$windows_new_archive_storage_path}");
             $output->writeln("[-] This might be a permission error");
             return Command::FAILURE;
         }
@@ -273,8 +274,8 @@ class FetchUnearthCommand extends Command
 
         // Move Linux file
         $linux_new_archive_storage_path = $workshop_files_dir . '/' . $linux_new_archive_filename;
-        if(!@copy($linux_new_archive_path, $linux_new_archive_storage_path)){
-            $output->writeln("[-] Failed to copy Linux release to workshop 'files' dir: {$linux_new_archive_storage_path}");
+        if(!\rename($linux_new_archive_path, $linux_new_archive_storage_path)){
+            $output->writeln("[-] Failed to move Linux release to workshop 'files' dir: {$linux_new_archive_storage_path}");
             $output->writeln("[-] This might be a permission error");
             return Command::FAILURE;
         }
@@ -299,10 +300,6 @@ class FetchUnearthCommand extends Command
 
         ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
-
-        // Cleanup leftover stuff in /tmp folder
-        @unlink($windows_new_archive_path);
-        @unlink($linux_new_archive_path);
 
         // Success
         $output->writeln("[+] Done!");
