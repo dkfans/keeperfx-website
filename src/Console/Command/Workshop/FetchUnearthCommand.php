@@ -53,6 +53,8 @@ class FetchUnearthCommand extends Command
 
     protected function execute(Input $input, Output $output)
     {
+        $output->writeln("[>] Checking if Unearth workshop item needs updating...");
+
         // Get Unearth workshop item
         $workshop_item = $this->em->getRepository(WorkshopItem::class)->find(self::UNEARTH_WORKSHOP_ID);
         if(!$workshop_item){
@@ -73,7 +75,7 @@ class FetchUnearthCommand extends Command
             $output->writeln("[-] Failed to get Unearth version from workshop file");
             return Command::FAILURE;
         }
-        $output->writeln("[+] Local Unearth version: {$local_unearth_version}");
+        $output->writeln("[+] Local Unearth version: <info>{$local_unearth_version}</info>");
 
         ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +103,7 @@ class FetchUnearthCommand extends Command
 
         $windows_download_id       = $matches[1];
         $windows_download_filename = $matches[2];
-        $output->writeln("[+] Windows download: {$windows_download_filename} (#{$windows_download_id})");
+        $output->writeln("[+] Windows download: <info>{$windows_download_filename}</info> (#{$windows_download_id})");
 
         // Get Linux download data
         if(\preg_match("~" . $windows_download_id . ".+?data\-upload\_id\=\"(\d+)\".+?(UnearthLinux\sv\d+\.\d+\.zip)~", $response->getBody(), $matches) !== 1){
@@ -111,7 +113,7 @@ class FetchUnearthCommand extends Command
 
         $linux_download_id       = $matches[1];
         $linux_download_filename = $matches[2];
-        $output->writeln("[+] Linux download: {$linux_download_filename} (#{$linux_download_id})");
+        $output->writeln("[+] Linux download: <info>{$linux_download_filename}</info> (#{$linux_download_id})");
 
         // Get CSRF token
         if(\preg_match("~csrf_token\"\svalue\=\"(.+?)\"~", $response->getBody(), $matches) !== 1){
@@ -131,7 +133,7 @@ class FetchUnearthCommand extends Command
             $output->writeln("[-] Failed to figure out new Unearth version");
             return Command::FAILURE;
         }
-        $output->writeln("[+] Remote Unearth version: {$remote_unearth_version}");
+        $output->writeln("[+] Remote Unearth version: <info>{$remote_unearth_version}</info>");
 
         // Check if we need to update
         if($remote_unearth_version === $local_unearth_version){
@@ -161,7 +163,7 @@ class FetchUnearthCommand extends Command
         }
         $windows_temp_archive_filesize = \filesize($windows_temp_archive_path);
         $windows_temp_archive_filesize_mb = \round($windows_temp_archive_filesize / (1024 * 1024), 2);
-        $output->writeln("[+] Windows release downloaded! {$windows_temp_archive_path} ({$windows_temp_archive_filesize_mb} MiB)");
+        $output->writeln("[+] Windows release downloaded! <info>{$windows_temp_archive_path}</info> ({$windows_temp_archive_filesize_mb} MiB)");
 
         // Download Linux release
         $output->writeln("[>] Downloading Linux release...");
@@ -172,7 +174,7 @@ class FetchUnearthCommand extends Command
         }
         $linux_temp_archive_filesize = \filesize($linux_temp_archive_path);
         $linux_temp_archive_filesize_mb = \round($linux_temp_archive_filesize / (1024 * 1024), 2);
-        $output->writeln("[+] Linux release downloaded! {$linux_temp_archive_path} ({$linux_temp_archive_filesize_mb} MiB)");
+        $output->writeln("[+] Linux release downloaded! <info>{$linux_temp_archive_path}</info> ({$linux_temp_archive_filesize_mb} MiB)");
 
         ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
@@ -182,14 +184,14 @@ class FetchUnearthCommand extends Command
         $output->writeln("[>] Extracting Windows release...");
         $temp_archive = UnifiedArchive::open($windows_temp_archive_path);
         $temp_archive->extract($windows_temp_archive_dir);
-        $output->writeln("[+] Extracted! {$windows_temp_archive_dir}");
+        $output->writeln("[+] Extracted! <info>{$windows_temp_archive_dir}</info>");
 
         // Extract Linux release
         $linux_temp_archive_dir = $linux_temp_archive_path . '_extract';
         $output->writeln("[>] Extracting Linux release...");
         $temp_archive = UnifiedArchive::open($linux_temp_archive_path);
         $temp_archive->extract($linux_temp_archive_dir);
-        $output->writeln("[+] Extracted! {$linux_temp_archive_dir}");
+        $output->writeln("[+] Extracted! <info>{$linux_temp_archive_dir}</info>");
 
         // Clean up downloaded archives
         @unlink($windows_temp_archive_path);
@@ -244,7 +246,7 @@ class FetchUnearthCommand extends Command
             $file_path = $workshop_files_dir . '/' . $workshop_file->getStorageFilename();
             if(\file_exists($file_path)){
                 if(@unlink($file_path)){
-                    $output->writeln("[+] Existing file removed: {$file_path}");
+                    $output->writeln("[+] Existing file removed: <info>{$file_path}</info>");
                 }
             }
             $this->em->remove($workshop_file);
@@ -260,7 +262,7 @@ class FetchUnearthCommand extends Command
             $output->writeln("[-] This might be a permission error");
             return Command::FAILURE;
         }
-        $output->writeln("[+] Windows release stored: {$windows_new_archive_storage_path}");
+        $output->writeln("[+] Windows release stored: <info>{$windows_new_archive_storage_path}</info>");
 
         // Create Windows workshop file entity
         $windows_file = new WorkshopFile();
@@ -279,7 +281,7 @@ class FetchUnearthCommand extends Command
             $output->writeln("[-] This might be a permission error");
             return Command::FAILURE;
         }
-        $output->writeln("[+] Linux release stored: {$linux_new_archive_storage_path}");
+        $output->writeln("[+] Linux release stored: <info>{$linux_new_archive_storage_path}</info>");
 
         // Create Linux workshop file entity
         $linux_file = new WorkshopFile();
@@ -296,12 +298,13 @@ class FetchUnearthCommand extends Command
 
         // Save changes to DB
         $this->em->flush();
-        $output->writeln("[+] Database flushed!");
+        $output->writeln("[+] Database updated!");
 
         ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
 
         // Success
+        $output->writeln("[+] Successfully updated Unearth v{$local_unearth_version} to v{$remote_unearth_version}!");
         $output->writeln("[+] Done!");
         return Command::SUCCESS;
     }
