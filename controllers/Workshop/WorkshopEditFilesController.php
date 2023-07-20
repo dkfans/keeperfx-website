@@ -117,8 +117,10 @@ class WorkshopEditFilesController {
         $workshop_item_files_dir = $workshop_item_dir . '/files';
 
         // Make sure output directory exists
-        if(!is_dir($workshop_item_files_dir)) {
-            throw new \Exception("Directory does not exist: '{$workshop_item_files_dir}'");
+        if(!\is_dir($workshop_item_files_dir)){
+            if(!@mkdir($workshop_item_files_dir, 0777, true)){
+                throw new \Exception("Failed to create 'files' dir for workshop item with id {$workshop_item->getId()}.");
+            }
         }
 
         // Generate storage filename
