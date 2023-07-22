@@ -98,7 +98,8 @@ class WorkshopBrowseController {
             $url_params['search'] = $q['search'];
             $query                = $query->andWhere($query->expr()->orX(
                 $query->expr()->like('item.name', ':search'),
-                $query->expr()->like('item.original_author', ':search')
+                $query->expr()->like('item.original_author', ':search'),
+                $query->expr()->like('item.map_number', ':search')
             ))->setParameter('search', '%' . $q['search'] . '%');
             // TODO: implement search by submitter username
         }
