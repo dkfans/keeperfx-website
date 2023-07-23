@@ -96,7 +96,7 @@ class FetchUnearthCommand extends Command
         }
 
         // Get Windows download data
-        if(\preg_match("~data\-upload\_id\=\"(\d+)\".+?(Unearth\sv\d+\.\d+\.zip)~", $response->getBody(), $matches) !== 1){
+        if(\preg_match("~data\-upload\_id\=\"(\d+)\".+?(Unearth\sv[0-9\.]+[a-z]*?\.zip)~", $response->getBody(), $matches) !== 1){
             $output->writeln("[-] Failed to get Unearth Windows download filename");
             return Command::FAILURE;
         }
@@ -106,7 +106,7 @@ class FetchUnearthCommand extends Command
         $output->writeln("[+] Windows download: <info>{$windows_download_filename}</info> (#{$windows_download_id})");
 
         // Get Linux download data
-        if(\preg_match("~" . $windows_download_id . ".+?data\-upload\_id\=\"(\d+)\".+?(UnearthLinux\sv\d+\.\d+\.zip)~", $response->getBody(), $matches) !== 1){
+        if(\preg_match("~" . $windows_download_id . ".+?data\-upload\_id\=\"(\d+)\".+?(UnearthLinux\sv[0-9\.]+[a-z]*?\.zip)~", $response->getBody(), $matches) !== 1){
             $output->writeln("[-] Failed to get Unearth Linux download filename");
             return Command::FAILURE;
         }
