@@ -105,6 +105,7 @@ class WorkshopDownloadController {
             ->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->withHeader('Pragma', 'no-cache')
             ->withHeader('Content-Type', 'application/octet-stream')
+            ->withHeader('Content-Length', $file->getSize())
             ->withHeader('Content-Transfer-Encoding', 'Binary')
             ->withHeader('Content-Disposition', 'attachment; filename="' . $file->getFilename() . '"')
             ->withBody(new LazyOpenStream($filepath, 'r'));
