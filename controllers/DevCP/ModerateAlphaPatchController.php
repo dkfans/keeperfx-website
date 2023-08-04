@@ -61,7 +61,7 @@ class ModerateAlphaPatchController {
 
         // Success
         $flash->success("Alpha Patch '{$alpha_build->getName()}' disabled");
-        $response = $response->withHeader('Location', '/dev/alpha-patches')->withStatus(302);
+        $response = $response->withHeader('Location', '/dev/alpha-patches/list')->withStatus(302);
         return $response;
     }
 
@@ -95,7 +95,7 @@ class ModerateAlphaPatchController {
 
         // Success
         $flash->success("Alpha Patch '{$alpha_build->getName()}' enabled");
-        $response = $response->withHeader('Location', '/dev/alpha-patches')->withStatus(302);
+        $response = $response->withHeader('Location', '/dev/alpha-patches/list')->withStatus(302);
         return $response;
     }
 }
