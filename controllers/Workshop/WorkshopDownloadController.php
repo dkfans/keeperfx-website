@@ -76,26 +76,30 @@ class WorkshopDownloadController {
         if(!isset($request->getQueryParams()['no_download_increment'])){
 
             // Get anonymized IP hash & cache key
+            // This way we can protect against people abusing download numbers yet still be privacy friendly
             $ip           = $request->getAttribute('ip_address');
             $anon_ip      = (new IpAnonymizer())->anonymize($ip ?? '');
             $anon_ip_hash = \sha1($anon_ip);
             $dl_cache_key = 'download-' . $workshop_item->getId() . '-' . $file->getId() . '-' . $anon_ip_hash;
 
-            // Increase download counter if IP has not downloaded this item (in the last 7 days)
+            // If this anonymized data is not in our cache,
+            // then this user has not downloaded something recently and should be counted
             if($cache->get($dl_cache_key, null) === null){
 
-
+                // Increase the download count on the workshop item
                 $download_total_count = $workshop_item->getDownloadCount();
                 $download_total_count++;
                 $workshop_item->setDownloadCount($download_total_count);
 
+                // Increase the download count on the file
                 $download_count = $file->getDownloadCount();
                 $download_count++;
                 $file->setDownloadCount($download_count);
 
+                // Add to DB
                 $em->flush();
 
-                // Remember download for 7 days
+                // Add the anonymized data to the cache
                 $cache->set($dl_cache_key, 1, (int) $_ENV['APP_WORKSHOP_DOWNLOAD_IP_REMEMBER_TIME']);
             }
         }
