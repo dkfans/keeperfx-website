@@ -1,0 +1,60 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Alpha Patches - DevCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Alpha Patches ({{ alpha_builds|length }})</h2>
+        {# <a href="/admin/news/add" style="right: 0;">
+            <button class="btn btn-medieval">Create new article</button>
+        </a> #}
+    </div>
+    <div class="content-body">
+
+        <table class="table" style="font-size: 11px;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Artifact ID</th>
+                    <th>Workflow Title</th>
+                    <th>Workflow Run ID</th>
+                    <th>Timestamp</th>
+                    <th>Size</th>
+                    <th><!-- Available --></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alpha_build in alpha_builds %}
+                        <tr>
+                            <td>{{ alpha_build.id }}</td>
+                            <td>{{ alpha_build.name }}</td>
+                            <td>{{ alpha_build.artifactId }}</td>
+                            <td>{{ alpha_build.workflowTitle|github_interact }}</td>
+                            <td>{{ alpha_build.workflowRunId }}</td>
+                            <td>{{ alpha_build.timestamp|date('Y-m-d G:i:s') }}</td>
+                            <td>{{ alpha_build.sizeInBytes|format_bytes }}</td>
+                            <td>
+                                {% if alpha_build.isAvailable %}
+                                    <ion-icon name="checkmark-outline" style="color: lime"></ion-icon>
+                                {% else %}
+                                    <ion-icon name="close-outline" style="color: red;"></ion-icon>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if alpha_build.isAvailable %}
+                                    <a href="/dev/alpha-patches/{{ alpha_build.id }}/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -123,6 +123,14 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
     })->add(AuthModCPMiddleware::class);
 
+    // AUTH: DEVELOPER
+    $group->group('/dev', function (RouteCollectorProxy $group) use ($container) {
+
+        $group->get('/alpha-patches', [DevCP\ModerateAlphaPatchController::class, 'listIndex']);
+        $group->get('/alpha-patches/{id:\d+}/delete/{token_name}/{token_value:.+}', [DevCP\ModerateAlphaPatchController::class, 'delete']);
+
+    })->add(AuthDevCPMiddleware::class);
+
 })->add(LoggedInMiddleware::class);
 
 // Workshop

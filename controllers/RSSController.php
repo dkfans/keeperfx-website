@@ -135,7 +135,7 @@ class RSSController {
         EntityManager $em
     ){
         /** @var GithubAlphaBuild[] $articles */
-        $alpha_patches = $em->getRepository(GithubAlphaBuild::class)->findBy([], ['timestamp' => 'DESC']);
+        $alpha_patches = $em->getRepository(GithubAlphaBuild::class)->findBy(['is_available' => true], ['timestamp' => 'DESC']);
 
         // Create feed
         $feed = new RSS2();

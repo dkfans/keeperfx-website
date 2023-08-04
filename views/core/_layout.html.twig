@@ -82,6 +82,10 @@
                             {% if account.role >= roles.moderator %}
                                 <li><a class="dropdown-item" href="/moderate/workshop/list">Manage Workshop</a></li>
 
+                                {% if account.role >= roles.developer %}
+                                    <li><a class="dropdown-item" href="/dev/alpha-patches">Manage Alpha Patches</a></li>
+                                {% endif %}
+
                                 {% if account.role >= roles.admin %}
                                     <li><a class="dropdown-item" href="/admin/news/list">Manage News</a></li>
                                     <li><a class="dropdown-item" href="/admin/user/list">Manage Users</a></li>

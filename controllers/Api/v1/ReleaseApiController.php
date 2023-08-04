@@ -44,7 +44,7 @@ class ReleaseApiController {
         // TODO: CacheInterface $cache,
     ){
         /** @var GithubAlphaBuild $alpha_build */
-        $alpha_build = $em->getRepository(GithubAlphaBuild::class)->findOneBy([], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC']);
+        $alpha_build = $em->getRepository(GithubAlphaBuild::class)->findOneBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC']);
 
         $response->getBody()->write(
             \json_encode(['alpha_build' => [
