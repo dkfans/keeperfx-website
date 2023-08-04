@@ -31,7 +31,7 @@ class ModerateAlphaPatchController {
         return $response;
     }
 
-    public function delete(
+    public function disable(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
@@ -55,18 +55,46 @@ class ModerateAlphaPatchController {
             throw new HttpNotFoundException($request, "alpha build not found");
         }
 
-        // Remove file if it exists
-        // $path = $_ENV['APP_ALPHA_PATCH_STORAGE'] . '/' . $alpha_build->getFilename();
-        // if(\file_exists($path)){
-        //     @\unlink($path);
-        // }
-
         // Set unavailable
         $alpha_build->setIsAvailable(false);
         $em->flush();
 
         // Success
-        $flash->success("Alpha Patch '{$alpha_build->getName()}' removed");
+        $flash->success("Alpha Patch '{$alpha_build->getName()}' disabled");
+        $response = $response->withHeader('Location', '/dev/alpha-patches')->withStatus(302);
+        return $response;
+    }
+
+    public function enable(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        FlashMessage $flash,
+        CsrfGuard $csrf_guard,
+        $id,
+        $token_name,
+        $token_value,
+    ){
+
+        // Check for valid CSRF token
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            throw new HttpNotFoundException($request, "invalid csrf token");
+        }
+
+        // Check if Alpha Build exists
+        $alpha_build = $em->getRepository(GithubAlphaBuild::class)->find($id);
+        if(!$alpha_build){
+            throw new HttpNotFoundException($request, "alpha build not found");
+        }
+
+        // Set unavailable
+        $alpha_build->setIsAvailable(true);
+        $em->flush();
+
+        // Success
+        $flash->success("Alpha Patch '{$alpha_build->getName()}' enabled");
         $response = $response->withHeader('Location', '/dev/alpha-patches')->withStatus(302);
         return $response;
     }

@@ -33,6 +33,12 @@
                             Manage Workshop
                         </a>
                     {% endif %}
+                    {% if account.role >= roles.developer %}
+                        <a class="nav-link {% if path_equals('/dev/alpha-patches/*') %}active{% endif %}" href="/dev/alpha-patches/list">
+                            <ion-icon name="git-branch-outline"></ion-icon>
+                            Manage Alpha Patches
+                        </a>
+                    {% endif %}
                     {% if account.role >= roles.admin %}
                         <a class="nav-link {% if path_equals('/admin/news/*') %}active{% endif %}" href="/admin/news/list">
                             <ion-icon name="newspaper-outline"></ion-icon>

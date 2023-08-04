@@ -24,7 +24,7 @@
                     <th>Timestamp</th>
                     <th>Size</th>
                     <th><!-- Available --></th>
-                    <th>Actions</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,7 +46,9 @@
                             </td>
                             <td>
                                 {% if alpha_build.isAvailable %}
-                                    <a href="/dev/alpha-patches/{{ alpha_build.id }}/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove</a>
+                                    <a href="/dev/alpha-patches/{{ alpha_build.id }}/disable/{{ csrf.name }}/{{ csrf.value|url_encode }}">Disable</a>
+                                {% else %}
+                                    <a href="/dev/alpha-patches/{{ alpha_build.id }}/enable/{{ csrf.name }}/{{ csrf.value|url_encode }}">Enable</a>
                                 {% endif %}
                             </td>
                         </tr>

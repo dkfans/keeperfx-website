@@ -126,8 +126,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     // AUTH: DEVELOPER
     $group->group('/dev', function (RouteCollectorProxy $group) use ($container) {
 
-        $group->get('/alpha-patches', [DevCP\ModerateAlphaPatchController::class, 'listIndex']);
-        $group->get('/alpha-patches/{id:\d+}/delete/{token_name}/{token_value:.+}', [DevCP\ModerateAlphaPatchController::class, 'delete']);
+        $group->get('/alpha-patches/list', [DevCP\ModerateAlphaPatchController::class, 'listIndex']);
+        $group->get('/alpha-patches/{id:\d+}/enable/{token_name}/{token_value:.+}', [DevCP\ModerateAlphaPatchController::class, 'enable']);
+        $group->get('/alpha-patches/{id:\d+}/disable/{token_name}/{token_value:.+}', [DevCP\ModerateAlphaPatchController::class, 'disable']);
 
     })->add(AuthDevCPMiddleware::class);
 
