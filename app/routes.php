@@ -7,6 +7,7 @@ use Slim\Routing\RouteCollectorProxy;
 use App\Middleware\LoggedInMiddleware;
 use App\Middleware\AuthAdminCPMiddleware;
 use App\Middleware\AuthModCPMiddleware;
+use App\Middleware\AuthDevCPMiddleware;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
