@@ -55,12 +55,8 @@ $app->addBodyParsingMiddleware();
 
 // Add App middlewares
 foreach ((require APP_ROOT . '/app/middlewares.php') as $middleware_class) {
-    $app->add(
-        // Get middleware from container
-        // Middlewares were added to the container so we can autowire dependencies
-        $middleware_class
-        // $container->get($middleware_class)
-    );
+    // Middleware will be autowired
+    $app->add($middleware_class);
 }
 
 // Add Session (Compwright\PhpSession) middlewares
