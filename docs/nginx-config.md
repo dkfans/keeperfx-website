@@ -62,3 +62,11 @@ location ~ /avatar/(.+)$ {
     alias /var/www/keeperfx-website/avatars/$1;
 }
 ```
+
+## Crash Reports
+
+```
+location ~ /dev/crash-report/download/(.+)$ {
+    alias /var/www/keeperfx-website/crash-report/savefiles/$1;
+}
+```
