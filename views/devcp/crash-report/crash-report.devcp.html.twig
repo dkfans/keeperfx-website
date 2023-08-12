@@ -31,16 +31,22 @@
                 <td>Source</td>
                 <td>{{ crash_report.source }}</td>
             </tr>
-            <tr>
-                <td>Savefile</td>
-                <td>
-                    <a href="/dev/crash-report/download/{{ crash_report.saveFilename }}" download>{{ crash_report.saveFilename }}</a>
-                </td>
-            </tr>
+                <tr>
+                    <td>Savefile</td>
+                    <td>
+                        {% if crash_report.saveFilename %}
+                            <a href="/dev/crash-report/download/{{ crash_report.saveFilename }}" download>{{ crash_report.saveFilename }}</a>
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                </tr>
         </table>
 
-        <h5 style="margin-top: 30px; border-bottom: 0;">Description</h5>
-        <pre style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0;">{{ crash_report.description }}</pre>
+        {% if crash_report.description %}
+            <h5 style="margin-top: 30px; border-bottom: 0;">Description</h5>
+            <pre style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0;">{{ crash_report.description }}</pre>
+        {% endif %}
 
         <h5 style="margin-top: 30px; border-bottom: 0;">Technical Data</h5>
 
