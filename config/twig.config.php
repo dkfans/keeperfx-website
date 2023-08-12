@@ -49,6 +49,7 @@ return [
         \App\Twig\Extension\RequestVarTwigExtension::class,
         \App\Twig\Extension\PregReplaceTwigExtension::class,
         \App\Twig\Extension\WorkshopGlobalsTwigExtension::class,
+        \App\Twig\Extension\StringUniqueColorTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
 
