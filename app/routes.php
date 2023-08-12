@@ -229,4 +229,8 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     // API: Downloads
     $group->get('/v1/stable/latest', [Api\v1\ReleaseApiController::class, 'latestStable']);
     $group->get('/v1/alpha/latest', [Api\v1\ReleaseApiController::class, 'latestAlpha']);
+
+    // API: Crash Report
+    $group->post('/v1/crash-report', [Api\v1\CrashReportApiController::class, 'upload']);
+
 });
