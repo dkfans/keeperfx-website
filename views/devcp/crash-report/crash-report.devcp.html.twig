@@ -1,0 +1,71 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Workshop - ModCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Crash report #{{ crash_report.id }}</h2>
+    </div>
+    <div class="content-body">
+
+        <table class="table">
+
+
+            <tr>
+                <td>ID</td>
+                <td>{{ crash_report.id }}</td>
+            </tr>
+            <tr>
+                <td>Game Version</td>
+                <td>{{ crash_report.gameVersion|unique_color }}</td>
+            </tr>
+            <tr>
+                <td>Timestamp</td>
+                <td>{{ crash_report.createdTimestamp|date('Y-m-d G:i:s') }}</td>
+            </tr>
+            <tr>
+                <td>Source</td>
+                <td>{{ crash_report.source }}</td>
+            </tr>
+            <tr>
+                <td>Savefile</td>
+                <td>
+                    <a href="/dev/crash-report/download/{{ crash_report.saveFilename }}" download>{{ crash_report.saveFilename }}</a>
+                </td>
+            </tr>
+        </table>
+
+
+        <div class="accordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                        Game Console Output
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <pre>{{ crash_report.gameOutput }}</pre>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="accordion" style="margin-top: 15px;">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                        keeperfx.log
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <pre>{{ crash_report.gameLog }}</pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Crash Reports - DevCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Crash Reports ({{ crash_reports|length }})</h2>
+    </div>
+    <div class="content-body">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Version</th>
+                    <th>Source</th>
+                    <th>Timestamp</th>
+                    <th>Savefile</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crash_report in crash_reports %}
+                        <tr>
+                            <td>{{ crash_report.id }}</td>
+                            <td>{{ crash_report.gameVersion|unique_color }}</td>
+                            <td>{{ crash_report.source }}</td>
+                            <td>{{ crash_report.createdTimestamp|date('Y-m-d G:i:s') }}</td>
+                            <td>
+                                {% if crash_report.saveFilename is not null %}
+                                    <ion-icon name="attach-outline"></ion-icon>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/dev/crash-report/{{ crash_report.id }}">View</a>
+                            </td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

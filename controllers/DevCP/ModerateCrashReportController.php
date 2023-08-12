@@ -2,7 +2,7 @@
 
 namespace App\Controller\DevCP;
 
-use App\Entity\GithubAlphaBuild;
+use App\Entity\CrashReport;
 
 use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
@@ -23,11 +23,36 @@ class ModerateCrashReportController {
         TwigEnvironment $twig,
         EntityManager $em
     ){
-        // $response->getBody()->write(
-        //     $twig->render('devcp/crash-report.list.devcp.html.twig', [
-        //         'alpha_builds'   => $em->getRepository(GithubAlphaBuild::class)->findBy([],['id' => 'DESC'])
-        //     ])
-        // );
+        $response->getBody()->write(
+            $twig->render('devcp/crash-report/crash-report.list.devcp.html.twig', [
+                'crash_reports'   => $em->getRepository(CrashReport::class)->findBy([],['id' => 'DESC'])
+            ])
+        );
+
+        return $response;
+    }
+
+    public function view(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        FlashMessage $flash,
+        $id
+    ){
+        $crash_report = $em->getRepository(CrashReport::class)->find($id);
+
+        if(!$crash_report){
+            $flash->warning('Crash report not found.');
+            $response = $response->withHeader('Location', '/dev/crash-report/list')->withStatus(302);
+            return $response;
+        }
+
+        $response->getBody()->write(
+            $twig->render('devcp/crash-report/crash-report.devcp.html.twig', [
+                'crash_report' => $crash_report
+            ])
+        );
 
         return $response;
     }

@@ -38,6 +38,10 @@
                             <ion-icon name="git-branch-outline"></ion-icon>
                             Manage Alpha Patches
                         </a>
+                        <a class="nav-link {% if path_equals('/dev/crash-report/*') %}active{% endif %}" href="/dev/crash-report/list">
+                            <ion-icon name="bug-outline"></ion-icon>
+                            Crash Reports
+                        </a>
                     {% endif %}
                     {% if account.role >= roles.admin %}
                         <a class="nav-link {% if path_equals('/admin/news/*') %}active{% endif %}" href="/admin/news/list">
