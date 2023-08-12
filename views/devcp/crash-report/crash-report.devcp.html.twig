@@ -10,9 +10,8 @@
     </div>
     <div class="content-body">
 
+        <h5 style="border-bottom: 0;">Info</h5>
         <table class="table">
-
-
             <tr>
                 <td>ID</td>
                 <td>{{ crash_report.id }}</td>
@@ -37,6 +36,10 @@
             </tr>
         </table>
 
+        <h5 style="margin-top: 30px; border-bottom: 0;">Description</h5>
+        <pre style="font-size: 11px; color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0;">{{ crash_report.description }}</pre>
+
+        <h5 style="margin-top: 30px; border-bottom: 0;">Technical Data</h5>
 
         <div class="accordion">
             <div class="accordion-item">
@@ -51,8 +54,7 @@
             </div>
         </div>
 
-
-        <div class="accordion" style="margin-top: 15px;">
+        <div class="accordion" style="margin-top: 10px;">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingTwo">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
