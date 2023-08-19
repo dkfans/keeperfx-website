@@ -19,15 +19,14 @@ return [
     'strength' => 16,
 
     /**
-     * This is the maximum amount of tokens that are remembered.
-     * This setting is ignored when using persistent tokens.
+     * This is the maximum amount of tokens that are remembered in our session.
+     * (This setting is ignored when using persistent tokens.)
      */
     'storage_limit' => 200,
 
     /**
      * Whether or not to keep the same CSRF token throughout the whole session.
-     * Created tokens up will be remembered (max = 'storage_limit').
-     * This means that if a form is submitted, other open tabs will still work.
+     * If false, a new token is created for each request. (max = 'storage_limit').
      */
     'persistent_token_mode' => true,
 
