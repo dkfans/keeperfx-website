@@ -100,7 +100,7 @@ class WorkshopBrowseController {
                 $query->expr()->like('item.name', ':search'),
                 $query->expr()->like('item.original_author', ':search'),
                 $query->expr()->like('item.map_number', ':search')
-            ))->setParameter('search', '%' . $q['search'] . '%');
+            ))->setParameter('search', '%' . \str_replace(' ', '%', $q['search']) . '%');
             // TODO: implement search by submitter username
         }
 
