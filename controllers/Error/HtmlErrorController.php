@@ -20,12 +20,15 @@ class HtmlErrorController implements ErrorRendererInterface
 
     public function __invoke(\Throwable $exception, bool $displayErrorDetails): string
     {
-        // 404 - Not Found
-        if($exception instanceof HttpNotFoundException){
-            return $this->twig->render('error/404.html.twig');
+        // Check if HTTP code has a unique error page
+        $template_file = \sprintf('error/%d.html.twig', $exception->getCode());
+        if(\file_exists(APP_ROOT . '/views/' . $template_file)){
+
+            // Show template
+            return $this->twig->render($template_file);
         }
 
-        // 500 - Server error
+        // Show default template (500 - Server error)
         return $this->twig->render('error/500.html.twig');
     }
 }
