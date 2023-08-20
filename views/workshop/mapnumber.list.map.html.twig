@@ -13,19 +13,20 @@
                 This is a list of mapnumbers and their availability.
                 We want standalone maps in the KeeperFX.net workshop to have a unique mapnumber so they do not overwrite the files of other maps and their completion progress can be tracked.
             </p>
-            <table class="table">
+
+            <table class="table" style="font-size: 11px; width: auto;">
                 <thead>
                     <tr>
-                        <th style="max-width: 50px;">Mapnumber</th>
-                        <th style="max-width: 60px;">Availability</th>
+                        <th style="width: 50px;">Mapnumber</th>
+                        <th style="width: 60px;">Availability</th>
                         <th>Map</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for number, map_number in map_numbers %}
                         <tr>
-                            <td style="max-width: 50px;">{{ number }}</td>
-                            <td style="max-width: 60px;">
+                            <td style="width: 50px;">{{ number }}</td>
+                            <td style="width: 60px;">
                                 {% if map_number.available %}
                                     <span style="color: lime">Available!</span>
                                 {% else %}
