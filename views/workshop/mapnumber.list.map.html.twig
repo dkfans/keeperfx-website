@@ -1,0 +1,47 @@
+{% extends "core/_layout.html.twig" %}
+
+{% set page_title = 'Mapnumber List (Maps)' %}
+
+{% block content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Mapnumber List: Map</h2>
+        </div>
+        <div class="content-body">
+            <p>
+                This is a list of mapnumbers and their availability.
+                We want standalone maps in the KeeperFX.net workshop to have a unique mapnumber so they do not overwrite the files of other maps and their completion progress can be tracked.
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="max-width: 50px;">Mapnumber</th>
+                        <th style="max-width: 60px;">Availability</th>
+                        <th>Map</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for number, map_number in map_numbers %}
+                        <tr>
+                            <td style="max-width: 50px;">{{ number }}</td>
+                            <td style="max-width: 60px;">
+                                {% if map_number.available %}
+                                    <span style="color: lime">Available!</span>
+                                {% else %}
+                                    <span style="color: red">In use</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if map_number.workshop_item %}
+                                    <a href="/workshop/item/{{ map_number.workshop_item.id }}/{{ map_number.workshop_item.name|slugify }}">{{ map_number.workshop_item.name }}</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

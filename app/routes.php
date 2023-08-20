@@ -197,6 +197,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->get('', function (Request $request, Response $response){
             return $response->withStatus(302)->withHeader('Location', '/workshop/browse');
         });
+
+        // Mapnumber lists
+        $group->get('/map_number/list/map', [Workshop\WorkshopMapNumberListController::class, 'mapListIndex']);
     });
 
     // ToS & Privacy Policy
