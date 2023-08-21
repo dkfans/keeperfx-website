@@ -193,13 +193,13 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         // Random workshop item
         $group->get('/random/{item_category}', [Workshop\WorkshopRandomController::class, 'navRandomItem']);
 
+        // Mapnumber lists
+        $group->get('/map_number/list/map', [Workshop\WorkshopMapNumberListController::class, 'mapListIndex']);
+
         // Redirect '/workshop' to '/workshop/browse'
         $group->get('', function (Request $request, Response $response){
             return $response->withStatus(302)->withHeader('Location', '/workshop/browse');
         });
-
-        // Mapnumber lists
-        $group->get('/map_number/list/map', [Workshop\WorkshopMapNumberListController::class, 'mapListIndex']);
     });
 
     // ToS & Privacy Policy
