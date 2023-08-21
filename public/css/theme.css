@@ -188,8 +188,10 @@ nav {
 }
 
 #nav-top a.active {
-    color: #ddd;
+    color: #fff3d0;
     font-weight: 600;
+    /* text-decoration: underline; */
+    /* text-underline-offset: 7px; */
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
