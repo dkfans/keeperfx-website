@@ -2,13 +2,14 @@
 
 namespace App\Controller\Workshop;
 
-use App\Account;
-use Doctrine\ORM\EntityManager;
-use Slim\Csrf\Guard as CsrfGuard;
-
 use App\Entity\WorkshopItem;
 use App\Entity\WorkshopRating;
 use App\Entity\WorkshopDifficultyRating;
+
+use App\Account;
+use Doctrine\ORM\EntityManager;
+use Slim\Csrf\Guard as CsrfGuard;
+use Twig\Environment as TwigEnvironment;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -357,6 +358,22 @@ class WorkshopRatingController {
                 ],
             ])
         );
+        return $response;
+    }
+
+    public function myRatingsIndex(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        Account $account,
+    ){
+        $ratings = $em->getRepository(WorkshopRating::class)->findBy(['user' => $account->getUser()], ['updated_timestamp' => 'DESC']);
+
+        $response->getBody()->write(
+            $twig->render('workshop/my-ratings.html.twig', ['ratings' => $ratings])
+        );
+
         return $response;
     }
 }

@@ -1,0 +1,43 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = 'My Ratings' %}
+
+
+
+{% block workshop_content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>My ratings</h2>
+        </div>
+        <div class="content-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Workshop Item</th>
+                        <th>My Rating</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rating in ratings %}
+                        <tr>
+                            <td>
+                                {% if rating.item %}
+                                    <a href="/workshop/item/{{ rating.item.id }}/{{ rating.item.name|slugify }}">{{ rating.item.name }}</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ render_workshop_quality_rating(rating.item.id, rating.score) }}
+                            </td>
+                            <td>
+                                {{ rating.updatedTimestamp|date('Y-m-d') }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

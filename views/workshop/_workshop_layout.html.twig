@@ -51,6 +51,10 @@
                         Random Campaign
                     </a>
                     {% if account != null %}
+                        <a class="nav-link {% if path_equals('/workshop/my-ratings') %}active{% endif %}" href="/workshop/my-ratings">
+                            <ion-icon name="star-outline"></ion-icon>
+                            My ratings
+                        </a>
                         <a class="nav-link {% if path_equals('/workshop/browse?*user=' ~ account.username ~ '*') %}active{% endif %}" href="/workshop/browse?user={{ account.username }}">
                             <ion-icon name="person-outline"></ion-icon>
                             My workshop items
