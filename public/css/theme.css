@@ -123,9 +123,9 @@ a:hover {
 ion-icon[name=open-outline].outgoing {
     color: var(--bs-secondary-color);
     position: relative;
-    top: -3px;
+    top: -2px;
     left: -1px;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 a.title-link {
