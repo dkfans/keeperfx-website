@@ -82,6 +82,14 @@ class WorkshopBrowseController {
                 $query = $query->orderBy('item.rating_score', 'ASC');
                 $url_params['order_by'] = 'lowest-rated';
                 break;
+            case 'most-difficult':
+                $query = $query->orderBy('item.difficulty_rating_score', 'DESC');
+                $url_params['order_by'] = 'most-difficult';
+                break;
+            case 'least-difficult':
+                $query = $query->orderBy('item.difficulty_rating_score', 'ASC');
+                $url_params['order_by'] = 'least-difficult';
+                break;
             case 'oldest':
                 $query = $query->orderBy('item.creation_orderby_timestamp', 'ASC');
                 $url_params['order_by'] = 'oldest';
