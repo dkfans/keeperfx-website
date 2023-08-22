@@ -52,14 +52,18 @@
                                 Latest
                             {% elseif get_query_param('order_by') == 'oldest' %}
                                 Oldest
-                            {% elseif get_query_param('order_by') == 'most-downloaded' %}
-                                Most Downloaded
-                            {% elseif get_query_param('order_by') == 'least-downloaded' %}
-                                Least Downloaded
                             {% elseif get_query_param('order_by') == 'highest-rated' %}
                                 Highest Rated
                             {% elseif get_query_param('order_by') == 'lowest-rated' %}
                                 Lowest Rated
+                            {% elseif get_query_param('order_by') == 'most-difficult' %}
+                                Most Difficult
+                            {% elseif get_query_param('order_by') == 'least-difficult' %}
+                                Least Difficult
+                            {% elseif get_query_param('order_by') == 'most-downloaded' %}
+                                Most Downloaded
+                            {% elseif get_query_param('order_by') == 'least-downloaded' %}
+                                Least Downloaded
                             {% elseif get_query_param('order_by') == 'name' %}
                                 Name
                             {% endif %}
