@@ -7,7 +7,7 @@
     description: item.description ?? '',
     og: {
         url: '/workshop/item/' ~ item.id ~ '/' ~ item.name|slugify,
-        image: item.images|first ? '/workshop/image/' ~ item.id ~ '/' ~ item.images|first.filename : '/img/horny-face-512.png'
+        image: item.images|first ? '/workshop/image/' ~ item.id ~ '/' ~ item.images|first.filename : '/img/no-image-512.png'
     }
 } %}
 
@@ -67,7 +67,7 @@
                     <div class="workshop-item-images" id="workshop-images">
                         {% if item.images|length == 0 %}
                             <div class="workshop-item-image bd-keeper">
-                                <img src="/img/horny-face-512.png" />
+                                <img src="/img/no-image-512.png" />
                             </div>
                         {% else %}
                             {% for image in item.images %}
