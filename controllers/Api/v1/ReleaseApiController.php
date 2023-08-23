@@ -28,7 +28,7 @@ class ReleaseApiController {
             \json_encode(['release' => [
                 'name'          => $release->getName(),
                 'tag'           => $release->getTag(),
-                'timestamp'     => $release->getTimestamp()->format('Y-m-d'),
+                'timestamp'     => $release->getTimestamp()->format('c'), // ISO 8601 date
                 'download_url'  => $release->getDownloadUrl(),
                 'size_in_bytes' => $release->getSizeInBytes(),
             ]])
@@ -53,7 +53,7 @@ class ReleaseApiController {
                 'workflow_title'  => $alpha_build->getWorkflowTitle(),
                 'workflow_run_id' => $alpha_build->getWorkflowRunId(),
                 'filename'        => $alpha_build->getFilename(),
-                'timestamp'       => $alpha_build->getTimestamp()->format('Y-m-d'),
+                'timestamp'       => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
                 'size_in_bytes'   => $alpha_build->getSizeInBytes(),
                 'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename())
             ]])
