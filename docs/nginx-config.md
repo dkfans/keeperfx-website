@@ -38,7 +38,7 @@ server {
 If you use the env var `APP_ALPHA_PATCH_STORAGE` you can setup nginx to serve those files using any chosen directory.
 
 ```nginx
-location /downloads/ {
+location /download/alpha/ {
     alias /var/www/keeperfx-website/keeperfx-alpha-builds/;
 }
 ```

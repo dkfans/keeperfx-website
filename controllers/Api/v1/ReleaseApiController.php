@@ -55,6 +55,7 @@ class ReleaseApiController {
                 'filename'        => $alpha_build->getFilename(),
                 'timestamp'       => $alpha_build->getTimestamp()->format('Y-m-d'),
                 'size_in_bytes'   => $alpha_build->getSizeInBytes(),
+                'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename())
             ]])
         );
 
