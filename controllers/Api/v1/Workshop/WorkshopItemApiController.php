@@ -27,7 +27,7 @@ class WorkshopItemApiController {
 
         $files = [];
         foreach($item->getFiles() as $file){
-            if($file->getScanStatus() !== WorkshopScanStatus::SCANNED){
+            if($file->getScanStatus() !== WorkshopScanStatus::SCANNED && $_ENV['APP_ENV'] !== 'dev'){
                 continue;
             }
             $files[] = [
