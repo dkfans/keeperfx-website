@@ -32,7 +32,7 @@
 {# OG Image #}
 {% if meta.og.image is defined %}
     <meta property="og:image" content="{{ meta.og.image }}" />
-{% elseif meta.description is defined %}
+{% elseif meta.description is defined and meta.description is not empty %}
     <meta property="og:image" content="/img/horny-face-512.png" />
 {% endif %}
 
