@@ -21,10 +21,10 @@ class Mail {
     #[ORM\Column]
     private string $subject;
 
-    #[ORM\Column(type: 'text', nullable:true)]
+    #[ORM\Column(type: 'text', nullable:true, options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string|null $body = null;
 
-    #[ORM\Column(type: 'text', nullable:true)]
+    #[ORM\Column(type: 'text', nullable:true, options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string|null $html_body = null;
 
     #[ORM\Column(type: 'integer', enumType: MailStatus::class)]

@@ -15,7 +15,7 @@ class GithubAlphaBuild {
     #[ORM\Column]
     private int $artifact_id;
 
-    #[ORM\Column]
+    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string $name;
 
     #[ORM\Column]

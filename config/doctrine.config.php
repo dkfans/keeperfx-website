@@ -6,13 +6,14 @@
 return [
 
     'connection' => [
-        'host'     => $_ENV['APP_DB_HOST'],
-        'port'     => $_ENV['APP_DB_PORT'],
-        'user'     => $_ENV['APP_DB_USER'],
-        'password' => $_ENV['APP_DB_PASS'],
-        'dbname'   => $_ENV['APP_DB_DATABASE'],
-        'driver'   => $_ENV['APP_DB_DRIVER'],
-        'charset'  => $_ENV['APP_DB_CHARSET'],
+        'host'      => $_ENV['APP_DB_HOST'],
+        'port'      => $_ENV['APP_DB_PORT'],
+        'user'      => $_ENV['APP_DB_USER'],
+        'password'  => $_ENV['APP_DB_PASS'],
+        'dbname'    => $_ENV['APP_DB_DATABASE'],
+        'driver'    => $_ENV['APP_DB_DRIVER'],
+        'charset'   => $_ENV['APP_DB_CHARSET'],
+        'collation' => $_ENV['APP_DB_COLLATION'],
     ],
 
     'entity_dirs' => [

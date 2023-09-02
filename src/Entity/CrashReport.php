@@ -13,7 +13,7 @@ class CrashReport {
     #[ORM\GeneratedValue]
     private int|null $id = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: 'text', options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string $description;
 
     #[ORM\Column(type: 'text')]

@@ -15,7 +15,7 @@ class NewsArticle {
     #[ORM\GeneratedValue]
     private int|null $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string $title;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
@@ -24,10 +24,10 @@ class NewsArticle {
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: 'text', options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string $contents;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: 'text', options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string $excerpt;
 
     #[ORM\PrePersist]

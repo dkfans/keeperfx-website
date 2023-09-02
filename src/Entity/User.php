@@ -17,7 +17,7 @@ class User {
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\Column]
+    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string $username;
 
     #[ORM\Column(nullable: true)]

@@ -17,7 +17,7 @@ class WorkshopItem {
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\Column]
+    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -38,10 +38,10 @@ class WorkshopItem {
     #[ORM\Column]
     private \DateTime $updated_timestamp;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true, options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string|null $description = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true, options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string|null $install_instructions = null;
 
     #[ORM\Column]
