@@ -46,7 +46,7 @@ final class Version20230505180242 extends AbstractMigration
 
                     // Create new images dir
                     if(!\is_dir($images_dir)){
-                        \mkdir($images_dir);
+                        @\mkdir($images_dir);
                         if(!\is_dir($images_dir)){
                             throw new \Exception("failed to create 'images' dir: {$images_dir}");
                         }
