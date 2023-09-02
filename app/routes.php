@@ -200,9 +200,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->get('/map_number/list/map', [Workshop\WorkshopMapNumberListController::class, 'mapListIndex']);
 
         // Redirect '/workshop' to '/workshop/browse'
-        $group->get('', function (Request $request, Response $response){
-            return $response->withStatus(302)->withHeader('Location', '/workshop/browse');
-        });
+        $group->redirect('[/]', '/workshop/browse', 302);
     });
 
     // ToS & Privacy Policy
