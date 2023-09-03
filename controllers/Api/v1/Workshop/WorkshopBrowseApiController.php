@@ -37,6 +37,7 @@ class WorkshopBrowseApiController {
 
                 $workshop_items[] = [
                     'name'              => $entity->getName(),
+                    'category'          => $entity->getCategory()->name,
                     'created_timestamp' => $entity->getCreatedTimestamp()->format('Y-m-d'),
                     'image'             => \count($entity->getImages()) > 0 ?
                         $_ENV['APP_ROOT_URL'] . '/workshop/image/' . $entity->getId() . '/' . $entity->getImages()[0]->getFilename() :
