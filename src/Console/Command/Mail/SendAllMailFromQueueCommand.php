@@ -69,7 +69,7 @@ class SendAllMailFromQueueCommand extends Command
 
             } catch (\Exception $ex) {
 
-                $output->writeln("[-] Failed to send mail #{$mail->getId()}");
+                $output->writeln("[-] Failed to send mail #{$mail->getId()} -> {$ex->getMessage()}");
 
                 // Try sending again later
                 $mail->setStatus(MailStatus::NOT_SENT_YET);
