@@ -8,7 +8,10 @@
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
         <h2>Users ({{ users|length }})</h2>
         <a href="/admin/user/add" style="right: 0;">
-            <button class="btn btn-medieval">Add new user</button>
+            <button class="btn btn-medieval">
+                <ion-icon name="person-add-outline"></ion-icon>
+                Add new user
+            </button>
         </a>
     </div>
     <div class="content-body">
@@ -30,7 +33,12 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.role.name }}</td>
                         <td>{{ user.createdTimestamp|date('Y-m-d') }}</td>
-                        <td><a href="/admin/user/{{ user.id }}">Edit</a></td>
+                        <td>
+                            {% if user.email is not null %}
+                                <a class="btn btn-sm btn-medieval btn-medieval-gray" href="/admin/user/{{ user.id }}/mail"><ion-icon name="mail-outline"></ion-icon></a>
+                            {% endif %}
+                            <a class="btn btn-sm btn-medieval" href="/admin/user/{{ user.id }}"><ion-icon name="settings-outline"></ion-icon></a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

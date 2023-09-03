@@ -6,10 +6,10 @@ use App\Enum\UserRole;
 
 use App\Entity\User;
 
+use App\Mailer;
 use App\Account;
-use App\FlashMessage;
-
 use Slim\Csrf\Guard;
+use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
@@ -282,6 +282,98 @@ class AdminUsersController {
         $em->flush();
         $flash->success('User successfully removed!');
 
+        $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+        return $response;
+    }
+
+    public function userMailIndex(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        FlashMessage $flash,
+        TwigEnvironment $twig,
+        $id
+    ){
+        // Find user
+        $user = $em->getRepository(User::class)->find($id);
+        if(!$user){
+            $flash->warning('User not found.');
+            $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+            return $response;
+        }
+
+        // User must have en email address
+        if($user->getEmail() == null){
+            $flash->warning("This user does not have an email address associated with their account.");
+            $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+            return $response;
+        }
+
+        // Show mail page
+        $response->getBody()->write(
+            $twig->render('admincp/users/user.mail.admincp.html.twig', [
+                'user' => $user
+            ])
+        );
+        return $response;
+    }
+
+    public function userMail(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        FlashMessage $flash,
+        TwigEnvironment $twig,
+        Mailer $mailer,
+        $id
+    ){
+        // Find user
+        $user = $em->getRepository(User::class)->find($id);
+        if(!$user){
+            $flash->warning('User not found.');
+            $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+            return $response;
+        }
+
+        // User must have en email address
+        if($user->getEmail() == null){
+            $flash->warning("This user does not have an email address associated with their account.");
+            $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+            return $response;
+        }
+
+        // Get POST data
+        $post    = $request->getParsedBody();
+        $subject = (string) ($post['subject'] ?? '');
+        $content = (string) ($post['content'] ?? '');
+
+        // Mail must not be empty
+        if(empty($subject) || empty($content)){
+            $flash->warning("You need to enter a subject and contents");
+            $response->getBody()->write(
+                $twig->render('admincp/users/user.mail.admincp.html.twig', [
+                    'user' => $user
+                ])
+            );
+            return $response;
+        }
+
+        // Send mail
+        $mail_id = $mailer->createMailInQueue($user->getEmail(), $subject, $content);
+        if(!$mail_id){
+
+            // Show mail page on failure
+            $flash->error("Failed to add the mail to the mail queue");
+            $response->getBody()->write(
+                $twig->render('admincp/users/user.mail.admincp.html.twig', [
+                    'user' => $user
+                ])
+            );
+            return $response;
+        }
+
+        // Success!
+        $flash->success("The mail has been added to the queue and will be sent shortly.");
         $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
         return $response;
     }

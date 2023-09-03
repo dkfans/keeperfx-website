@@ -96,6 +96,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
                 $group->get('/{id:\d+}', [AdminCP\AdminUsersController::class, 'userEditIndex']);
                 $group->post('/{id:\d+}', [AdminCP\AdminUsersController::class, 'userEdit']);
                 $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminUsersController::class, 'userDelete']);
+                $group->get('/{id:\d+}/mail', [AdminCP\AdminUsersController::class, 'userMailIndex']);
+                $group->post('/{id:\d+}/mail', [AdminCP\AdminUsersController::class, 'userMail']);
             });
 
 

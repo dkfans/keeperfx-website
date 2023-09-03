@@ -1,0 +1,46 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Send mail to ' ~ user.username ~ ' - AdminCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Send mail to <span class="text-special">{{ user.username }}</span></h2>
+    </div>
+    <div class="content-body">
+
+        <form action="/admin/user/{{ user.id }}/mail" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+            <div class="form-group">
+                <label for="recipient">Recipient</label>
+                <input type="text" class="form-control" id="recipient" name="recipient" value="{{ user.email }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" class="form-control" id="subject" name="subject" value="{{ get_post_var('subject') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="content">Contents</label>
+                <textarea class="form-control" name="content" id="content" rows="6">{{ get_post_var('content') }}</textarea>
+            </div>
+
+            <div class="d-flex" style="margin-top: 15px;">
+
+                <div class="pull-right">
+                    <input type="submit" class="btn btn-medieval" value="Send" />
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
