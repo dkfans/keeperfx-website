@@ -51,6 +51,7 @@ location /download/alpha/ {
 
 ```
 location ~ /workshop/image/([0-9]+)/(.+)$ {
+    access_log off;
     alias /var/www/keeperfx-website/workshop/$1/images/$2;
 }
 ```
@@ -59,6 +60,7 @@ location ~ /workshop/image/([0-9]+)/(.+)$ {
 
 ```
 location ~ /avatar/(.+)$ {
+    access_log off;
     alias /var/www/keeperfx-website/avatars/$1;
 }
 ```
@@ -68,5 +70,18 @@ location ~ /avatar/(.+)$ {
 ```
 location ~ /dev/crash-report/download/(.+)$ {
     alias /var/www/keeperfx-website/crash-report/savefiles/$1;
+}
+```
+
+
+## Hide access logs for assets
+
+```
+location ~ ^/(img|js|css)/ {
+    access_log off;
+}
+
+location /favicon.ico {
+    access_log off;
 }
 ```
