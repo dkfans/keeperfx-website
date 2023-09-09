@@ -81,6 +81,10 @@ location ~ ^/(img|js|css)/ {
     access_log off;
 }
 
+location ~ ^/screenshots/ {
+    access_log off;
+}
+
 location /favicon.ico {
     access_log off;
 }
