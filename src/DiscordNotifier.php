@@ -165,13 +165,19 @@ class DiscordNotifier {
             return false;
         }
 
+        // Create description
+        // Convert the github issue/PR reference to markdown
+        $description = $alpha_build->getWorkflowTitle();
+        $replacement = '[#$1](https://github.com/dkfans/keeperfx/issues/$1)';
+        $description = \preg_replace('/\#(\d{1,6})/', $replacement, $description);
+
         // Create the Embed
         $embed = new Embed();
         $embed->title($alpha_build->getName());
         $embed->color(self::COLOR_NEW_ALPHA_PATCH);
         $embed->timestamp($alpha_build->getTimestamp()->format('Y-m-d H:i'));
         $embed->url($_ENV['APP_ROOT_URL'] . '/download/alpha/' . $alpha_build->getFilename());
-        $embed->description($alpha_build->getWorkflowTitle());
+        $embed->description($description);
         $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/download.png');
         $embed->footer(BinaryFormatter::bytes($alpha_build->getSizeInBytes())->format());
 
