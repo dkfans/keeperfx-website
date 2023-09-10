@@ -3,6 +3,7 @@
 namespace App\Controller\AdminCP;
 
 use App\Account;
+use App\DiscordNotifier;
 use App\Entity\NewsArticle;
 use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
@@ -49,7 +50,8 @@ class AdminNewsController {
         TwigEnvironment $twig,
         Account $account,
         EntityManager $em,
-        FlashMessage $flash
+        FlashMessage $flash,
+        DiscordNotifier $discord_notifier
     ){
 
         $post     = $request->getParsedBody();
@@ -81,6 +83,9 @@ class AdminNewsController {
         $em->flush();
 
         $flash->success('News article posted!');
+
+        // Send a notification on Discord
+        $discord_notifier->notifyNewNewsItem($article);
 
         $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
         return $response;

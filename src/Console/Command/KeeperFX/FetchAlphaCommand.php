@@ -2,9 +2,11 @@
 
 namespace App\Console\Command\KeeperFX;
 
+
 use App\Entity\GithubAlphaBuild;
 
 use DateTime;
+use App\DiscordNotifier;
 use Doctrine\ORM\EntityManager;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
@@ -21,8 +23,11 @@ class FetchAlphaCommand extends Command
 
     private EntityManager $em;
 
-    public function __construct(EntityManager $em) {
+    private DiscordNotifier $discord_notifier;
+
+    public function __construct(EntityManager $em, DiscordNotifier $discord_notifier) {
         $this->em = $em;
+        $this->discord_notifier = $discord_notifier;
         parent::__construct();
     }
 
@@ -268,6 +273,9 @@ class FetchAlphaCommand extends Command
             $this->em->flush();
 
             $output->writeln("[+] <info>{$artifact->name}</info> stored! -> <info>{$display_title}</info>");
+
+            // Send a notification on Discord
+            $this->discord_notifier->notifyNewAlphaPatch($build);
         }
 
         return Command::SUCCESS;

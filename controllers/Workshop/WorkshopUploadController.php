@@ -20,6 +20,7 @@ use URLify;
 use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
+use App\DiscordNotifier;
 use App\UploadSizeHelper;
 
 use Doctrine\ORM\EntityManager;
@@ -61,6 +62,7 @@ class WorkshopUploadController {
         Account $account,
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
+        DiscordNotifier $discord_notifier,
     ){
 
         $success = true;
@@ -303,6 +305,9 @@ class WorkshopUploadController {
 
         // Flush again so filenames are added to DB entity
         $em->flush();
+
+        // Send a notification on Discord
+        $discord_notifier->notifyNewWorkshopItem($workshop_item);
 
         // Show upload success message and redirect to workshop item page
         $flash->success('Your workshop item has been uploaded!');

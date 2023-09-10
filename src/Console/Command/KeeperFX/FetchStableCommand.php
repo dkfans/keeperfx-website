@@ -4,6 +4,7 @@ namespace App\Console\Command\KeeperFX;
 
 use App\Entity\GithubRelease;
 
+use App\DiscordNotifier;
 use Doctrine\ORM\EntityManager;
 
 use Symfony\Component\Console\Command\Command;
@@ -18,8 +19,11 @@ class FetchStableCommand extends Command
 
     private EntityManager $em;
 
-    public function __construct(EntityManager $em) {
+    private DiscordNotifier $discord_notifier;
+
+    public function __construct(EntityManager $em, DiscordNotifier $discord_notifier) {
         $this->em = $em;
+        $this->discord_notifier = $discord_notifier;
         parent::__construct();
     }
 
@@ -92,6 +96,9 @@ class FetchStableCommand extends Command
                 ->where('min_game_build = -1')
                 ->set('min_game_build', $new_release->getId());
             $query_builder->executeQuery();
+
+            // Send a notification on Discord
+            $this->discord_notifier->notifyNewStableBuild($new_release);
         }
 
         return Command::SUCCESS;
