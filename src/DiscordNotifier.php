@@ -178,7 +178,6 @@ class DiscordNotifier {
         $embed->timestamp($alpha_build->getTimestamp()->format('Y-m-d H:i'));
         $embed->url($_ENV['APP_ROOT_URL'] . '/download/alpha/' . $alpha_build->getFilename());
         $embed->description($description);
-        $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/download.png');
         $embed->footer(BinaryFormatter::bytes($alpha_build->getSizeInBytes())->format());
 
         // Send the embed
@@ -197,7 +196,8 @@ class DiscordNotifier {
         $embed->color(self::COLOR_NEW_STABLE_BUILD);
         $embed->timestamp($github_release->getTimestamp()->format('Y-m-d H:i'));
         $embed->url($github_release->getDownloadUrl());
-        $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/horny-face-512.png');
+        // $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/horny-face-512.png');
+        $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/download.png');
         $embed->footer(BinaryFormatter::bytes($github_release->getSizeInBytes())->format());
         $embed->description("A new game update!");
 
