@@ -10,6 +10,7 @@ use App\Entity\GithubAlphaBuild;
 use URLify;
 use \DiscordWebhooks\Embed;
 use \DiscordWebhooks\Client;
+use Doctrine\ORM\EntityManager;
 use ByteUnits\Binary as BinaryFormatter;
 
 use Xenokore\Utility\Helper\StringHelper;
@@ -23,10 +24,15 @@ class DiscordNotifier {
     private const COLOR_NEW_ALPHA_PATCH   = 'b402f4';
     private const COLOR_NEW_STABLE_BUILD  = '06f402';
 
+    private EntityManager $em;
+
     private ?Client $webhook = null;
 
-    public function __construct()
-    {
+    public function __construct(
+        EntityManager $em,
+    ) {
+        $this->em = $em;
+
         if(!empty($_ENV['APP_DISCORD_NOTIFY_WEBHOOK_URL'])){
             $url = (string) $_ENV['APP_DISCORD_NOTIFY_WEBHOOK_URL'];
 
@@ -97,16 +103,27 @@ class DiscordNotifier {
             return false;
         }
 
+        if($item->getId() === null){
+            throw new \Exception("workshop item does not have an ID yet");
+        }
+
+        // Reload the workshop item
+        // We have to do this so the image collection is correctly loaded
+        $workshop_item = $this->em->getRepository(WorkshopItem::class)->find($item->getId());
+        if(!$workshop_item){
+            throw new \Exception("failed to reload the workshop item");
+        }
+
         // Create the Embed
         $embed = new Embed();
-        $embed->title($item->getName());
+        $embed->title($workshop_item->getName());
         $embed->color(self::COLOR_NEW_WORKSHOP_ITEM);
-        $embed->timestamp($item->getCreatedTimestamp()->format('Y-m-d H:i'));
-        $embed->url($_ENV['APP_ROOT_URL'] . "/workshop/item/" . $item->getId() . "/" . URLify::slug($item->getName()));
+        $embed->timestamp($workshop_item->getCreatedTimestamp()->format('Y-m-d H:i'));
+        $embed->url($_ENV['APP_ROOT_URL'] . "/workshop/item/" . $workshop_item->getId() . "/" . URLify::slug($workshop_item->getName()));
 
         // Add description
-        if($item->getDescription()){
-            $description = $item->getDescription();
+        if($workshop_item->getDescription()){
+            $description = $workshop_item->getDescription();
             if(\strlen($description) > 350) {
                 $description = substr($description, 0, 347) . '...';
             }
@@ -114,15 +131,15 @@ class DiscordNotifier {
         }
 
         // Add thumbnail
-        if(\count($item->getImages()) > 0){
-            $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/workshop/image/' . $item->getId() . '/' . $item->getImages()[0]->getFilename());
+        if(\count($workshop_item->getImages()) > 0){
+            $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/workshop/image/' . $workshop_item->getId() . '/' . $workshop_item->getImages()[0]->getFilename());
         } else {
             $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/horny-face-512.png');
         }
 
         // Add user
-        if($item->getSubmitter()){
-            $user = $item->getSubmitter();
+        if($workshop_item->getSubmitter()){
+            $user = $workshop_item->getSubmitter();
             if($user->getAvatar()){
                 $embed->footer($user->getUsername(), $_ENV['APP_ROOT_URL'] . '/avatar/' . $user->getAvatar());
             } else {
