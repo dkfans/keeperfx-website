@@ -130,7 +130,7 @@ class DiscordNotifier {
         if($thumbnail){
             $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/workshop/image/' . $item->getId() . '/' . $thumbnail->getFilename());
         } else {
-            $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/no-image.png');
+            $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/no-image-256.png');
         }
 
         // Add user
