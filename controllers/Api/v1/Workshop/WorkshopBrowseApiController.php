@@ -41,7 +41,7 @@ class WorkshopBrowseApiController {
                     'created_timestamp' => $entity->getCreatedTimestamp()->format('Y-m-d'),
                     'image'             => \count($entity->getImages()) > 0 ?
                         $_ENV['APP_ROOT_URL'] . '/workshop/image/' . $entity->getId() . '/' . $entity->getImages()[0]->getFilename() :
-                        $_ENV['APP_ROOT_URL'] . '/img/horny-face.png',
+                        $_ENV['APP_ROOT_URL'] . '/img/no-image-256.png',
                     'url'               => $_ENV['APP_ROOT_URL'] . '/workshop/item/' . $entity->getId() . '/' . URLify::slug($entity->getName()),
                     'submitter' => [
                         'username' => $username,
