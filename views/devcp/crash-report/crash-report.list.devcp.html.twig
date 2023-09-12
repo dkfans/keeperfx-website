@@ -27,7 +27,7 @@
                             <td>{{ crash_report.id }}</td>
                             <td>{{ crash_report.gameVersion|unique_color }}</td>
                             <td>{{ crash_report.source }}</td>
-                            <td>{{ crash_report.createdTimestamp|date('Y-m-d G:i:s') }}</td>
+                            <td>{{ crash_report.createdTimestamp|date('Y-m-d G:i') }}</td>
                             <td>
                                 {% if crash_report.saveFilename is not null %}
                                     <ion-icon name="attach-outline"></ion-icon>
