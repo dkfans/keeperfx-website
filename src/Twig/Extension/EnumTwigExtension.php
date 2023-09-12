@@ -28,7 +28,7 @@ class EnumTwigExtension extends \Twig\Extension\AbstractExtension
      * @param string $content
      * @return string
      */
-    public function enumBeautify(string $content): string
+    public static function enumBeautify(string $content): string
     {
         $content = \ucwords(\implode(' ', \preg_split('/(?=[A-Z])/', $content)));
         $content = \str_replace(['_', '-'], [' ', ' '], $content);
