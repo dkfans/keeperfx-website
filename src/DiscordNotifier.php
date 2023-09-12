@@ -4,6 +4,7 @@ namespace App;
 
 use App\Entity\NewsArticle;
 use App\Entity\WorkshopItem;
+use App\Entity\WorkshopImage;
 use App\Entity\GithubRelease;
 use App\Entity\GithubAlphaBuild;
 
@@ -107,23 +108,16 @@ class DiscordNotifier {
             throw new \Exception("workshop item does not have an ID yet");
         }
 
-        // Reload the workshop item
-        // We have to do this so the image collection is correctly loaded
-        $workshop_item = $this->em->getRepository(WorkshopItem::class)->find($item->getId());
-        if(!$workshop_item){
-            throw new \Exception("failed to reload the workshop item");
-        }
-
         // Create the Embed
         $embed = new Embed();
-        $embed->title($workshop_item->getName());
+        $embed->title($item->getName());
         $embed->color(self::COLOR_NEW_WORKSHOP_ITEM);
-        $embed->timestamp($workshop_item->getCreatedTimestamp()->format('Y-m-d H:i'));
-        $embed->url($_ENV['APP_ROOT_URL'] . "/workshop/item/" . $workshop_item->getId() . "/" . URLify::slug($workshop_item->getName()));
+        $embed->timestamp($item->getCreatedTimestamp()->format('Y-m-d H:i'));
+        $embed->url($_ENV['APP_ROOT_URL'] . "/workshop/item/" . $item->getId() . "/" . URLify::slug($item->getName()));
 
         // Add description
-        if($workshop_item->getDescription()){
-            $description = $workshop_item->getDescription();
+        if($item->getDescription()){
+            $description = $item->getDescription();
             if(\strlen($description) > 350) {
                 $description = substr($description, 0, 347) . '...';
             }
@@ -131,15 +125,17 @@ class DiscordNotifier {
         }
 
         // Add thumbnail
-        if(\count($workshop_item->getImages()) > 0){
-            $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/workshop/image/' . $workshop_item->getId() . '/' . $workshop_item->getImages()[0]->getFilename());
+        // we get blalblalblal EXPLAION
+        $thumbnail = $this->em->getRepository(WorkshopImage::class)->findOneBy(['item' => $item, 'weight' => 0]);
+        if($thumbnail){
+            $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/workshop/image/' . $item->getId() . '/' . $thumbnail->getFilename());
         } else {
-            $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/horny-face-512.png');
+            $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/no-image.png');
         }
 
         // Add user
-        if($workshop_item->getSubmitter()){
-            $user = $workshop_item->getSubmitter();
+        if($item->getSubmitter()){
+            $user = $item->getSubmitter();
             if($user->getAvatar()){
                 $embed->footer($user->getUsername(), $_ENV['APP_ROOT_URL'] . '/avatar/' . $user->getAvatar());
             } else {
