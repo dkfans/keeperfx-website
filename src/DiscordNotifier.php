@@ -13,6 +13,7 @@ use \DiscordWebhooks\Embed;
 use \DiscordWebhooks\Client;
 use Doctrine\ORM\EntityManager;
 use ByteUnits\Binary as BinaryFormatter;
+use App\Twig\Extension\EnumTwigExtension;
 
 use Xenokore\Utility\Helper\StringHelper;
 
@@ -114,6 +115,10 @@ class DiscordNotifier {
         $embed->color(self::COLOR_NEW_WORKSHOP_ITEM);
         $embed->timestamp($item->getCreatedTimestamp()->format('Y-m-d H:i'));
         $embed->url($_ENV['APP_ROOT_URL'] . "/workshop/item/" . $item->getId() . "/" . URLify::slug($item->getName()));
+        $embed->field(
+            EnumTwigExtension::enumBeautify($item->getCategory()->name), // Little hack
+            ''
+        );
 
         // Add description
         if($item->getDescription()){
