@@ -125,7 +125,7 @@ class DiscordNotifier {
         }
 
         // Add thumbnail
-        // we get blalblalblal EXPLAION
+        // For some reason we have to manually get the thumbnail from the DB if the WorkshopItem just got persisted
         $thumbnail = $this->em->getRepository(WorkshopImage::class)->findOneBy(['item' => $item, 'weight' => 0]);
         if($thumbnail){
             $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/workshop/image/' . $item->getId() . '/' . $thumbnail->getFilename());
