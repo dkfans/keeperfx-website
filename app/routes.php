@@ -217,6 +217,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->get('/alpha', [RSSController::class, 'alphaPatchFeed']);
     });
 
+    // Multiplayer masterserver
+    $group->get('/online', [MasterServerController::class, 'list']);
+
 })->add(\Slim\Csrf\Guard::class);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

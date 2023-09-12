@@ -1,0 +1,42 @@
+{% extends "core/_layout.html.twig" %}
+
+{% set page_title = 'Multiplayer Lobbies' %}
+
+{% block content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2 style="display: inline-block;">Online Multiplayer Lobbies</h2>
+            <img id="spinner" src="/img/spinner.svg" style="width:34px; height:34px; margin-left: 3px; margin-bottom: 6px;"/>
+        </div>
+        <div class="content-body">
+            <p>
+            </p>
+            {# <table class="table">
+                <tr>
+                    <td>News</td>
+                    <td><code>{{ get_env('APP_ROOT_URL') }}/rss/news</code></td>
+                </tr>
+                <tr>
+                    <td>Stable builds</td>
+                    <td><code>{{ get_env('APP_ROOT_URL') }}/rss/stable</code></td>
+                </tr>
+                <tr>
+                    <td>Alpha patches</td>
+                    <td><code>{{ get_env('APP_ROOT_URL') }}/rss/alpha</code></td>
+                </tr>
+            </table> #}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block body_javascript %}
+<script>
+
+$(function() {
+
+});
+
+</script>
+{% endblock %}
