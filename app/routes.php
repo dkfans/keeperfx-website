@@ -219,6 +219,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
     // Multiplayer masterserver
     $group->get('/online', [MasterServerController::class, 'list']);
+    $group->get('/online/list', [MasterServerController::class, 'jsonList']);
 
 })->add(\Slim\Csrf\Guard::class);
 
