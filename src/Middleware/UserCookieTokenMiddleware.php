@@ -79,7 +79,7 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
                                 $new_access_token = $provider->getAccessToken('refresh_token', [
                                     'refresh_token' => $oauth_token->getRefreshToken()
                                 ]);
-                            } catch (IdentityProviderException $ex) {
+                            } catch (\Exception $ex) {
 
                                 // Invalidate OAuth token in DB
                                 $oauth_token->setToken(null);
