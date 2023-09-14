@@ -27,8 +27,8 @@ class GithubInteractTwigExtension extends \Twig\Extension\AbstractExtension
      */
     public function githubInteract(string $content): string
     {
-        $replacement = '<a href="https://github.com/dkfans/keeperfx/issues/$1" target="_blank">#$1</a>';
-        $content = \preg_replace('/\#(\d{1,6})/', $replacement, $content);
+        $replacement = '(<a href="https://github.com/dkfans/keeperfx/issues/$1" target="_blank">#$1</a>)';
+        $content = \preg_replace('/\(\#(\d{1,6})\)/', $replacement, $content);
         return $content;
     }
 }

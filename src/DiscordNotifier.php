@@ -186,8 +186,8 @@ class DiscordNotifier {
         // Create description
         // Convert the github issue/PR reference to markdown
         $description = $alpha_build->getWorkflowTitle();
-        $replacement = '[#$1](https://github.com/dkfans/keeperfx/issues/$1)';
-        $description = \preg_replace('/\#(\d{1,6})/', $replacement, $description);
+        $replacement = '([#$1](https://github.com/dkfans/keeperfx/issues/$1))';
+        $description = \preg_replace('/\(\#(\d{1,6})\)/', $replacement, $description);
 
         // Create the Embed
         $embed = new Embed();
