@@ -1,0 +1,30 @@
+{
+    "name": "tail.writer",
+    "description": "A tidy, powerful and extendable Markup ([GitHub Flavored] Markdown, BBCode, Textile) Editor, written in Vanilla JavaScript!",
+    "keywords": [
+        "markup",
+        "markdown",
+        "textile",
+        "bbcode",
+        "editor",
+        "writer",
+        "textarea",
+        "vanilla",
+        "tail"
+    ],
+    "authors": [
+        "SamBrishes <sam@pytes.net> (https://www.pytes.net)",
+        "pytesNET <info@pytes.net> (https://www.pytes.net)"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/pytesNET/tail.writer",
+
+    "main": [
+        "js/tail.writer-full.js",
+        "css/tail.writer-white.css"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/pytesNET/tail.writer.git"
+    }
+}
