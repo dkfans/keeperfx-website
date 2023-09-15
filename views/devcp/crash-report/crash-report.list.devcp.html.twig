@@ -30,7 +30,9 @@
                             <td>{{ crash_report.createdTimestamp|date('Y-m-d G:i') }}</td>
                             <td>
                                 {% if crash_report.saveFilename is not null %}
-                                    <ion-icon name="attach-outline"></ion-icon>
+                                    <ion-icon name="save-outline"></ion-icon>
+                                {% else %}
+                                    <ion-icon name="save-outline" style="filter:brightness(0.45);" class="text-muted"></ion-icon>
                                 {% endif %}
                             </td>
                             <td>
