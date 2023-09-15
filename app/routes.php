@@ -45,6 +45,12 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/register', [RegisterController::class, 'registerIndex']);
     $group->post('/register', [RegisterController::class, 'register']);
 
+    // Password reset
+    $group->get('/password-reset', [PasswordResetController::class, 'passwordResetSendIndex']);
+    $group->post('/password-reset', [PasswordResetController::class, 'passwordResetSend']);
+    $group->get('/password-reset/{token}', [PasswordResetController::class, 'passwordResetIndex']);
+    $group->post('/password-reset/{token}', [PasswordResetController::class, 'passwordReset']);
+
     // OAuth - Login + Register + Connect / Disconnect account
     $group->get('/oauth/connect/{provider_name}', [OAuthUserController::class, 'connect']);
     $group->get('/oauth/connect/{provider_name}/{token_name}/{token_value:.+}', [OAuthUserController::class, 'connect']);
