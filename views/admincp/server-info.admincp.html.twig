@@ -14,18 +14,18 @@
         {# Workshop info #}
         <table class="table">
             <tr>
-                <td>
+                <td style="width: 50%">
                     Workshop total files
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ workshop_file_count }}
                 </td>
             </tr>
             <tr>
-                <td>
+                <td style="width: 50%">
                     Workshop total file storage size
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ workshop_file_storage_size|format_bytes }}
                 </td>
             </tr>
@@ -34,19 +34,19 @@
         {# Alpha build info #}
         <table class="table">
             <tr>
-                <td>
+                <td style="width: 50%">
                     Alpha Build count
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ alpha_build_count }}
                 </td>
             </tr>
 
             <tr>
-                <td>
+                <td style="width: 50%">
                     Alpha Build total storage size
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ alpha_build_storage_size|format_bytes }}
                 </td>
             </tr>
@@ -55,10 +55,10 @@
         {# Upload info #}
         <table class="table">
             <tr>
-                <td>
+                <td style="width: 50%">
                     Max Avatar upload filesize
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ globals.upload_limit.avatar.size|format_bytes }}
                     {% if get_env('APP_AVATAR_MAX_UPLOAD_SIZE') is not null and get_env('APP_AVATAR_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_AVATAR_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
                         <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
@@ -67,10 +67,10 @@
                 </td>
             </tr>
             <tr>
-                <td>
+                <td style="width: 50%">
                     Max Workshop item upload filesize
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ globals.upload_limit.workshop_item.size|format_bytes }}
                     {% if get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE') is not null and get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
                         <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
@@ -79,10 +79,10 @@
                 </td>
             </tr>
             <tr>
-                <td>
+                <td style="width: 50%">
                     Max Workshop image upload filesize
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ globals.upload_limit.workshop_image.size|format_bytes }}
                     {% if get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE') is not null and get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE') matches '/^\\d+$/' and get_env('APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE') > upload_calculated_minimum %}
                         <span class="text-danger" style="margin-left: 10px; font-weight: 800;">Limited by PHP config!</span>
@@ -95,34 +95,34 @@
         {# PHP upload info #}
         <table class="table">
             <tr>
-                <td>
+                <td style="width: 50%">
                     php.ini - <code>upload_max_filesize</code>
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ php_max_upload|format_bytes }}
                 </td>
             </tr>
             <tr>
-                <td>
+                <td style="width: 50%">
                     php.ini - <code>post_max_size</code>
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ php_max_post|format_bytes }}
                 </td>
             </tr>
             <tr>
-                <td>
+                <td style="width: 50%">
                     php.ini - <code>memory_limit</code>
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ php_memory_limit|format_bytes }}
                 </td>
             </tr>
             <tr>
-                <td>
+                <td style="width: 50%">
                     Maximum PHP file upload filesize
                 </td>
-                <td class="text-info">
+                <td style="width: 50%" class="text-info">
                     {{ upload_calculated_minimum|format_bytes }}
                 </td>
             </tr>
