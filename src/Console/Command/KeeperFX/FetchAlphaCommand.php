@@ -275,7 +275,11 @@ class FetchAlphaCommand extends Command
             $output->writeln("[+] <info>{$artifact->name}</info> stored! -> <info>{$display_title}</info>");
 
             // Send a notification on Discord
-            $this->discord_notifier->notifyNewAlphaPatch($build);
+            if($this->discord_notifier->notifyNewAlphaPatch($build)){
+                $output->writeln("[+] Discord has been notified!");
+            }
+
+
         }
 
         return Command::SUCCESS;
