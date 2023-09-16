@@ -7,6 +7,7 @@ use App\Entity\UserPasswordReset;
 use App\Entity\UserPasswordResetToken;
 
 use App\Mailer;
+use App\Account;
 use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
@@ -22,8 +23,15 @@ class PasswordResetController {
     public function passwordResetSendIndex(
         Request $request,
         Response $response,
+        Account $account,
         TwigEnvironment $twig
     ){
+        // Only logged-out guests allowed
+        if($account->isLoggedIn()){
+            $response = $response->withHeader('Location', '/')->withStatus(302);
+            return $response;
+        }
+
         $response->getBody()->write(
             $twig->render('password-reset/password-reset.send.html.twig')
         );
@@ -37,8 +45,15 @@ class PasswordResetController {
         FlashMessage $flash,
         TwigEnvironment $twig,
         EntityManager $em,
+        Account $account,
         Mailer $mailer,
     ){
+        // Only logged-out guests allowed
+        if($account->isLoggedIn()){
+            $response = $response->withHeader('Location', '/')->withStatus(302);
+            return $response;
+        }
+
         // Wait a random amount to protect against timing attacks
         \usleep(\mt_rand(10,500));
 
@@ -105,8 +120,15 @@ class PasswordResetController {
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
+        Account $account,
         $token
     ){
+        // Only logged-out guests allowed
+        if($account->isLoggedIn()){
+            $response = $response->withHeader('Location', '/')->withStatus(302);
+            return $response;
+        }
+
         // Get reset token
         $reset_token = $em->getRepository(UserPasswordResetToken::class)->findOneBy(['token' => $token]);
         if(!$reset_token){
@@ -131,8 +153,15 @@ class PasswordResetController {
         EntityManager $em,
         FlashMessage $flash,
         Session $session,
+        Account $account,
         $token
     ){
+        // Only logged-out guests allowed
+        if($account->isLoggedIn()){
+            $response = $response->withHeader('Location', '/')->withStatus(302);
+            return $response;
+        }
+
         // Get reset token
         $reset_token = $em->getRepository(UserPasswordResetToken::class)->findOneBy(['token' => $token]);
         if(!$reset_token){
