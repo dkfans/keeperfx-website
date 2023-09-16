@@ -272,10 +272,10 @@ class FetchAlphaCommand extends Command
             $build->setWorkflowTitle($display_title);
             $build->setWorkflowRunId($artifact->workflow_run?->id ?? null);
             $build->setIsAvailable(true);
-
             $this->em->persist($build);
             $this->em->flush();
 
+            // Show success message
             $output->writeln("[+] <info>{$artifact->name}</info> stored! -> <info>{$display_title}</info>");
             $output->writeln("[+] Output filesize: " . BinaryFormatter::bytes($output_filesize)->format());
 
