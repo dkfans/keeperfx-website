@@ -8,6 +8,7 @@ use App\Entity\GithubAlphaBuild;
 use DateTime;
 use App\DiscordNotifier;
 use Doctrine\ORM\EntityManager;
+use ByteUnits\Binary as BinaryFormatter;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
 
@@ -230,6 +231,9 @@ class FetchAlphaCommand extends Command
                 $output->writeln("[>] Moving new archive to: <info>{$output_path}</info>");
                 \rename($temp_archive_path_new, $output_path);
 
+                // Get filesize
+                $output_filesize = \filesize($output_path);
+
             } catch (\Exception $ex){
 
                 $output->writeln("[-] <error>Something went wrong</error>...");
@@ -263,7 +267,7 @@ class FetchAlphaCommand extends Command
             $build->setName($artifact->name);
             $build->setArtifactId($artifact->id);
             $build->setFilename($new_filename);
-            $build->setSizeInBytes(\filesize($output_path));
+            $build->setSizeInBytes($output_filesize);
             $build->setTimestamp(new DateTime($artifact->created_at));
             $build->setWorkflowTitle($display_title);
             $build->setWorkflowRunId($artifact->workflow_run?->id ?? null);
@@ -273,6 +277,7 @@ class FetchAlphaCommand extends Command
             $this->em->flush();
 
             $output->writeln("[+] <info>{$artifact->name}</info> stored! -> <info>{$display_title}</info>");
+            $output->writeln("[+] Output filesize: " . BinaryFormatter::bytes($output_filesize)->format());
 
             // Send a notification on Discord
             if($this->discord_notifier->notifyNewAlphaPatch($build)){
