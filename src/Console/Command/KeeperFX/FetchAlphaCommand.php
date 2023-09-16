@@ -2,11 +2,11 @@
 
 namespace App\Console\Command\KeeperFX;
 
-
 use App\Entity\GithubAlphaBuild;
 
 use DateTime;
 use App\DiscordNotifier;
+use App\VirusTotalScanner;
 use Doctrine\ORM\EntityManager;
 use ByteUnits\Binary as BinaryFormatter;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
@@ -284,6 +284,15 @@ class FetchAlphaCommand extends Command
                 $output->writeln("[+] Discord has been notified!");
             }
 
+            // Scan with VirusTotal
+            // We do this so many Antivirus companies get a sample as soon as possible.
+            // This hopefully accomplishes a few things:
+            // - A possible virus that slipped in will get easily found and flagged
+            // - Antivirus companies will get a sample that they can whitelist
+            if(!empty($_ENV['APP_VIRUSTOTAL_API_KEY'])){
+                $output->writeln("[+] Sending file to VirusTotal...");
+                $resp = VirusTotalScanner::scanFile($output_path);
+            }
 
         }
 
