@@ -183,11 +183,12 @@ class DiscordNotifier {
             return false;
         }
 
-        // Create description
-        // Convert the github issue/PR reference to markdown
+        // Handle description
+        // Remove invalid issue strings
+        // Convert issue/PR reference to markdown
         $description = $alpha_build->getWorkflowTitle();
-        $replacement = '([#$1](https://github.com/dkfans/keeperfx/issues/$1))';
-        $description = \preg_replace('/\(\#(\d{1,6})\)/', $replacement, $description);
+        $description = \preg_replace('/\s*(\(.*?\…)/', '…', $description);
+        $description = \preg_replace('/\(\#(\d{1,6})\)/', '([#$1](https://github.com/dkfans/keeperfx/issues/$1))', $description);
 
         // Create the Embed
         $embed = new Embed();

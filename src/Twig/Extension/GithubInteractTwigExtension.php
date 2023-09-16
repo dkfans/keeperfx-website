@@ -27,8 +27,14 @@ class GithubInteractTwigExtension extends \Twig\Extension\AbstractExtension
      */
     public function githubInteract(string $content): string
     {
+        // Remove invalid issue strings
+        $content = \preg_replace('/\s*(\(.*?\…)/', '…', $content);
+
+        // Convert to link
         $replacement = '(<a href="https://github.com/dkfans/keeperfx/issues/$1" target="_blank">#$1</a>)';
         $content = \preg_replace('/\(\#(\d{1,6})\)/', $replacement, $content);
+
+        // Return
         return $content;
     }
 }
