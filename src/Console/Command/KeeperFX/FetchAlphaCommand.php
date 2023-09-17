@@ -290,10 +290,43 @@ class FetchAlphaCommand extends Command
             // - A possible virus that slipped in will get easily found and flagged
             // - Antivirus companies will get a sample that they can whitelist
             if(!empty($_ENV['APP_VIRUSTOTAL_API_KEY'])){
-                $output->writeln("[+] Sending file to VirusTotal...");
-                $resp = VirusTotalScanner::scanFile($output_path);
-            }
 
+                // Get file hash
+                $file_hash = \hash_file('sha1', $output_path);
+                $output->writeln("[+] File hash: <info>{$file_hash}</info>");
+
+                // Check filesize (currently 32MB max)
+                if($output_filesize > (32 * 1000 * 1000)){
+                    $output->writeln("[-] Currently only a filesize of 32MB or lower is possible to be uploaded to VirusTotal");
+                    continue;
+                }
+
+                // Upload to VT
+                $output->writeln("[>] Uploading file to VirusTotal...");
+                $resp = VirusTotalScanner::scanFile($output_path);
+
+                // Check if the upload was successful
+                if($resp && \is_array($resp) && \array_key_exists('data', $resp) && \is_array($resp['data']) && \array_key_exists('id', $resp['data'])){
+                    $output->writeln("[+] File uploaded to VirusTotal! -> <info>{$resp['data']['id']}</info>");
+
+                    // Check if we should add a comment to this alpha patch
+                    // This comment will most likely ask VirusTotal users to notify us on abuse
+                    if(!empty($_ENV['APP_VIRUSTOTAL_ALPHA_PATCH_COMMENT'])){
+
+                        // Add the comment
+                        $output->writeln("[>] Adding VirusTotal comment...");
+                        $resp = VirusTotalScanner::addComment($file_hash, $_ENV['APP_VIRUSTOTAL_ALPHA_PATCH_COMMENT']);
+
+                        // Show output if we are successful or not
+                        if($resp) {
+                            $output->writeln("[+] VirusTotal comment added!");
+                        } else {
+                            $output->writeln("[-] Failed to add VirusTotal comment...");
+                        }
+                    }
+
+                }
+            }
         }
 
         return Command::SUCCESS;

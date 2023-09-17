@@ -7,7 +7,8 @@ use GuzzleHttp\Client;
 
 class VirusTotalScanner {
 
-    public const API_SCAN_FILES_ENDPOINT = 'https://www.virustotal.com/api/v3/files';
+    public const API_SCAN_FILES_ENDPOINT     = 'https://www.virustotal.com/api/v3/files';
+    public const API_ADD_COMMENT_ENDPOINT    = 'https://www.virustotal.com/api/v3/files/%s/comments';
 
     private static function getHttpApiClient(): Client
     {
@@ -60,6 +61,49 @@ class VirusTotalScanner {
             return $data;
 
         } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public static function addComment(string|int $id, string $comment): bool
+    {
+        // Make sure VirusTotal API key is set
+        if(empty($_ENV['APP_VIRUSTOTAL_API_KEY'])){
+            throw new \Exception("APP_VIRUSTOTAL_API_KEY needs to be set");
+        }
+
+        try {
+            // Send the request
+            $response = self::getHttpApiClient()->request('POST', \sprintf(self::API_ADD_COMMENT_ENDPOINT, $id), [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'x-apikey'     => $_ENV['APP_VIRUSTOTAL_API_KEY']
+                ],
+                'json' => [
+                    'data' => [
+                        'type' => 'comment',
+                        'attributes' => [
+                            'text' => $comment
+                        ]
+                    ]
+                ]
+            ]);
+
+            dump($response);
+
+            // Make sure request was successful
+            if(!$response || $response->getStatusCode() !== 200){
+                dump($response->getBody());
+                return false;
+            }
+
+            // If we have 200 response we have posted the comment
+            return true;
+
+        } catch (\Exception $e) {
+
+            dump($e);
+
             return false;
         }
     }
