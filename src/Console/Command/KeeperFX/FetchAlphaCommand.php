@@ -72,7 +72,7 @@ class FetchAlphaCommand extends Command
             }
         }
 
-        $output->writeln("[>] Download directory: " . $storage_dir);
+        $output->writeln("[>] Download directory: <info>{$storage_dir}</info>");
 
         $workflow_id = \intval($_ENV['APP_ALPHA_PATCH_GITHUB_WORKFLOW_ID'] ?? 0);
 
@@ -165,7 +165,7 @@ class FetchAlphaCommand extends Command
             // Download alpha build
             try {
 
-                $output->writeln("[>] Downloading: {$artifact->name} -> {$temp_archive_path}");
+                $output->writeln("[>] Downloading: {$artifact->name} -> <info>{$temp_archive_path}</info>");
                 $client->request('GET', $artifact->archive_download_url, ['sink' => $temp_archive_path]);
                 if(!\file_exists($temp_archive_path)){
                     $output->writeln("[-] Failed to download artifact");
