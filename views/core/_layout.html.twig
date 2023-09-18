@@ -54,7 +54,7 @@
                         {# <a class="dropdown-toggle" href="/dashboard" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> #}
 
                             {% if account.avatar %}
-                                <img src="/avatar/{{ account.avatar }}" class="user-avatar" />
+                                <img src="/avatar/{{ account.avatar }}" class="user-avatar" onerror="this.src='{{ avatar(account.username, 'circle', 128) }}';" />
                             {% else %}
                                 <img src="{{ avatar(account.username, 'circle', 128) }}" class="user-avatar" />
                             {% endif %}
