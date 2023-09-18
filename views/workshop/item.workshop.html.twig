@@ -360,14 +360,37 @@
 
                         <div class="" style="width: 100%; margin-left: 7px; padding: 0;">
                                 <div class="d-flex justify-content-between" style="width: 100%;">
-                                    <a
-                                    href="/workshop/browse?user={{ comment.user.username }}"
-                                    title="Browse {{ comment.user.username }}'s Workshop Items"
-                                    class="user-link d-inline-block">
-                                        <span class="user-username">{{ comment.user.username }}</span>
-                                    </a>
-                                    <span class="text-muted" style="display:inline;">
-                                        {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
+
+                                    {# Left side #}
+                                    <span>
+
+                                        {# Username #}
+                                        <a
+                                        href="/workshop/browse?user={{ comment.user.username }}"
+                                        title="Browse {{ comment.user.username }}'s Workshop Items"
+                                        class="user-link d-inline-block me-2">
+                                            <span class="user-username">{{ comment.user.username }}</span>
+                                        </a>
+
+                                        {# Badge: If user is submitter #}
+                                        {% if item.submitter is not null and comment.user == item.submitter %}
+                                            <span class="badge bg-primary text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px;">Submitter</span>
+                                        {% endif %}
+
+                                        {# Badge: If user is admin #}
+                                        {% if comment.user.role.value == roles.admin  %}
+                                            <span class="badge bg-danger text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px;">Admin</span>
+                                        {% endif %}
+
+                                    </span>
+
+                                    {# Right side #}
+                                    <span>
+
+                                        {# Date #}
+                                        <span class="text-muted" style="display:inline;">
+                                            {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
+                                        </span>
                                     </span>
                                 </div>
 
