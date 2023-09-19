@@ -44,6 +44,12 @@ class User {
     #[ORM\OneToMany(targetEntity: UserCookieToken::class, mappedBy: 'user', cascade: ["remove"])]
     private Collection $cookie_tokens;
 
+    #[ORM\OneToMany(targetEntity: UserNotification::class, mappedBy: 'user', cascade: ["remove"])]
+    private Collection $notifications;
+
+    #[ORM\OneToMany(targetEntity: UserNotificationSetting::class, mappedBy: 'user', cascade: ["remove"])]
+    private Collection $notification_settings;
+
     #[ORM\OneToMany(targetEntity: WorkshopItem::class, mappedBy: 'submitter', cascade: ["remove"])]
     private Collection $workshop_items;
 
@@ -60,6 +66,8 @@ class User {
         $this->news_articles               = new ArrayCollection();
         $this->connection_tokens           = new ArrayCollection();
         $this->cookie_tokens               = new ArrayCollection();
+        $this->notifications               = new ArrayCollection();
+        $this->notification_settings       = new ArrayCollection();
         $this->workshop_items              = new ArrayCollection();
         $this->workshop_comments           = new ArrayCollection();
         $this->workshop_ratings            = new ArrayCollection();
@@ -225,6 +233,22 @@ class User {
     public function getCookieTokens(): Collection
     {
         return $this->cookie_tokens;
+    }
+
+    /**
+     * Get the value of notifications
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * Get the value of notification_settings
+     */
+    public function getNotificationSettings(): Collection
+    {
+        return $this->notification_settings;
     }
 
     /**
