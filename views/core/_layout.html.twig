@@ -49,7 +49,27 @@
 
                 {% if account %}
 
-                    <div class="dropdown">
+                    {# Notification icon #}
+                    <div class="dropdown" style="display: inline-block;">
+                        <a class="dropdown-toggle caret-off" href="/account" id="navbarNotificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <ion-icon name="notifications-outline" style="position: relative; font-size:23px; top:6px;" color="red"></ion-icon>
+                            <span class="position-absolute translate-middle badge rounded-pill bg-danger text-white" style="font-size: 10px; top: 6px !important; left: 32px; font-family: monospace;">
+                                1
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarNotificationDropdown">
+                            <li><a class="dropdown-item" href="/account">Walter has returned<br/>3 days ago</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/account">Walter has turned his back to us<br/>2 months ago</a></li>
+                        </ul>
+                    </div>
+
+                    {# Seperator #}
+                    <span class="header-separator">|</span>
+
+                    {# Username + account dropdown #}
+                    <div class="dropdown" style="display: inline;">
                         <a class="dropdown-toggle" href="/account" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {# <a class="dropdown-toggle" href="/dashboard" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> #}
 
@@ -95,6 +115,7 @@
                         </ul>
 
                     </div>
+
                 {% else %}
                     <a href="/login">
                         Login
