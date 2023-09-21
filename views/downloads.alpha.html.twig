@@ -30,7 +30,7 @@
                 {% for build in alpha_builds %}
                     <tr>
                         <td>
-                            <a href="/download/alpha/{{ build.filename }}" download>
+                            <a href="/download/alpha/{{ build.filename }}" data-alpha-patch="true" download>
                                 {{ build.name }}
                             </a>
                         </td>
@@ -48,5 +48,7 @@
 
     </div>
 </div>
+
+{% include 'downloads.alpha-notice.html.twig' %}
 
 {% endblock %}

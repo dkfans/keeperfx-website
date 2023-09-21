@@ -13,7 +13,7 @@
         </a>
     {% endif %}
     {% if alpha_builds|length > 0 %}
-        <a href="/download/alpha/{{ alpha_builds[0].filename }}"class="btn btn-medieval btn-medieval-gray" style="margin: 15px; min-height: 100px; padding: 20px" download>
+        <a href="/download/alpha/{{ alpha_builds[0].filename }}"class="btn btn-medieval btn-medieval-gray" style="margin: 15px; min-height: 100px; padding: 20px" data-alpha-patch="true" download>
             <h5>Download latest alpha patch</h5>
             <span>{{ alpha_builds[0].name }}</span>
         </a>
@@ -122,7 +122,7 @@
                 {% for build in alpha_builds %}
                     <tr>
                         <td>
-                            <a href="/download/alpha/{{ build.filename }}" download>
+                            <a href="/download/alpha/{{ build.filename }}" data-alpha-patch="true" download>
                                 {{ build.name }}
                             </a>
                         </td>
@@ -146,5 +146,7 @@
 
     </div>
 </div>
+
+{% include 'downloads.alpha-notice.html.twig' %}
 
 {% endblock %}

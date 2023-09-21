@@ -1,0 +1,33 @@
+
+{# The alpha patch extra information modal #}
+<div class="modal fade" id="alphaPatchModal" tabindex="-1" aria-labelledby="alphaPatchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-keeper bd-keeper">
+            <div class="modal-header" style="border: 0;">
+                <h5 class="modal-title" id="alphaPatchModalLabel">Alpha patch notice</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="border: 0; border-top: 2px solid #333; border-bottom: 2px solid #333; background-color: rgba(6, 6, 6, 0.666);">
+                <p>
+                    An Alpha patch requires the full Stable version of KeeperFX to be installed first.
+                </p>
+                <p>
+                    Please make sure you extract the files of the Alpha patch over the files of a Stable version.
+                </p>
+            </div>
+            <div class="modal-footer" style="border: 0;">
+                <button type="button" class="btn btn-medieval" data-bs-dismiss="modal">Ok!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Script that opens the modal when an anchor containing a specific data attribute is clicked (data-alpha-patch="true") #}
+<script>
+$(function(){
+    $('a[data-alpha-patch="true"]').on('click', function(e){
+        $('#alphaPatchModal').modal('show');
+    });
+});
+</script>
+
