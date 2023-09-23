@@ -382,15 +382,15 @@
                                             <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px;">Admin</span>
                                         {% endif %}
 
+                                        {# Date #}
+                                        <time class="text-muted" datetime="{{ comment.createdTimestamp|date('c') }}">
+                                            {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
+                                        </time>
+
                                     </span>
 
                                     {# Right side #}
                                     <span>
-
-                                        {# Date #}
-                                        <span class="text-muted" style="display:inline;">
-                                            {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
-                                        </span>
                                     </span>
                                 </div>
 
