@@ -25,7 +25,7 @@
 {# Script that opens the modal when an anchor containing a specific data attribute is clicked (data-alpha-patch="true") #}
 <script>
 $(function(){
-    $('a[data-alpha-patch="true"]').on('mouseover', function(e){
+    $('a[data-alpha-patch="true"]').on('click', function(e){
         $('#alphaPatchModalURL').attr('href',  $(this).attr('href'));
         $('#alphaPatchModal').modal('show');
     });
