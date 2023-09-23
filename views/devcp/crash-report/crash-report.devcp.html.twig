@@ -7,9 +7,15 @@
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
         <h2>Crash report #{{ crash_report.id }}</h2>
-        <a href="/dev/crash-report/list" style="right: 0;">
-            Back
-        </a>
+        <span>
+            <a href="/dev/crash-report/{{ crash_report.id }}/delete">
+                Delete
+            </a>
+            -
+            <a href="/dev/crash-report/list" style="right: 0;">
+                Back
+            </a>
+        </span>
     </div>
     <div class="content-body">
 
