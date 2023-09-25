@@ -207,4 +207,27 @@ $(function(e){
             },
         });
     });
+
+    // Show reply and comment menu buttons
+    $('.comment-buttons').show();
+
+    // Handle comment actions
+    $('[data-comment-action]').on('click', function(e){
+
+        e.preventDefault();
+
+        // Get variables
+        let commentId = $(this).parents('.workshop-item-comment').first().data('comment-id');
+        let action = $(this).data('comment-action');
+        if(typeof commentId == 'undefined' || typeof action == 'undefined'){
+            alert('Something went wrong');
+            return false;
+        }
+
+
+
+            alert(commentId);
+            alert(action);
+
+    });
 });
