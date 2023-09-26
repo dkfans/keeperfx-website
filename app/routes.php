@@ -146,6 +146,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             // Moderate (dev) Crash Reports
             $group->get('/crash-report/list', [DevCP\ModerateCrashReportController::class, 'listIndex']);
             $group->get('/crash-report/{id:\d+}', [DevCP\ModerateCrashReportController::class, 'view']);
+            $group->get('/crash-report/{id:\d+}/delete', [DevCP\ModerateCrashReportController::class, 'delete']);
 
         })->add(AuthDevCPMiddleware::class);
 

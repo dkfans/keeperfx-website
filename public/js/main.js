@@ -15,4 +15,6 @@ $(function(){
         $(this).find('ion-icon').hide();
     })
 
+    // Load dynamic timestamps
+    $("time").timeago();
 });

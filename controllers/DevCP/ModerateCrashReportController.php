@@ -40,20 +40,46 @@ class ModerateCrashReportController {
         FlashMessage $flash,
         $id
     ){
+        // Find crash report
         $crash_report = $em->getRepository(CrashReport::class)->find($id);
-
         if(!$crash_report){
             $flash->warning('Crash report not found.');
             $response = $response->withHeader('Location', '/dev/crash-report/list')->withStatus(302);
             return $response;
         }
 
+        // Show output
         $response->getBody()->write(
             $twig->render('devcp/crash-report/crash-report.devcp.html.twig', [
                 'crash_report' => $crash_report
             ])
         );
+        return $response;
+    }
 
+    public function delete(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        FlashMessage $flash,
+        $id
+    ){
+        // Find crash report
+        $crash_report = $em->getRepository(CrashReport::class)->find($id);
+        if(!$crash_report){
+            $flash->warning('Crash report not found.');
+            $response = $response->withHeader('Location', '/dev/crash-report/list')->withStatus(302);
+            return $response;
+        }
+
+        // Remove the crash report
+        $em->remove($crash_report);
+        $em->flush();
+
+        // Navigate back to list
+        $flash->success('Crash report removed.');
+        $response = $response->withHeader('Location', '/dev/crash-report/list')->withStatus(302);
         return $response;
     }
 }
