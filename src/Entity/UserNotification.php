@@ -22,7 +22,7 @@ class UserNotification {
     private UserNotificationType $type;
 
     #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
-    private string $message;
+    private string $data;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
@@ -81,19 +81,19 @@ class UserNotification {
     }
 
     /**
-     * Get the value of message
+     * Get the value of data
      */
-    public function getMessage(): string
+    public function getData(): string
     {
-        return $this->message;
+        return $this->data;
     }
 
     /**
-     * Set the value of message
+     * Set the value of data
      */
-    public function setMessage(string $message): self
+    public function setData(string $data): self
     {
-        $this->message = $message;
+        $this->data = $data;
 
         return $this;
     }
