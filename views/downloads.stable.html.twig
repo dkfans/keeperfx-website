@@ -30,7 +30,7 @@
                 {% for release in stable_releases %}
                     <tr class="{% if loop.first %}latest-release{% endif %}">
                         <td>
-                            <a href="{{ release.downloadUrl }}" download>
+                            <a href="{{ release.downloadUrl }}" data-stable-build-download="true" download>
                                 {{ release.name }}
                             </a>
                             {% if loop.first %}(latest){% endif %}
@@ -52,5 +52,7 @@
 
     </div>
 </div>
+
+{% include 'downloads.notice.html.twig' %}
 
 {% endblock %}
