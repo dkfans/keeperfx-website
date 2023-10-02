@@ -26,12 +26,14 @@ class Notification {
      */
 
     private array $routes;
+    private array $text;
 
     public function __construct(
         private Account $account,
         private EntityManager $em,
     ) {
         $this->routes = require __DIR__ . '/../app/notification.routes.php';
+        $this->text   = require __DIR__ . '/../app/notification.text.php';
     }
 
     public function notify(User $user, UserNotificationType $type, array $data): bool
@@ -65,5 +67,16 @@ class Notification {
     public function getRoute(UserNotificationType $type): string|false
     {
         return $this->routes[$type->name] ?? false;
+    }
+
+    public function handleNotificationText(UserNotificationType $type, array $data): string
+    {
+        if(!isset($this->text[$type->name])){
+            throw new \Exception('no text string found for notification');
+        }
+
+        $str = $this->text[$type->name];
+
+        return $str;
     }
 }
