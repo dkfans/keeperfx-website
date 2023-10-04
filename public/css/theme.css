@@ -48,6 +48,9 @@ body {
     --bs-popover-border-radius: 0 !important;
 
     --bs-alert-color: #fff !important;
+
+    --bs-table-bg: transparent;
+    --bs-table-color: rgb(215, 197, 182);
 }
 
 ul {
