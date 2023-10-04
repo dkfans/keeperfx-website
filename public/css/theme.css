@@ -1,4 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Nunito&display=swap');
+@font-face {
+    font-family: 'Cinzel';
+    font-display: swap;
+    src: url(/font/cinzel/static/Cinzel-Medium.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Nunito';
+    font-display: swap;
+    src: url(/font/nunito/Nunito-VariableFont_wght.ttf) format('truetype');
+}
 
 body {
     background-color: #040404;
