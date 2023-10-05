@@ -44,6 +44,3 @@ The `backup-daily.sh` script is located in the root project folder and  does the
 - daily: backup avatar files
 - 3 daily: backup workshop files
 
-It might be required that you change `mysqldump` and `tar` inside the script to something like `/usr/bin/mysqldump` and `/bin/tar` if you put it in the root crontab.
-On most systems you can use `which <name>` to find the location of the binaries.
-If this is the case then the backup script should be updated to work on all systems without having to edit it.
