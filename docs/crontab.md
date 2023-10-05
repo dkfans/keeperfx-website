@@ -36,11 +36,14 @@ Right now this just makes it so the commits come 10 minutes later.
 This should probably go in the crontab of your root user so you can backup the files **outside** of the webserver directories.
 
 ```
-0 8 * * * mysqldump -u DBUSER -pDBPASS DBNAME > /var/keeperfx-backup/$(date +"%Y-%m-%d")-keeperfx.sql
-0 8 * * * tar -czf /var/keeperfx-backup/$(date +"%Y-%m-%d")-avatars.tar.gz /var/www/keeperfx/storage/avatars
-0 8 * * 3 tar -czf /var/keeperfx-backup/$(date +"%Y-%m-%d")-workshop.tar.gz /var/www/keeperfx/storage/workshop
+0 8 * * * /var/www/keeperfx/backup-daily.sh /var/keeperfx-backup /var/www/keeperfx/storage/avatars /var/www/keeperfx/storage/workshop
 ```
 
-It might be required that you change `mysqldump` and `tar` to something like `/usr/bin/mysqldump` and `/bin/tar` if you put it in the root crontab.
+The `backup-daily.sh` script is located in the root project folder and  does the following:
+- daily: backup database (it takes the DB details from the .env file)
+- daily: backup avatar files
+- 3 daily: backup workshop files
 
+It might be required that you change `mysqldump` and `tar` inside the script to something like `/usr/bin/mysqldump` and `/bin/tar` if you put it in the root crontab.
 On most systems you can use `which <name>` to find the location of the binaries.
+If this is the case then the backup script should be updated to work on all systems without having to edit it.
