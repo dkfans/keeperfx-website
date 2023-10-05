@@ -34,6 +34,7 @@ return [
             $orm_config->setAutoGenerateProxyClasses(\Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_ALWAYS);
         } else {
             $orm_config->setAutoGenerateProxyClasses(\Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
+            $orm_config->setQueryCache($cache);
         }
         return $orm_config;
     },
