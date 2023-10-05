@@ -23,6 +23,7 @@ This is the suggested crontab for the automated tasks.
 * * * * * php /var/www/keeperfx/console clamav:scan-workshop-new
 0 0 * * * php /var/www/keeperfx/console clamav:scan-workshop-all
 */10 * * * * php /var/www/keeperfx/console workshop:fetch-unearth
+*/10 * * * * php /var/www/keeperfx/console workshop:fetch-creature-maker
 0 0 * * * php /var/www/keeperfx/console user:clear-old-password-reset
 ```
 
