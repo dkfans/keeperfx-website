@@ -220,7 +220,9 @@
                                     (Optional)
                                 </span>
                             </label>
-                            <input type="date" class="form-control" id="original_creation_date" name="original_creation_date" value="{{ workshop_item.originalCreationDate|date('Y-m-d') }}">
+                            <input type="date" class="form-control" id="original_creation_date" name="original_creation_date"
+                                value="{% if workshop_item.originalCreationDate is not null %}{{ workshop_item.originalCreationDate|date('Y-m-d') }}{% endif %}"
+                            >
                         </div>
                     </div>
                 </div>
