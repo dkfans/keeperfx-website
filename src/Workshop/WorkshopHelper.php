@@ -18,7 +18,13 @@ class WorkshopHelper {
         // TODO: add env var for minimum filesize to start generating thumbnails (250kb?)
 
         // Get workshop item image dir
-        $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item->getId() . '/images';
+        if(\php_sapi_name() === 'cli' || \defined('STDIN')){
+            $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'] . '/' . $item->getId() . '/images';
+        } else {
+            $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item->getId() . '/images';
+        }
+
+        // Make sure image dir exists
         if(!\file_exists($item_images_dir)){
             return false;
         }
@@ -81,7 +87,13 @@ class WorkshopHelper {
     public static function removeThumbnail(EntityManager $em, WorkshopItem $item)
     {
         // Get workshop item image dir
-        $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item->getId() . '/images';
+        if(\php_sapi_name() === 'cli' || \defined('STDIN')){
+            $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'] . '/' . $item->getId() . '/images';
+        } else {
+            $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item->getId() . '/images';
+        }
+
+        // Make sure image dir exists
         if(!\file_exists($item_images_dir)){
             return false;
         }
