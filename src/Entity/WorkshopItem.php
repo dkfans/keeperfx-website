@@ -62,6 +62,9 @@ class WorkshopItem {
     #[ORM\Column(nullable: true)]
     private \DateTime|null $original_creation_date = null;
 
+    #[ORM\Column(nullable: true)]
+    private string|null $thumbnail = null;
+
     #[ORM\OneToMany(targetEntity: WorkshopFile::class, mappedBy: 'item', cascade: ["remove"])]
     #[ORM\OrderBy(["weight" => "ASC"])]
     private Collection $files;
@@ -499,6 +502,24 @@ class WorkshopItem {
     public function setIsBundledWithGame(bool $is_bundled_with_game): self
     {
         $this->is_bundled_with_game = $is_bundled_with_game;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of thumbnail
+     */
+    public function getThumbnail(): ?string
+    {
+        return $this->thumbnail;
+    }
+
+    /**
+     * Set the value of thumbnail
+     */
+    public function setThumbnail(?string $thumbnail): self
+    {
+        $this->thumbnail = $thumbnail;
 
         return $this;
     }
