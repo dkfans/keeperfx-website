@@ -38,8 +38,10 @@ class WorkshopHelper {
         }
 
         // Get image filename variables
-        $image_filename = $images[0]->getFilename();
-        $image_filepath = $item_images_dir . '/' . $image_filename;
+        $image_filename              = $images[0]->getFilename();
+        $image_filepath              = $item_images_dir . '/' . $image_filename;
+        $image_extension             = \strtolower(\pathinfo($image_filename, \PATHINFO_EXTENSION));
+        $image_filename_no_extension = \pathinfo($image_filename, \PATHINFO_FILENAME);
 
         // Make sure image exists
         if(!\file_exists($image_filepath)){
@@ -47,12 +49,12 @@ class WorkshopHelper {
         }
 
         // Get thumbnail filename variables
-        $thumbnail_filename = 'thumbnail-' . $images[0]->getFilename();
+        $thumbnail_filename = 'thumbnail-' . $image_filename_no_extension . '.png';
         $thumbnail_filepath = $item_images_dir . '/' . $thumbnail_filename;
 
         // Make sure thumbnail does not exist yet
         if(\file_exists($thumbnail_filepath)){
-            return false;
+            @\unlink($thumbnail_filepath);
         }
 
         // Generate thumbnail
@@ -65,7 +67,7 @@ class WorkshopHelper {
 
             $thumbnail = new ImageResize($image_filepath);
             $thumbnail->interlace = 0;
-            $thumbnail->crop(256, 256, true, ImageResize::CROPCENTER);
+            $thumbnail->crop(256, 256, false, ImageResize::CROPCENTER);
             $thumbnail->save($thumbnail_filepath);
         } catch (\Exception $ex) {
             return false;
@@ -76,8 +78,8 @@ class WorkshopHelper {
             return false;
         }
 
-        // Make sure thumbnail is actually smaller in filesize
-        if(\filesize($thumbnail_filepath) >= filesize($image_filepath)){
+        // Make sure thumbnail is actually smaller in filesize if the original image was not a gif
+        if($image_extension !== 'gif' && \filesize($thumbnail_filepath) >= filesize($image_filepath)){
             return false;
         }
 
