@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManager;
 
 class WorkshopHelper {
 
-    public static function generateThumbnailIfNotExists(EntityManager $em, WorkshopItem $item): bool
+    public static function generateThumbnail(EntityManager $em, WorkshopItem $item): bool
     {
         // TODO: add env var check if we need to generate thumbnails
 
@@ -20,14 +20,12 @@ class WorkshopHelper {
         // Get workshop item image dir
         $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item->getId() . '/images';
         if(!\file_exists($item_images_dir)){
-            echo('azeaze');
             return false;
         }
 
         // Make sure this workshop item has images
         $images = $item->getImages();
         if(!$images){
-            echo('zeaeazzea');
             return false;
         }
 
@@ -37,7 +35,6 @@ class WorkshopHelper {
 
         // Make sure image exists
         if(!\file_exists($image_filepath)){
-            echo('rezrzer');
             return false;
         }
 
@@ -47,18 +44,25 @@ class WorkshopHelper {
 
         // Make sure thumbnail does not exist yet
         if(\file_exists($thumbnail_filepath)){
-            echo('bgfdg');
             return false;
         }
 
         // Generate thumbnail
-        $thumbnail = new ImageResize($image_filepath);
-        $thumbnail->crop(256, 256, true, ImageResize::CROPCENTER);
-        $thumbnail->save($thumbnail_filepath);
+        try {
+
+            // Fix a possible libpng error that might arise
+            @\exec("mogrify -interlace none {$image_filepath}");
+
+            $thumbnail = new ImageResize($image_filepath);
+            $thumbnail->interlace = 0;
+            $thumbnail->crop(256, 256, true, ImageResize::CROPCENTER);
+            $thumbnail->save($thumbnail_filepath);
+        } catch (\Exception $ex) {
+            return false;
+        }
 
         // Check if thumbnail exists now
         if(!\file_exists($thumbnail_filepath)){
-            echo('hrtj');
             return false;
         }
 
@@ -70,6 +74,33 @@ class WorkshopHelper {
         // Set thumbnail filename for workshop item
         $item->setThumbnail($thumbnail_filename);
         $em->flush();
+
+        return true;
+    }
+
+    public static function removeThumbnail(EntityManager $em, WorkshopItem $item)
+    {
+        // Get workshop item image dir
+        $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item->getId() . '/images';
+        if(!\file_exists($item_images_dir)){
+            return false;
+        }
+
+        // Get thumbnail filename
+        $thumbnail_filename = $item->getThumbnail();
+        if(!$thumbnail_filename){
+            return false;
+        }
+
+        // Set workshop item thumbnail to null
+        $item->setThumbnail(null);
+        $em->flush();
+
+        // Get thumbnail filepath
+        $thumbnail_filepath = $item_images_dir . '/' . $thumbnail_filename;
+        if(file_exists($thumbnail_filepath)){
+            @\unlink($thumbnail_filepath);
+        }
 
         return true;
     }

@@ -21,6 +21,7 @@ return [
     \App\Console\Command\Workshop\AddWorkshopTagCommand::class,
     \App\Console\Command\Workshop\FetchUnearthCommand::class,
     \App\Console\Command\Workshop\FetchCreatureMakerCommand::class,
+    \App\Console\Command\Workshop\GenerateAllThumbnailsCommand::class,
 
     // Cache
     \App\Console\Command\Cache\CacheClearCommand::class,

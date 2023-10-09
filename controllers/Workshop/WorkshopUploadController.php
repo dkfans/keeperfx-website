@@ -22,6 +22,7 @@ use App\FlashMessage;
 use App\Config\Config;
 use App\DiscordNotifier;
 use App\UploadSizeHelper;
+use App\Workshop\WorkshopHelper;
 
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
@@ -305,6 +306,12 @@ class WorkshopUploadController {
 
         // Flush again so filenames are added to DB entity
         $em->flush();
+
+        // Create or update thumbnail
+        // TODO: improve this
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($workshop_item->getId());
+        WorkshopHelper::removeThumbnail($em, $workshop_item);
+        WorkshopHelper::generateThumbnail($em, $workshop_item);
 
         // Send a notification on Discord
         $discord_notifier->notifyNewWorkshopItem($workshop_item);
