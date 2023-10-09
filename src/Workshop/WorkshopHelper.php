@@ -7,6 +7,8 @@ use App\Entity\WorkshopItem;
 use Gumlet\ImageResize;
 use Doctrine\ORM\EntityManager;
 
+use App\Helper\SystemHelper;
+
 class WorkshopHelper {
 
     public static function generateThumbnail(EntityManager $em, WorkshopItem $item): bool
@@ -57,7 +59,9 @@ class WorkshopHelper {
         try {
 
             // Fix a possible libpng error that might arise
-            @\exec("mogrify -interlace none {$image_filepath}");
+            if(\is_callable('shell_exec') && SystemHelper::verifyShellCommand('mogrify')){
+                @\shell_exec("mogrify -interlace none {$image_filepath}");
+            }
 
             $thumbnail = new ImageResize($image_filepath);
             $thumbnail->interlace = 0;
