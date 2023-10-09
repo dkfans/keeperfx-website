@@ -29,7 +29,7 @@ class GenerateAllThumbnailsCommand extends Command
     protected function configure()
     {
         $this->setName("workshop:generate-all-thumbnails")
-            ->setDescription("Add a workshop tag");
+            ->setDescription("Generate thumbnails for all workshop items");
     }
 
     protected function execute(Input $input, Output $output)
@@ -37,13 +37,18 @@ class GenerateAllThumbnailsCommand extends Command
         /** @var EntityManager $em */
         $em = $this->container->get(EntityManager::class);
 
+        $output->writeln("[>] Generating all workshop items thumbnails...");
+
         $items = $em->getRepository(WorkshopItem::class)->findAll();
 
         foreach($items as $item){
 
+            $output->writeln("[>] Processing workshop item: <info>{$item->getName()}</info>");
+
             if($item->getThumbnail()){
+                $thumbnail_filename = $item->getThumbnail();
                 if(WorkshopHelper::removeThumbnail($em, $item)){
-                    $output->writeln("[>] Thumbnail removed: <info>{$item->getName()}</info>");
+                    $output->writeln("[+] Thumbnail removed: <info>{$thumbnail_filename}</info>");
                 }
             }
 
@@ -51,7 +56,7 @@ class GenerateAllThumbnailsCommand extends Command
             if(\count($images) > 0) {
 
                 if(WorkshopHelper::generateThumbnail($em, $item)){
-                    $output->writeln("[>] Thumbnail generated: <info>{$item->getName()}</info>");
+                    $output->writeln("[+] Thumbnail generated: <info>{$item->getThumbnail()}</info>");
                 }
             }
         }
