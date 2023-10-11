@@ -26,7 +26,9 @@
                             </time>
                         </p>
                         <p class="">
-                            {{ lore.description }}
+                            {% if lore.description is not null %}
+                                {{ lore.description|markdown_to_html }}
+                            {% endif %}
                         </p>
                     </li>
                 {% endfor %}
