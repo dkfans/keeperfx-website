@@ -25,11 +25,11 @@ class LoreController {
                     'title'       => 'Mefistotelis starts working on rewriting the game',
                     'date'        => new \DateTime('2008-04'),
                     'date_format' => 'Y-m',
-                    'description' => "Tomasz Lis (a.k.a. Mefistotelis) started working on rewriting Dungeon Keeper because of his interest in rewriting Syndicate Wars. \n\n" .
+                    'description' => "Tomasz Lis, also known as Mefistotelis or Mefisto, started working on rewriting Dungeon Keeper because of his interest in rewriting Syndicate Wars. \n\n" .
                                      "He was looking for _debug info_ in the Syndicate Wars files, but didn\'t find any. " .
                                      "So he started asking around forums, and the Keeper Klan community pointed him towards Dungeon Keeper because they both used the same code base. " .
                                      "He then found the _debug info_ he was after and started working on the project. " .
-                                     "\n\nThe goal was to rewrite the code that was used in Syndicate Wars, but the Keeper Klan community redirected Mefisto\'s interest to Dungeon Keeper. " .
+                                     "\n\nThe goal was to rewrite the code that was used in Syndicate Wars, but the Keeper Klan community got Mefisto\'s into Dungeon Keeper. " .
                                      "Mefisto\'s idea was to convert the original Dungeon Keeper executable into a DLL file, so other programs can execute its code.",
                 ],
                 [
@@ -50,7 +50,7 @@ class LoreController {
                     'title'       => 'Loobinex releases an unofficial version of KeeperFX',
                     'date'        => new \DateTime('2016-08-06'),
                     'date_format' => 'Y-m-d',
-                    'description' => 'Because Mefistotelis (a.k.a. Tomasz Lis) has been on a break, Loobinex (a.k.a. YourMaster) decided to release an unofficial version of KeeperFX that contained new fixes.',
+                    'description' => 'Because Mefisto has been on a break, Loobinex (a.k.a. YourMaster) decided to release an unofficial version of KeeperFX that contains new fixes.',
                 ],
                 [
                     'title'       => 'Mefistotelis stops working on KeeperFX',
