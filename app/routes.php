@@ -224,8 +224,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->get('/alpha', [RSSController::class, 'alphaPatchFeed']);
     });
 
-    // Lore
-    $group->get('/lore', [LoreController::class, 'index']);
+    // History
+    $group->get('/history', [HistoryController::class, 'index']);
 
 })->add(\Slim\Csrf\Guard::class);
 

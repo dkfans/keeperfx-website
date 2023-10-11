@@ -6,7 +6,7 @@ use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class LoreController {
+class HistoryController {
 
     public function index(
         Request $request,
@@ -14,7 +14,7 @@ class LoreController {
         TwigEnvironment $twig
     ){
         $response->getBody()->write(
-            $twig->render('lore.html.twig', ['lore_entries' => [
+            $twig->render('history.html.twig', ['history_entries' => [
                 [
                     'title'       => 'Dungeon Keeper is released',
                     'date'        => new \DateTime('1997-06-26'),
