@@ -86,6 +86,12 @@ class HistoryController {
                     'title'       => 'ENET multiplayer protocol added',
                     'date'        => new \DateTime('2022-10-30'),
                     'date_format' => 'Y-m-d',
+                    'description' => 'TheSim finished adding ENET as a new Multiplayer protocol, which is stable enough to allow 2 Keepers to play over the internet. It still requires a very fast connection.',
+                ],
+                [
+                    'title'       => 'Dungeon Keeper completely rewritten',
+                    'date'        => new \DateTime('2022-12-28'),
+                    'date_format' => 'Y-m-d',
                     'description' => 'qqluqq rewrote the last parts of the DK code, making it so the DLL is no longer required and KeeperFX exists as its own program.',
                 ],
                 [
