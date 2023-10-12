@@ -62,7 +62,7 @@ class HistoryController {
                     'title'       => 'Mefistotelis stops working on KeeperFX',
                     'date'        => new \DateTime('2016-09'),
                     'date_format' => 'Y-m',
-                    'description' => 'Mefistotelis stated that he will stop working on KeeperFX for the time being.',
+                    'description' => 'Mefistotelis stated that his break is final and that he will stop working on KeeperFX.',
                 ],
                 [
                     'title'       => 'Launch of Keeper Klan Discord server',
