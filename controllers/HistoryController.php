@@ -22,6 +22,12 @@ class HistoryController {
                     'description' => null,
                 ],
                 [
+                    'title'       => 'The Deeper Dungeons expansion pack is released',
+                    'date'        => new \DateTime('1997-11-30'),
+                    'date_format' => 'Y-m-d',
+                    'description' => 'An expansion pack is released and comes with 30 new maps. It also features a much better AI and some bugfixes.',
+                ],
+                [
                     'title'       => 'Mefistotelis starts working on rewriting the game',
                     'date'        => new \DateTime('2008-04'),
                     'date_format' => 'Y-m',
