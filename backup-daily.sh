@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Define the paths for mysqldump and tar on Ubuntu/Debian systems
 mysqldump_path="/usr/bin/mysqldump"
@@ -29,7 +29,7 @@ avatar_dir="$2"
 workshop_dir="$3"
 
 # Source the .env file located in the script's directory to set environment variables temporarily
-source "$script_dir/.env"
+. "$script_dir/.env"
 
 # backup database - DAILY
 "$mysqldump_path" -u "$APP_DB_USER" -p"$APP_DB_PASS" "$APP_DB_DATABASE" > "$backup_output_dir/$(date +"%Y-%m-%d")-keeperfx.sql"
