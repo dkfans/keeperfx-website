@@ -50,4 +50,9 @@ class NewUserNotification implements NotificationInterface {
         return "/admin/user/{$this->id}";
     }
 
+    public function getImage(): string|null
+    {
+        return null;
+    }
+
 }

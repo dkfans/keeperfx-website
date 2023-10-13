@@ -12,6 +12,6 @@ interface NotificationInterface {
 
     public function getUri(): string;
 
-    // public function setRead(bool $is_read): void;
+    public function getImage(): string|null;
 
 }
