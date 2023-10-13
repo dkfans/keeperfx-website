@@ -17,8 +17,8 @@ class UserNotificationSetting {
     #[ORM\ManyToOne(targetEntity: User::class)]
     private User $user;
 
-    #[ORM\Column(type: 'integer', enumType: UserNotificationType::class)]
-    private UserNotificationType $type;
+    #[ORM\Column]
+    private string $class;
 
     #[ORM\Column]
     private bool $is_enabled = true;
@@ -50,19 +50,19 @@ class UserNotificationSetting {
     }
 
     /**
-     * Get the value of type
+     * Get the value of class
      */
-    public function getType(): UserNotificationType
+    public function getClass(): string
     {
-        return $this->type;
+        return $this->class;
     }
 
     /**
      * Set the value of type
      */
-    public function setType(UserNotificationType $type): self
+    public function setClass(string $class): self
     {
-        $this->type = $type;
+        $this->class = $class;
 
         return $this;
     }
