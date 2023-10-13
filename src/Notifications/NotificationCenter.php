@@ -5,20 +5,22 @@ namespace App\Notifications;
 use App\Enum\UserRole;
 
 use App\Entity\User;
+use App\Entity\UserNotification;
 
 use App\Account;
-use App\Entity\UserNotification;
 use Doctrine\ORM\EntityManager;
+
+use Psr\SimpleCache\CacheInterface;
+use App\Notifications\Notification\NotificationInterface;
 
 use App\Workshop\Exception\NotificationClassNotFoundException;
 use App\Workshop\Exception\NotificationException;
-use Psr\SimpleCache\CacheInterface;
 
 class NotificationCenter {
 
-    private array|null $notifications = null;
+    private const CACHE_KEY_NOTIFICATIONS = "keeperfx:unread-notification:%s";
 
-    private int|null $unread_notifications = null;
+    private array|null $unread_notifications = null;
 
     public function __construct(
         private Account $account,
@@ -28,45 +30,13 @@ class NotificationCenter {
 
         if($this->account->isLoggedIn()){
 
-            // Get cached unread notification count
-            $count = $cache->get(\sprintf("keeperfx:notification:%s:unread-count", $account->getUser()->getId()));
+            // Get cached unread notifications
+            $count = $cache->get($this->getCacheKey());
             if($count !== null){
                 $this->unread_notifications = $count;
             }
 
         }
-    }
-
-    public function getUnreadNotificationCount(): int
-    {
-        if(!$this->account->isLoggedIn()){
-            throw new NotificationException("can't get notification count if not logged in");
-        }
-
-        if($this->unread_notifications !== null){
-            return $this->unread_notifications;
-        }
-
-        // TODO: get unread notification count from DB
-        // TODO: cache the count
-
-        // TODO: return the count
-
-
-
-    }
-
-    public function getNotifications(int $limit = 10)
-    {
-        if(!$this->account->isLoggedIn()){
-            throw new NotificationException("can't get notifications if not logged in");
-        }
-
-        if($this->unread_notifications !== null){
-            return $this->unread_notifications;
-        }
-
-
     }
 
     public function sendNotification(User $user, string $class, array|null $data = null)
@@ -88,6 +58,78 @@ class NotificationCenter {
         }
     }
 
+    public function getUnreadNotifications()
+    {
+        if(!$this->account->isLoggedIn()){
+            throw new NotificationException("can't get unread notifications if not logged in");
+        }
+
+        if($this->unread_notifications !== null){
+            return $this->unread_notifications;
+        }
+
+        $this->unread_notifications = [];
+
+        $user_notifications = $this->em->getRepository(UserNotification::class)->findBy(
+            [
+                'user'    => $this->account->getUser(),
+                'is_read' => false,
+            ],
+            ['created_timestamp' => 'DESC'],
+        );
+
+        if($user_notifications){
+            foreach($user_notifications as $user_notification){
+                $this->unread_notifications[$user_notification->getId()] = $this->createNotificationObject($user_notification);
+            }
+        }
+
+        $this->cache->set($this->getCacheKey(), $this->unread_notifications);
+
+        return $this->unread_notifications;
+    }
+
+    public function getAllNotifications()
+    {
+        if(!$this->account->isLoggedIn()){
+            throw new NotificationException("can't get notifications if not logged in");
+        }
+
+        $notifications = [];
+
+        $user_notifications = $this->em->getRepository(UserNotification::class)->findBy(
+            [
+                'user'    => $this->account->getUser(),
+            ],
+            ['created_timestamp' => 'DESC'],
+        );
+
+        if($user_notifications){
+            foreach($user_notifications as $user_notification){
+                $notifications[$user_notification->getId()] = $this->createNotificationObject($user_notification);
+            }
+        }
+
+        return $notifications;
+    }
+
+    private function createNotificationObject(UserNotification $user_notification)
+    {
+        $class = $user_notification->getClass();
+
+        if(!\class_exists($class)){
+            throw new NotificationClassNotFoundException("notification class '{$class}' does not exist");
+        }
+
+        /** @var NotificationInterface $notification */
+        $notification = new $class(
+            $user_notification->getCreatedTimestamp(),
+            $user_notification->getData(),
+        );
+
+        return $notification;
+    }
+
     private function createUserNotification(User $user, string $class, array|null $data = null): UserNotification
     {
         if(!\class_exists($class)){
@@ -103,4 +145,12 @@ class NotificationCenter {
         return $notification;
     }
 
+    private function getCacheKey(): string
+    {
+        if(!$this->account->isLoggedIn()){
+            throw new NotificationException("can't get user cache key if not logged in");
+        }
+
+        return \sprintf(self::CACHE_KEY_NOTIFICATIONS, $this->account->getUser()->getId());
+    }
 }

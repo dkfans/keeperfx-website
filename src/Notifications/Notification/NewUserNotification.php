@@ -11,12 +11,11 @@ use App\Workshop\Exception\NotificationDataException;
  */
 class NewUserNotification implements NotificationInterface {
 
+    private int $id;
     private \DateTime $timestamp;
+    private string $username;
 
-    private $username;
-    private $id;
-
-    public function loadData(\DateTime $timestamp, array|null $data): void
+    public function __construct(\DateTime $timestamp, array|null $data)
     {
         if($data === null || !isset($data['username']) || !isset($data['id'])){
             throw new NotificationDataException("invalid notification data. 'username' and 'id' are required.");
@@ -36,6 +35,11 @@ class NewUserNotification implements NotificationInterface {
         $this->id        = (int) $data['id'];
     }
 
+    public function getTimestamp(): \DateTime
+    {
+        return $this->timestamp;
+    }
+
     public function getText(): string
     {
         return "New user registered! {$this->username} (ID: {$this->id})";
@@ -44,11 +48,6 @@ class NewUserNotification implements NotificationInterface {
     public function getUri(): string
     {
         return "/admin/user/{$this->id}";
-    }
-
-    public function getTimestamp(): \DateTime
-    {
-        return $this->timestamp;
     }
 
 }
