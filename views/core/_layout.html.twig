@@ -38,6 +38,8 @@
                 <span class="header-separator">|</span>
                 <a href="/screenshots" class="{% if path_equals('/screenshots') %}active{% endif %}">Screenshots</a>
                 <span class="header-separator">|</span>
+                <a href="/history" class="{% if path_equals('/history') %}active{% endif %}">History</a>
+                <span class="header-separator">|</span>
                 <a href="https://keeperklan.com/forums/52-KeeperFX" target="_blank" class="outgoing-hover-icon">
                     Forums
                     <ion-icon name="open-outline" class="outgoing" style="position:relative; top: -5px; left: -1px;"></ion-icon>
@@ -139,16 +141,8 @@
             <a href="/terms-of-service">Terms of Service</a>
             -
             <a href="/privacy-policy">Privacy Policy</a>
-            {% if globals.web_git_hash is defined and globals.web_git_hash is not empty %}
-                <br />
-                <span class="text-footer" style="display: block; font-size: 11px;">
-                    Website version:
-                    <a href="{{ get_env('APP_GITHUB_REPO_URL') }}/commit/{{ globals.web_git_hash.long }}" target="_blank">
-                        {{ globals.web_git_hash.short }}
-                        <ion-icon name="open-outline" class="outgoing" style="font-size: 11px;"></ion-icon>
-                    </a>
-                </span>
-            {% endif %}
+            -
+            <a href="{{ get_env('APP_GITHUB_REPO_URL') }}" target="_blank">Website Source <ion-icon name="open-outline" class="outgoing" style="font-size: 12px; position: relative; top: 1px; left: 1px;"></ion-icon></a>
         </footer>
 
     </div>

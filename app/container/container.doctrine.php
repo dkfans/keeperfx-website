@@ -21,20 +21,33 @@ return [
     },
 
     \Doctrine\ORM\Configuration::class => function (CacheItemPoolInterface $cache){
+
+        // Create ORM config
         $orm_config = ORMSetup::createAttributeMetadataConfiguration(
             Config::get('doctrine.entity_dirs'),
             Config::get('doctrine.dev_mode'),
             Config::get('doctrine.proxy_dir'),
             $cache
         );
+
+        // Set table naming strategy
         if(\is_object(Config::get('doctrine.orm_naming_strategy'))){
             $orm_config->setNamingStrategy(Config::get('doctrine.orm_naming_strategy'));
         }
-        if(Config::get('doctrine.dev_mode')){
-            $orm_config->setAutoGenerateProxyClasses(\Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_ALWAYS);
-        } else {
-            $orm_config->setAutoGenerateProxyClasses(\Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
+
+        // Set proxy class generation mode
+        $orm_config->setAutoGenerateProxyClasses(Config::get('doctrine.proxy_class_generation'));
+
+        // Enable query cache
+        if(Config::get('doctrine.enable_query_cache')){
+            $orm_config->setQueryCache($cache);
         }
+
+        // Enable result cache
+        if(Config::get('doctrine.enable_result_cache')){
+            $orm_config->setResultCache($cache);
+        }
+
         return $orm_config;
     },
 

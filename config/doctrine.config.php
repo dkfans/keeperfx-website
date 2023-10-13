@@ -28,6 +28,14 @@ return [
 
     'proxy_dir' => APP_ROOT . '/cache/doctrine/proxy',
 
+    'proxy_class_generation' => $_ENV['APP_ENV'] === 'dev' ?
+        \Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_ALWAYS :
+        \Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS,
+
+    'enable_query_cache' => true, // Cache the conversion of DQL to SQL
+
+    'enable_result_cache' => true, // Only specific chosen queries will use this cache if enabled
+
     'migration_config' => [
         'table_storage' => [
             'table_name'                 => '_migrations',

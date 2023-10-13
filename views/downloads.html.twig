@@ -7,13 +7,13 @@
 {# Download buttons #}
 <div class="content-box" style="padding: 10px; text-align: center;">
     {% if stable_releases|length > 0 %}
-        <a href="{{ stable_releases[0].downloadUrl }}" class="btn btn-medieval" style="margin: 15px; min-height: 100px; padding: 20px" download>
+        <a href="{{ stable_releases[0].downloadUrl }}" class="btn btn-medieval" style="margin: 15px; min-height: 100px; padding: 20px" data-stable-build-download="true" download>
             <h3>Download latest stable</h3>
             <span>{{ stable_releases[0].name }}</span>
         </a>
     {% endif %}
     {% if alpha_builds|length > 0 %}
-        <a href="/download/alpha/{{ alpha_builds[0].filename }}"class="btn btn-medieval btn-medieval-gray" style="margin: 15px; min-height: 100px; padding: 20px" data-alpha-patch="true" download>
+        <a href="/download/alpha/{{ alpha_builds[0].filename }}"class="btn btn-medieval btn-medieval-gray" style="margin: 15px; min-height: 100px; padding: 20px" data-alpha-patch-download="true" download>
             <h5>Download latest alpha patch</h5>
             <span>{{ alpha_builds[0].name }}</span>
         </a>
@@ -54,7 +54,7 @@
                 {% for release in stable_releases %}
                     <tr class="{% if loop.first %}latest-release{% endif %}">
                         <td>
-                            <a href="{{ release.downloadUrl }}" download>
+                            <a href="{{ release.downloadUrl }}" data-stable-build-download="true" download>
                                 {{ release.name }}
                             </a>
                             {% if loop.first %}(latest){% endif %}
@@ -122,7 +122,7 @@
                 {% for build in alpha_builds %}
                     <tr>
                         <td>
-                            <a href="/download/alpha/{{ build.filename }}" data-alpha-patch="true" download>
+                            <a href="/download/alpha/{{ build.filename }}" data-alpha-patch-download="true" download>
                                 {{ build.name }}
                             </a>
                         </td>
@@ -147,6 +147,6 @@
     </div>
 </div>
 
-{% include 'downloads.alpha-notice.html.twig' %}
+{% include 'downloads.notice.html.twig' %}
 
 {% endblock %}

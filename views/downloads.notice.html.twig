@@ -1,0 +1,59 @@
+
+
+{# The stable build extra information modal #}
+<div class="modal fade" id="stableBuildDownloadModal" tabindex="-1" aria-labelledby="stableBuildDownloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-keeper bd-keeper">
+            <div class="modal-body p-4" style="border: 0; background-color: rgba(6, 6, 6, 0.666);">
+                <h5 class="mb-4">
+                    Your download will start shortly!
+                </h5>
+                <p>
+                    Be sure to follow the <a href="/wiki/Home" target="_blank">Installation Instructions</a>.
+                </p>
+                <p>
+                    If your download does not start automatically, <a href="#" id="stableBuildDownloadModalURL">click here</a>.
+                </p>
+                <button type="button" class="btn btn-medieval mt-3" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# The alpha patch extra information modal #}
+<div class="modal fade" id="alphaPatchDownloadModal" tabindex="-1" aria-labelledby="alphaPatchDownloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-keeper bd-keeper">
+            <div class="modal-body p-4" style="border: 0; background-color: rgba(6, 6, 6, 0.666);">
+                <h5 class="mb-4">
+                    Your download will start shortly!
+                </h5>
+                <p>
+                    An Alpha patch requires the full Stable version of KeeperFX to be installed first.
+                </p>
+                <p>
+                    Please make sure you extract the files of the Alpha patch over the files of a Stable version.
+                </p>
+                <p>
+                    If your download does not start automatically, <a href="#" id="alphaPatchDownloadModalURL">click here</a>.
+                </p>
+                <button type="button" class="btn btn-medieval mt-3" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Script that opens the modal when an anchor containing a specific data attribute is clicked (data-stable-build="true" and data-alpha-patch="true") #}
+<script>
+$(function(){
+    $('a[data-stable-build-download="true"]').on('click', function(e){
+        $('#stableBuildDownloadModalURL').attr('href',  $(this).attr('href'));
+        $('#stableBuildDownloadModal').modal('show');
+    });
+    $('a[data-alpha-patch-download="true"]').on('click', function(e){
+        $('#alphaPatchDownloadModalURL').attr('href',  $(this).attr('href'));
+        $('#alphaPatchDownloadModal').modal('show');
+    });
+});
+</script>
+
