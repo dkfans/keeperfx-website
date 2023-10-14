@@ -21,9 +21,8 @@ class NewUserNotification implements NotificationInterface {
             throw new NotificationDataException("invalid notification data. 'username' and 'id' are required.");
         }
 
-        if(!\is_numeric($data['username'])){
+        if(!\is_string($data['username'])){
             throw new NotificationDataException("invalid notification data. 'username' must be a string.");
-
         }
 
         if(!\is_numeric($data['id'])){
