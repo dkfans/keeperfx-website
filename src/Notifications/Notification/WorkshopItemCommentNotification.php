@@ -10,7 +10,7 @@ class WorkshopItemCommentNotification extends Notification {
 
     public function getText(): string
     {
-        return "{$this->data['username']} commented on {$this->data['item_name']}";
+        return "@{$this->data['username']} commented on **{$this->data['item_name']}**";
     }
 
     public function getUri(): string

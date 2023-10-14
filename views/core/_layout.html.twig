@@ -67,23 +67,23 @@
 
                         <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarNotificationDropdown">
 
-                        {% if unread_notifications|length > 0 %}
-                            {% for notification_id, notification in unread_notifications %}
+                            {% if unread_notifications|length > 0 %}
+                                {% for notification_id, notification in unread_notifications %}
+                                    <li>
+                                        <a class="dropdown-item" href="/account/notification/{{ notification_id }}">
+                                            {{ notification.text|notification_render }}
+                                            <br/>
+                                            <time class="text-muted" datetime="{{ notification.timestamp|date('c') }}">
+                                                {{ notification.timestamp|date('Y/m/d - H:i') }}
+                                            </time>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            {% else %}
                                 <li>
-                                    <a class="dropdown-item" href="/account/notification/{{ notification_id }}">
-                                        {{ notification.text }}
-                                        <br/>
-                                        <time class="text-muted" datetime="{{ notification.timestamp|date('c') }}">
-                                            {{ notification.timestamp|date('Y/m/d - H:i') }}
-                                        </time>
-                                    </a>
+                                    <a class="dropdown-item disabled text-muted" href="#" disabled>No new notifications</a>
                                 </li>
-                            {% endfor %}
-                        {% else %}
-                            <li>
-                                <a class="dropdown-item disabled text-muted" href="#" disabled>No new notifications</a>
-                            </li>
-                        {% endif %}
+                            {% endif %}
 
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/account/notifications">Show all</a></li>
