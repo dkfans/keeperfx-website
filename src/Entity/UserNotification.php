@@ -65,17 +65,17 @@ class UserNotification {
     /**
      * Get the value of data
      */
-    public function getData(): string|null
+    public function getData(): array|string|null
     {
-        return $this->data;
+        return \json_decode($this->data, true);
     }
 
     /**
      * Set the value of data
      */
-    public function setData(string|null $data): self
+    public function setData(array|null $data): self
     {
-        $this->data = $data;
+        $this->data = \json_encode($data);
 
         return $this;
     }
