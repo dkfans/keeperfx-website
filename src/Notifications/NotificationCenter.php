@@ -13,8 +13,8 @@ use Doctrine\ORM\EntityManager;
 use Psr\SimpleCache\CacheInterface;
 use App\Notifications\Notification\NotificationInterface;
 
-use App\Workshop\Exception\NotificationClassNotFoundException;
-use App\Workshop\Exception\NotificationException;
+use App\Notifications\Exception\NotificationClassNotFoundException;
+use App\Notifications\Exception\NotificationException;
 
 class NotificationCenter {
 
@@ -31,7 +31,7 @@ class NotificationCenter {
         if($this->account->isLoggedIn()){
 
             // Get cached unread notifications
-            $count = $cache->get($this->getCacheKey());
+            $count = $cache->get($this->getUserCacheKey());
             if($count !== null){
                 $this->unread_notifications = $count;
             }
@@ -44,6 +44,7 @@ class NotificationCenter {
         $notification = $this->createUserNotification($user, $class, $data);
         $this->em->persist($notification);
         $this->em->flush();
+        $this->clearUserCache($user);
     }
 
     public function sendNotificationToAdmins(string $class, array|null $data = null): void
@@ -53,6 +54,7 @@ class NotificationCenter {
             foreach($admins as $admin){
                 $notification = $this->createUserNotification($admin, $class, $data);
                 $this->em->persist($notification);
+                $this->clearUserCache($admin);
             }
             $this->em->flush();
         }
@@ -84,7 +86,7 @@ class NotificationCenter {
             }
         }
 
-        $this->cache->set($this->getCacheKey(), $this->unread_notifications);
+        $this->cache->set($this->getUserCacheKey(), $this->unread_notifications);
 
         return $this->unread_notifications;
     }
@@ -113,7 +115,7 @@ class NotificationCenter {
         return $notifications;
     }
 
-    private function createNotificationObject(UserNotification $user_notification)
+    public function createNotificationObject(UserNotification $user_notification): NotificationInterface
     {
         $class = $user_notification->getClass();
 
@@ -145,12 +147,23 @@ class NotificationCenter {
         return $notification;
     }
 
-    private function getCacheKey(): string
+    private function getUserCacheKey(): string
     {
         if(!$this->account->isLoggedIn()){
             throw new NotificationException("can't get user cache key if not logged in");
         }
 
         return \sprintf(self::CACHE_KEY_NOTIFICATIONS, $this->account->getUser()->getId());
+    }
+
+    public function clearUserCache(User|null $user = null)
+    {
+        if($user === null){
+            $this->cache->delete($this->getUserCacheKey());
+        } else {
+            $this->cache->delete(
+                \sprintf(self::CACHE_KEY_NOTIFICATIONS, $user->getId())
+            );
+        }
     }
 }

@@ -1,5 +1,5 @@
 <?php
 
-namespace App\Workshop\Exception;
+namespace App\Notifications\Exception;
 
 class NotificationClassNotFoundException extends NotificationException {}

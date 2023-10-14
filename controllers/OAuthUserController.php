@@ -16,6 +16,7 @@ use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
 use App\OAuth\OAuthProviderService;
 use Twig\Environment as TwigEnvironment;
+use App\Notifications\NotificationCenter;
 use Dflydev\FigCookies\FigResponseCookies;
 
 use Slim\Exception\HttpNotFoundException;
@@ -354,6 +355,7 @@ class OAuthUserController {
         FlashMessage $flash,
         EntityManager $em,
         Session $session,
+        NotificationCenter $nc,
         $provider_name
     ){
         // Check if flow is valid. User should have this populated
@@ -473,6 +475,9 @@ class OAuthUserController {
 
         // Make changes to DB
         $em->flush();
+
+        // Notify the admins
+        $nc->sendNotificationToAdmins(NewUserNotification::class, ['id' => $user->getId(), 'username' => $username]);
 
         // Remove oauth register session data
         unset($session['oauth_register']);

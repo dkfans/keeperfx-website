@@ -2,6 +2,8 @@
 
 namespace App\Notifications\Notification;
 
+use Doctrine\ORM\EntityManager;
+
 use App\Workshop\Exception\NotificationDataException;
 
 /**
@@ -11,8 +13,9 @@ use App\Workshop\Exception\NotificationDataException;
  */
 class NewUserNotification implements NotificationInterface {
 
-    private int $id;
     private \DateTime $timestamp;
+
+    private int $id;
     private string $username;
 
     public function __construct(\DateTime $timestamp, array|null $data)
@@ -47,11 +50,6 @@ class NewUserNotification implements NotificationInterface {
     public function getUri(): string
     {
         return "/admin/user/{$this->id}";
-    }
-
-    public function getImage(): string|null
-    {
-        return null;
     }
 
 }

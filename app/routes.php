@@ -79,6 +79,10 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
             // Account Connections
             $group->get('/connections', [ControlPanel\ConnectionController::class, 'index']);
+
+            // Notifications
+            $group->get('/notifications', [ControlPanel\NotificationController::class, 'listIndex']);
+            $group->get('/notification/{id}', [ControlPanel\NotificationController::class, 'read']);
         });
 
         // AUTH: ADMIN

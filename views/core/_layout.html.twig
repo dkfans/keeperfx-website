@@ -55,30 +55,38 @@
                     <div class="dropdown" style="display: inline-block;">
                         <a class="dropdown-toggle caret-off" href="/account" id="navbarNotificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <ion-icon name="notifications-outline" style="position: relative; font-size:23px; top:6px;" color="red"></ion-icon>
-                            <span class="position-absolute translate-middle badge rounded-pill bg-danger text-white" style="font-size: 8px; top: 6px !important; left: 34px; font-family: monospace;">
-                                1
-                                <span class="visually-hidden">unread notifications</span>
-                            </span>
+
+                            {# Notification count #}
+                            {% if unread_notifications|length > 0 %}
+                                <span class="position-absolute translate-middle badge rounded-pill bg-danger text-white" style="font-size: 8px; top: 6px !important; left: 34px; font-family: monospace;">
+                                    {{ unread_notifications|length }}
+                                    <span class="visually-hidden">unread notifications</span>
+                                </span>
+                            {% endif %}
                         </a>
+
                         <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarNotificationDropdown">
-                            <li><a class="dropdown-item" href="/account">
-                                Walter made a poop<br/>
-                                <span class="text-muted">1 days ago</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="/account">
-                                Walter made a poop<br/>
-                                <span class="text-muted">1 days ago</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="/account">
-                                Walter made a poop<br/>
-                                <span class="text-muted">1 days ago</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="/account">
-                                Walter made a poop<br/>
-                                <span class="text-muted">1 days ago</span>
-                            </a></li>
+
+                        {% if unread_notifications|length > 0 %}
+                            {% for notification_id, notification in unread_notifications %}
+                                <li>
+                                    <a class="dropdown-item" href="/account/notification/{{ notification_id }}">
+                                        {{ notification.text }}
+                                        <br/>
+                                        <time class="text-muted" datetime="{{ notification.timestamp|date('c') }}">
+                                            {{ notification.timestamp|date('Y/m/d - H:i') }}
+                                        </time>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li>
+                                <a class="dropdown-item disabled text-muted" href="#" disabled>No new notifications</a>
+                            </li>
+                        {% endif %}
+
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/account">All notifications</a></li>
+                            <li><a class="dropdown-item" href="/account/notifications">Show all</a></li>
                         </ul>
                     </div>
 

@@ -12,6 +12,4 @@ interface NotificationInterface {
 
     public function getUri(): string;
 
-    public function getImage(): string|null;
-
 }

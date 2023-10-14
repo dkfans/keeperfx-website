@@ -1,5 +1,5 @@
 <?php
 
-namespace App\Workshop\Exception;
+namespace App\Notifications\Exception;
 
 class NotificationException extends \Exception {}
