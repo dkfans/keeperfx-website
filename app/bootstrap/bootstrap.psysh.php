@@ -23,3 +23,4 @@ $session    = $container->get(\Compwright\PhpSession\Session::class);
 $locale     = $container->get(\App\I18n\Locale::class);
 $translator = $container->get(\App\I18n\Translator::class);
 $discord    = $container->get(\App\DiscordNotifier::class);
+$nc         = $container->get(\App\Notifications\NotificationCenter::class);
