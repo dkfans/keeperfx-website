@@ -339,7 +339,7 @@
                 </p>
             {% else %}
                 {% for comment in item.comments %}
-                    <div class="workshop-item-comment d-flex">
+                    <div class="workshop-item-comment d-flex" id="comment-{{ comment.id }}">
 
                         <div class="" style="height: 100%;">
                             {% if comment.user.avatar %}

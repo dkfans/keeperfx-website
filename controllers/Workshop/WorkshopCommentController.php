@@ -18,8 +18,10 @@ use App\FlashMessage;
 use App\Config\Config;
 use App\Entity\WorkshopFile;
 use App\Enum\UserNotificationType;
-use App\Notification;
 use App\UploadSizeHelper;
+
+use App\Notifications\NotificationCenter;
+use App\Notifications\Notification\WorkshopItemCommentNotification;
 
 use URLify;
 use Slim\Psr7\UploadedFile;
@@ -48,7 +50,7 @@ class WorkshopCommentController {
         Account $account,
         TwigEnvironment $twig,
         EntityManager $em,
-        Notification $notification,
+        NotificationCenter $nc,
         $id
     ){
         // Check if workshop item exists
@@ -77,14 +79,16 @@ class WorkshopCommentController {
         $em->flush();
 
         // Notify workshop item submitter of the new comment
-        if($workshop_item->submitter){
-            $notification->notify(
-                $workshop_item->submitter,
-                UserNotificationType::NEW_WORKSHOP_COMMENT,
+        if($workshop_item->getSubmitter() !== $account->getUser()){
+            $nc->sendNotification(
+                $workshop_item->getSubmitter(),
+                WorkshopItemCommentNotification::class,
                 [
                     'item_id'    => $workshop_item->getId(),
-                    'comment_id' => $comment->getId()
-                ],
+                    'comment_id' => $comment->getId(),
+                    'item_name'  => $workshop_item->getName(),
+                    'username'   => $account->getUser()->getUsername(),
+                ]
             );
         }
 
