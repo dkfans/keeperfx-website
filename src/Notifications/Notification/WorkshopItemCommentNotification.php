@@ -7,20 +7,20 @@ use Doctrine\ORM\EntityManager;
 use App\Notifications\Exception\NotificationDataException;
 
 /**
- * New user notification.
+ * Workshop Item Comment notification
  *
- * This notification is sent to admins when a new user registers.
+ * This notification is sent to the submitter of a workshop item when it receives a reply
  */
 class NewUserNotification extends Notification {
 
     public function getText(): string
     {
-        return "New user registered! {$this->data['username']} (ID: {$this->data['id']})";
+        return "{$this->data['username']} commented on {$this->data['workshop_item_name']}";
     }
 
     public function getUri(): string
     {
-        return "/admin/user/{$this->data['id']}";
+        return "/workshop/item/{$this->data['id']}";
     }
 
 }
