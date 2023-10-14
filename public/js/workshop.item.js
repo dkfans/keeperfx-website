@@ -213,7 +213,7 @@ $(function(e){
     if(hashBang.match("^comment\-")){
         let commentId = hashBang.slice(8);
         $("#comment-" + commentId).css('border', '1px solid white');
-        $("#comment-" + commentId).animate({ scale: '1' }, 300);
+        $("#comment-" + commentId).animate({ scale: '1' }, 200);
         $("#comment-" + commentId)[0].scrollIntoView({
             behavior: 'auto',
             block: 'center',

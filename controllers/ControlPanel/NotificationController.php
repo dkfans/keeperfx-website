@@ -57,11 +57,28 @@ class NotificationController {
         Account $account,
         NotificationCenter $nc,
         TwigEnvironment $twig,
-        )
-    {
+    ){
         $response->getBody()->write(
             $twig->render('cp/notifications.cp.html.twig', [
                 'notifications' => $nc->getAllNotifications()
+            ])
+        );
+
+        return $response;
+    }
+
+    public function settingsIndex(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        Account $account,
+        NotificationCenter $nc,
+        TwigEnvironment $twig,
+    )
+    {
+        $response->getBody()->write(
+            $twig->render('cp/notification.settings.cp.html.twig', [
+                // 'notifications' => $nc->getAllNotifications()
             ])
         );
 

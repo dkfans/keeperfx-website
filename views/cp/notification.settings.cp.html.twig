@@ -1,0 +1,37 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Notification Settings' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Notification Settings</h2>
+    </div>
+    <div class="content-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Setting</th>
+                    <th>Website</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        New reply on your workshop item
+                    </td>
+                    <td>
+                        <input type="checkbox" name="" checked=checked />
+                    </td>
+                    <td>
+                        <input type="checkbox" name="" checked=checked />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

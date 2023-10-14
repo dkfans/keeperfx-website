@@ -82,6 +82,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
             // Notifications
             $group->get('/notifications', [ControlPanel\NotificationController::class, 'listIndex']);
+            $group->get('/notifications/settings', [ControlPanel\NotificationController::class, 'settingsIndex']);
             $group->get('/notification/{id}', [ControlPanel\NotificationController::class, 'read']);
         });
 

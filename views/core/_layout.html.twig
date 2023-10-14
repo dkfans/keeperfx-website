@@ -106,15 +106,16 @@
 
                         <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarDropdown">
 
-                            {# User account menu items #}
-                            {# <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li> #}
-                            <li><a class="dropdown-item" href="/account">Account Settings</a></li>
-                            <li><a class="dropdown-item" href="/account/connections">Connections</a></li>
-                            <li><hr class="dropdown-divider"></li>
-
                             {# Workshop menu items #}
                             <li><a class="dropdown-item" href="/workshop/browse?user={{ account.username|url_encode }}">My workshop items</a></li>
                             <li><a class="dropdown-item" href="/workshop/my-ratings">My ratings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+
+                            {# User account menu items #}
+                            {# <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li> #}
+                            <li><a class="dropdown-item" href="/account">Account Settings</a></li>
+                            <li><a class="dropdown-item" href="/account/notifications/settings">Notification Settings</a></li>
+                            <li><a class="dropdown-item" href="/account/connections">Connections</a></li>
                             <li><hr class="dropdown-divider"></li>
 
                             {% if account.role >= roles.moderator %}

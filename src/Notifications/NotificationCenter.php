@@ -41,10 +41,17 @@ class NotificationCenter {
 
     public function sendNotification(User $user, string $class, array|null $data = null)
     {
+        // TODO: check if user wants this notification
+
+        // Create the notification
         $notification = $this->createUserNotification($user, $class, $data);
         $this->em->persist($notification);
         $this->em->flush();
+
+        // Clear this users cache
         $this->clearUserCache($user);
+
+        // TODO: send a mail if user wants this
     }
 
     public function sendNotificationToAdmins(string $class, array|null $data = null): void
