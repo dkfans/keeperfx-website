@@ -127,6 +127,7 @@ class NotificationCenter {
         $notification = new $class(
             $user_notification->getCreatedTimestamp(),
             $user_notification->getData(),
+            $user_notification->isRead(),
         );
 
         return $notification;

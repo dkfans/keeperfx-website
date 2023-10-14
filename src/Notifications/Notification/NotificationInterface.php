@@ -4,7 +4,7 @@ namespace App\Notifications\Notification;
 
 interface NotificationInterface {
 
-    public function __construct(\DateTime $timestamp, array|null $data);
+    public function __construct(\DateTime $timestamp, array|null $data, bool $is_read);
 
     public function getTimestamp(): \DateTime;
 
@@ -12,4 +12,5 @@ interface NotificationInterface {
 
     public function getUri(): string;
 
+    public function isRead(): bool;
 }

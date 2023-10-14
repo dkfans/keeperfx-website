@@ -10,7 +10,7 @@
     </div>
     <div class="content-body">
         {% for notification_id, notification in notifications %}
-                <a class="notification-item-wide" href="/account/notification/{{ notification_id }}">
+                <a class="notification-item-wide" href="/account/notification/{{ notification_id }}" {% if notification.isRead %}style="filter:brightness(0.5)"{% endif %}>
                     <span>
                         {{ notification.text|notification_render }}
                         <br/>
