@@ -1,0 +1,26 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Notifications' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Notifications</h2>
+    </div>
+    <div class="content-body">
+        {% for notification_id, notification in notifications %}
+                <a class="notification-item-wide" href="/account/notification/{{ notification_id }}" {% if notification.isRead %}style="filter:brightness(0.5)"{% endif %}>
+                    <span>
+                        {{ notification.text|notification_render }}
+                        <br/>
+                        <time class="text-muted" datetime="{{ notification.timestamp|date('c') }}">
+                            {{ notification.timestamp|date('Y/m/d - H:i') }}
+                        </time>
+                    </span>
+                </a>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

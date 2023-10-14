@@ -7,9 +7,11 @@ use App\Entity\User;
 use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
+use App\Notifications\Notification\NewUserNotification;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
 use Twig\Environment as TwigEnvironment;
+use App\Notifications\NotificationCenter;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -44,7 +46,8 @@ class RegisterController {
         Account $account,
         FlashMessage $flash,
         EntityManager $em,
-        Session $session
+        Session $session,
+        NotificationCenter $nc,
     ){
         // Only logged-out guests allowed
         if($account->isLoggedIn()){
@@ -147,18 +150,18 @@ class RegisterController {
         $user->setUsername($username);
         $user->setPassword($password);
         $user->setEmail($email);
-
         $em->persist($user);
         $em->flush();
-
-        $flash->success('Successfully registered. You are now logged in.');
 
         // Immediately log in the user
         $session['uid'] = $user->getId();
 
-        // Navigate to dashboard
+        // Notify the admins
+        $nc->sendNotificationToAdmins(NewUserNotification::class, ['id' => $user->getId(), 'username' => $username]);
+
+        // Navigate to account page
+        $flash->success('Successfully registered. You are now logged in.');
         $response = $response->withHeader('Location', '/account')->withStatus(302);
-        // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
         return $response;
     }
 }

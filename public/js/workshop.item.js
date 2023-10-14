@@ -207,4 +207,18 @@ $(function(e){
             },
         });
     });
+
+    // Check hash bang for comment to focus onto it
+    var hashBang = window.location.hash.substr(1);
+    if(hashBang.match("^comment\-")){
+        let commentId = hashBang.slice(8);
+        $("#comment-" + commentId).css('border', '1px solid white');
+        $("#comment-" + commentId).animate({ scale: '1' }, 300);
+        $("#comment-" + commentId)[0].scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+            inline: 'center'
+        });
+    }
+
 });

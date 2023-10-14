@@ -16,6 +16,7 @@ return [
     // User
     \App\Console\Command\User\CreateUserCommand::class,
     \App\Console\Command\User\ClearOldPasswordResetTokensCommand::class,
+    \App\Console\Command\User\ClearOldNotificationsCommand::class,
 
     // Workshop
     \App\Console\Command\Workshop\AddWorkshopTagCommand::class,
