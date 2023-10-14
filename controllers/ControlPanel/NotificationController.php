@@ -2,10 +2,13 @@
 
 namespace App\Controller\ControlPanel;
 
-use App\Account;
 use App\Entity\UserNotification;
-use App\Notifications\NotificationCenter;
+
+use App\Account;
 use Doctrine\ORM\EntityManager;
+use Twig\Environment as TwigEnvironment;
+use App\Notifications\NotificationCenter;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -44,6 +47,24 @@ class NotificationController {
         $nc->clearUserCache();
 
         $response = $response->withHeader('Location', $object->getUri())->withStatus(302);
+        return $response;
+    }
+
+    public function listIndex(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        Account $account,
+        NotificationCenter $nc,
+        TwigEnvironment $twig,
+        )
+    {
+        $response->getBody()->write(
+            $twig->render('cp/notifications.cp.html.twig', [
+                'notifications' => $nc->getAllNotifications()
+            ])
+        );
+
         return $response;
     }
 
