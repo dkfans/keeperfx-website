@@ -6,12 +6,7 @@ use Doctrine\ORM\EntityManager;
 
 use App\Notifications\Exception\NotificationDataException;
 
-/**
- * Workshop Item Comment notification
- *
- * This notification is sent to the submitter of a workshop item when it receives a reply
- */
-class NewUserNotification extends Notification {
+class WorkshopItemCommentNotification extends Notification {
 
     public function getText(): string
     {

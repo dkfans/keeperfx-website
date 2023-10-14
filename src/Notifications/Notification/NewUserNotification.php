@@ -6,11 +6,6 @@ use Doctrine\ORM\EntityManager;
 
 use App\Notifications\Exception\NotificationDataException;
 
-/**
- * New user notification.
- *
- * This notification is sent to admins when a new user registers.
- */
 class NewUserNotification extends Notification {
 
     public function getText(): string
