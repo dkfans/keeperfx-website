@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications\Notification;
+namespace App\Notifications;
 
 use App\Entity\User;
 use App\Entity\UserNotificationSetting;

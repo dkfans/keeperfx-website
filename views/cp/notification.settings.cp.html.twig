@@ -9,28 +9,57 @@
         <h2>Notification Settings</h2>
     </div>
     <div class="content-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Website</th>
-                    <th>Email</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        New reply on your workshop item
-                    </td>
-                    <td>
-                        <input type="checkbox" name="" checked=checked />
-                    </td>
-                    <td>
-                        <input type="checkbox" name="" checked=checked />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+
+        {% if account.email is null %}
+            <div class="alert bg-info">
+                Email notifications are disabled because you do not have an email address linked to this account.
+            </div>
+        {% endif %}
+
+        <form action="/account/notifications/settings" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Website</th>
+                        <th {% if account.email is null %}class="text-muted"{% endif %}>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for setting in settings %}
+                        <tr>
+                            <td>
+                                {{ setting.title }}
+                            </td>
+                            <td>
+                                <input type="checkbox" name="settings[{{ setting.class_name }}][website]" {% if setting.website %}checked=checked{% endif %} value="1" />
+                            </td>
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    {% if account.email is not null %}
+                                        name="settings[{{ setting.class_name }}][email]"
+                                        {% if setting.email %}checked=checked{% endif %}
+                                    {% else %}
+                                        disabled=disabled
+                                    {% endif %}
+                                    value="1"
+                                />
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="form-group">
+                <input type="submit" class="btn  btn-medieval" value="Save" />
+            </div>
+
+        </form>
     </div>
 </div>
 

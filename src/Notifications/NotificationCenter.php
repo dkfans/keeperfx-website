@@ -10,10 +10,10 @@ use App\Entity\UserNotification;
 use App\Account;
 use App\Mailer;
 use Doctrine\ORM\EntityManager;
-use App\Notifications\Notification\NotificationSettings;
+use App\Notifications\NotificationSettings;
 
 use Psr\SimpleCache\CacheInterface;
-use App\Notifications\Notification\NotificationInterface;
+use App\Notifications\NotificationInterface;
 
 use App\Notifications\Exception\NotificationClassNotFoundException;
 use App\Notifications\Exception\NotificationException;
@@ -67,7 +67,7 @@ class NotificationCenter {
 
                 // Create and send mail
                 $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
-                $email_body += $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
+                $email_body .= $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
                 $this->mailer->createMailForUser(
                     $user,
                     true,
@@ -96,7 +96,7 @@ class NotificationCenter {
 
             // Create and send mail
             $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
-            $email_body += $_ENV['APP_ROOT_URL'] . $notification_object->getUri();
+            $email_body .= $_ENV['APP_ROOT_URL'] . $notification_object->getUri();
             $this->mailer->createMailForUser(
                 $user,
                 true,
@@ -220,5 +220,14 @@ class NotificationCenter {
                 \sprintf(self::CACHE_KEY_NOTIFICATIONS, $user->getId())
             );
         }
+    }
+
+    public function getNotificationSettings(): array
+    {
+        if(!$this->account->isLoggedIn()){
+            throw new \Exception("user needs to be logged in");
+        }
+
+        return $this->notification_settings->getAllUserSettings($this->account->getUser());
     }
 }

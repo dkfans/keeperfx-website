@@ -2,6 +2,7 @@
 
 namespace App\Twig\Extension;
 
+use App\Account;
 use Twig\TwigFilter;
 use App\Notifications\NotificationCenter;
 
@@ -9,7 +10,8 @@ class NotificationTwigExtension extends \Twig\Extension\AbstractExtension implem
 {
 
     public function __construct(
-        private NotificationCenter $nc
+        private Account $account,
+        private NotificationCenter $nc,
     ) {}
 
     public function getName(): string
@@ -44,7 +46,7 @@ class NotificationTwigExtension extends \Twig\Extension\AbstractExtension implem
     public function getGlobals(): array
     {
         return [
-            'unread_notifications' => $this->nc->getUnreadNotifications(),
+            'unread_notifications' => $this->account->isLoggedIn() ? $this->nc->getUnreadNotifications() : [],
         ];
     }
 }

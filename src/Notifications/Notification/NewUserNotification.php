@@ -6,8 +6,8 @@ use App\Enum\UserRole;
 
 use Doctrine\ORM\EntityManager;
 
-use App\Notifications\Notification\Notification;
-use App\Notifications\Notification\NotificationInterface;
+use App\Notifications\Notification;
+use App\Notifications\NotificationInterface;
 use App\Notifications\Exception\NotificationDataException;
 
 class NewUserNotification extends Notification implements NotificationInterface {

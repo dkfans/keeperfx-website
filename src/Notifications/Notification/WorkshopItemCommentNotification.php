@@ -4,8 +4,8 @@ namespace App\Notifications\Notification;
 
 use Doctrine\ORM\EntityManager;
 
-use App\Notifications\Notification\Notification;
-use App\Notifications\Notification\NotificationInterface;
+use App\Notifications\Notification;
+use App\Notifications\NotificationInterface;
 
 class WorkshopItemCommentNotification extends Notification implements NotificationInterface {
 
