@@ -98,6 +98,7 @@ class NotificationController {
                 'title'      => $class->getNotificationTitle(),
                 'website'    => $settings['website'],
                 'email'      => $settings['email'],
+                'role'       => $class->getRequiredUserRole(),
             ];
         }
 

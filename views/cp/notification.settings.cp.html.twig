@@ -34,6 +34,15 @@
                         <tr>
                             <td>
                                 {{ setting.title }}
+                                {% if setting.role.value == roles.moderator %}
+                                    <span class="badge bg-dark">MODERATOR</span>
+                                {% endif %}
+                                {% if setting.role.value == roles.developer %}
+                                    <span class="badge bg-dark">DEVELOPER</span>
+                                {% endif %}
+                                {% if setting.role.value == roles.admin %}
+                                    <span class="badge bg-dark">ADMIN</span>
+                                {% endif %}
                             </td>
                             <td>
                                 <input type="checkbox" name="settings[{{ setting.class_name }}][website]" {% if setting.website %}checked=checked{% endif %} value="1" />
