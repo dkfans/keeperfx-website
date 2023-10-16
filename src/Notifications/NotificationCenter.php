@@ -103,7 +103,11 @@ class NotificationCenter {
                 $notification_object->getNotificationTitle(),
                 $email_body
             );
+
+            return true;
         }
+
+        return false;
     }
 
     public function sendNotificationToAdmins(string $class, array|null $data = null): void
@@ -112,6 +116,32 @@ class NotificationCenter {
         if($admins){
             foreach($admins as $admin){
                 $this->sendNotification($admin, $class, $data);
+            }
+        }
+    }
+
+    public function sendNotificationToAll(string $class, array|null $data = null): void
+    {
+        $users = $this->em->getRepository(User::class)->findAll();
+        if($users){
+            foreach($users as $user){
+                $this->sendNotification($user, $class, $data);
+            }
+        }
+    }
+
+    public function sendNotificationToAllExceptSelf(string $class, array|null $data = null): void
+    {
+        if(!$this->account->isLoggedIn()){
+            throw new \Exception("user needs to be logged in");
+        }
+
+        $users = $this->em->getRepository(User::class)->findAll();
+        if($users){
+            foreach($users as $user){
+                if($user !== $this->account->getUser()){
+                    $this->sendNotification($user, $class, $data);
+                }
             }
         }
     }
