@@ -3,9 +3,14 @@
 namespace App\Twig\Extension;
 
 use Twig\TwigFilter;
+use App\Notifications\NotificationCenter;
 
-class NotificationTwigExtension extends \Twig\Extension\AbstractExtension
+class NotificationTwigExtension extends \Twig\Extension\AbstractExtension implements \Twig\Extension\GlobalsInterface
 {
+
+    public function __construct(
+        private NotificationCenter $nc
+    ) {}
 
     public function getName(): string
     {
@@ -34,5 +39,12 @@ class NotificationTwigExtension extends \Twig\Extension\AbstractExtension
         $string = \preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $string);
 
         return $string;
+    }
+
+    public function getGlobals(): array
+    {
+        return [
+            'unread_notifications' => $this->nc->getUnreadNotifications(),
+        ];
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Twig\Extension;
 
 use App\Account;
-use App\Notifications\NotificationCenter;
 
 /**
  * Account Twig Extension.
@@ -13,7 +12,6 @@ class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements 
 
     public function __construct(
         private Account $account,
-        private NotificationCenter $nc
     ) {}
 
     public function getName(): string
@@ -36,7 +34,6 @@ class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements 
                 'role'     => $this->account->getUser()->getRole()->value,
                 'avatar'   => $this->account->getUser()->getAvatar(),
             ],
-            'unread_notifications' => $this->nc->getUnreadNotifications(),
         ];
     }
 }
