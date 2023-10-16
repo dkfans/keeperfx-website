@@ -33,7 +33,7 @@ class WorkshopHelper {
 
         // Make sure this workshop item has images
         $images = $item->getImages();
-        if(!$images){
+        if(!$images || !isset($images[0])){
             return false;
         }
 
