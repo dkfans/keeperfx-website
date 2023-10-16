@@ -21,7 +21,10 @@ class UserNotificationSetting {
     private string $class;
 
     #[ORM\Column]
-    private bool $is_enabled = true;
+    private bool $website_enabled = true;
+
+    #[ORM\Column]
+    private bool $email_enabled = true;
 
     /**
      * Get the value of id
@@ -68,19 +71,37 @@ class UserNotificationSetting {
     }
 
     /**
-     * Get the value of is_enabled
+     * Get the value of website_enabled
      */
-    public function isEnabled(): bool
+    public function isWebsiteEnabled(): bool
     {
-        return $this->is_enabled;
+        return $this->website_enabled;
     }
 
     /**
-     * Set the value of is_enabled
+     * Set the value of website_enabled
      */
-    public function setEnabled(bool $is_enabled): self
+    public function setWebsiteEnabled(bool $website_enabled): self
     {
-        $this->is_enabled = $is_enabled;
+        $this->website_enabled = $website_enabled;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of email_enabled
+     */
+    public function isEmailEnabled(): bool
+    {
+        return $this->email_enabled;
+    }
+
+    /**
+     * Set the value of email_enabled
+     */
+    public function setEmailEnabled(bool $email_enabled): self
+    {
+        $this->email_enabled = $email_enabled;
 
         return $this;
     }

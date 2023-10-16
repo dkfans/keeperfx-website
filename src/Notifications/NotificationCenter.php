@@ -8,13 +8,18 @@ use App\Entity\User;
 use App\Entity\UserNotification;
 
 use App\Account;
+use App\Mailer;
 use Doctrine\ORM\EntityManager;
+use App\Notifications\Notification\NotificationSettings;
 
 use Psr\SimpleCache\CacheInterface;
 use App\Notifications\Notification\NotificationInterface;
 
 use App\Notifications\Exception\NotificationClassNotFoundException;
 use App\Notifications\Exception\NotificationException;
+
+use Xenokore\Utility\Helper\ClassHelper;
+use Xenokore\Utility\Helper\DirectoryHelper;
 
 class NotificationCenter {
 
@@ -26,6 +31,8 @@ class NotificationCenter {
         private Account $account,
         private EntityManager $em,
         private CacheInterface $cache,
+        private NotificationSettings $notification_settings,
+        private Mailer $mailer,
     ) {
 
         if($this->account->isLoggedIn()){
@@ -39,19 +46,64 @@ class NotificationCenter {
         }
     }
 
-    public function sendNotification(User $user, string $class, array|null $data = null)
+    public function sendNotification(User $user, string $class, array|null $data = null): bool
     {
-        // TODO: check if user wants this notification
+        // Get the notification settings of the receiving user
+        $setting = $this->notification_settings->getUserSetting($user, $class);
 
-        // Create the notification
-        $notification = $this->createUserNotification($user, $class, $data);
-        $this->em->persist($notification);
-        $this->em->flush();
+        // Check if we are creating a notification on the website
+        if($setting['website'] === true){
+            $notification = $this->createUserNotification($user, $class, $data);
+            $this->em->persist($notification);
+            $this->em->flush();
 
-        // Clear this users cache
-        $this->clearUserCache($user);
+            // Clear this users cache
+            $this->clearUserCache($user);
 
-        // TODO: send a mail if user wants this
+            $notification_object = $this->createNotificationObject($notification);
+
+            // Check if we need to send an email
+            if($setting['email']){
+
+                // Create and send mail
+                $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
+                $email_body += $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
+                $this->mailer->createMailForUser(
+                    $user,
+                    true,
+                    $notification_object->getNotificationTitle(),
+                    $email_body
+                );
+            }
+
+            return true;
+        }
+
+        // Check if we did not create a website notification and just need to send an email.
+        // This is important because the URL in the email will not point to a notification itself.
+        if($setting['website'] === false && $setting['email'] === true){
+
+            if(!\class_exists($class)){
+                throw new NotificationClassNotFoundException("notification class '{$class}' not found");
+            }
+
+            // Make a blank notification object so we can load the title
+            $notification_object = new $class(
+                null,
+                $data,
+                false,
+            );
+
+            // Create and send mail
+            $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
+            $email_body += $_ENV['APP_ROOT_URL'] . $notification_object->getUri();
+            $this->mailer->createMailForUser(
+                $user,
+                true,
+                $notification_object->getNotificationTitle(),
+                $email_body
+            );
+        }
     }
 
     public function sendNotificationToAdmins(string $class, array|null $data = null): void
@@ -59,11 +111,8 @@ class NotificationCenter {
         $admins = $this->em->getRepository(User::class)->findBy(['role' => UserRole::Admin]);
         if($admins){
             foreach($admins as $admin){
-                $notification = $this->createUserNotification($admin, $class, $data);
-                $this->em->persist($notification);
-                $this->clearUserCache($admin);
+                $this->sendNotification($admin, $class, $data);
             }
-            $this->em->flush();
         }
     }
 
@@ -145,8 +194,6 @@ class NotificationCenter {
         if(!\class_exists($class)){
             throw new NotificationClassNotFoundException("notification class '{$class}' does not exist");
         }
-
-        // TODO: check notification settings for this user
 
         $notification = new UserNotification();
         $notification->setClass($class);
