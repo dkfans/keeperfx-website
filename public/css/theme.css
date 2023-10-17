@@ -706,7 +706,11 @@ button.btn-medieval ion-icon {
 }
 
 .workshop-item-comment .badge+time {
-    margin-left: 7px;
+    margin-left: 6px;
+}
+
+.workshop-item-comment button:hover ion-icon {
+    color: var(--special-text-color);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/

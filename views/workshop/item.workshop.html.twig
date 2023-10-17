@@ -339,7 +339,7 @@
                 </p>
             {% else %}
                 {% for comment in item.comments %}
-                    <div class="workshop-item-comment d-flex" id="comment-{{ comment.id }}">
+                    <div class="workshop-item-comment d-flex" data-comment-id="{{ comment.id }}" id="comment-{{ comment.id }}">
 
                         <div class="" style="height: 100%;">
                             {% if comment.user.avatar %}
@@ -365,12 +365,12 @@
 
                                         {# Badge: If user is submitter #}
                                         {% if item.submitter is not null and comment.user == item.submitter %}
-                                            <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px;">Submitter</span>
+                                            <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Submitter</span>
                                         {% endif %}
 
                                         {# Badge: If user is admin #}
                                         {% if comment.user.role.value == roles.admin  %}
-                                            <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px;">Admin</span>
+                                            <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Admin</span>
                                         {% endif %}
 
                                         {# Date #}
@@ -381,7 +381,31 @@
                                     </span>
 
                                     {# Right side #}
-                                    <span>
+                                    <span style="position: relative; top: -3px; display: none;" class="comment-buttons">
+
+                                        {% if account is not null %}
+
+                                            {# Reply button #}
+                                            <button class="btn" style="padding: 2px; margin-right: 5px; height: 24px;" type="button" data-comment-action="reply">
+                                                <ion-icon name="chatbubbles-outline"></ion-icon>
+                                            </button>
+
+                                            {# Comment extra menu button #}
+                                            <div class="btn-group">
+                                                <button class="btn dropdown-toggle caret-off" style="padding: 2px; height: 24px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper">
+                                                    {% if comment.user.id == account.id  %}
+                                                        <li><a class="dropdown-item" data-comment-action="edit" href="#">Edit</a></li>
+                                                        <li><a class="dropdown-item" data-comment-action="delete" href="#">Delete</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                    {% endif %}
+                                                    <li><a class="dropdown-item" data-comment-action="report" href="#">Report</a></li>
+                                                </ul>
+                                            </div>
+
+                                        {% endif %}
                                     </span>
                                 </div>
 
