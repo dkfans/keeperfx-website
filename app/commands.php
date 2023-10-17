@@ -16,10 +16,13 @@ return [
     // User
     \App\Console\Command\User\CreateUserCommand::class,
     \App\Console\Command\User\ClearOldPasswordResetTokensCommand::class,
+    \App\Console\Command\User\ClearOldNotificationsCommand::class,
 
     // Workshop
     \App\Console\Command\Workshop\AddWorkshopTagCommand::class,
     \App\Console\Command\Workshop\FetchUnearthCommand::class,
+    \App\Console\Command\Workshop\FetchCreatureMakerCommand::class,
+    \App\Console\Command\Workshop\GenerateAllThumbnailsCommand::class,
 
     // Cache
     \App\Console\Command\Cache\CacheClearCommand::class,

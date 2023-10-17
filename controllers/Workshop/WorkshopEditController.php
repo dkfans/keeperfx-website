@@ -15,6 +15,7 @@ use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
 use Doctrine\ORM\EntityManager;
+use App\Workshop\WorkshopHelper;
 use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
 
@@ -312,12 +313,17 @@ class WorkshopEditController {
         // Write changes to DB
         $em->flush();
 
-        $flash->success('Your workshop item has been updated.');
+        // Create or update thumbnail
+        // TODO: improve this
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($workshop_item->getId());
+        WorkshopHelper::removeThumbnail($em, $workshop_item);
+        WorkshopHelper::generateThumbnail($em, $workshop_item);
 
+        // Show success and move back to workshop item page
+        $flash->success('Your workshop item has been updated.');
         $response = $response->withHeader(
             'Location', '/workshop/item/' . $workshop_item->getId() . '/' . URLify::slug($workshop_item->getName())
         )->withStatus(302);
-
         return $response;
     }
 

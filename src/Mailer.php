@@ -15,7 +15,6 @@ class Mailer {
 
     public function __construct(
         private EntityManager $em,
-        private TwigEnvironment $twig
     ) {}
 
     /**

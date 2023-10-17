@@ -10,12 +10,9 @@ use App\Account;
 class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements \Twig\Extension\GlobalsInterface
 {
 
-    protected Account $account;
-
-    public function __construct(Account $account)
-    {
-        $this->account = $account;
-    }
+    public function __construct(
+        private Account $account,
+    ) {}
 
     public function getName(): string
     {
@@ -36,7 +33,8 @@ class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements 
                 'username' => $this->account->getUser()->getUsername(),
                 'role'     => $this->account->getUser()->getRole()->value,
                 'avatar'   => $this->account->getUser()->getAvatar(),
-            ]
+                'email'    => $this->account->getUser()->getEmail(),
+            ],
         ];
     }
 }

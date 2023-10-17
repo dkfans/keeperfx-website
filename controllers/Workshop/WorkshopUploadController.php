@@ -22,6 +22,9 @@ use App\FlashMessage;
 use App\Config\Config;
 use App\DiscordNotifier;
 use App\UploadSizeHelper;
+use App\Workshop\WorkshopHelper;
+use App\Notifications\NotificationCenter;
+use App\Notifications\Notification\WorkshopItemNotification;
 
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
@@ -63,6 +66,7 @@ class WorkshopUploadController {
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
         DiscordNotifier $discord_notifier,
+        NotificationCenter $nc,
     ){
 
         $success = true;
@@ -306,8 +310,24 @@ class WorkshopUploadController {
         // Flush again so filenames are added to DB entity
         $em->flush();
 
+        // Create or update thumbnail
+        // TODO: improve this
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($workshop_item->getId());
+        WorkshopHelper::removeThumbnail($em, $workshop_item);
+        WorkshopHelper::generateThumbnail($em, $workshop_item);
+
         // Send a notification on Discord
         $discord_notifier->notifyNewWorkshopItem($workshop_item);
+
+        // Notify everybody who wants to receive this notification
+        $nc->sendNotificationToAllExceptSelf(
+            WorkshopItemNotification::class,
+            [
+                'item_id'    => $workshop_item->getId(),
+                'item_name'  => $workshop_item->getName(),
+                'username'   => $account->getUser()->getUsername(),
+            ]
+        );
 
         // Show upload success message and redirect to workshop item page
         $flash->success('Your workshop item has been uploaded!');

@@ -1,4 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Nunito&display=swap');
+@font-face {
+    font-family: 'Cinzel';
+    font-display: swap;
+    src: url(/font/cinzel/static/Cinzel-Medium.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Nunito';
+    font-display: swap;
+    src: url(/font/nunito/Nunito-VariableFont_wght.ttf) format('truetype');
+}
 
 body {
     background-color: #040404;
@@ -38,6 +48,9 @@ body {
     --bs-popover-border-radius: 0 !important;
 
     --bs-alert-color: #fff !important;
+
+    --bs-table-bg: transparent;
+    --bs-table-color: rgb(215, 197, 182);
 }
 
 ul {
@@ -906,6 +919,7 @@ nav .user-avatar {
 a.dropdown-item {
     margin-left: 0px;
     margin-right: 0px;
+    font-family: 'Nunito', sans-serif;
 }
 
 a.dropdown-item:active {
@@ -1172,6 +1186,61 @@ a.user-link:hover span {
     margin: 0;
     padding: 10px;
     font-size: 11px;
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.timeline {
+    border-left: 1px solid hsl(0, 0%, 90%);
+    position: relative;
+    list-style: none;
+}
+
+.timeline h5 {
+    border: 0;
+    position: relative;
+    top: -5px;
+}
+
+.timeline .timeline-item {
+    position: relative;
+}
+
+.timeline .timeline-item:after {
+    position: absolute;
+    display: block;
+    top: 0;
+}
+
+.timeline .timeline-item:after {
+    background-color: hsl(0, 0%, 90%);
+    left: -38px;
+    border-radius: 50%;
+    height: 11px;
+    width: 11px;
+    content: "";
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.notification-item-wide {
+    display: block;
+    padding: 8px;
+    background-color: rgba(6, 6, 6, 0.666);
+    border: 2px solid #333;
+}
+
+.notification-item-wide:hover {
+    text-decoration: none;
+    background-color: rgba(6, 6, 6, 0.366);
+}
+
+.notification-item-wide+.notification-item-wide {
+    margin-top: 10px;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/

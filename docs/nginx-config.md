@@ -53,6 +53,8 @@ location /download/alpha/ {
 location ~ /workshop/image/([0-9]+)/(.+)$ {
     access_log off;
     alias /var/www/keeperfx-website/workshop/$1/images/$2;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000";
 }
 ```
 
@@ -62,6 +64,8 @@ location ~ /workshop/image/([0-9]+)/(.+)$ {
 location ~ /avatar/(.+)$ {
     access_log off;
     alias /var/www/keeperfx-website/avatars/$1;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000";
 }
 ```
 
@@ -74,18 +78,24 @@ location ~ /dev/crash-report/download/(.+)$ {
 ```
 
 
-## Hide access logs for assets
+## Assets
 
 ```
 location ~ ^/(img|js|css)/ {
     access_log off;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000";
 }
 
 location ~ ^/screenshots/ {
     access_log off;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000";
 }
 
 location /favicon.ico {
     access_log off;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000";
 }
 ```

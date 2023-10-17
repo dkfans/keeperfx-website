@@ -79,6 +79,14 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
             // Account Connections
             $group->get('/connections', [ControlPanel\ConnectionController::class, 'index']);
+
+            // Notifications
+            $group->get('/notifications', [ControlPanel\NotificationController::class, 'listIndex']);
+            $group->get('/notification/{id}', [ControlPanel\NotificationController::class, 'read']);
+
+            // Notification settings
+            $group->get('/notifications/settings', [ControlPanel\NotificationController::class, 'settingsIndex']);
+            $group->post('/notifications/settings', [ControlPanel\NotificationController::class, 'updateSettings']);
         });
 
         // AUTH: ADMIN
@@ -223,6 +231,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->get('/stable', [RSSController::class, 'stableBuildFeed']);
         $group->get('/alpha', [RSSController::class, 'alphaPatchFeed']);
     });
+
+    // History
+    $group->get('/history', [HistoryController::class, 'index']);
 
 })->add(\Slim\Csrf\Guard::class);
 

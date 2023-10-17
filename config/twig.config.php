@@ -50,6 +50,7 @@ return [
         \App\Twig\Extension\PregReplaceTwigExtension::class,
         \App\Twig\Extension\WorkshopGlobalsTwigExtension::class,
         \App\Twig\Extension\StringUniqueColorTwigExtension::class,
+        \App\Twig\Extension\NotificationTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
 

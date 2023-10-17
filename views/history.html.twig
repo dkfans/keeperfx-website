@@ -1,0 +1,48 @@
+{% extends "core/_layout.html.twig" %}
+
+{% set page_title = 'History' %}
+
+{% block content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>The KeeperFX History</h2>
+        </div>
+        <div class="content-body">
+
+            {# Timeline #}
+            <section class="py-4 px-5" style="max-width: 1000px;">
+                <ul class="timeline">
+                {% for history in history_entries %}
+                    <li class="timeline-item mb-5">
+                        <h5 class="fw-bold">{{ history.title }}</h5>
+                        {# <p class="text-special mb-2 mt-1 fw-bold">{{ history.date|date(history.date_format) }}</p> #}
+                        <p class="mb-2 mt-1">
+                            <span class="text-special fw-bold" style="padding-right: 10px;">
+                                {{ history.date|date(history.date_format) }}
+                            </span>
+                            <time class="text-muted fw-bold" datetime="{{ history.date|date('c') }}" style="display:none;">
+                                {{ history.date|date(history.date_format) }}
+                            </time>
+                        </p>
+                        <p class="">
+                            {% if history.description is not null %}
+                                {{ history.description|markdown_to_html }}
+                            {% endif %}
+                        </p>
+                    </li>
+                {% endfor %}
+            </section>
+
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block body_javascript %}
+    <script>
+        $(function(){
+            $('time').show();
+        });
+    </script>
+{% endblock %}
