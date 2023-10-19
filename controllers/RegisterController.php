@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Enum\UserRole;
+
 use App\Entity\User;
 
 use App\Account;
@@ -157,7 +159,7 @@ class RegisterController {
         $session['uid'] = $user->getId();
 
         // Notify the admins
-        $nc->sendNotificationToAdmins(NewUserNotification::class, ['id' => $user->getId(), 'username' => $username]);
+        $nc->sendNotificationToAllWithRole(UserRole::Admin, NewUserNotification::class, ['id' => $user->getId(), 'username' => $username]);
 
         // Navigate to account page
         $flash->success('Successfully registered. You are now logged in.');

@@ -2,14 +2,17 @@
 
 namespace App\Controller\Api\v1;
 
-use App\Entity\NewsArticle;
+use App\Enum\UserRole;
+
+use App\Entity\CrashReport;
 
 use App\FlashMessage;
 use App\Account;
-use App\Entity\CrashReport;
 use App\UploadSizeHelper;
+use App\Notifications\NotificationCenter;
+use App\Notifications\Notification\CrashReportNotification;
+
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -22,6 +25,7 @@ class CrashReportApiController {
         Request $request,
         Response $response,
         EntityManager $em,
+        NotificationCenter $nc,
     ){
         // Get POST data
         $post = $request->getParsedBody();
@@ -48,9 +52,11 @@ class CrashReportApiController {
                 ])
             );
             return $response;
-        } else {
-            $crash_report->setGameVersion((string) ($post['game_version'] ?? ''));
         }
+
+        // Set game version
+        $game_version = (string) ($post['game_version'] ?? '');
+        $crash_report->setGameVersion($game_version);
 
         // Make sure a game log is defined
         if(!\array_key_exists('game_log', $post) || !\is_string($post['game_log']) || \strlen($post['game_log']) == 0){
@@ -61,9 +67,11 @@ class CrashReportApiController {
                 ])
             );
             return $response;
-        } else {
-            $crash_report->setGameLog((string) ($post['game_log'] ?? ''));
         }
+
+        // Set game log
+        $game_log = (string) ($post['game_log'] ?? '');
+        $crash_report->setGameLog($game_log);
 
         // Make sure a game output is defined
         if(!\array_key_exists('game_output', $post) || !\is_string($post['game_output']) || \strlen($post['game_output']) == 0){
@@ -160,6 +168,9 @@ class CrashReportApiController {
         // Save to DB
         $em->persist($crash_report);
         $em->flush();
+
+        // Notify the developers
+        $nc->sendNotificationToAllWithRole(UserRole::Developer, CrashReportNotification::class, ['id' => $crash_report->getId(), 'game_version' => $game_version]);
 
         // Return success and include new ID
         $response->getBody()->write(

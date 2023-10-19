@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
+use App\Enum\UserRole;
+use App\Enum\OAuthProviderType;
+
 use App\Entity\User;
 use App\Entity\UserOAuthToken;
-
-use App\Enum\OAuthProviderType;
 
 use App\Account;
 use App\FlashMessage;
@@ -477,7 +478,7 @@ class OAuthUserController {
         $em->flush();
 
         // Notify the admins
-        $nc->sendNotificationToAdmins(NewUserNotification::class, ['id' => $user->getId(), 'username' => $username]);
+        $nc->sendNotificationToAllWithRole(UserRole::Admin, NewUserNotification::class, ['id' => $user->getId(), 'username' => $username]);
 
         // Remove oauth register session data
         unset($session['oauth_register']);

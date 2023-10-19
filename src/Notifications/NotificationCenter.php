@@ -110,12 +110,14 @@ class NotificationCenter {
         return false;
     }
 
-    public function sendNotificationToAdmins(string $class, array|null $data = null): void
+    public function sendNotificationToAllWithRole(UserRole $role, string $class, array|null $data = null): void
     {
-        $admins = $this->em->getRepository(User::class)->findBy(['role' => UserRole::Admin]);
-        if($admins){
-            foreach($admins as $admin){
-                $this->sendNotification($admin, $class, $data);
+        $users = $this->em->getRepository(User::class)->findAll();
+        if($users){
+            foreach($users as $user){
+                if($user->getRole()->value >= $role->value){
+                    $this->sendNotification($user, $class, $data);
+                }
             }
         }
     }
