@@ -195,7 +195,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
         })->add(LoggedInMiddleware::class);
 
-        // Workshop item rate
+        // Workshop item rate (Ajax)
         $group->post('/rate/{id:\d+}/quality', [Workshop\WorkshopRatingController::class, 'rateQuality'])->add(LoggedInMiddleware::class);
         $group->post('/rate/{id:\d+}/difficulty', [Workshop\WorkshopRatingController::class, 'rateDifficulty'])->add(LoggedInMiddleware::class);
         $group->post('/rate/{id:\d+}/quality/remove', [Workshop\WorkshopRatingController::class, 'removeQualityRating'])->add(LoggedInMiddleware::class);
@@ -206,6 +206,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
         // Workshop item comment
         $group->post('/item/{id:\d+}/comment', [Workshop\WorkshopCommentController::class, 'comment'])->add(LoggedInMiddleware::class);
+        $group->put('/item/{item_id:\d+}/comment/{comment_id:\d+}', [Workshop\WorkshopCommentController::class, 'updateComment'])->add(LoggedInMiddleware::class); // AJAX
 
         // Browse items
         $group->get('/browse', [Workshop\WorkshopBrowseController::class, 'browseIndex']);
@@ -248,7 +249,8 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
 
     // API: Workshop
     $group->get('/v1/workshop/latest', [Api\v1\Workshop\WorkshopBrowseApiController::class, 'listLatest']);
-    $group->get('/v1/workshop/item/{id:\d+}', [Api\v1\Workshop\WorkshopItemApiController::class, 'item']);
+    $group->get('/v1/workshop/item/{id:\d+}', [Api\v1\Workshop\WorkshopItemApiController::class, 'getItem']);
+    $group->get('/v1/workshop/comment/{id:\d+}', [Api\v1\Workshop\WorkshopItemApiController::class, 'getComment']);
 
     // API: Downloads
     $group->get('/v1/stable/latest', [Api\v1\ReleaseApiController::class, 'latestStable']);

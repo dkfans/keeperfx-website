@@ -31,6 +31,7 @@ use GuzzleHttp\Psr7\LazyOpenStream;
 use geertw\IpAnonymizer\IpAnonymizer;
 use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
+use League\CommonMark\CommonMarkConverter;
 
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -97,5 +98,113 @@ class WorkshopCommentController {
         $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
         return $response;
     }
+
+    public function updateComment(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        Account $account,
+        $item_id,
+        $comment_id,
+    ) {
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Get the comment
+        /** @var WorkshopComment $item */
+        $comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
+        if(!$comment){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if comment is posted on this workshop item
+        if($comment->getItem() !== $workshop_item){
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'COMMENT_DOES_NOT_BELONG_TO_THIS_WORKSHOP_ITEM'
+                ])
+            );
+            return $response;
+        }
+
+        // Only Workshop moderators and the original owner can edit the comment
+        if($account->getUser()->getRole()->value < UserRole::Moderator->value && $comment->getUser() !== $account->getUser()){
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'NOT_ALLOWED'
+                ])
+            );
+            return $response;
+        }
+
+        // Get post
+        $post = $request->getParsedBody();
+        if(!\array_key_exists('content', $post) || !isset($post['content']) || !is_string($post['content'])){
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'CONTENT_NOT_SET'
+                ])
+            );
+            return $response;
+        }
+
+        // Make sure content is not empty
+        if($post['content'] === ""){
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'EMPTY_CONTENT'
+                ])
+            );
+            return $response;
+        }
+
+        // Make sure new content is different
+        if($comment->getContent() === $post['content']){
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'SAME_CONTENT'
+                ])
+            );
+            return $response;
+        }
+
+        // Update the comment
+        $comment->setContent($post['content']);
+        $em->flush();
+
+        // Create HTML content from markdown
+        $converter    = new CommonMarkConverter();
+        $content_html = $converter->convert($comment->getContent())->getContent();
+
+        // Return
+        $response->getBody()->write(
+            \json_encode([
+                'success' => true,
+                'workshop_comment' => [
+                    'item_id'      => $comment->getItem()->getId(),
+                    'id'           => $comment->getId(),
+                    'content'      => $comment->getContent(),
+                    'content_html' => $content_html,
+                    'user'         => [
+                        'id'           => $comment->getUser()->getId(),
+                        'username'     => $comment->getUser()->getUsername(),
+                        'role'         => $comment->getUser()->getRole()->value,
+                        'is_submitter' => ($comment->getUser() === $comment->getItem()->getSubmitter())
+                    ],
+                ]
+            ])
+        );
+
+        return $response;
+    }
+
 
 }

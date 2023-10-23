@@ -230,43 +230,170 @@ $(function(e){
         e.preventDefault();
 
         // Get variables
-        let commentId = $(this).parents('.workshop-item-comment').first().data('comment-id');
-        let action = $(this).data('comment-action');
-        if(typeof commentId == 'undefined' || typeof action == 'undefined'){
-            alert('Something went wrong');
+        let action                  = $(this).data('comment-action');
+        let $commentElement         = $(this).parents('.workshop-item-comment').first();
+        let userId                  = $commentElement.data('comment-user-id');
+        let commentId               = $commentElement.data('comment-id');
+        let $originalContentElement = $commentElement.find('.workshop-item-comment-content');
+        let $editContentElement     = $commentElement.find('.workshop-item-comment-edit');
+        let $editTextarea           = $editContentElement.find('textarea');
+        let $isEditedElement        = $commentElement.find('.workshop-comment-is-edited');
+
+        // Make sure variables are found
+        if(typeof userId == 'undefined' || typeof commentId == 'undefined' || typeof action == 'undefined'){
+            toastr.error('Something went wrong.');
             return false;
         }
 
-        if(action === "report")
+        // Edit
+        if(action === "edit")
         {
-            // Show report modal
-            let commentContents = $(this).parents('.workshop-item-comment').first().find('.workshop-item-comment-content').html();
-            $('#commentModalArea').html(commentContents);
-            $('#reportModal').modal('show');
-            return true;
-        }
+            // If this comment is not ours, and we don't have a role of moderator or higher
+            if(userId !== app_store.account.id && app_store.account.role < 5){
+                toastr.error("You can not edit this comment");
+                return false;
+            }
 
-        if(action === "reply")
-        {
-            $('textarea').blur();
-
-            let replyForm = $(this).parents('.workshop-item-comment').first().find('form[data-comment-reply="true"]');
-
-            // If the reply form is already visible we hide it
-            if(replyForm.is(':visible')){
-                replyForm.slideUp('fast');
+            // If this comment is already being edited, we'll close it again
+            if($commentElement.data('comment-edit') == true){
+                $editTextarea.text('');
+                $editContentElement.hide();
+                $originalContentElement.show();
+                $commentElement.data('comment-edit', false);
                 return true;
             }
 
-            // Hide all forms
-            $('form[data-comment-reply="true"]').slideUp('fast');
+            $commentElement.data('comment-edit', true);
 
-            // Show this reply form
-            replyForm.slideDown('fast');
-            replyForm.find('textarea').focus();
+            // Rate the workshop item
+            $.ajax({
+                type: 'GET',
+                url: '/api/v1/workshop/comment/' + commentId,
+                dataType: 'json', // return type data,
+                error: function(data){
+                    toastr.error('Something went wrong.');
+                },
+                success: function(data){
 
+                    console.log(data);
+
+                    if(typeof data.workshop_comment === 'undefined'){
+                        toastr.error('Something went wrong.');
+                        return false;
+                    }
+
+                    $originalContentElement.hide();
+                    $editTextarea.text(data.workshop_comment.content);
+                    $editContentElement.show();
+                }
+            });
+        }
+
+        // Cancel Edit
+        if(action === "cancel-edit"){
+            $editTextarea.text('');
+            $editContentElement.hide();
+            $originalContentElement.show();
+            $commentElement.data('comment-edit', false);
             return true;
         }
+
+        if(action === "do-edit") {
+            let $editArea = $editContentElement.find('[data-comment-edit-area]');
+
+            if($editArea.val() === ""){
+                toastr.warning("Comment can not be empty.");
+                return true;
+            }
+
+            // Rate the workshop item
+            $.ajax({
+                type: 'PUT',
+                url: '/workshop/item/' + workshop_item.id + '/comment/' + commentId,
+                dataType: 'json', // return type data,
+                data: {
+                    content: $editArea.val(),
+                    [app_store.csrf.keys.name]: app_store.csrf.name,
+                    [app_store.csrf.keys.value]: app_store.csrf.value
+                },
+                error: function(data){
+                    toastr.error('Something went wrong.');
+                },
+                success: function(data){
+
+                    console.log(data);
+
+                    if(typeof data.success === 'undefined' || !data.success){
+                        toastr.error('Something went wrong.');
+                        return false;
+                    }
+
+                    if(typeof data.workshop_comment === 'undefined'){
+                        toastr.error('Something went wrong.');
+                        return false;
+                    }
+
+                    toastr.success("Comment updated!");
+
+                    $originalContentElement.html(data.workshop_comment.content_html);
+
+                    $editTextarea.text('');
+                    $editContentElement.hide();
+                    $originalContentElement.show();
+                    $commentElement.data('comment-edit', false);
+                    $isEditedElement.show();
+                }
+            });
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // if(action === "report")
+        // {
+        //     // Show report modal
+        //     let commentContents = $(this).parents('.workshop-item-comment').first().find('.workshop-item-comment-content').html();
+        //     $('#commentModalArea').html(commentContents);
+        //     $('#reportModal').modal('show');
+        //     return true;
+        // }
+
+        // if(action === "reply")
+        // {
+        //     $('textarea').blur();
+
+        //     let replyForm = $(this).parents('.workshop-item-comment').first().find('form[data-comment-reply="true"]');
+
+        //     // If the reply form is already visible we hide it
+        //     if(replyForm.is(':visible')){
+        //         replyForm.slideUp('fast');
+        //         return true;
+        //     }
+
+        //     // Hide all forms
+        //     $('form[data-comment-reply="true"]').slideUp('fast');
+
+        //     // Show this reply form
+        //     replyForm.slideDown('fast');
+        //     replyForm.find('textarea').focus();
+
+        //     return true;
+        // }
 
 
 
