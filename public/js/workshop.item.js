@@ -370,7 +370,7 @@ $(function(e){
 
                     toastr.success("Comment deleted!");
 
-                    // Show 'no comments' message when the item has no more items after this
+                    // Show 'no comments' message if there are no comments now
                     if($('[data-comment-id]').length == 0){
                         $('#no-comments').show();
                     }
