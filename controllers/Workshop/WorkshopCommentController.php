@@ -22,6 +22,7 @@ use App\UploadSizeHelper;
 
 use App\Notifications\NotificationCenter;
 use App\Notifications\Notification\WorkshopItemCommentNotification;
+use App\Notifications\Notification\WorkshopItemCommentReplyNotification;
 
 use URLify;
 use Slim\Psr7\UploadedFile;
@@ -260,6 +261,90 @@ class WorkshopCommentController {
                 'success' => true,
             ])
         );
+        return $response;
+    }
+
+    public function replyComment(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        Account $account,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        NotificationCenter $nc,
+        $item_id,
+        $comment_id,
+    ){
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Get the comment
+        /** @var WorkshopComment $item */
+        $parent_comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
+        if(!$parent_comment){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Get comment
+        $post    = $request->getParsedBody();
+        $content = (string) ($post['content'] ?? null);
+        if(empty($content)){
+            $flash->warning('You tried to submit an empty reply.');
+            $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
+            return $response;
+        }
+
+        // TODO: filter bad words
+
+        // Add comment to DB
+        $comment = new WorkshopComment();
+        $comment->setItem($workshop_item);
+        $comment->setUser($account->getUser());
+        $comment->setContent($content);
+        $comment->setParent($parent_comment);
+        $em->persist($comment);
+        $em->flush();
+
+        // Notify the user of the comment that you replied to them
+        // If we are not replying to ourselves
+        if($parent_comment->getUser() !== $account->getUser()){
+            $nc->sendNotification(
+                $workshop_item->getSubmitter(),
+                WorkshopItemCommentReplyNotification::class,
+                [
+                    'item_id'    => $workshop_item->getId(),
+                    'comment_id' => $comment->getId(),
+                    'item_name'  => $workshop_item->getName(),
+                    'username'   => $account->getUser()->getUsername(),
+                ]
+            );
+        }
+
+        // Notify workshop item submitter of the new comment
+        // But only if we are not replying to them directly
+        // And of course when we are not replying to ourselves
+        if(
+            $parent_comment->getUser() !== $workshop_item->getSubmitter() &&
+            $workshop_item->getSubmitter() !== $account->getUser()
+        ){
+            $nc->sendNotification(
+                $workshop_item->getSubmitter(),
+                WorkshopItemCommentNotification::class,
+                [
+                    'item_id'    => $workshop_item->getId(),
+                    'comment_id' => $comment->getId(),
+                    'item_name'  => $workshop_item->getName(),
+                    'username'   => $account->getUser()->getUsername(),
+                ]
+            );
+        }
+
+        // Success!
+        $flash->success('Your reply has been added!');
+        $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
         return $response;
     }
 

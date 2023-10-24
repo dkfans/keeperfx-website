@@ -97,11 +97,11 @@
                     <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
                     <div class="" style="width: 100%; margin-left: 5px; padding: 0;">
                         <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
-                            <textarea class="form-control" name="content" rows="4" placeholder="Write a reply" required></textarea>
+                            <textarea class="form-control" name="content" rows="3" placeholder="Write a reply" required tabindex="{{ comment.id }}001" ></textarea>
                         </div>
                     </div>
                     <div class="pull-right mt-3">
-                        <input type="submit" class="btn btn-medieval" value="Comment" />
+                        <input type="submit" class="btn btn-medieval" value="Reply" tabindex="{{ comment.id }}002" />
                     </div>
                 </form>
 

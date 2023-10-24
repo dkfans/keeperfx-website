@@ -382,6 +382,28 @@ $(function(e){
             });
         }
 
+        if(action === "reply")
+        {
+            $('textarea').blur();
+
+            let replyForm = $(this).parents('.workshop-item-comment').first().find('form[data-comment-reply="true"]').first();
+
+            // If the reply form is already visible we hide it
+            if(replyForm.is(':visible')){
+                replyForm.slideUp('fast');
+                return true;
+            }
+
+            // Hide all forms
+            $('form[data-comment-reply="true"]').slideUp('fast');
+
+            // Show this reply form
+            replyForm.slideDown('fast');
+            replyForm.find('textarea').focus();
+
+            return true;
+        }
+
 
 
 
@@ -404,28 +426,6 @@ $(function(e){
         //     let commentContents = $(this).parents('.workshop-item-comment').first().find('.workshop-item-comment-content').html();
         //     $('#commentModalArea').html(commentContents);
         //     $('#reportModal').modal('show');
-        //     return true;
-        // }
-
-        // if(action === "reply")
-        // {
-        //     $('textarea').blur();
-
-        //     let replyForm = $(this).parents('.workshop-item-comment').first().find('form[data-comment-reply="true"]');
-
-        //     // If the reply form is already visible we hide it
-        //     if(replyForm.is(':visible')){
-        //         replyForm.slideUp('fast');
-        //         return true;
-        //     }
-
-        //     // Hide all forms
-        //     $('form[data-comment-reply="true"]').slideUp('fast');
-
-        //     // Show this reply form
-        //     replyForm.slideDown('fast');
-        //     replyForm.find('textarea').focus();
-
         //     return true;
         // }
 
