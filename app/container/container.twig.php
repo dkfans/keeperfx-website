@@ -72,6 +72,9 @@ return [
                         new class (new GithubFlavoredMarkdownConverter) implements MarkdownInterface {
                             public function __construct(private $converter){}
                             public function convert(string $string): string {
+                                // Handle a custom spoiler tag
+                                $string = \preg_replace('~\|\|(.+?)\|\|~', '<span class="spoiler">$1</span>', $string);
+                                // Run the rest of the markdown converter stuff
                                 return $this->converter->convert($string);
                             }
                         }

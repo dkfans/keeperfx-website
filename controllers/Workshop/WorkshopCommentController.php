@@ -32,7 +32,7 @@ use GuzzleHttp\Psr7\LazyOpenStream;
 use geertw\IpAnonymizer\IpAnonymizer;
 use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
-use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -182,8 +182,10 @@ class WorkshopCommentController {
         $em->flush();
 
         // Create HTML content from markdown
-        $converter    = new CommonMarkConverter();
-        $content_html = $converter->convert($comment->getContent())->getContent();
+        $converter    = new GithubFlavoredMarkdownConverter();
+        $content_html = $comment->getContent();
+        $content_html = \preg_replace('~\|\|(.+?)\|\|~', '<span class="spoiler">$1</span>', $content_html);
+        $content_html = $converter->convert($content_html)->getContent();
 
         // Return
         $response->getBody()->write(
