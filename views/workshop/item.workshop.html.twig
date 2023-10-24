@@ -326,11 +326,19 @@
                     <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
                     <div class="" style="width: 100%; margin-left: 5px; padding: 0;">
                         <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
-                            <textarea class="form-control" name="content" rows="2" placeholder="Write a comment" required id="comment-input"></textarea>
+                            <textarea class="form-control" name="content" rows="2" placeholder="Write a comment" required id="comment-input" tabindex="10"></textarea>
                         </div>
                     </div>
-                    <div class="pull-right mt-3" id="comment-submit-button">
-                        <input type="submit" class="btn btn-medieval" value="Comment" />
+                    <div class="display-flex justify-content-between px-1" id="comment-submit-extra">
+                        <span class="text-muted mx-2" style="font-size: 12px;">
+                            Markdown and spoilers supported.
+                            <a href="#" data-comment-format-info-link="true">
+                                Info
+                            </a>
+                        </span>
+                        <div>
+                            <input type="submit" class="btn btn-medieval" value="Comment" tabindex="11" />
+                        </div>
                     </div>
                 </form>
             {% endif %}

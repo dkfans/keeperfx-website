@@ -122,20 +122,20 @@ $(function(e){
         }
     });
 
-    // Hide comment submit button
-    $('#comment-submit-button').hide();
+    // Hide comment submit extra
+    $('#comment-submit-extra').hide();
 
-    // Show comment submit button when clicking in the comment box
+    // Show comment submit extra when clicking in the comment box
     $('#comment-input').on('focus', function(e){
         if($(this).val().length === 0){
-            $('#comment-submit-button').slideDown('fast');
+            $('#comment-submit-extra').slideDown('fast');
         }
     });
     $('#comment-input').on('focusout', function(e){
         if($(this).val().length === 0){
-            $('#comment-submit-button').slideUp('fast');
+            $('#comment-submit-extra').slideUp('fast');
         } else {
-            $('#comment-submit-button').slideDown('fast');
+            $('#comment-submit-extra').slideDown('fast');
         }
     });
 
@@ -242,6 +242,7 @@ $(function(e){
         let $editContentElement     = $commentElement.find('.workshop-item-comment-edit').first();
         let $editTextarea           = $editContentElement.find('textarea').first();
         let $isEditedElement        = $commentElement.find('.workshop-comment-is-edited').first();
+        let $replyForm              = $commentElement.find('form[data-comment-reply="true"]').first();
 
         // Make sure variables are found
         if(typeof userId == 'undefined' || typeof commentId == 'undefined' || typeof action == 'undefined'){
@@ -267,6 +268,12 @@ $(function(e){
                 return true;
             }
 
+            // If the reply form is already visible we hide it
+            if($replyForm.is(':visible')){
+                $replyForm.slideUp('fast');
+            }
+
+            // Remember that the comment is being edited
             $commentElement.data('comment-edit', true);
 
             // Rate the workshop item
@@ -382,15 +389,20 @@ $(function(e){
             });
         }
 
+        // Reply
         if(action === "reply")
         {
             $('textarea').blur();
 
-            let replyForm = $(this).parents('.workshop-item-comment').first().find('form[data-comment-reply="true"]').first();
+            // Close the edit area if its open
+            $editTextarea.text('');
+            $editContentElement.hide();
+            $originalContentElement.show();
+            $commentElement.data('comment-edit', false);
 
             // If the reply form is already visible we hide it
-            if(replyForm.is(':visible')){
-                replyForm.slideUp('fast');
+            if($replyForm.is(':visible')){
+                $replyForm.slideUp('fast');
                 return true;
             }
 
@@ -398,8 +410,8 @@ $(function(e){
             $('form[data-comment-reply="true"]').slideUp('fast');
 
             // Show this reply form
-            replyForm.slideDown('fast');
-            replyForm.find('textarea').focus();
+            $replyForm.slideDown('fast');
+            $replyForm.find('textarea').focus();
 
             return true;
         }

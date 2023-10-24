@@ -84,10 +84,18 @@
 
                 {# Edit comment #}
                 <div class="workshop-item-comment-edit pb-3" style="display:none;">
-                    <textarea class="form-control mt-3 mb-2" rows="4" data-comment-edit-area="true"></textarea>
-                    <div class="pull-right mt-3">
-                        <button class="btn btn-sm btn-medieval btn-medieval-gray mx-2" data-comment-action="cancel-edit">Cancel</button>
-                        <input type="submit" class="btn btn-sm btn-medieval" data-comment-action="do-edit" value="Edit" />
+                    <textarea class="form-control mt-3 mb-2" rows="4" data-comment-edit-area="true" tabindex="{{ comment.id }}001"></textarea>
+                    <div class="display-flex justify-content-between">
+                        <span class="text-muted mx-1" style="font-size: 12px;">
+                            Markdown and spoilers supported.
+                            <a href="#" data-comment-format-info-link="true">
+                                Info
+                            </a>
+                        </span>
+                        <div>
+                            <button class="btn btn-sm btn-medieval btn-medieval-gray mx-2" data-comment-action="cancel-edit" tabindex="{{ comment.id }}003">Cancel</button>
+                            <input type="submit" class="btn btn-sm btn-medieval" data-comment-action="do-edit" value="Edit" tabindex="{{ comment.id }}002" />
+                        </div>
                     </div>
                 </div>
 
@@ -97,11 +105,19 @@
                     <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
                     <div class="" style="width: 100%; margin-left: 5px; padding: 0;">
                         <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
-                            <textarea class="form-control" name="content" rows="3" placeholder="Write a reply" required tabindex="{{ comment.id }}001" ></textarea>
+                            <textarea class="form-control" name="content" rows="3" placeholder="Write a reply" required tabindex="{{ comment.id }}005" ></textarea>
                         </div>
                     </div>
-                    <div class="pull-right mt-3">
-                        <input type="submit" class="btn btn-medieval" value="Reply" tabindex="{{ comment.id }}002" />
+                    <div class="display-flex justify-content-between px-1">
+                        <span class="text-muted mx-2" style="font-size: 12px;">
+                            Markdown and spoilers supported.
+                            <a href="#" data-comment-format-info-link="true">
+                                Info
+                            </a>
+                        </span>
+                        <div>
+                            <input type="submit" class="btn btn-medieval" value="Reply" tabindex="{{ comment.id }}006" />
+                        </div>
                     </div>
                 </form>
 
