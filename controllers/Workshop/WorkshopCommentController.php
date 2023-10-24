@@ -308,11 +308,12 @@ class WorkshopCommentController {
         $em->persist($comment);
         $em->flush();
 
-        // Notify the user of the comment that you replied to them
-        // If we are not replying to ourselves
+        // Notify if we are not replying to ourselves
         if($parent_comment->getUser() !== $account->getUser()){
+
+            // Notify the user of the comment that we replied to them
             $nc->sendNotification(
-                $workshop_item->getSubmitter(),
+                $parent_comment->getUser(),
                 WorkshopItemCommentReplyNotification::class,
                 [
                     'item_id'    => $workshop_item->getId(),
@@ -321,25 +322,21 @@ class WorkshopCommentController {
                     'username'   => $account->getUser()->getUsername(),
                 ]
             );
-        }
 
-        // Notify workshop item submitter of the new comment
-        // But only if we are not replying to them directly
-        // And of course when we are not replying to ourselves
-        if(
-            $parent_comment->getUser() !== $workshop_item->getSubmitter() &&
-            $workshop_item->getSubmitter() !== $account->getUser()
-        ){
-            $nc->sendNotification(
-                $workshop_item->getSubmitter(),
-                WorkshopItemCommentNotification::class,
-                [
-                    'item_id'    => $workshop_item->getId(),
-                    'comment_id' => $comment->getId(),
-                    'item_name'  => $workshop_item->getName(),
-                    'username'   => $account->getUser()->getUsername(),
-                ]
-            );
+            // Notify workshop item submitter of the new comment
+            // If we are not replying to them directly
+            if($parent_comment->getUser() !== $workshop_item->getSubmitter()){
+                $nc->sendNotification(
+                    $workshop_item->getSubmitter(),
+                    WorkshopItemCommentNotification::class,
+                    [
+                        'item_id'    => $workshop_item->getId(),
+                        'comment_id' => $comment->getId(),
+                        'item_name'  => $workshop_item->getName(),
+                        'username'   => $account->getUser()->getUsername(),
+                    ]
+                );
+            }
         }
 
         // Success!
