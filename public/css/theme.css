@@ -586,6 +586,10 @@ button.btn-medieval ion-icon {
     font-weight: 600;
 }
 
+.btn-medieval:focus {
+    border: 1px solid #ddd;
+}
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -655,9 +659,9 @@ button.btn-medieval ion-icon {
     margin-top: 0;
 }
 
-.workshop-item-comment .workshop-item-comment:hover {
+/* .workshop-item-comment .workshop-item-comment:hover {
     background-color: rgba(100, 100, 100, 0.05) !important;
-}
+} */
 
 .workshop-item-comment-content p {
     margin-left: 0;
@@ -683,7 +687,8 @@ button.btn-medieval ion-icon {
     margin-top: 5px;
 }
 
-.workshop-item-comment .workshop-item-comment .workshop-item-comment-edit {
+.workshop-item-comment .workshop-item-comment .workshop-item-comment-edit,
+.workshop-item-comment .workshop-item-comment form {
     margin-right: 15px;
 }
 
