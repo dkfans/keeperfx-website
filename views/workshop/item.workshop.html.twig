@@ -321,7 +321,7 @@
                     <a href="/login?redirect={{ get_path() }}">Login</a> or <a href="/register">register</a> to comment on this workshop item.
                 </p>
             {% else %}
-                <form action="/workshop/item/{{ item.id }}/comment" method="POST">
+                <form class="mb-3" action="/workshop/item/{{ item.id }}/comment" method="POST">
                     <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                     <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
                     <div class="" style="width: 100%; margin-left: 5px; padding: 0;">
