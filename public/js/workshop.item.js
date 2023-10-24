@@ -298,15 +298,17 @@ $(function(e){
             return true;
         }
 
+        // Do Edit
         if(action === "do-edit") {
             let $editArea = $editContentElement.find('[data-comment-edit-area]');
 
+            // Make sure new comment is not empty
             if($editArea.val() === ""){
                 toastr.warning("Comment can not be empty.");
                 return true;
             }
 
-            // Rate the workshop item
+            // Edit the workshop item
             $.ajax({
                 type: 'PUT',
                 url: '/workshop/item/' + workshop_item.id + '/comment/' + commentId,
@@ -321,8 +323,6 @@ $(function(e){
                 },
                 success: function(data){
 
-                    console.log(data);
-
                     if(typeof data.success === 'undefined' || !data.success){
                         toastr.error('Something went wrong.');
                         return false;
@@ -333,20 +333,50 @@ $(function(e){
                         return false;
                     }
 
-                    toastr.success("Comment updated!");
-
                     $originalContentElement.html(data.workshop_comment.content_html);
-
                     $editTextarea.text('');
                     $editContentElement.hide();
                     $originalContentElement.show();
                     $commentElement.data('comment-edit', false);
                     $isEditedElement.show();
+
+                    toastr.success("Comment updated!");
                 }
             });
-
         }
 
+        // Delete
+        if(action === "delete"){
+
+            $.ajax({
+                type: 'DELETE',
+                url: '/workshop/item/' + workshop_item.id + '/comment/' + commentId,
+                dataType: 'json', // return type data,
+                data: {
+                    [app_store.csrf.keys.name]: app_store.csrf.name,
+                    [app_store.csrf.keys.value]: app_store.csrf.value
+                },
+                error: function(data){
+                    toastr.error('Something went wrong.');
+                },
+                success: function(data){
+
+                    if(typeof data.success === 'undefined' || !data.success){
+                        toastr.error('Something went wrong.');
+                        return false;
+                    }
+
+                    $commentElement.remove();
+
+                    toastr.success("Comment deleted!");
+
+                    // Show 'no comments' message when the item has no more items after this
+                    if($('[data-comment-id]').length == 0){
+                        $('#no-comments').show();
+                    }
+                }
+            });
+        }
 
 
 

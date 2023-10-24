@@ -207,4 +207,60 @@ class WorkshopCommentController {
     }
 
 
+    public function deleteComment(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        Account $account,
+        $item_id,
+        $comment_id,
+    ) {
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Get the comment
+        /** @var WorkshopComment $item */
+        $comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
+        if(!$comment){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if comment is posted on this workshop item
+        if($comment->getItem() !== $workshop_item){
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'COMMENT_DOES_NOT_BELONG_TO_THIS_WORKSHOP_ITEM'
+                ])
+            );
+            return $response;
+        }
+
+        // Only Workshop moderators and the original owner can edit the comment
+        if($account->getUser()->getRole()->value < UserRole::Moderator->value && $comment->getUser() !== $account->getUser()){
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'NOT_ALLOWED'
+                ])
+            );
+            return $response;
+        }
+
+        // Remove the comment
+        $em->remove($comment);
+        $em->flush();
+
+        // Return success
+        $response->getBody()->write(
+            \json_encode([
+                'success' => true,
+            ])
+        );
+        return $response;
+    }
+
 }

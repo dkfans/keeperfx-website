@@ -207,6 +207,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         // Workshop item comment
         $group->post('/item/{id:\d+}/comment', [Workshop\WorkshopCommentController::class, 'comment'])->add(LoggedInMiddleware::class);
         $group->put('/item/{item_id:\d+}/comment/{comment_id:\d+}', [Workshop\WorkshopCommentController::class, 'updateComment'])->add(LoggedInMiddleware::class); // AJAX
+        $group->delete('/item/{item_id:\d+}/comment/{comment_id:\d+}', [Workshop\WorkshopCommentController::class, 'deleteComment'])->add(LoggedInMiddleware::class); // AJAX
 
         // Browse items
         $group->get('/browse', [Workshop\WorkshopBrowseController::class, 'browseIndex']);
