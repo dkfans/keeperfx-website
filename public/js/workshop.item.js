@@ -234,10 +234,10 @@ $(function(e){
         let $commentElement         = $(this).parents('.workshop-item-comment').first();
         let userId                  = $commentElement.data('comment-user-id');
         let commentId               = $commentElement.data('comment-id');
-        let $originalContentElement = $commentElement.find('.workshop-item-comment-content');
-        let $editContentElement     = $commentElement.find('.workshop-item-comment-edit');
-        let $editTextarea           = $editContentElement.find('textarea');
-        let $isEditedElement        = $commentElement.find('.workshop-comment-is-edited');
+        let $originalContentElement = $commentElement.find('.workshop-item-comment-content').first();
+        let $editContentElement     = $commentElement.find('.workshop-item-comment-edit').first();
+        let $editTextarea           = $editContentElement.find('textarea').first();
+        let $isEditedElement        = $commentElement.find('.workshop-comment-is-edited').first();
 
         // Make sure variables are found
         if(typeof userId == 'undefined' || typeof commentId == 'undefined' || typeof action == 'undefined'){

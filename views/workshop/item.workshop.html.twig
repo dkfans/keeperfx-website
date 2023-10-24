@@ -11,6 +11,10 @@
     }
 } %}
 
+{# Import the comment macro #}
+{# This is made into a macro so replies can be rendered recursively #}
+{% from 'workshop/comment.macro.html.twig' import render_comment as render_comment %}
+
 {% block workshop_content %}
 
     <div class="content-box bg-keeper bd-keeper">
@@ -337,114 +341,16 @@
             </p>
 
             {# Comments #}
-            {% for comment in item.comments %}
-                <div class="workshop-item-comment d-flex" data-comment-id="{{ comment.id }}" id="comment-{{ comment.id }}" data-comment-user-id="{{ comment.user.id }}">
+            <div class="workshop-item-comments">
+                {% for comment in item.comments %}
 
-                    <div class="" style="height: 100%;">
-                        {% if comment.user.avatar %}
-                            <img src="/avatar/{{ comment.user.avatar }}" class="user-avatar user-avatar-big" onerror="this.src='{{ avatar(comment.user.username, 'circle', 128) }}';" />
-                        {% else %}
-                            <img src="{{ avatar(comment.user.username, 'circle', 128) }}" class="user-avatar user-avatar-big" />
-                        {% endif %}
-                    </div>
+                    {# We will only handle the comments that are not replies. The replies are handled recursively in the macro. #}
+                    {% if comment.parent is null %}
+                        {{ render_comment(item, comment) }}
+                    {% endif %}
 
-                    <div class="" style="width: 100%; margin-left: 10px; padding: 0; padding-top: 2px;">
-                        <div class="d-flex justify-content-between" style="width: 100%;">
-
-                            {# Left side #}
-                            <span>
-
-                                {# Username #}
-                                <a
-                                href="/workshop/browse?user={{ comment.user.username }}"
-                                title="Browse {{ comment.user.username }}'s Workshop Items"
-                                class="user-link d-inline-block me-2">
-                                    <span class="user-username">{{ comment.user.username }}</span>
-                                </a>
-
-                                {# Badge: If user is submitter #}
-                                {% if item.submitter is not null and comment.user == item.submitter %}
-                                    <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Submitter</span>
-                                {% endif %}
-
-                                {# Badge: If user is admin #}
-                                {% if comment.user.role.value == roles.admin  %}
-                                    <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Admin</span>
-                                {% endif %}
-
-                                {# Date #}
-                                <time class="text-muted" datetime="{{ comment.createdTimestamp|date('c') }}">
-                                    {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
-                                </time>
-
-                                {# Edited #}
-                                <span class="text-muted workshop-comment-is-edited" {% if comment.createdTimestamp == comment.updatedTimestamp %}style="display:none;"{% endif %}>
-                                    &bullet; Edited
-                                </span>
-
-                            </span>
-
-                            {# Right side #}
-                            <span style="position: relative; top: -3px; display: none;" class="comment-buttons">
-
-                                {% if account is not null %}
-
-                                    {# Reply button #}
-                                    <button class="btn" style="padding: 2px; margin-right: 5px; height: 24px;" type="button" data-comment-action="reply">
-                                        <ion-icon name="chatbubbles-outline"></ion-icon>
-                                    </button>
-
-                                    {# Comment extra menu button #}
-                                    <div class="btn-group">
-                                        <button class="btn dropdown-toggle caret-off" style="padding: 2px; height: 24px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper">
-                                            {% if account.role >= roles.moderator or comment.user.id == account.id  %}
-                                                <li><a class="dropdown-item" data-comment-action="edit" href="#">Edit</a></li>
-                                                <li><a class="dropdown-item" data-comment-action="delete" href="#">Delete</a></li>
-                                                <li><hr class="dropdown-divider"></li>
-                                            {% endif %}
-                                            <li><a class="dropdown-item" data-comment-action="report" href="#">Report</a></li>
-                                        </ul>
-                                    </div>
-
-                                {% endif %}
-                            </span>
-                        </div>
-
-                        {# Comment #}
-                        <div class="force-wordwrap workshop-item-comment-content" style="margin-bottom: 15px; margin-top: 3px; margin-right: 10px;">
-                            {# {{ comment.content|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|nl2br }} #}
-                            {{ comment.content|markdown_to_html }}
-                        </div>
-
-                        {# Edit comment #}
-                        <div class="workshop-item-comment-edit pb-3" style="display:none;">
-                            <textarea class="form-control mt-3 mb-2" rows="4" data-comment-edit-area="true"></textarea>
-                            <div class="pull-right mt-3">
-                                <button class="btn btn-sm btn-medieval btn-medieval-gray mx-2" data-comment-action="cancel-edit">Cancel</button>
-                                <input type="submit" class="btn btn-sm btn-medieval" data-comment-action="do-edit" value="Edit" />
-                            </div>
-                        </div>
-
-                        {# Reply to comment #}
-                        <form action="/workshop/item/{{ item.id }}/comment/{{ comment.id }}" method="POST" class="mb-3" style="display:none;" data-comment-reply="true">
-                            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
-                            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
-                            <div class="" style="width: 100%; margin-left: 5px; padding: 0;">
-                                <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
-                                    <textarea class="form-control" name="content" rows="4" placeholder="Write a reply" required></textarea>
-                                </div>
-                            </div>
-                            <div class="pull-right mt-3">
-                                <input type="submit" class="btn btn-medieval" value="Comment" />
-                            </div>
-                        </form>
-                    </div>
-
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 
