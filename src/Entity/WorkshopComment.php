@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Entity\User;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
@@ -29,6 +31,17 @@ class WorkshopComment {
 
     #[ORM\Column]
     private \DateTime $updated_timestamp;
+
+    #[ORM\ManyToOne(targetEntity: WorkshopComment::class)]
+    private WorkshopComment|null $parent = null;
+
+    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'parent', cascade: ["remove"])]
+    #[ORM\OrderBy(["created_timestamp" => "DESC"])]
+    private Collection $replies;
+
+    public function __construct() {
+        $this->replies = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function onPrePersist()
@@ -137,6 +150,32 @@ class WorkshopComment {
     public function setUpdatedTimestamp(\DateTime $updated_timestamp): self
     {
         $this->updated_timestamp = $updated_timestamp;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of replies
+     */
+    public function getReplies(): Collection
+    {
+        return $this->replies;
+    }
+
+    /**
+     * Get the value of parent
+     */
+    public function getParent(): ?WorkshopComment
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Set the value of parent
+     */
+    public function setParent(?WorkshopComment $parent): self
+    {
+        $this->parent = $parent;
 
         return $this;
     }
