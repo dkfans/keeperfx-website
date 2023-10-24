@@ -212,13 +212,17 @@ $(function(e){
     var hashBang = window.location.hash.substr(1);
     if(hashBang.match("^comment\-")){
         let commentId = hashBang.slice(8);
-        $("#comment-" + commentId).css('border', '1px solid white');
-        $("#comment-" + commentId).animate({ scale: '1' }, 200);
+        $("#comment-" + commentId).css('border-left', '3px solid white');
         $("#comment-" + commentId)[0].scrollIntoView({
             behavior: 'auto',
             block: 'center',
             inline: 'center'
         });
+        let originalBackgroundColor = $("#comment-" + commentId).css('background-color');
+        if(typeof originalBackgroundColor === 'string'){
+            $("#comment-" + commentId).animate({ scale: '1', backgroundColor: 'rgba(100,100,100,0.08)' }, 300);
+            $("#comment-" + commentId).animate({ backgroundColor: originalBackgroundColor }, 450);
+        }
     }
 
     // Show reply and comment menu buttons
