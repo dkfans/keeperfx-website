@@ -39,6 +39,7 @@ body {
     --bs-warning-text: #ffffff;
     --bs-warning-bg-subtle: #cd8e00;
     --bs-warning-border-subtle: #ff8100;
+    --bs-danger-rgb: 147, 9, 22;
     --bs-danger-bg-subtle: #930916;
     --bs-danger-border-subtle: #ff001b;
     --bs-danger-text: #ffffff;
