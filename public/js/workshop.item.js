@@ -436,6 +436,25 @@ $(function(e){
             return true;
         }
 
+        if(action === 'cancel-reply'){
+
+            $('textarea').blur();
+
+            // Close the edit area if its open
+            $editTextarea.text('');
+            $editContentElement.hide();
+            $originalContentElement.show();
+            $commentElement.data('comment-edit', false);
+
+            // If the reply form is already visible we hide it
+            if($replyForm.is(':visible')){
+                $replyForm.slideUp('fast');
+                return true;
+            }
+
+            return true;
+        }
+
         if(action === "report")
         {
             // Show report modal
