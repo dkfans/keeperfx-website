@@ -77,8 +77,7 @@
                 </div>
 
                 {# Comment #}
-                <div class="force-wordwrap workshop-item-comment-content" style="margin-bottom: 15px; margin-top: 3px; margin-right: 10px;">
-                    {# {{ comment.content|preg_replace("~([\r]?\n[\s]*){3,}~", "\n\n")|trim|nl2br }} #}
+                <div class="force-wordwrap workshop-item-comment-content {% if comment.reports|length > 0 %}workshop-comment-report{% endif %}">
                     {{ comment.content|markdown_to_html }}
                 </div>
 
@@ -120,6 +119,29 @@
                         </div>
                     </div>
                 </form>
+
+                {# Reports #}
+                {% if account is not null and account.role >= roles.moderator and comment.reports|length > 0 %}
+                    <div class="workshop-item-comment-reports">
+                        {% for report in comment.reports %}
+                            <div class="alert bg-danger workshop-item-comment-report" data-report-id="{{ report.id }}">
+                                <div class="alert-heading display-flex justify-content-between">
+                                    <span>
+                                        Report by {{ report.user.username }} &bullet;
+                                        <time datetime="{{ report.createdTimestamp|date('c') }}">
+                                            {{ report.createdTimestamp|date('Y/m/d - H:i') }}
+                                        </time>
+                                    </span>
+
+                                    <button type="button" class="btn-close btn-close-white" data-comment-report-button="close"></button>
+                                </div>
+                                <p class="m-0 mt-2">
+                                    {{ report.reason }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
                 {# Replies #}
                 {% if comment.replies|length > 0 %}

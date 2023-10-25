@@ -221,6 +221,15 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
         // Redirect '/workshop' to '/workshop/browse'
         $group->redirect('[/]', '/workshop/browse', 302);
+
+        // Workshop report
+        $group->group('/report', function (RouteCollectorProxy $group) use ($container) {
+
+            // Comment report
+            $group->post('/comment/{comment_id:\d+}', [Workshop\WorkshopReportController::class, 'reportComment']); // AJAX
+            $group->delete('/comment/{report_id:\d+}', [Workshop\WorkshopReportController::class, 'removeCommentReport'])->add(AuthModCPMiddleware::class); // AJAX
+
+        })->add(LoggedInMiddleware::class);
     });
 
     // ToS & Privacy Policy

@@ -1,10 +1,10 @@
 {# The comment report modal #}
-<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true" data-comment-id="0">
     <div class="modal-dialog">
         <div class="modal-content bg-keeper bd-keeper">
             <div class="modal-header">
                 <h5 class="modal-title">Report comment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div id="commentModalArea" class="form-control"></div>
@@ -19,7 +19,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-medieval btn-medieval-gray" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-medieval">Report</button>
+                <button type="button" class="btn btn-medieval" id="reportComment">Report</button>
             </div>
         </div>
     </div>

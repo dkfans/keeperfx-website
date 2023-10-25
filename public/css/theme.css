@@ -660,16 +660,15 @@ button.btn-medieval ion-icon {
     margin-top: 0;
 }
 
-/* .workshop-item-comment .workshop-item-comment:hover {
-    background-color: rgba(100, 100, 100, 0.05) !important;
-} */
-
 .workshop-item-comment-content p {
     margin-left: 0;
     padding-left: 0;
 }
 
-.workshop-item-comment-content img {
+.workshop-item-comment-content img,
+.modal-body img {
+    height: 100%;
+    width: 100%;
     max-width: 250px;
     aspect-ratio: 1;
 }
@@ -705,6 +704,17 @@ button.btn-medieval ion-icon {
 .workshop-item-comment .workshop-item-comment .user-avatar-big {
     width: 20px;
     height: 20px;
+}
+
+.workshop-item-comment-content {
+    margin-bottom: 15px;
+    margin-top: 3px;
+    padding-right: 10px;
+}
+
+.workshop-comment-report {
+    border: 1px dashed rgba(200, 20, 30, 0.5);
+    padding: 5px;
 }
 
 .workshop-item-images {

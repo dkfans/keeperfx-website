@@ -39,8 +39,13 @@ class WorkshopComment {
     #[ORM\OrderBy(["created_timestamp" => "DESC"])]
     private Collection $replies;
 
+    #[ORM\OneToMany(targetEntity: WorkshopCommentReport::class, mappedBy: 'comment', cascade: ["remove"])]
+    #[ORM\OrderBy(["created_timestamp" => "DESC"])]
+    private Collection $reports;
+
     public function __construct() {
         $this->replies = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -127,31 +132,11 @@ class WorkshopComment {
     }
 
     /**
-     * Set the value of created_timestamp
-     */
-    public function setCreatedTimestamp(\DateTime $created_timestamp): self
-    {
-        $this->created_timestamp = $created_timestamp;
-
-        return $this;
-    }
-
-    /**
      * Get the value of updated_timestamp
      */
     public function getUpdatedTimestamp(): \DateTime
     {
         return $this->updated_timestamp;
-    }
-
-    /**
-     * Set the value of updated_timestamp
-     */
-    public function setUpdatedTimestamp(\DateTime $updated_timestamp): self
-    {
-        $this->updated_timestamp = $updated_timestamp;
-
-        return $this;
     }
 
     /**
@@ -178,5 +163,13 @@ class WorkshopComment {
         $this->parent = $parent;
 
         return $this;
+    }
+
+    /**
+     * Get the value of reports
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
     }
 }

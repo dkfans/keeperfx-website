@@ -421,34 +421,91 @@ $(function(e){
             return true;
         }
 
+        if(action === "report")
+        {
+            // Show report modal
+            let commentContents = $(this).parents('.workshop-item-comment').first().find('.workshop-item-comment-content').html();
+            $('#commentModalArea').html(commentContents);
+            $('#reportModal').data('comment-id', commentId);
+            $('#reportModal').modal('show');
+            return true;
+        }
+    });
 
+    // Comment report
+    $('#reportComment').on('click', function(e){
 
+        $('#reportComment').prop('disabled', true);
 
+        let reason = $('#reportModal textarea[name=reason]').val();
+        let commentId = $('#reportModal').data('comment-id');
 
+        $.ajax({
+            type: 'POST',
+            url: '/workshop/report/comment/' + commentId,
+            dataType: 'json', // return type data,
+            data: {
+                'reason': reason,
+                [app_store.csrf.keys.name]: app_store.csrf.name,
+                [app_store.csrf.keys.value]: app_store.csrf.value
+            },
+            error: function(data){
+                toastr.error('Something went wrong.');
+            },
+            success: function(data){
 
+                if(typeof data.success === 'undefined' || !data.success){
+                    toastr.error('Something went wrong.');
+                    return false;
+                }
 
+                toastr.success("Comment reported!");
 
+                $('#reportModal').modal('hide');
+            }
+        });
 
+    });
 
+    // Moderator: Close report
+    $('button[data-comment-report-button="close"]').on('click', function(){
 
+        // Variables
+        let $allReportsElement     = $(this).closest('.workshop-item-comment-reports');
+        let $reportElement         = $(this).closest('.workshop-item-comment-report');
+        let $commentElement        = $(this).closest('.workshop-item-comment');
+        let $commentContentElement = $commentElement.find('.workshop-item-comment-content');
+        let commentId              = $reportElement.data('report-id');
 
+        $.ajax({
+            type: 'DELETE',
+            url: '/workshop/report/comment/' + commentId,
+            dataType: 'json', // return type data,
+            data: {
+                [app_store.csrf.keys.name]: app_store.csrf.name,
+                [app_store.csrf.keys.value]: app_store.csrf.value
+            },
+            error: function(data){
+                toastr.error('Something went wrong.');
+            },
+            success: function(data){
 
+                if(typeof data.success === 'undefined' || !data.success){
+                    toastr.error('Something went wrong.');
+                    return false;
+                }
 
+                toastr.success("Report removed!");
 
+                // Remove the report alert
+                $reportElement.remove();
 
-
-        // if(action === "report")
-        // {
-        //     // Show report modal
-        //     let commentContents = $(this).parents('.workshop-item-comment').first().find('.workshop-item-comment-content').html();
-        //     $('#commentModalArea').html(commentContents);
-        //     $('#reportModal').modal('show');
-        //     return true;
-        // }
-
-
-
-
+                // Remove red border from comment if this was the last report that is being removed
+                if($allReportsElement.find('.workshop-item-comment-report').length === 0){
+                    $commentContentElement.removeClass('workshop-comment-report');
+                }
+            }
+        });
     });
 
 });
