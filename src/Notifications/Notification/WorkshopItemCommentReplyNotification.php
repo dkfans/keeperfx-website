@@ -21,7 +21,7 @@ class WorkshopItemCommentReplyNotification extends Notification implements Notif
 
     public function getNotificationTitle(): string
     {
-        return "New reply on your workshop item comment";
+        return "New reply on your workshop comment";
     }
 
     public function getDefaultSettings(): array
