@@ -145,7 +145,13 @@
                             (Optional)
                         </span>
                     </label>
-                    <textarea class="form-control" name="description" rows="6"></textarea>
+                    <textarea class="form-control mb-1" name="description" rows="6"></textarea>
+                    <span class="text-muted mx-2" style="font-size: 12px;">
+                        Markdown and spoilers supported.
+                        <a href="#" data-markdown-format-info-link="true">
+                            More info
+                        </a>
+                    </span>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 50px;">
@@ -155,7 +161,13 @@
                             (Optional)
                         </span>
                     </label>
-                    <textarea class="form-control" name="install_instructions" rows="4"></textarea>
+                    <textarea class="form-control mb-1" name="install_instructions" rows="4"></textarea>
+                    <span class="text-muted mx-2" style="font-size: 12px;">
+                        Markdown and spoilers supported.
+                        <a href="#" data-markdown-format-info-link="true">
+                            More info
+                        </a>
+                    </span>
                 </div>
 
                 <div class="row" style="margin-bottom: 25px; display:none;" id="difficulty-rating-box">
@@ -239,6 +251,8 @@
 
         </div>
     </div>
+
+{% include 'markdown.format.html.twig' %}
 
 {% endblock %}
 

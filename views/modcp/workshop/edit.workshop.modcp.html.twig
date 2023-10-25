@@ -168,6 +168,12 @@
                         </span>
                     </label>
                     <textarea class="form-control" name="description" rows="6">{{ workshop_item.description }}</textarea>
+                    <span class="text-muted mx-2" style="font-size: 12px;">
+                        Markdown and spoilers supported.
+                        <a href="#" data-markdown-format-info-link="true">
+                            More info
+                        </a>
+                    </span>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 50px;">
@@ -178,6 +184,12 @@
                         </span>
                     </label>
                     <textarea class="form-control" name="install_instructions" rows="4">{{ workshop_item.installInstructions }}</textarea>
+                    <span class="text-muted mx-2" style="font-size: 12px;">
+                        Markdown and spoilers supported.
+                        <a href="#" data-markdown-format-info-link="true">
+                            More info
+                        </a>
+                    </span>
                 </div>
 
                 <div class="row" style="margin-bottom: 25px; {% if workshop_item.category in workshop_globals.categories_without_difficulty %}display:none;{% endif %}" id="difficulty-rating-box">
@@ -246,6 +258,8 @@
 
         </div>
     </div>
+
+{% include 'markdown.format.html.twig' %}
 
 {% endblock %}
 

@@ -32,7 +32,14 @@
                 <textarea class="form-control" name="contents" id="contents" rows="10"></textarea>
             </div>
 
-            <div class="form-group">
+            <span class="text-muted mx-2" style="font-size: 12px;">
+                Markdown and spoilers supported.
+                <a href="#" data-markdown-format-info-link="true">
+                    More info
+                </a>
+            </span>
+
+            <div class="form-group mt-4">
                 <label for="excerpt">
                     Excerpt (Short Text to show on home page with a "Read more" link) -
                     <a href="https://chat.openai.com/" target="_blank">ChatGPT</a>
@@ -40,8 +47,11 @@
                 <textarea class="form-control" name="excerpt" id="excerpt" rows="3"></textarea>
             </div>
 
-            <span class="text-muted">
-                News articles use the markdown format.
+            <span class="text-muted mx-2" style="font-size: 12px;">
+                Markdown and spoilers supported.
+                <a href="#" data-markdown-format-info-link="true">
+                    More info
+                </a>
             </span>
 
             <div class="pull-right">
@@ -54,5 +64,8 @@
 
     </div>
 </div>
+
+
+{% include 'markdown.format.html.twig' %}
 
 {% endblock %}
