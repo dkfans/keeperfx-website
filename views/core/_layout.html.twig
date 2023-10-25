@@ -158,6 +158,12 @@
 
         </nav>
 
+        {% if get_env('APP_HEADER_ALERT_TEXT') is not empty %}
+            <div class="alert bg-{% if get_env('APP_HEADER_ALERT_TYPE') is not empty %}{{ get_env('APP_HEADER_ALERT_TYPE') }}{% else %}info{% endif %}">
+                {{ get_env('APP_HEADER_ALERT_TEXT')|nl2br }}
+            </div>
+        {% endif %}
+
         {% block content %}{% endblock %}
 
         <footer>
