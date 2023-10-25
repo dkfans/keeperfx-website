@@ -495,6 +495,9 @@ $(function(e){
                 [app_store.csrf.keys.name]: app_store.csrf.name,
                 [app_store.csrf.keys.value]: app_store.csrf.value
             },
+            complete: function(e) {
+                $('#reportComment').prop('disabled', false);
+            },
             error: function(data){
                 toastr.error('Something went wrong.');
             },
