@@ -127,7 +127,7 @@
                             <div class="alert bg-danger workshop-item-comment-report" data-report-id="{{ report.id }}">
                                 <div class="alert-heading display-flex justify-content-between">
                                     <span>
-                                        Report by {{ report.user.username }} &bullet;
+                                        Reported by {{ report.user.username }} &bullet;
                                         <time datetime="{{ report.createdTimestamp|date('c') }}">
                                             {{ report.createdTimestamp|date('Y/m/d - H:i') }}
                                         </time>
@@ -135,9 +135,11 @@
 
                                     <button type="button" class="btn-close btn-close-white" data-comment-report-button="close"></button>
                                 </div>
-                                <p class="m-0 mt-2">
-                                    {{ report.reason }}
-                                </p>
+                                {% if report.reason is not null and report.reason is not empty %}
+                                    <p class="m-0 mt-2">
+                                        {{ report.reason }}
+                                    </p>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
