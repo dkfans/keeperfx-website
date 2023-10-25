@@ -667,8 +667,8 @@ button.btn-medieval ion-icon {
 
 .workshop-item-comment-content img,
 .modal-body img {
-    height: 100%;
-    width: 100%;
+    max-height: 100%;
+    max-width: 100%;
     max-width: 250px;
     aspect-ratio: 1;
 }
