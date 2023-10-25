@@ -212,16 +212,31 @@ $(function(e){
     var hashBang = window.location.hash.substr(1);
     if(hashBang.match("^comment\-")){
         let commentId = hashBang.slice(8);
-        $("#comment-" + commentId).css('border-left', '3px solid white');
-        $("#comment-" + commentId)[0].scrollIntoView({
-            behavior: 'auto',
-            block: 'center',
-            inline: 'center'
-        });
-        let originalBackgroundColor = $("#comment-" + commentId).css('background-color');
-        if(typeof originalBackgroundColor === 'string'){
-            $("#comment-" + commentId).animate({ scale: '1', backgroundColor: 'rgba(100,100,100,0.08)' }, 300);
-            $("#comment-" + commentId).animate({ backgroundColor: originalBackgroundColor }, 450);
+        let $commentElement = $("#comment-" + commentId);
+
+        if($commentElement.length === 0){
+
+            // We should display a warning because a notification can link to a comment that has been deleted
+            toastr.warning('Comment not found');
+
+        } else {
+
+            // Add a nice border to the left
+            $commentElement.css('border-left', '3px solid white');
+
+            // Scroll the comment into view
+            $commentElement[0].scrollIntoView({
+                behavior: 'auto',
+                block: 'center',
+                inline: 'center'
+            });
+
+            // Animation to highlight comment for a small time
+            let originalBackgroundColor = $commentElement.css('background-color');
+            if(typeof originalBackgroundColor === 'string'){
+                $commentElement.animate({ scale: '1', backgroundColor: 'rgba(100,100,100,0.08)' }, 300);
+                $commentElement.animate({ backgroundColor: originalBackgroundColor }, 450);
+            }
         }
     }
 
