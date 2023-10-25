@@ -77,7 +77,7 @@
                 </div>
 
                 {# Comment #}
-                <div class="force-wordwrap workshop-item-comment-content {% if comment.reports|length > 0 %}workshop-comment-report{% endif %}">
+                <div class="force-wordwrap workshop-item-comment-content {% if account is not null and account.role >= roles.moderator and comment.reports|length > 0 %}workshop-comment-report{% endif %}">
                     {{ comment.content|markdown_to_html }}
                 </div>
 
