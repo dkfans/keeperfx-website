@@ -219,6 +219,9 @@ $(function(e){
             // We should display a warning because a notification can link to a comment that has been deleted
             toastr.warning('Comment not found');
 
+            // Remove the hash bang from the URL
+            window.location.hash = "";
+
         } else {
 
             // Add a nice border to the left
@@ -374,6 +377,8 @@ $(function(e){
                     toastr.success("Comment updated!");
                 }
             });
+
+            return true;
         }
 
         // Delete
@@ -407,6 +412,8 @@ $(function(e){
                     }
                 }
             });
+
+            return true;
         }
 
         // Reply
