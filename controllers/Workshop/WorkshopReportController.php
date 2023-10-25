@@ -6,6 +6,7 @@ namespace App\Controller\Workshop;
 use App\Enum\UserRole;
 
 use App\Entity\WorkshopComment;
+use App\Entity\UserNotification;
 use App\Entity\WorkshopCommentReport;
 
 use App\Notifications\NotificationCenter;
@@ -61,6 +62,7 @@ class WorkshopReportController {
             UserRole::Moderator,
             WorkshopItemCommentReportNotification::class,
             [
+                'report_id'  => $report->getId(),
                 'item_id'    => $comment->getItem()->getId(),
                 'comment_id' => $comment->getId(),
                 'item_name'  => $comment->getItem()->getName(),
@@ -83,18 +85,32 @@ class WorkshopReportController {
         EntityManager $em,
         $report_id
     ){
-
-        // Get the comment
-        /** @var WorkshopComment $item */
+        // Get the report
+        /** @var WorkshopCommentReport $item */
         $report = $em->getRepository(WorkshopCommentReport::class)->find($report_id);
         if(!$report){
             throw new HttpNotFoundException($request);
         }
 
+        // Remember report ID
+        $report_id = $report->getId();
+
+        // Remove the report
         $em->remove($report);
+
+        // Remove notifications linking to this report
+        $notifications = $em->getRepository(UserNotification::class)->findBy(['class' => WorkshopItemCommentReportNotification::class]);
+        foreach($notifications as $notification){
+            $data = $notification->getData();
+            if(isset($data['report_id']) && $data['report_id'] === $report_id){
+                $em->remove($notification);
+            }
+        }
+
+        // Save changes to DB
         $em->flush();
 
-
+        // Return success
         $response->getBody()->write(
             \json_encode([
                 'success' => true,
