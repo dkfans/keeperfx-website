@@ -99,8 +99,12 @@ class FetchAlphaCommand extends Command
 
         $output->writeln("[+] Workflow runs found: " . \count($json->workflow_runs));
 
+        // Get runs and order them from old to newer
+        // This makes sure they get added in chronological order
+        $runs = \array_reverse((array) $json->workflow_runs);
+
         // Loop trough all fetched workflow runs
-        foreach($json->workflow_runs as $run){
+        foreach($runs as $run){
 
             // Make sure this run is a successful alpha build
             if(
