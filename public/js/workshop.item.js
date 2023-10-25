@@ -334,8 +334,13 @@ $(function(e){
                 },
                 success: function(data){
 
-                    if(typeof data.success === 'undefined' || !data.success){
+                    if(typeof data.success === 'undefined'){
                         toastr.error('Something went wrong.');
+                        return false;
+                    }
+
+                    if(!data.success){
+                        toastr.error('Failed to edit comment.');
                         return false;
                     }
 
