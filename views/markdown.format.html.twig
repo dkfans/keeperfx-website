@@ -1,0 +1,123 @@
+{# The markdown format modal #}
+<div class="modal modal-lg fade" id="markdownFormatModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-keeper bd-keeper">
+            <div class="modal-header">
+                <h5 class="modal-title">Markdown Formatting Info</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Some content can be formatted with a modified Github Flavored Markdown.
+                </p>
+
+
+                <h4 class="mt-5 mb-3">Text formatting</h4>
+                <p>
+                    <strong>Bold</strong>: <code>**Bold Text**</code><br />
+                    <i>Italic</i>: <code>*Italic Text*</code><br />
+                    <s>Stripe-Trough</s>:  <code>~~Stripe Trough Text~~</code>
+                </p>
+
+
+            <h4 class="mt-5 mb-3">Unordered Lists</h4>
+            <p>
+<pre><code>{% apply spaceless %}
+- a
+- b
+- c
+{% endapply %}</code></pre>
+<ul>
+<li>a</li>
+<li>b</li>
+<li>c</li>
+</ul>
+            </p>
+
+
+        <h4 class="mt-4 mb-3">Ordered Lists</h4>
+        <p>
+<pre><code>{% apply spaceless %}
+1. a
+2. b
+3. c
+{% endapply %}</code></pre>
+<ol>
+<li>a</li>
+<li>b</li>
+<li>c</li>
+</ol>
+        </p>
+
+
+                <h4 class="mt-5 mb-3">Links</h4>
+                <p>
+                    <code>This is [a link](https://keeperfx.net).</code>
+                </p>
+                <p>
+                    This is <a href="https://keeperfx.net">a link</a>.
+                </p>
+
+
+                <h4 class="mt-5 mb-3">Images</h4>
+                <p>
+                    <code>![Image title](https://keeperfx.net/img/logo.png).</code>
+                </p>
+                <p>
+                    <img src="https://keeperfx.net/img/logo.png" title="Image title" alt="Image title" />
+                </p>
+
+
+                <h4 class="mt-5 mb-3">Spoilers</h4>
+                <p>
+                    <code>|| this text is behind a spoiler ||</code>
+                </p>
+                <p>
+                    <span class="spoiler"> this text is behind a spoiler </span>
+                </p>
+
+
+                <h4 class="mt-5 mb-3">Inline code</h4>
+                <p>
+                    <code>This will become `inline code`.</code>
+                </p>
+                <p>
+                    This will become <code>inline code</code>.
+                </p>
+
+
+             <h4 class="mt-5 mb-3">Codeblock</h4>
+                <p>
+<pre><code>{% apply spaceless %}
+```
+this
+is a codeblock
+    useful for code
+```
+{% endapply %}</code></pre>
+</p>
+<p>
+Becomes:
+<pre><code>this
+is a codeblock
+    useful for code
+</code></pre>
+</p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-medieval" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+$(function(){
+    $('a[data-markdown-format-info-link="true"]').on('click', function(e){
+        e.preventDefault();
+        $('#markdownFormatModal').modal('show');
+    });
+})
+</script>

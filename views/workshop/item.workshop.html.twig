@@ -332,7 +332,7 @@
                     <div class="display-flex justify-content-between px-1" id="comment-submit-extra">
                         <span class="text-muted mx-2" style="font-size: 12px;">
                             Markdown and spoilers supported.
-                            <a href="#" data-comment-format-info-link="true">
+                            <a href="#" data-markdown-format-info-link="true">
                                 More info
                             </a>
                         </span>
@@ -363,6 +363,7 @@
     </div>
 
 {% include 'workshop/comment.report.workshop.html.twig' %}
+{% include 'markdown.format.html.twig' %}
 
 {% endblock %}
 
