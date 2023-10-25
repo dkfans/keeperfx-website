@@ -83,6 +83,7 @@ class WorkshopReportController {
         Request $request,
         Response $response,
         EntityManager $em,
+        NotificationCenter $nc,
         $report_id
     ){
         // Get the report
@@ -103,6 +104,7 @@ class WorkshopReportController {
         foreach($notifications as $notification){
             $data = $notification->getData();
             if(isset($data['report_id']) && $data['report_id'] === $report_id){
+                $nc->clearUserCache($notification->getUser());
                 $em->remove($notification);
             }
         }

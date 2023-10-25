@@ -186,6 +186,7 @@ class WorkshopCommentController {
         Response $response,
         EntityManager $em,
         Account $account,
+        NotificationCenter $nc,
         $item_id,
         $comment_id,
     ) {
@@ -242,6 +243,7 @@ class WorkshopCommentController {
                 if(isset($data['report_id'])){
                     foreach($report_ids as $report_id){
                         if($data['report_id'] === $report_id){
+                            $nc->clearUserCache($notification->getUser());
                             $em->remove($notification);
                         }
                     }
