@@ -475,7 +475,7 @@ $(function(e){
 
     // Report modal: Select reason textarea on show
     $('body').on('shown.bs.modal', '#reportModal', function () {
-        $('textarea', this).focus();
+        $('textarea[name="reason"]', this).focus();
     })
 
     // Comment report
