@@ -242,8 +242,35 @@ class WorkshopCommentController {
             return $response;
         }
 
+        // Get any reports for this comment
+        $reports = $comment->getReports();
+        if(!is_null($reports) && \count($reports) > 0){
+
+            // Get all the IDs for the reports and then remove them
+            $report_ids = [];
+            foreach($reports as $report){
+                $report_ids[] = $report->getId();
+                $em->remove($report);
+            }
+
+            // Remove notifications linking to these reports
+            $notifications = $em->getRepository(UserNotification::class)->findBy(['class' => WorkshopItemCommentReportNotification::class]);
+            foreach($notifications as $notification){
+                $data = $notification->getData();
+                if(isset($data['report_id'])){
+                    foreach($report_ids as $report_id){
+                        if($data['report_id'] === $report_id){
+                            $em->remove($notification);
+                        }
+                    }
+                }
+            }
+        }
+
         // Remove the comment
         $em->remove($comment);
+
+        // Save changes to DB
         $em->flush();
 
         // Return success
