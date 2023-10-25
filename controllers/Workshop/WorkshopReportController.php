@@ -22,7 +22,7 @@ use App\Enum\UserNotificationType;
 use App\UploadSizeHelper;
 
 use App\Notifications\NotificationCenter;
-use App\Notifications\Notification\WorkshopItemCommentNotification;
+use App\Notifications\Notification\WorkshopItemCommentReportNotification;
 use App\Notifications\Notification\WorkshopItemCommentReplyNotification;
 
 use URLify;
@@ -83,6 +83,19 @@ class WorkshopReportController {
         $em->persist($report);
         $em->flush();
 
+        // Send notification to moderators
+        $nc->sendNotificationToAllWithRole(
+            UserRole::Moderator,
+            WorkshopItemCommentReportNotification::class,
+            [
+                'item_id'    => $comment->getItem()->getId(),
+                'comment_id' => $comment->getId(),
+                'item_name'  => $comment->getItem()->getName(),
+                'username'   => $account->getUser()->getUsername(),
+            ]
+        );
+
+        // Return success
         $response->getBody()->write(
             \json_encode([
                 'success' => true,
