@@ -166,17 +166,6 @@ class WorkshopCommentController {
             return $response;
         }
 
-        // Make sure new content is different
-        if($comment->getContent() === $post['content']){
-            $response->getBody()->write(
-                \json_encode([
-                    'success' => false,
-                    'error'   => 'SAME_CONTENT'
-                ])
-            );
-            return $response;
-        }
-
         // Update the comment
         $comment->setContent($post['content']);
         $em->flush();
