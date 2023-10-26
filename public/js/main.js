@@ -17,4 +17,16 @@ $(function(){
 
     // Load dynamic timestamps
     $("time").timeago();
+
+    // Handle failed/invalid json responses for Ajax calls
+    $(document).ajaxError(function (event, xhr, settings){
+
+        // Unauthorized check
+        if(xhr.status === 401){
+            toastr.warning('You need to be logged in to do this.');
+            return false;
+        }
+
+        toastr.error('Something went wrong.');
+    });
 });

@@ -147,7 +147,6 @@ $(function(){
             url: '/workshop/upload/map_number/' + map_number,
             dataType: 'json', // return type data,
             error: function(data){
-                toastr.error('Something went wrong.');
                 $mapNumberInput[0].setCustomValidity('Something went wrong');
             },
             success: function(data){

@@ -40,9 +40,6 @@ function handleRatingHtml(el){
                     [app_store.csrf.keys.value]: app_store.csrf.value
                 },
                 dataType: 'json', // return type data,
-                error: function(data){
-                    toastr.error('Something went wrong.');
-                },
                 success: function(data){
 
                     // Make sure rating went successful
@@ -161,9 +158,6 @@ $(function(e){
                 [app_store.csrf.keys.value]: app_store.csrf.value
             },
             dataType: 'json', // return type data,
-            error: function(data){
-                toastr.error('Something went wrong.');
-            },
             success: function(data){
 
                 // Make sure rating went successful
@@ -299,9 +293,6 @@ $(function(e){
                 type: 'GET',
                 url: '/api/v1/workshop/comment/' + commentId,
                 dataType: 'json', // return type data,
-                error: function(data){
-                    toastr.error('Something went wrong.');
-                },
                 success: function(data){
 
                     console.log(data);
@@ -347,9 +338,6 @@ $(function(e){
                     [app_store.csrf.keys.name]: app_store.csrf.name,
                     [app_store.csrf.keys.value]: app_store.csrf.value
                 },
-                error: function(data){
-                    toastr.error('Something went wrong.');
-                },
                 success: function(data){
 
                     if(typeof data.success === 'undefined'){
@@ -391,9 +379,6 @@ $(function(e){
                 data: {
                     [app_store.csrf.keys.name]: app_store.csrf.name,
                     [app_store.csrf.keys.value]: app_store.csrf.value
-                },
-                error: function(data){
-                    toastr.error('Something went wrong.');
                 },
                 success: function(data){
 
@@ -498,9 +483,6 @@ $(function(e){
             complete: function(e) {
                 $('#reportComment').prop('disabled', false);
             },
-            error: function(data){
-                toastr.error('Something went wrong.');
-            },
             success: function(data){
 
                 if(typeof data.success === 'undefined' || !data.success){
@@ -533,9 +515,6 @@ $(function(e){
             data: {
                 [app_store.csrf.keys.name]: app_store.csrf.name,
                 [app_store.csrf.keys.value]: app_store.csrf.value
-            },
-            error: function(data){
-                toastr.error('Something went wrong.');
             },
             success: function(data){
 

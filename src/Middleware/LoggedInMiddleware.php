@@ -51,21 +51,43 @@ class LoggedInMiddleware implements MiddlewareInterface {
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+
+
         if(!$this->account->isLoggedIn()){
 
-            $this->flash->info('You need to be logged in to access this resource.');
+            if(
+                $request->getHeaderLine('Content-Type') === "application/json" ||
+                $request->getHeaderLine('X-Requested-With') === "XMLHttpRequest"
+            ){
 
-            $location = '/login';
+                $response = $this->response_factory->createResponse()
+                    ->withHeader('Content-Type', 'application/json')
+                    ->withStatus(401);
 
-            // Remember path for redirection after login
-            $redirect = $request->getUri()->getPath();
-            if($redirect){
-                $location .= '?redirect=' . $redirect;
+                $response->getBody()->write(\json_encode([
+                    'success' => false,
+                    'error'   => 'NOT_LOGGED_IN',
+                ]));
+
+                return $response;
+
+            } else {
+
+                $this->flash->info('You need to be logged in to access this resource.');
+
+                $location = '/login';
+
+                // Remember path for redirection after login
+                $redirect = $request->getUri()->getPath();
+                if($redirect){
+                    $location .= '?redirect=' . $redirect;
+                }
+
+                return $this->response_factory->createResponse()
+                    ->withHeader('Location', $location)
+                    ->withStatus(302);
+
             }
-
-            return $this->response_factory->createResponse()
-                ->withHeader('Location', $location)
-                ->withStatus(302);
 
         }
 

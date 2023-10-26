@@ -42,9 +42,6 @@ $(function(){
                 [app_store.csrf.keys.value]: app_store.csrf.value
             },
             dataType: 'json', // return type data,
-            error: function(data){
-                toastr.error('Something went wrong.');
-            },
             success: function(data){
 
                 // Make sure rename went successful
