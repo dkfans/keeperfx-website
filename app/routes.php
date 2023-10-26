@@ -87,6 +87,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             // Notification settings
             $group->get('/notifications/settings', [ControlPanel\NotificationController::class, 'settingsIndex']);
             $group->post('/notifications/settings', [ControlPanel\NotificationController::class, 'updateSettings']);
+
+            // Mark all notifications as read
+            $group->get('/notifications/mark-all-as-read/{token_name}/{token_value:.+}', [ControlPanel\NotificationController::class, 'markAllAsRead']);
         });
 
         // AUTH: ADMIN

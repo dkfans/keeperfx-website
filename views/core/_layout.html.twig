@@ -79,6 +79,8 @@
                                         </a>
                                     </li>
                                 {% endfor %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/account/notifications/mark-all-as-read/{{ csrf.name }}/{{ csrf.value|url_encode }}">Mark all as read</a></li>
                             {% else %}
                                 <li>
                                     <a class="dropdown-item disabled text-muted" href="#" disabled>No new notifications</a>

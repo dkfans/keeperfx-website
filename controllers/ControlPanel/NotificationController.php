@@ -3,20 +3,22 @@
 namespace App\Controller\ControlPanel;
 
 use App\Entity\UserNotification;
+use App\Entity\UserNotificationSetting;
 
 use App\Account;
-use App\Entity\UserNotificationSetting;
 use App\FlashMessage;
+use Slim\Csrf\Guard as CsrfGuard;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
+
 use App\Notifications\NotificationCenter;
 use App\Notifications\NotificationSettings;
+use App\Notifications\NotificationInterface;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Exception\HttpForbiddenException;
+
 use Slim\Exception\HttpNotFoundException;
-use App\Notifications\NotificationInterface;
 
 class NotificationController {
 
@@ -62,9 +64,11 @@ class NotificationController {
         NotificationCenter $nc,
         TwigEnvironment $twig,
     ){
+
         $response->getBody()->write(
             $twig->render('cp/notifications.cp.html.twig', [
-                'notifications' => $nc->getAllNotifications()
+                'notifications'             => $nc->getAllNotifications(),
+                'unread_notification_count' => \count($nc->getUnreadNotifications()),
             ])
         );
 
@@ -156,6 +160,41 @@ class NotificationController {
 
         $flash->success('Notification settings updated!');
         $response = $response->withHeader('Location', '/account/notifications/settings')->withStatus(302);
+        return $response;
+    }
+
+    public function markAllAsRead(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        Account $account,
+        NotificationCenter $nc,
+        FlashMessage $flash,
+        CsrfGuard $csrf_guard,
+        $token_name,
+        $token_value,
+    ){
+        // Check for valid CSRF token
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Update read status of all notifications
+        $notifications = $em->getRepository(UserNotification::class)->findBy(['user' => $account->getUser(), 'is_read' => false]);
+        foreach($notifications as $notification){
+            $notification->setRead(true);
+        }
+
+        // Save changes to DB
+        $em->flush();
+
+        // Clear the notification cache of this user
+        $nc->clearUserCache($account->getUser());
+
+        // Show success and navigate to notifications list
+        $flash->success('All notification have been marked as read.');
+        $response = $response->withHeader('Location', '/account/notifications')->withStatus(302);
         return $response;
     }
 

@@ -6,7 +6,14 @@
 
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">
-        <h2>Notifications</h2>
+        <div class="d-flex justify-content-between">
+            <h2>Notifications</h2>
+            <div>
+                {% if unread_notification_count > 0 %}
+                    <a href="/account/notifications/mark-all-as-read/{{ csrf.name }}/{{ csrf.value|url_encode }}">Mark all as read</a>
+                {% endif %}
+            </div>
+        </div>
     </div>
     <div class="content-body">
         {% if notifications %}
