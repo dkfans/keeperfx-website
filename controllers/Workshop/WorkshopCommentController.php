@@ -237,18 +237,11 @@ class WorkshopCommentController {
             }
 
             // Remove notifications linking to these reports
-            $notifications = $em->getRepository(UserNotification::class)->findBy(['class' => WorkshopItemCommentReportNotification::class]);
-            foreach($notifications as $notification){
-                $data = $notification->getData();
-                if(isset($data['report_id'])){
-                    foreach($report_ids as $report_id){
-                        if($data['report_id'] === $report_id){
-                            $nc->clearUserCache($notification->getUser());
-                            $em->remove($notification);
-                        }
-                    }
-                }
-            }
+            $nc->clearNotificationsWithData(
+                WorkshopItemCommentReportNotification::class,
+                ['report_id' => $report_ids],
+                true
+            );
         }
 
         // Remove the comment

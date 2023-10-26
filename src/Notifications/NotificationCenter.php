@@ -262,4 +262,88 @@ class NotificationCenter {
 
         return $this->notification_settings->getAllUserSettings($this->account->getUser());
     }
+
+    /**
+     * Clear all notifications that have specific data set.
+     *
+     * If a value in the data to match is an array, the whole array needs to match, except if $check_multiple is true.
+     *
+     * If $check_multiple is true, an array that is given inside of the data to match, will have all of its values checked separately.
+     * Example:
+     * [
+     *     'item' => 1,
+     *     'comment' => [1, 2, 3]
+     * ]
+     * The above example will remove notifications that have 'item' => 1 and a 'comment' that is either 1, 2 or 3.
+     *
+     * @param string $class
+     * @param array $data_to_match
+     * @param bool $check_multiple
+     * @return bool
+     */
+    public function clearNotificationsWithData(string $class, array $data_to_match, bool $check_multiple = false): bool
+    {
+        $need_database_flush = false;
+        $clear_cache_for_users = [];
+
+        $notifications = $this->em->getRepository(UserNotification::class)->findBy(['class' => $class]);
+        foreach($notifications as $notification){
+            $notification_data = $notification->getData();
+
+            // We'll remember if the stuff we have already checked still matches.
+            // We haven't checked anything yet, so this should be true for now.
+            $data_matches = true;
+
+            foreach($data_to_match as $key => $value)
+            {
+                // We reset the 'data_matches' because we are checking data.
+                // If the checked data matches this will be set to true again.
+                $data_matches = false;
+
+                // Make sure the key of the data exists in the notification data
+                if(!\array_key_exists($key, $notification_data)){
+                    break;
+                }
+
+                // If we are checking multiple data values, we need to compare each value separately
+                if($check_multiple && \is_array($value)){
+                    foreach($value as $check_value){
+                        if(gettype($notification_data[$key]) === \gettype($check_value) && $notification_data[$key] === $check_value){
+                            $data_matches = true;
+                            break;
+                        }
+                    }
+                    continue;
+                }
+
+                // Just compare the value
+                // This makes it so an array need to match an array completely.
+                if(gettype($notification_data[$key]) === \gettype($value) && $notification_data[$key] === $value){
+                    $data_matches = true;
+                }
+            }
+
+            // If ALL data matches, we'll remove this notification and clear the cache of the user
+            if($data_matches){
+                $need_database_flush     = true;
+                $clear_cache_for_users[] = $notification->getUser();
+                $this->em->remove($notification);
+            }
+        }
+
+        // If we need to flush the database at least one notification has been removed
+        if($need_database_flush){
+            $this->em->flush();
+
+            // Clear the caches for all affected users
+            foreach($clear_cache_for_users as $user){
+                $this->clearUserCache($user);
+            }
+
+            return true;
+        }
+
+        // No notifications have been removed
+        return false;
+    }
 }
