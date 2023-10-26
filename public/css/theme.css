@@ -665,14 +665,6 @@ button.btn-medieval ion-icon {
     padding-left: 0;
 }
 
-.workshop-item-comment-content img,
-.modal-body img {
-    max-height: 100%;
-    max-width: 100%;
-    max-width: 250px;
-    aspect-ratio: 1;
-}
-
 .workshop-item-comment .workshop-item-comment {
     background-color: transparent;
     border-left: 2px solid #333;
@@ -769,6 +761,19 @@ button.btn-medieval ion-icon {
 
 .workshop-item-comment button:hover ion-icon {
     color: var(--special-text-color);
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.workshop-info-box img,
+.workshop-item-comment-content img,
+.modal-body img {
+    max-height: 100%;
+    max-width: 100%;
+    max-width: 250px;
+    aspect-ratio: 1;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
