@@ -8,6 +8,12 @@ use Gumlet\ImageResize;
 use Doctrine\ORM\EntityManager;
 
 use App\Helper\SystemHelper;
+use Psr\SimpleCache\CacheInterface;
+
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class WorkshopHelper {
 
@@ -121,6 +127,39 @@ class WorkshopHelper {
         }
 
         return true;
+    }
+
+    public static function getCachedBrowsePageData(CacheInterface $cache, array $query_params)
+    {
+        $cache_key = 'workshop_browse:' . \md5(\serialize((array)$query_params));
+        return $cache->get($cache_key);
+    }
+
+    public static function setCachedBrowsePageData(CacheInterface $cache, array $query_params, array $data)
+    {
+        $cache_list_key = 'workshop_browse:all_keys';
+        $cache_key      = 'workshop_browse:' . \md5(\serialize((array)$query_params));
+
+        $cache->set($cache_key, $data);
+
+        $browse_pages = $cache->get($cache_list_key);
+        if($browse_pages !== null && \is_array($browse_pages)){
+            $cache->set($cache_list_key, $browse_pages + [$cache_key]);
+        } else {
+            $cache->set($cache_list_key, [$cache_key]);
+        }
+    }
+
+    public static function clearAllCachedBrowsePageData(CacheInterface $cache)
+    {
+        $cache_list_key = 'workshop_browse:all_keys';
+
+        $browse_pages = $cache->get($cache_list_key);
+        if($browse_pages !== null){
+            $cache->deleteMultiple($browse_pages);
+        }
+
+        $cache->delete($cache_list_key);
     }
 
 }

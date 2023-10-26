@@ -9,13 +9,13 @@ use App\Entity\User;
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
 use App\FlashMessage;
 use App\Config\Config;
 use Doctrine\ORM\EntityManager;
+use App\Workshop\WorkshopHelper;
 use Twig\Environment as TwigEnvironment;
 
+use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -26,11 +26,22 @@ class WorkshopBrowseController {
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
+        CacheInterface $cache,
         FlashMessage $flash
 
     ){
+
         // Get queries
         $q = $request->getQueryParams();
+
+        // Check if this page is already cached
+        $cached_view_data = WorkshopHelper::getCachedBrowsePageData($cache, $q);
+        if($cached_view_data){
+            $response->getBody()->write(
+                $twig->render('workshop/browse.workshop.html.twig', $cached_view_data)
+            );
+            return $response;
+        }
 
         // Remember URL params to return for links
         $url_params = [];
@@ -266,21 +277,54 @@ class WorkshopBrowseController {
         $query = $query->setFirstResult($offset)->setMaxResults($limit);
 
         // Get workshop items
+        $workshop_items = [];
         $result = $query->getQuery()->getResult();
-        $workshop_items = new ArrayCollection($result);
+        foreach($result as $workshop_item){
+            $workshop_items[] = [
+                'id' => $workshop_item->getId(),
+                'name' => $workshop_item->getName(),
+                'submitter' => $workshop_item->getSubmitter() === null ? null : [
+                    'id'       => $workshop_item->getSubmitter()->getId(),
+                    'username' => $workshop_item->getSubmitter()->getUsername(),
+                    'avatar'   => $workshop_item->getSubmitter()->getAvatar(),
+                    'role'     => $workshop_item->getSubmitter()->getRole(),
+                ],
+                'category'                => $workshop_item->getCategory(),
+                'createdTimestamp'        => $workshop_item->getCreatedTimestamp(),
+                'updatedTimestamp'        => $workshop_item->getUpdatedTimestamp(),
+                'difficultyRatingEnabled' => $workshop_item->isDifficultyRatingEnabled(),
+                'downloadCount'           => $workshop_item->getDownloadCount(),
+                'originalAuthor'          => $workshop_item->getOriginalAuthor(),
+                'originalCreationDate'    => $workshop_item->getOriginalCreationDate(),
+                'thumbnail'               => $workshop_item->getThumbnail(),
+                'images'                  => \count($workshop_item->getImages()) === 0 ? [] : [
+                    0 => [
+                        'filename' => $workshop_item->getImages()->first()->getFilename(),
+                    ]
+                ],
+                'ratingScore'             => $workshop_item->getRatingScore(),
+                'difficultyRatingScore'   => $workshop_item->getDifficultyRatingScore(),
+                'comment_count'           => \count($workshop_item->getComments()),
+            ];
+        }
+
+        // View data for the Twig template
+        $view_data = [
+            'workshop_items'                => $workshop_items,
+            'categories'                    => WorkshopCategory::cases(),
+            'categories_without_difficulty' => Config::get('app.workshop.item_categories_without_difficulty'),
+            // 'tags'                          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+            'pagination'                    => $pagination,
+            'submitter'                     => $submitter,
+            'original_author'               => $original_author,
+        ];
+
+        // Cache the view data
+        WorkshopHelper::setCachedBrowsePageData($cache, $q, $view_data);
 
         // Render view
         $response->getBody()->write(
-            $twig->render('workshop/browse.workshop.html.twig', [
-                'workshop_items'                => $workshop_items,
-                'categories'                    => WorkshopCategory::cases(),
-                'categories_without_difficulty' => Config::get('app.workshop.item_categories_without_difficulty'),
-                'tags'                          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-                'builds'                        => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
-                'pagination'                    => $pagination,
-                'submitter'                     => $submitter,
-                'original_author'               => $original_author,
-            ])
+            $twig->render('workshop/browse.workshop.html.twig', $view_data)
         );
 
         return $response;
