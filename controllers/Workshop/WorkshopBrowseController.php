@@ -4,18 +4,17 @@ namespace App\Controller\Workshop;
 
 use App\Enum\WorkshopCategory;
 
-use App\Entity\GithubRelease;
 use App\Entity\User;
 use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
+use App\Entity\GithubRelease;
 
 use App\FlashMessage;
 use App\Config\Config;
 use Doctrine\ORM\EntityManager;
-use App\Workshop\WorkshopHelper;
+use App\Workshop\WorkshopCache;
 use Twig\Environment as TwigEnvironment;
 
-use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -26,7 +25,7 @@ class WorkshopBrowseController {
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-        CacheInterface $cache,
+        WorkshopCache $workshop_cache,
         FlashMessage $flash
 
     ){
@@ -35,7 +34,7 @@ class WorkshopBrowseController {
         $q = $request->getQueryParams();
 
         // Check if this page is already cached
-        $cached_view_data = WorkshopHelper::getCachedBrowsePageData($cache, $q);
+        $cached_view_data = $workshop_cache->getCachedBrowsePageData($q);
         if($cached_view_data){
             $response->getBody()->write(
                 $twig->render('workshop/browse.workshop.html.twig', $cached_view_data)
@@ -320,7 +319,7 @@ class WorkshopBrowseController {
         ];
 
         // Cache the view data
-        WorkshopHelper::setCachedBrowsePageData($cache, $q, $view_data);
+        $workshop_cache->setCachedBrowsePageData($q, $view_data);
 
         // Render view
         $response->getBody()->write(

@@ -11,15 +11,16 @@ use App\Entity\UserNotification;
 
 use App\Account;
 use App\FlashMessage;
+use App\Workshop\WorkshopCache;
+use Doctrine\ORM\EntityManager;
+use Twig\Environment as TwigEnvironment;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 use App\Notifications\NotificationCenter;
 use App\Notifications\Notification\WorkshopItemCommentNotification;
 use App\Notifications\Notification\WorkshopItemCommentReplyNotification;
 use App\Notifications\Notification\WorkshopItemCommentReportNotification;
 
-use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -32,7 +33,7 @@ class WorkshopCommentController {
         Response $response,
         FlashMessage $flash,
         Account $account,
-        TwigEnvironment $twig,
+        WorkshopCache $workshop_cache,
         EntityManager $em,
         NotificationCenter $nc,
         $id
@@ -75,6 +76,9 @@ class WorkshopCommentController {
                 ]
             );
         }
+
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
 
         // Success!
         $flash->success('Your comment has been added!');
@@ -187,6 +191,7 @@ class WorkshopCommentController {
         EntityManager $em,
         Account $account,
         NotificationCenter $nc,
+        WorkshopCache $workshop_cache,
         $item_id,
         $comment_id,
     ) {
@@ -250,6 +255,9 @@ class WorkshopCommentController {
         // Save changes to DB
         $em->flush();
 
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
+
         // Return success
         $response->getBody()->write(
             \json_encode([
@@ -264,7 +272,7 @@ class WorkshopCommentController {
         Response $response,
         FlashMessage $flash,
         Account $account,
-        TwigEnvironment $twig,
+        WorkshopCache $workshop_cache,
         EntityManager $em,
         NotificationCenter $nc,
         $item_id,
@@ -333,6 +341,9 @@ class WorkshopCommentController {
                 );
             }
         }
+
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
 
         // Success!
         $flash->success('Your reply has been added!');

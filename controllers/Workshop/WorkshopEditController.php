@@ -15,14 +15,15 @@ use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
 use Doctrine\ORM\EntityManager;
+use App\Workshop\WorkshopCache;
 use App\Workshop\WorkshopHelper;
 use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
 
-use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+use Slim\Exception\HttpNotFoundException;
 use App\Workshop\Exception\WorkshopException;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
@@ -87,6 +88,7 @@ class WorkshopEditController {
         Account $account,
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
+        WorkshopCache $workshop_cache,
         $id
     ){
         // Check if workshop item exists
@@ -319,6 +321,9 @@ class WorkshopEditController {
         WorkshopHelper::removeThumbnail($em, $workshop_item);
         WorkshopHelper::generateThumbnail($em, $workshop_item);
 
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
+
         // Show success and move back to workshop item page
         $flash->success('Your workshop item has been updated.');
         $response = $response->withHeader(
@@ -335,6 +340,7 @@ class WorkshopEditController {
         Account $account,
         EntityManager $em,
         CsrfGuard $csrf_guard,
+        WorkshopCache $workshop_cache,
         $id,
         $token_name,
         $token_value,
@@ -376,6 +382,9 @@ class WorkshopEditController {
         // Remove from DB
         $em->remove($workshop_item);
         $em->flush();
+
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
 
         $flash->success('Your workshop item has been removed.');
 

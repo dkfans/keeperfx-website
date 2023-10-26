@@ -8,6 +8,7 @@ use App\Entity\WorkshopDifficultyRating;
 
 use App\Account;
 use Doctrine\ORM\EntityManager;
+use App\Workshop\WorkshopCache;
 use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
 
@@ -24,6 +25,7 @@ class WorkshopRatingController {
         Account $account,
         EntityManager $em,
         CsrfGuard $csrf_guard,
+        WorkshopCache $workshop_cache,
         WorkshopRatingTwigExtension $workshop_rating_extension,
         $id
     )
@@ -89,6 +91,9 @@ class WorkshopRatingController {
         $workshop_item->setRatingScore($rating_score);
         $em->flush();
 
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
+
         // Return
         $response->getBody()->write(
             \json_encode([
@@ -118,6 +123,7 @@ class WorkshopRatingController {
         EntityManager $em,
         CsrfGuard $csrf_guard,
         WorkshopRatingTwigExtension $workshop_rating_extension,
+        WorkshopCache $workshop_cache,
         $id
     )
     {
@@ -178,6 +184,9 @@ class WorkshopRatingController {
         $workshop_item->setDifficultyRatingScore($rating_score);
         $em->flush();
 
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
+
         // Return
         $response->getBody()->write(
             \json_encode([
@@ -206,6 +215,7 @@ class WorkshopRatingController {
         EntityManager $em,
         CsrfGuard $csrf_guard,
         WorkshopRatingTwigExtension $workshop_rating_extension,
+        WorkshopCache $workshop_cache,
         $id
     )
     {
@@ -260,6 +270,9 @@ class WorkshopRatingController {
         $workshop_item->setRatingScore($rating_score);
         $em->flush();
 
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
+
         // Return
         $response->getBody()->write(
             \json_encode([
@@ -287,6 +300,7 @@ class WorkshopRatingController {
         EntityManager $em,
         CsrfGuard $csrf_guard,
         WorkshopRatingTwigExtension $workshop_rating_extension,
+        WorkshopCache $workshop_cache,
         $id
     )
     {
@@ -340,6 +354,9 @@ class WorkshopRatingController {
         //   ordering workshop items by rating score
         $workshop_item->setDifficultyRatingScore($rating_score);
         $em->flush();
+
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
 
         // Return
         $response->getBody()->write(

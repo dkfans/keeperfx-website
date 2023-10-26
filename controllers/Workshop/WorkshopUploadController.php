@@ -22,6 +22,7 @@ use App\FlashMessage;
 use App\Config\Config;
 use App\DiscordNotifier;
 use App\UploadSizeHelper;
+use App\Workshop\WorkshopCache;
 use App\Workshop\WorkshopHelper;
 use App\Notifications\NotificationCenter;
 use App\Notifications\Notification\WorkshopItemNotification;
@@ -67,6 +68,7 @@ class WorkshopUploadController {
         UploadSizeHelper $upload_size_helper,
         DiscordNotifier $discord_notifier,
         NotificationCenter $nc,
+        WorkshopCache $workshop_cache,
     ){
 
         $success = true;
@@ -210,7 +212,6 @@ class WorkshopUploadController {
         $em->persist($workshop_item);
         $em->flush(); // flush because we need ID for creating storage directory
 
-
         // Define directories for files
         $workshop_item_dir        = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
         $workshop_item_files_dir  = $workshop_item_dir . '/files';
@@ -218,13 +219,13 @@ class WorkshopUploadController {
 
         // Create directories for files
         if(!DirectoryHelper::create($workshop_item_dir)){
-            throw new \Exception('Failed to create workshop item storage dir');
+            throw new \Exception("Failed to create workshop item storage dir: '{$workshop_item_dir}'");
         }
         if(!DirectoryHelper::create($workshop_item_files_dir)){
-            throw new \Exception('Failed to create workshop item files dir'); // TODO: move during migration
+            throw new \Exception("Failed to create workshop item files dir: '{$workshop_item_files_dir}'");
         }
         if(!DirectoryHelper::create($workshop_item_images_dir)){
-            throw new \Exception('Failed to create workshop item images dir');
+            throw new \Exception("Failed to create workshop item images dir: '{$workshop_item_images_dir}'");
         }
 
         // Get file and filename
@@ -328,6 +329,9 @@ class WorkshopUploadController {
                 'username'   => $account->getUser()->getUsername(),
             ]
         );
+
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
 
         // Show upload success message and redirect to workshop item page
         $flash->success('Your workshop item has been uploaded!');
