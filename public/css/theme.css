@@ -308,6 +308,7 @@ nav {
     display: inline-block;
     font-family: 'Cinzel', serif;
     border-bottom: 0 !important;
+    margin-top: 8px;
 }
 
 .news-date {
