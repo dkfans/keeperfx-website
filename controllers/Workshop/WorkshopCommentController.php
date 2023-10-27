@@ -330,7 +330,7 @@ class WorkshopCommentController {
         // Notify workshop item submitter of the new comment if it was not them we replied to
         if(
             $parent_comment->getUser() !== $workshop_item->getSubmitter() &&
-            $workshop_item->getSubmitter !== $account->getUser()
+            $workshop_item->getSubmitter() !== $account->getUser()
         ){
             $nc->sendNotification(
                 $workshop_item->getSubmitter(),
