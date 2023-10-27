@@ -1,6 +1,8 @@
 #!/bin/bash
 php ./console maintenance:start
-git checkout .
+git clean --force
+git reset --hard
+git checkout master
 git pull
 php ./console cache:clear
 composer install --no-dev
