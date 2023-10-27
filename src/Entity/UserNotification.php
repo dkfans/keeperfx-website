@@ -21,7 +21,7 @@ class UserNotification {
     #[ORM\Column]
     private string $class;
 
-    #[ORM\Column(nullable: true, options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: 'text', nullable:true)]
     private string|null $data;
 
     #[ORM\Column]

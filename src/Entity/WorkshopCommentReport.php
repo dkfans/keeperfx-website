@@ -21,7 +21,7 @@ class WorkshopCommentReport {
     #[ORM\ManyToOne(targetEntity: WorkshopComment::class)]
     private WorkshopComment $comment;
 
-    #[ORM\Column(type: 'text', options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: 'text')]
     private string $reason;
 
     #[ORM\Column]

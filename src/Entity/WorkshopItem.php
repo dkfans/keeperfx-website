@@ -35,8 +35,8 @@ class WorkshopItem {
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
-    #[ORM\Column]
-    private \DateTime $updated_timestamp;
+    #[ORM\Column(nullable: true)]
+    private \DateTime|null $updated_timestamp;
 
     #[ORM\Column(type: 'text', nullable: true, options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string|null $description = null;
