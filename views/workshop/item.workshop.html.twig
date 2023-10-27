@@ -187,7 +187,7 @@
                                     {{ item.createdTimestamp|date('Y-m-d') }}
                                 </td>
                             </tr>
-                            {% if item.updatedTimestamp != item.createdTimestamp %}
+                            {% if item.updatedTimestamp is not null %}
                                 <tr>
                                     <td>Last updated</td>
                                     <td class="text-stand-out" style="padding-left: 25px;">
