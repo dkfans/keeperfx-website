@@ -31,6 +31,7 @@ return [
         'ignore' => [
             '*Exception.php',
             '*Helper.php',
+            '*Interface.php',
         ]
 
         // TODO: ignore paths */Entities/*.php
