@@ -231,6 +231,11 @@ class WorkshopEditFilesController {
 
         // Remove from DB
         $em->remove($workshop_file);
+
+        // Update last updated timestamp on workshop item
+        $workshop_item->setUpdatedTimestamp(new \DateTime('now'));
+
+        // Save changes to DB
         $em->flush();
 
         // Fix weights for existing files
@@ -337,14 +342,14 @@ class WorkshopEditFilesController {
         $workshop_file_at_wanted_weight->setWeight($workshop_file->getWeight());
         $workshop_file->setWeight($wanted_weight);
 
+        // Update last updated timestamp on workshop item
+        $workshop_item->setUpdatedTimestamp(new \DateTime('now'));
+
         // Save changes to DB
         $em->flush();
 
-
+        // Show success and redirect back to file list
         $flash->success('The file has been successfully moved.');
-
-
-        // Redirect back to file list
         $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId() . '/files')->withStatus(302);
         return $response;
 
@@ -403,8 +408,13 @@ class WorkshopEditFilesController {
 
         // TODO: check valid filename
 
-        // Save to DB
+        // Update filename
         $workshop_file->setFilename($new_filename);
+
+        // Update last updated timestamp on workshop item
+        $workshop_item->setUpdatedTimestamp(new \DateTime('now'));
+
+        // Save changes to DB
         $em->flush();
 
         // Return
