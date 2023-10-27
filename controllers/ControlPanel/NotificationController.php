@@ -193,7 +193,7 @@ class NotificationController {
         $nc->clearUserCache($account->getUser());
 
         // Show success and navigate to notifications list
-        $flash->success('All notification have been marked as read.');
+        $flash->success('All notifications have been marked as read.');
         $response = $response->withHeader('Location', '/account/notifications')->withStatus(302);
         return $response;
     }
