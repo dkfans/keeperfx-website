@@ -79,6 +79,15 @@
         {# Toastr javascript #}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+        {# Custom background for events, holidays, etc #}
+        {% if get_env('APP_THEME_BACKGROUND') is not empty %}
+            <style>
+                body {
+                background: url("{{ get_env('APP_THEME_BACKGROUND') }}") !important;
+                }
+            </style>
+        {% endif %}
+
     </head>
 
     <body style="background-color: #222;">

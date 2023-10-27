@@ -13,7 +13,13 @@
                 </div>
             {% endif %}
 
-            <img src="/img/top-banner.png" width="100%" />
+            <img
+                {% if get_env('APP_THEME_LOGO') is not empty %}
+                    src="{{ get_env('APP_THEME_LOGO') }}"
+                {% else %}
+                    src="/img/top-banner.png"
+                {% endif %}
+            width="100%" />
         </div>
 
         {# 'dev' environment banner #}
@@ -180,6 +186,13 @@
             <a href="/privacy-policy">Privacy Policy</a>
             -
             <a href="{{ get_env('APP_GITHUB_REPO_URL') }}" target="_blank">Website Source <ion-icon name="open-outline" class="outgoing" style="font-size: 12px; position: relative; top: 1px; left: 1px;"></ion-icon></a>
+
+            {# A custom footer that can be set in the env vars #}
+            {% if get_env('APP_THEME_FOOTER') is not empty %}
+                <p class="mt-3 text-muted">
+                    {{ get_env('APP_THEME_FOOTER')|nl2br }}
+                </p>
+            {% endif %}
         </footer>
 
     </div>
