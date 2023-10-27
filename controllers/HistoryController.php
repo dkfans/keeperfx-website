@@ -35,7 +35,7 @@ class HistoryController {
                                      "He was looking for _debug info_ in the Syndicate Wars files, but didn\'t find any. " .
                                      "So he started asking around forums, and the Keeper Klan community pointed him towards Dungeon Keeper because they both used the same code base. " .
                                      "He then found the _debug info_ he was after and started working on the project. " .
-                                     "\n\nThe goal was to rewrite the code that was used in Syndicate Wars, but the Keeper Klan community got Mefisto\'s into Dungeon Keeper. " .
+                                     "\n\nThe goal was to rewrite the code that was used in Syndicate Wars, but the Keeper Klan community got Mefisto into Dungeon Keeper. " .
                                      "Mefisto\'s idea was to convert the original Dungeon Keeper executable into a DLL file, so other programs can execute its code.",
                 ],
                 [
