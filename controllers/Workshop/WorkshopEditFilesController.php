@@ -150,9 +150,12 @@ class WorkshopEditFilesController {
         $workshop_file->setStorageFilename($storage_filename);
         $workshop_file->setSize(\filesize($storage_path));
         $workshop_file->setWeight(0);
+        $em->persist($workshop_file);
+
+        // Update last updated timestamp on workshop item
+        $workshop_item->setUpdatedTimestamp(new \DateTime('now'));
 
         // Save to DB
-        $em->persist($workshop_file);
         $em->flush();
 
         $flash->success('File uploaded!');

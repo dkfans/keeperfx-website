@@ -36,7 +36,7 @@ class WorkshopItem {
     private \DateTime $created_timestamp;
 
     #[ORM\Column(nullable: true)]
-    private \DateTime|null $updated_timestamp;
+    private \DateTime|null $updated_timestamp = null;
 
     #[ORM\Column(type: 'text', nullable: true, options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string|null $description = null;
@@ -104,18 +104,9 @@ class WorkshopItem {
     public function onPrePersist()
     {
         $this->created_timestamp = new \DateTime("now");
-        $this->updated_timestamp = new \DateTime("now");
-
         if($this->creation_orderby_timestamp === null){
             $this->creation_orderby_timestamp = new \DateTime("now");
         }
-    }
-
-    private function updateLastUpdatedTimestamp()
-    {
-        // Even though using `PreUpdate` would be nice, some columns should not update the last-updated timestamp.
-        // For example, download counts and the calculated ratings are stored in this Entity for better performance.
-        $this->updated_timestamp = new \DateTime("now");
     }
 
     /**
@@ -140,8 +131,6 @@ class WorkshopItem {
     public function setName(string $name): self
     {
         $this->name = $name;
-        $this->updateLastUpdatedTimestamp();
-
         return $this;
     }
 
@@ -166,7 +155,7 @@ class WorkshopItem {
     /**
      * Get the value of updated_timestamp
      */
-    public function getUpdatedTimestamp(): \DateTime
+    public function getUpdatedTimestamp(): ?\DateTime
     {
         return $this->updated_timestamp;
     }
@@ -174,7 +163,7 @@ class WorkshopItem {
     /**
      * Set the value of updated_timestamp
      */
-    public function setUpdatedTimestamp(\DateTime $updated_timestamp): self
+    public function setUpdatedTimestamp(?\DateTime $updated_timestamp): self
     {
         $this->updated_timestamp = $updated_timestamp;
 
@@ -213,8 +202,6 @@ class WorkshopItem {
     public function setCategory(WorkshopCategory $category): self
     {
         $this->category = $category;
-        $this->updateLastUpdatedTimestamp();
-
         return $this;
     }
 
@@ -232,8 +219,6 @@ class WorkshopItem {
     public function setMapNumber(?int $map_number): self
     {
         $this->map_number = $map_number;
-        $this->updateLastUpdatedTimestamp();
-
         return $this;
     }
 
@@ -251,8 +236,6 @@ class WorkshopItem {
     public function setMinGameBuild(int|null $min_game_build): self
     {
         $this->min_game_build = $min_game_build;
-        $this->updateLastUpdatedTimestamp();
-
         return $this;
     }
 
@@ -270,8 +253,6 @@ class WorkshopItem {
     public function setInstallInstructions(string|null $install_instructions): self
     {
         $this->install_instructions = $install_instructions;
-        $this->updateLastUpdatedTimestamp();
-
         return $this;
     }
 
@@ -289,8 +270,6 @@ class WorkshopItem {
     public function setDescription(string|null $description): self
     {
         $this->description = $description;
-        $this->updateLastUpdatedTimestamp();
-
         return $this;
     }
 
@@ -308,8 +287,6 @@ class WorkshopItem {
     public function setSubmitter(User|null $submitter): self
     {
         $this->submitter = $submitter;
-        $this->updateLastUpdatedTimestamp();
-
         return $this;
     }
 
@@ -353,8 +330,6 @@ class WorkshopItem {
     public function setOriginalAuthor(?string $original_author): self
     {
         $this->original_author = $original_author;
-        $this->updateLastUpdatedTimestamp();
-
         return $this;
     }
 
@@ -378,8 +353,6 @@ class WorkshopItem {
         } else {
             $this->creation_orderby_timestamp = $original_creation_date;
         }
-
-        $this->updateLastUpdatedTimestamp();
 
         return $this;
     }
