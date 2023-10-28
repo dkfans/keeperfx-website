@@ -8,6 +8,7 @@ use App\Entity\UserCookieToken;
 use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
+use App\Workshop\WorkshopCache;
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
@@ -149,6 +150,7 @@ class AccountController {
         EntityManager $em,
         FlashMessage $flash,
         UploadSizeHelper $upload_size_helper,
+        WorkshopCache $workshop_cache,
     ){
         // Get avatar file
         $files = $request->getUploadedFiles();
@@ -217,6 +219,9 @@ class AccountController {
         $account->getUser()->setAvatar($avatar_filename);
         $em->flush();
 
+        // We have to clear the workshop browse cache because our avatar is visible there
+        $workshop_cache->clearAllCachedBrowsePageData();
+
         $flash->success('You have successfully updated your avatar!');
         $response = $response->withHeader('Location', '/account')->withStatus(302);
         return $response;
@@ -229,6 +234,7 @@ class AccountController {
         EntityManager $em,
         FlashMessage $flash,
         CsrfGuard $csrf_guard,
+        WorkshopCache $workshop_cache,
         $token_name,
         $token_value
     ){
@@ -267,6 +273,9 @@ class AccountController {
         // Update user
         $account->getUser()->setAvatar(null);
         $em->flush();
+
+        // We have to clear the workshop browse cache because our avatar was visible there
+        $workshop_cache->clearAllCachedBrowsePageData();
 
         $flash->success('Your avatar has been successfully removed!');
 
