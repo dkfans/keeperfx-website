@@ -52,14 +52,19 @@
 
                         {% if account is not null %}
 
+                            {# Collapse button #}
+                            {# <button class="btn" style="padding: 2px 0; margin-right: 10px; height: 28px;" type="button" data-comment-action="collapse">
+                                <ion-icon name="chevron-down-outline"></ion-icon>
+                            </button> #}
+
                             {# Reply button #}
-                            <button class="btn" style="padding: 2px; margin-right: 5px; height: 24px;" type="button" data-comment-action="reply">
+                            <button class="btn" style="padding: 2px; margin-right: 5px; height: 28px;" type="button" data-comment-action="reply">
                                 <ion-icon name="chatbubbles-outline"></ion-icon>
                             </button>
 
                             {# Comment extra menu button #}
                             <div class="btn-group">
-                                <button class="btn dropdown-toggle caret-off" style="padding: 2px; height: 24px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn dropdown-toggle caret-off" style="padding: 2px; height: 28px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper">

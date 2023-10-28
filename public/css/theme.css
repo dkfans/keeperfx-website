@@ -681,10 +681,6 @@ button.btn-medieval ion-icon {
     margin-bottom: 0;
 }
 
-.workshop-item-comment .workshop-item-comment .comment-buttons {
-    margin-top: 5px;
-}
-
 .workshop-item-comment .workshop-item-comment .workshop-item-comment-edit,
 .workshop-item-comment .workshop-item-comment form {
     margin-right: 15px;
@@ -760,8 +756,17 @@ button.btn-medieval ion-icon {
     margin-left: 6px;
 }
 
+.workshop-item-comment ion-icon {
+    font-size: 17px;
+    vertical-align: middle !important;
+}
+
 .workshop-item-comment button:hover ion-icon {
     color: var(--special-text-color);
+}
+
+.workshop-item-comment .workshop-item-comment .comment-buttons {
+    padding-bottom: 2px;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
