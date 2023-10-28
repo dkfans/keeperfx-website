@@ -255,11 +255,23 @@ $(function(e){
         let $editTextarea           = $editContentElement.find('textarea').first();
         let $isEditedElement        = $commentElement.find('.workshop-comment-is-edited').first();
         let $replyForm              = $commentElement.find('form[data-comment-reply="true"]').first();
+        let $collapseUp             = $(this).find('[data-comment-collapse="up"]');
+        let $collapseDown           = $(this).find('[data-comment-collapse="down"]');
 
         // Make sure variables are found
         if(typeof userId == 'undefined' || typeof commentId == 'undefined' || typeof action == 'undefined'){
             toastr.error('Something went wrong.');
             return false;
+        }
+
+        // Collapse
+        if(action === "collapse")
+        {
+            $collapseDown.toggle();
+            $collapseUp.toggle();
+            $originalContentElement.toggle();
+            $commentElement.find('.workshop-item-comment').toggle();
+            return true;
         }
 
         // Edit

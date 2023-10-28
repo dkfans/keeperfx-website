@@ -649,12 +649,17 @@ button.btn-medieval ion-icon {
 }
 
 .workshop-item-comment {
+    display: flex;
     background-color: rgba(6, 6, 6, 0.666);
     border: 1px solid #333;
     padding: 15px;
     padding-bottom: 7px;
     margin: 15px 0;
     padding-right: 20px;
+}
+
+:not(.workshop-item-comment) .workshop-item-comment {
+    padding-bottom: 12px;
 }
 
 .workshop-item-comment:first-child {
@@ -756,7 +761,11 @@ button.btn-medieval ion-icon {
     margin-left: 6px;
 }
 
-.workshop-item-comment ion-icon {
+.workshop-item-comment button {
+    margin-right: 3px;
+}
+
+.workshop-item-comment button ion-icon {
     font-size: 17px;
     vertical-align: middle !important;
 }

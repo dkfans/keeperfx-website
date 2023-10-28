@@ -1,7 +1,7 @@
 {% macro render_comment(item, comment) %}
     {% import _self as self %}
 
-        <div class="workshop-item-comment d-flex" data-comment-id="{{ comment.id }}" id="comment-{{ comment.id }}" data-comment-user-id="{{ comment.user.id }}">
+        <div class="workshop-item-comment" data-comment-id="{{ comment.id }}" id="comment-{{ comment.id }}" data-comment-user-id="{{ comment.user.id }}">
 
             <div class="" style="height: 100%;">
                 {% if comment.user.avatar %}
@@ -50,12 +50,13 @@
                     {# Right side #}
                     <span style="position: relative; top: -3px; display: none;" class="comment-buttons">
 
-                        {% if account is not null %}
+                        {# Collapse button #}
+                        <button class="btn" style="padding: 2px 0; margin-right: 10px; height: 28px;" type="button" data-comment-action="collapse">
+                            <ion-icon data-comment-collapse="down" name="chevron-down-outline"></ion-icon>
+                            <ion-icon data-comment-collapse="up" name="chevron-up-outline" style="display:none;"></ion-icon>
+                        </button>
 
-                            {# Collapse button #}
-                            {# <button class="btn" style="padding: 2px 0; margin-right: 10px; height: 28px;" type="button" data-comment-action="collapse">
-                                <ion-icon name="chevron-down-outline"></ion-icon>
-                            </button> #}
+                        {% if account is not null %}
 
                             {# Reply button #}
                             <button class="btn" style="padding: 2px; margin-right: 5px; height: 28px;" type="button" data-comment-action="reply">
