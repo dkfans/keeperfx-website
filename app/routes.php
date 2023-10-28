@@ -57,8 +57,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/oauth/disconnect/{provider_name}/{token_name}/{token_value:.+}', [OAuthUserController::class, 'disconnect'])->add(LoggedInMiddleware::class);
     $group->post('/oauth/register/{provider_name}', [OAuthUserController::class, 'register']);
 
-    // Avatar fallback
+    // Avatar fallback + generator
     $group->get('/avatar/{filename:[\w\d\-\.]+}', [AvatarController::class, 'outputAvatar']);
+    $group->get('/avatar-generate/{size:\d+}/{username}.png', [AvatarController::class, 'generateAvatarPng']);
 
     // LOGGED IN USERS
     $group->group('', function (RouteCollectorProxy $group) use ($container) {

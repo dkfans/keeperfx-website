@@ -31,9 +31,9 @@
         title="Browse {{ workshop_item.submitter.username }}'s Workshop Items"
         class="user-link d-inline-block">
             {% if workshop_item.submitter.avatar %}
-                <img src="/avatar/{{ workshop_item.submitter.avatar }}" class="user-avatar" onerror="this.src='{{ avatar(workshop_item.submitter.username, 'circle', 128) }}';" />
+                <img src="/avatar/{{ workshop_item.submitter.avatar }}" class="user-avatar" />
             {% else %}
-                <img src="{{ avatar(workshop_item.submitter.username, 'circle', 128) }}" class="user-avatar" />
+                <img src="/avatar-generate/32/{{ workshop_item.submitter.username|url_encode }}.png" class="user-avatar" />
             {% endif %}
             <span class="user-username">{{ workshop_item.submitter.username }}</span>
         </a>

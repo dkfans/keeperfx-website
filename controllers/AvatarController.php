@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use \LasseRafn\InitialAvatarGenerator\InitialAvatar as AvatarGenerator;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpBadRequestException;
 
 /**
  * The avatar controller is used to output avatars.
@@ -42,5 +46,54 @@ class AvatarController {
         );
 
         return $response;
+    }
+
+    /**
+     * Avatar generation endpoint
+     *
+     * @link https://packagist.org/packages/lasserafn/php-initial-avatar-generator
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param string $username
+     * @return Response $response
+     */
+    public function generateAvatarPng(
+        Request $request,
+        Response $response,
+        $size,
+        $username,
+    ):Response
+    {
+        // Make sure username is legit
+        if(!\preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9\.\_\-]+$/', $username)){
+            throw new HttpBadRequestException($request);
+        }
+
+        // Make sure size is not too small or too big
+        if(!is_int($size) || $size < 1 || $size > 512){
+            $size = 256;
+        }
+
+        // Create avatar
+        $avatar = new AvatarGenerator();
+        $image = $avatar
+            ->name($username)
+            ->font(APP_ROOT . '/public/font/nunito/static/Nunito-ExtraBold.ttf')
+            ->size($size)
+            ->autoColor()
+            ->generate();
+
+        // Return avatar
+        $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
+        $response = $response
+            ->withHeader('Pragma', 'public')
+            ->withHeader('Cache-Control', 'max-age=' . $cache_time)
+            ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
+            ->withHeader('Content-Type', 'image/png');
+
+        return $response->withBody(
+            $image->stream('png', 85)
+        );
     }
 }

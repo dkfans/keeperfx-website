@@ -22,9 +22,9 @@
 
                 <div class="account-settings-avatar">
                 {% if user.avatar %}
-                    <img src="/avatar/{{ user.avatar }}" onerror="this.src='{{ avatar(user.username, 'circle', 256) }}';"  />
+                    <img src="/avatar/{{ user.avatar }}" />
                     {% else %}
-                    <img src="{{ avatar(user.username, 'circle', 256) }}" />
+                    <img src="/avatar-generate/256/{{ user.username|url_encode }}.png" />
                 {% endif %}
                 </div>
 

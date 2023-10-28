@@ -53,8 +53,6 @@ return [
         \App\Twig\Extension\NotificationTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
-
-        \olivers\Twig\Extension\AvatarExtension::class,
     ],
 
     /**

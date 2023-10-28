@@ -45,7 +45,6 @@
         "symfony/dom-crawler": "^6.2",
         "symfony/css-selector": "^6.2",
         "mibe/feedwriter": "^1.1",
-        "olivers/twig-avatar-extension": "^1.0",
         "geertw/ip-anonymizer": "^1.1",
         "akrabat/ip-address-middleware": "^2.1",
         "symfony/var-dumper": "^6.2",
@@ -60,7 +59,8 @@
         "phpmailer/phpmailer": "^6.8",
         "nopjmp/discord-webhooks": "^0.3.1",
         "gumlet/php-image-resize": "^2.0",
-        "crunzphp/crunz": "^3.4"
+        "crunzphp/crunz": "^3.4",
+        "lasserafn/php-initial-avatar-generator": "^4.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
