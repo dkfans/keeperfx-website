@@ -681,6 +681,7 @@ button.btn-medieval ion-icon {
     padding-right: 0;
 
     margin-bottom: 0;
+    min-height: auto;
 }
 
 .workshop-item-comment .workshop-item-comment .workshop-item-comment-edit,
