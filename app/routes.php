@@ -145,6 +145,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
                 $group->post('/{item_id:\d+}/files/{file_id:\d+}/rename', [ModCP\Workshop\ModerateWorkshopEditFilesController::class, 'rename']);
             });
 
+            // Moderate WORKSHOP comments
+            $group->get('/workshop-comments/list', [ModCP\Workshop\ModerateWorkshopCommentController::class, 'listIndex']);
+
         })->add(AuthModCPMiddleware::class);
 
         // AUTH: DEVELOPER

@@ -124,28 +124,29 @@
                             <li><a class="dropdown-item" href="/account">Account Settings</a></li>
                             <li><a class="dropdown-item" href="/account/notifications/settings">Notification Settings</a></li>
                             <li><a class="dropdown-item" href="/account/connections">Connections</a></li>
-                            <li><hr class="dropdown-divider"></li>
 
                             {% if account.role >= roles.moderator %}
 
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/moderate/workshop/list">Manage Workshop</a></li>
+                                <li><a class="dropdown-item" href="/moderate/workshop-comments/list">Latest Comments</a></li>
 
                                 {% if account.role >= roles.developer %}
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="/dev/alpha-patches/list">Manage Alpha Patches</a></li>
                                     <li><a class="dropdown-item" href="/dev/crash-report/list">Crash Reports</a></li>
                                 {% endif %}
 
                                 {% if account.role >= roles.admin %}
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="/admin/news/list">Manage News</a></li>
                                     <li><a class="dropdown-item" href="/admin/user/list">Manage Users</a></li>
-                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="/admin/server-info">Server Info</a></li>
                                 {% endif %}
 
-                                <li><hr class="dropdown-divider"></li>
-
                             {% endif %}
 
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">Logout</a></li>
 
                         </ul>

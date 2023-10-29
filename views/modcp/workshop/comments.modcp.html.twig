@@ -1,0 +1,249 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Latest Comments - ModCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Latest workshop comments</h2>
+    </div>
+    <div class="content-body">
+
+    {% if comments|length > 0 %}
+        {% for comment in comments %}
+
+            <div class="workshop-item-comment" data-comment-id="{{ comment.id }}" id="comment-{{ comment.id }}" data-comment-user-id="{{ comment.user.id }}" data-workshop-item-id="{{ comment.item.id }}">
+
+                <div class="" style="height: 100%;">
+                    {% if comment.user.avatar %}
+                        <img src="/avatar/{{ comment.user.avatar }}" class="user-avatar user-avatar-big" />
+                    {% else %}
+                        <img src="/avatar-generate/128/{{ comment.user.username|url_encode }}.png" class="user-avatar user-avatar-big" />
+                    {% endif %}
+                </div>
+
+                <div class="" style="width: 100%; margin-left: 10px; padding: 0; padding-top: 2px;">
+                    <div class="d-flex justify-content-between" style="width: 100%;">
+
+                        {# Left side #}
+                        <span>
+
+                            {# Username #}
+                            <a
+                            href="/workshop/browse?user={{ comment.user.username }}"
+                            title="Browse {{ comment.user.username }}'s Workshop Items"
+                            class="user-link d-inline-block me-2">
+                                <span class="user-username">{{ comment.user.username }}</span>
+                            </a>
+
+                            {# Badge: If user is submitter #}
+                            {% if comment.item.submitter is not null and comment.user == comment.item.submitter %}
+                                <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Submitter</span>
+                            {% endif %}
+
+                            {# Badge: If user is admin #}
+                            {% if comment.user.role.value == roles.admin  %}
+                                <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Admin</span>
+                            {% endif %}
+
+                            {# Date #}
+                            <time class="text-muted" datetime="{{ comment.created_timestamp|date('c') }}">
+                                {{ comment.created_timestamp|date('Y/m/d - H:i') }}
+                            </time>
+
+                            {# Edited #}
+                            <span class="text-muted workshop-comment-is-edited" {% if comment.created_timestamp == comment.updated_timestamp %}style="display:none;"{% endif %}>
+                                &bullet; Edited
+                            </span>
+
+                            <span>
+                                <span class="text-muted">&bullet;</span>
+                                Item:
+                                <a href="/workshop/item/{{ comment.item.id }}/{{ comment.item.name|slugify }}" target="_blank">
+                                    {{ comment.item.name }}
+                                </a>
+                            </span>
+
+                        </span>
+
+                        {# Right side #}
+                        <span style="position: relative; top: -3px; display: none;" class="comment-buttons">
+
+                            {# Collapse button #}
+                            <button class="btn" style="padding: 2px 0; margin-right: 10px; height: 28px;" type="button" data-comment-action="collapse">
+                                <ion-icon data-comment-collapse="down" name="chevron-down-outline"></ion-icon>
+                                <ion-icon data-comment-collapse="up" name="chevron-up-outline" style="display:none;"></ion-icon>
+                            </button>
+
+                            <button type="button" class="btn-close btn-close-white" data-comment-action="delete"></button>
+                        </span>
+                    </div>
+
+                    {# Comment #}
+                    <div class="force-wordwrap workshop-item-comment-content {% if comment.reports|length > 0 %}workshop-comment-report{% endif %}">
+                        {{ comment.content|markdown_to_html }}
+                    </div>
+
+                    {# Reports #}
+                    {% if comment.reports|length > 0 %}
+                        <div class="workshop-item-comment-reports">
+                            {% for report in comment.reports %}
+                                <div class="alert bg-danger workshop-item-comment-report" data-report-id="{{ report.id }}">
+                                    <div class="alert-heading display-flex justify-content-between">
+                                        <span>
+                                            Reported by {{ report.user.username }} &bullet;
+                                            <time datetime="{{ report.createdTimestamp|date('c') }}">
+                                                {{ report.createdTimestamp|date('Y/m/d - H:i') }}
+                                            </time>
+                                        </span>
+
+                                        <button type="button" class="btn-close btn-close-white" data-comment-report-button="close"></button>
+                                    </div>
+                                    {% if report.reason is not null and report.reason is not empty %}
+                                        <p class="m-0 mt-2">
+                                            {{ report.reason }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+
+
+
+        {% endfor %}
+    {% else %}
+        <p>
+            No workshop comments
+        </p>
+    {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block body_javascript %}
+<script>
+    $(function(){
+
+        // Show comment buttons
+        // We don't show them directly so users without Javascript don't see non working buttons
+        $('.comment-buttons').show();
+
+        // Handle comment actions
+        $('[data-comment-action]').on('click', function(e){
+
+            e.preventDefault();
+
+            // Get variables
+            let action                  = $(this).data('comment-action');
+            let $commentElement         = $(this).parents('.workshop-item-comment').first();
+            let userId                  = $commentElement.data('comment-user-id');
+            let commentId               = $commentElement.data('comment-id');
+            let itemId                  = $commentElement.data('workshop-item-id');
+            let $originalContentElement = $commentElement.find('.workshop-item-comment-content').first();
+            let $editContentElement     = $commentElement.find('.workshop-item-comment-edit').first();
+            let $editTextarea           = $editContentElement.find('textarea').first();
+            let $isEditedElement        = $commentElement.find('.workshop-comment-is-edited').first();
+            let $replyForm              = $commentElement.find('form[data-comment-reply="true"]').first();
+            let $collapseUp             = $(this).find('[data-comment-collapse="up"]');
+            let $collapseDown           = $(this).find('[data-comment-collapse="down"]');
+
+            // Make sure variables are found
+            if(typeof userId == 'undefined' || typeof commentId == 'undefined' || typeof action == 'undefined'){
+                toastr.error('Something went wrong.');
+                return false;
+            }
+
+            // Collapse
+            if(action === "collapse")
+            {
+                $collapseDown.toggle();
+                $collapseUp.toggle();
+                $originalContentElement.toggle();
+                $commentElement.find('.workshop-item-comment').toggle();
+                return true;
+            }
+
+            // Delete
+            if(action === "delete"){
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/workshop/item/' + itemId + '/comment/' + commentId,
+                    dataType: 'json', // return type data,
+                    data: {
+                        [app_store.csrf.keys.name]: app_store.csrf.name,
+                        [app_store.csrf.keys.value]: app_store.csrf.value
+                    },
+                    success: function(data){
+
+                        if(typeof data.success === 'undefined' || !data.success){
+                            toastr.error('Something went wrong.');
+                            return false;
+                        }
+
+                        $commentElement.remove();
+
+                        toastr.success("Comment deleted!");
+
+                        // Show 'no comments' message if there are no comments now
+                        if($('[data-comment-id]').length == 0){
+                            $('#no-comments').show();
+                        }
+                    }
+                });
+
+                return true;
+            }
+        });
+
+        // Close report
+        $('button[data-comment-report-button="close"]').on('click', function(){
+
+            // Variables
+            let $allReportsElement     = $(this).closest('.workshop-item-comment-reports');
+            let $reportElement         = $(this).closest('.workshop-item-comment-report');
+            let $commentElement        = $(this).closest('.workshop-item-comment');
+            let $commentContentElement = $commentElement.find('.workshop-item-comment-content');
+            let commentId              = $reportElement.data('report-id');
+
+            $.ajax({
+                type: 'DELETE',
+                url: '/workshop/report/comment/' + commentId,
+                dataType: 'json', // return type data,
+                data: {
+                    [app_store.csrf.keys.name]: app_store.csrf.name,
+                    [app_store.csrf.keys.value]: app_store.csrf.value
+                },
+                success: function(data){
+
+                    if(typeof data.success === 'undefined' || !data.success){
+                        toastr.error('Something went wrong.');
+                        return false;
+                    }
+
+                    toastr.success("Report removed!");
+
+                    // Remove the report alert
+                    $reportElement.remove();
+
+                    // Remove red border from comment if this was the last report that is being removed
+                    if($allReportsElement.find('.workshop-item-comment-report').length === 0){
+                        $commentContentElement.removeClass('workshop-comment-report');
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
