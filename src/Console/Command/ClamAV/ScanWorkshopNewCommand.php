@@ -32,7 +32,9 @@ class ScanWorkshopNewCommand extends Command
     }
 
     protected function execute(Input $input, Output $output)
-    {        // Define workshop storage dir
+    {
+
+        // Define workshop storage dir
         if(!empty($_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'])){
             $storage_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'];
         } elseif (!empty($_ENV['APP_WORKSHOP_STORAGE'])){
