@@ -38,7 +38,7 @@ class ThumbnailHelper {
 
             $thumbnail = new ImageResize($image_filepath);
             $thumbnail->interlace = 0;
-            $thumbnail->crop(256, 256, false, ImageResize::CROPCENTER);
+            $thumbnail->crop($height, $width, false, $position);
             $thumbnail->save($thumbnail_filepath);
         } catch (\Exception $ex) {
             return false;
