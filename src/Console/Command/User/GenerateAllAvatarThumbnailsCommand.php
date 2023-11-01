@@ -27,7 +27,7 @@ class GenerateAllAvatarThumbnailsCommand extends Command
     protected function configure()
     {
         $this->setName("user:generate-all-avatar-thumbnails")
-            ->setDescription("Generate thumbnails for all suer avatar");
+            ->setDescription("Generate thumbnails for all user avatars");
     }
 
     protected function execute(Input $input, Output $output)

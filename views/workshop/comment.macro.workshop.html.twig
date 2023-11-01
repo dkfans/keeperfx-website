@@ -4,7 +4,9 @@
         <div class="workshop-item-comment" data-comment-id="{{ comment.id }}" id="comment-{{ comment.id }}" data-comment-user-id="{{ comment.user.id }}">
 
             <div class="" style="height: 100%;">
-                {% if comment.user.avatar %}
+                {% if comment.user.avatarSmall %}
+                    <img src="/avatar/{{ comment.user.avatarSmall }}" class="user-avatar user-avatar-big" />
+                {% elseif comment.user.avatar %}
                     <img src="/avatar/{{ comment.user.avatar }}" class="user-avatar user-avatar-big" />
                 {% else %}
                     <img src="/avatar-generate/128/{{ comment.user.username|url_encode }}.png" class="user-avatar user-avatar-big" />
