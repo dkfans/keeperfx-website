@@ -7,6 +7,7 @@ use App\Entity\UserCookieToken;
 
 use App\Account;
 use App\FlashMessage;
+use App\Helper\ThumbnailHelper;
 use App\UploadSizeHelper;
 use App\Workshop\WorkshopCache;
 use Doctrine\ORM\EntityManager;
@@ -206,6 +207,17 @@ class AccountController {
             }
         }
 
+        // Remove any existing small avatar
+        $existing_avatar_small = $account->getUser()->getAvatarSmall();
+        if($existing_avatar_small){
+            $existing_avatar_small_path = $avatar_dir . '/' . $existing_avatar_small;
+            if(\file_exists($existing_avatar_small_path)){
+                if(!\unlink($existing_avatar_small_path)){
+                    throw new \Exception("Failed to remove small avatar: '{$existing_avatar_small_path}'");
+                }
+            }
+        }
+
         // Create avatar filename & path
         $avatar_filename = $account->getUser()->getId() . '-' . md5(\microtime(true) . $filename) . '.' . $file_extension;
         $avatar_path = $avatar_dir . '/' . $avatar_filename;
@@ -216,7 +228,16 @@ class AccountController {
             throw new \Exception('Failed to move uploaded avatar');
         }
 
+        // Set avatar
         $account->getUser()->setAvatar($avatar_filename);
+
+        // Generate a small avatar for this user
+        $avatar_small = ThumbnailHelper::createThumbnail($avatar_path, 128, 128);
+        if($avatar_small){
+            $account->getUser()->setAvatarSmall($avatar_small);
+        }
+
+        // Save changes to DB
         $em->flush();
 
         // We have to clear the workshop browse cache because our avatar is visible there
@@ -270,15 +291,24 @@ class AccountController {
             }
         }
 
-        // Update user
+        // Remove small avatar file
+        $avatar_small_path = $avatar_dir . '/' . $account->getUser()->getAvatarSmall();
+        if(\file_exists($avatar_path)){
+            if(!\unlink($avatar_small_path)){
+                throw new \Exception("Failed to remove small avatar: '{$avatar_small_path}'");
+            }
+        }
+
+        // Update database stuff
         $account->getUser()->setAvatar(null);
+        $account->getUser()->setAvatarSmall(null);
         $em->flush();
 
         // We have to clear the workshop browse cache because our avatar was visible there
         $workshop_cache->clearAllCachedBrowsePageData();
 
+        // Success
         $flash->success('Your avatar has been successfully removed!');
-
         $response = $response->withHeader('Location', '/account')->withStatus(302);
         return $response;
     }

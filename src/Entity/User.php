@@ -29,6 +29,9 @@ class User {
     #[ORM\Column(nullable: true)]
     private string|null $avatar = null;
 
+    #[ORM\Column(nullable: true)]
+    private string|null $avatar_small = null;
+
     #[ORM\Column(type: 'integer', enumType: UserRole::class)]
     private UserRole $role = UserRole::User;
 
@@ -281,5 +284,23 @@ class User {
     public function getWorkshopDifficultyRatings(): Collection
     {
         return $this->workshop_difficulty_ratings;
+    }
+
+    /**
+     * Get the value of avatar_small
+     */
+    public function getAvatarSmall(): ?string
+    {
+        return $this->avatar_small;
+    }
+
+    /**
+     * Set the value of avatar_small
+     */
+    public function setAvatarSmall(?string $avatar_small): self
+    {
+        $this->avatar_small = $avatar_small;
+
+        return $this;
     }
 }

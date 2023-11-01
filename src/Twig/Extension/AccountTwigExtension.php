@@ -29,11 +29,12 @@ class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements 
 
         return [
             'account' => [
-                'id'       => $this->account->getUser()->getId(),
-                'username' => $this->account->getUser()->getUsername(),
-                'role'     => $this->account->getUser()->getRole()->value,
-                'avatar'   => $this->account->getUser()->getAvatar(),
-                'email'    => $this->account->getUser()->getEmail(),
+                'id'                => $this->account->getUser()->getId(),
+                'username'          => $this->account->getUser()->getUsername(),
+                'role'              => $this->account->getUser()->getRole()->value,
+                'avatar'            => $this->account->getUser()->getAvatar(),
+                'avatar_small'      => $this->account->getUser()->getAvatarSmall(),
+                'email'             => $this->account->getUser()->getEmail(),
             ],
         ];
     }

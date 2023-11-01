@@ -103,7 +103,9 @@
                         <a class="dropdown-toggle" href="/account" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="position: relative; margin: 0; background-color: rgba(0, 0, 0, 0.45); padding: 9px 12px; border-radius: 5px; top:-1px;">
                         {# <a class="dropdown-toggle" href="/dashboard" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> #}
 
-                            {% if account.avatar %}
+                            {% if account.avatar_small %}
+                                <img src="/avatar/{{ account.avatar_small }}" class="user-avatar" />
+                            {% elseif account.avatar %}
                                 <img src="/avatar/{{ account.avatar }}" class="user-avatar" />
                             {% else %}
                                 <img src="/avatar-generate/64/{{ account.username|url_encode }}.png" class="user-avatar" />

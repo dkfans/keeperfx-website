@@ -30,7 +30,9 @@
         href="/workshop/browse?user={{ workshop_item.submitter.username }}"
         title="Browse {{ workshop_item.submitter.username }}'s Workshop Items"
         class="user-link d-inline-block">
-            {% if workshop_item.submitter.avatar %}
+            {% if workshop_item.submitter.avatarSmall %}
+                <img src="/avatar/{{ workshop_item.submitter.avatarSmall }}" class="user-avatar" />
+            {% elseif workshop_item.submitter.avatar %}
                 <img src="/avatar/{{ workshop_item.submitter.avatar }}" class="user-avatar" />
             {% else %}
                 <img src="/avatar-generate/32/{{ workshop_item.submitter.username|url_encode }}.png" class="user-avatar" />
