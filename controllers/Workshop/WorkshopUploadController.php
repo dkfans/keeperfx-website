@@ -305,11 +305,13 @@ class WorkshopUploadController {
             $image_entity->setWidth($width);
             $image_entity->setHeight($height);
             $em->persist($image_entity);
-
         }
 
         // Flush again so filenames are added to DB entity
         $em->flush();
+
+        // Clear it so the first image will be found
+        $em->clear();
 
         // Create or update thumbnail
         // TODO: improve this
