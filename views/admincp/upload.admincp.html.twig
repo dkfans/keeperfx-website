@@ -1,0 +1,109 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Server Info - AdminCP' %}
+
+{% block page %}
+
+{# Server Info #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Manage Uploads</h2>
+    </div>
+    <div class="content-body">
+
+        <form action="/admin/uploads/upload" method="POST" enctype="multipart/form-data" id="moderate-edit-workshop-file-form">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            <div class="row" style="margin-bottom: 30px;">
+                <div class="col-sm-10">
+                    <div class="form-group">
+                        <label for="workshop-file">
+                            File
+                            <span class="text-danger">
+                                *
+                            </span>
+                        </label>
+                        <input type="file" class="form-control" id="workshop-file" name="file" required>
+                        <div class="form-group mt-1">
+                            <span class="text-muted" style="font-size: 12px;">Maximum filesize: {{ globals.upload_limit.file.formatted }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2" style="padding-top: 35px;">
+                    <button type="submit" class="btn btn-medieval" style="width: 100%;">Upload</button>
+                </div>
+            </div>
+
+        </form>
+
+        {% if files|length == 0 %}
+            <p>
+                No files uploaded.
+            </p>
+        {% else %}
+
+            <table class="table">
+
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>Size</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files %}
+                        <tr>
+                            <td style="vertical-align: middle;">
+                                <a href="/uploads/{{ file.filename|url_encode }}">
+                                    {{ file.filename }}
+                                </a>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                {{ file.size|format_bytes }}
+                            </td>
+                            <td style="vertical-align: middle;">
+                                {{ file.date|date('Y-m-d ~ H:i') }}
+                            </td>
+                            <td style="vertical-align: middle;">
+
+                                {# Copy #}
+                                <a class="btn btn-sm btn-medieval" data-copy-url="{{ get_env('APP_ROOT_URL') }}/uploads/{{ file.filename|url_encode }}" href="#" style="display:none;">
+                                    <ion-icon name="copy-outline"></ion-icon>
+                                </a>
+
+                                {# Delete #}
+                                <a class="btn btn-sm btn-medieval btn-medieval-gray" href="/admin/uploads/{{ file.filename|url_encode }}/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block body_javascript %}
+<script>
+$(function(){
+    $('[data-copy-url]').show();
+    $('[data-copy-url]').on('click', function(e){
+        e.preventDefault();
+
+        let url = $(this).data('copy-url');
+        navigator.clipboard.writeText(url);
+
+        toastr.info('URL copied!');
+    });
+});
+</script>
+{% endblock %}

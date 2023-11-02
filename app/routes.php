@@ -61,6 +61,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/avatar/{filename:[\w\d\-\.]+}', [AvatarController::class, 'outputAvatar']);
     $group->get('/avatar-generate/{size:\d+}/{username}.png', [AvatarController::class, 'generateAvatarPng']);
 
+    $group->get('/uploads/{filename:[\w\d\(\)\_\-\.]+}', [UploadController::class, 'outputFile']);
+
     // LOGGED IN USERS
     $group->group('', function (RouteCollectorProxy $group) use ($container) {
 
@@ -118,7 +120,14 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
                 $group->post('/{id:\d+}/mail', [AdminCP\AdminUsersController::class, 'userMail']);
             });
 
+            // Admin: UPLOADS
+            $group->group('/uploads', function (RouteCollectorProxy $group) use ($container) {
+                $group->get('', [AdminCP\AdminUploadController::class, 'uploadIndex']);
+                $group->post('/upload', [AdminCP\AdminUploadController::class, 'upload']);
+                $group->get('/{filename}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminUploadController::class, 'delete']);
+            });
 
+            // Server info
             $group->get('/server-info', [AdminCP\AdminServerInfoController::class, 'serverInfoIndex']);
 
         })->add(AuthAdminCPMiddleware::class);
