@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
 use GuzzleHttp\Psr7\LazyOpenStream;
+use Slim\Psr7\Stream;
 
 class UploadController {
 
@@ -31,6 +32,7 @@ class UploadController {
         }
 
         // Force file download
+        $stream = \fopen($filepath, 'r');
         $cache_time = (int)($_ENV['APP_ADMIN_UPLOAD_OUTPUT_CACHE_TIME'] ?? 86400);
         $response = $response
             ->withHeader('Pragma', 'public')
@@ -41,7 +43,7 @@ class UploadController {
             ->withHeader('Content-Transfer-Encoding', 'Binary')
             ->withHeader('Content-Disposition', 'attachment; filename="'.$filename.'"');
         return $response->withBody(
-            new LazyOpenStream($filepath, 'r')
+            new Stream($stream)
         );
     }
 }
