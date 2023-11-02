@@ -1,0 +1,38 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Alpha Patches - DevCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Bundled Assets ({{ files|length }})</h2>
+    </div>
+    <div class="content-body">
+
+        <div class="alert bg-dark">
+            These files are automatically bundled with alpha patches that are served on this website.
+        </div>
+
+        {% if files|length == 0 %}
+            <p>
+                No files being bundled
+            </p>
+        {% else %}
+            <table class="table">
+
+                {% for file in files %}
+                    <tr>
+                        <td>
+                            {{ file }}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+    {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

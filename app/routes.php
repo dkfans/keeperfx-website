@@ -172,6 +172,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->get('/crash-report/{id:\d+}', [DevCP\ModerateCrashReportController::class, 'view']);
             $group->get('/crash-report/{id:\d+}/delete', [DevCP\ModerateCrashReportController::class, 'delete']);
 
+            // Bundled Assets
+            $group->get('/bundled-assets', [DevCP\ModerateBundledAssetsController::class, 'index']);
+
         })->add(AuthDevCPMiddleware::class);
 
     })->add(LoggedInMiddleware::class);
