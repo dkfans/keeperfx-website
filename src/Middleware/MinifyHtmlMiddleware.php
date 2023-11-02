@@ -22,10 +22,8 @@ class MinifyHtmlMiddleware implements MiddlewareInterface {
      */
     private function minifyHTML($html)
     {
-        $search = ['/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\'|\")\/\/.*))/', '/\n/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s', '/<!--.*?-->/'];
-        $replace = [' ', ' ', '>', '<', '\\1', ''];
-
-        return preg_replace($search, $replace, $html);
+        $parser = \WyriHaximus\HtmlCompress\Factory::constructSmallest();
+        return $parser->compress($html);
     }
 
     private function minifyResponse(ResponseInterface $response): ResponseInterface
