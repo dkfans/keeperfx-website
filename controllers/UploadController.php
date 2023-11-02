@@ -40,10 +40,8 @@ class UploadController {
             ->withHeader('Content-Type', 'application/octet-stream')
             ->withHeader('Content-Transfer-Encoding', 'Binary')
             ->withHeader('Content-Disposition', 'attachment; filename="'.$filename.'"');
-        $response->getBody()->write(
+        return $response->withBody(
             new LazyOpenStream($filepath, 'r')
         );
-
-        return $response;
     }
 }
