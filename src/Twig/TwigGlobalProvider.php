@@ -47,6 +47,12 @@ class TwigGlobalProvider {
                             BinaryFormatter::bytes($upload_size_helper->getMaxCalculatedTotalUpload())->format() :
                             'N/A'
                     ],
+                    'file' => [
+                        'size'      => $upload_size_helper->getMaxCalculatedFileUpload(),
+                        'formatted' => ($upload_size_helper->getMaxCalculatedFileUpload() > 0) ?
+                            BinaryFormatter::bytes($upload_size_helper->getMaxCalculatedFileUpload())->format() :
+                            'N/A'
+                    ],
                 ]
             ]
         ];
