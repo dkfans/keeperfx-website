@@ -99,3 +99,16 @@ location /favicon.ico {
     add_header Cache-Control "public, max-age=2592000";
 }
 ```
+
+
+## Uploads
+
+```
+location ~ /uploads/(.+)$ {
+        access_log off;
+        alias /var/www/keeperfx/storage/uploads/$1;
+        expires 30d;
+        add_header Cache-Control "public, max-age=2592000";
+        add_header Content-disposition "attachment; filename=$1";
+}
+```
