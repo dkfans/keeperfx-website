@@ -184,12 +184,12 @@ class FetchAlphaCommand extends Command
                 $temp_archive->extract($temp_archive_dir);
 
                 // Add bundle files
-                if(!empty($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'])){
-                    $bundle_path = $_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'];
+                if(!empty($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'])){
+                    $bundle_path = $_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'];
                     $output->writeln("[>] Adding file bundle...");
                     if(!\is_dir($bundle_path)){
                         $output->writeln("[-] File bundle path is not a dir");
-                        $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_CLI_PATH'");
+                        $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'");
                         return Command::FAILURE;
                     } else {
                         $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);
