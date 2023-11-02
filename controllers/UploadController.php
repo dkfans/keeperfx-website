@@ -6,6 +6,7 @@ use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
+use GuzzleHttp\Psr7\LazyOpenStream;
 
 class UploadController {
 
@@ -40,7 +41,7 @@ class UploadController {
             ->withHeader('Content-Transfer-Encoding', 'Binary')
             ->withHeader('Content-Disposition', 'attachment; filename="'.$filename.'"');
         $response->getBody()->write(
-            \file_get_contents($filepath)
+            new LazyOpenStream($filepath, 'r')
         );
 
         return $response;
