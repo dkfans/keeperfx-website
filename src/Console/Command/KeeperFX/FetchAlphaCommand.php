@@ -20,6 +20,8 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 
 class FetchAlphaCommand extends Command
 {
+    public const IS_ENABLED = false;
+
     public const GITHUB_WORKFLOW_RUNS_URL = 'https://api.github.com/repos/dkfans/keeperfx/actions/runs';
 
     private EntityManager $em;
@@ -275,7 +277,7 @@ class FetchAlphaCommand extends Command
             $build->setTimestamp(new DateTime($artifact->created_at));
             $build->setWorkflowTitle($display_title);
             $build->setWorkflowRunId($artifact->workflow_run?->id ?? null);
-            $build->setIsAvailable(false);
+            $build->setIsAvailable(self::IS_ENABLED);
             $this->em->persist($build);
             $this->em->flush();
 
@@ -284,8 +286,10 @@ class FetchAlphaCommand extends Command
             $output->writeln("[+] Output filesize: " . BinaryFormatter::bytes($output_filesize)->format());
 
             // Send a notification on Discord
-            if($this->discord_notifier->notifyNewAlphaPatch($build)){
-                $output->writeln("[+] Discord has been notified!");
+            if(self::IS_ENABLED){
+                if($this->discord_notifier->notifyNewAlphaPatch($build)){
+                    $output->writeln("[+] Discord has been notified!");
+                }
             }
 
             // Scan with VirusTotal
