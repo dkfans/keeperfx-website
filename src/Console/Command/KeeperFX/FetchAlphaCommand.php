@@ -275,7 +275,7 @@ class FetchAlphaCommand extends Command
             $build->setTimestamp(new DateTime($artifact->created_at));
             $build->setWorkflowTitle($display_title);
             $build->setWorkflowRunId($artifact->workflow_run?->id ?? null);
-            $build->setIsAvailable(true);
+            $build->setIsAvailable(false);
             $this->em->persist($build);
             $this->em->flush();
 
