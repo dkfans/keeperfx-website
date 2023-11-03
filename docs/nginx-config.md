@@ -38,8 +38,10 @@ server {
 If you use the env var `APP_ALPHA_PATCH_STORAGE` you can setup nginx to serve those files using any chosen directory.
 
 ```nginx
-location /download/alpha/ {
-    alias /var/www/keeperfx-website/keeperfx-alpha-builds/;
+location ~ ^/download/alpha/(.+)$ {
+    alias /var/www/keeperfx-website/keeperfx-alpha-builds/$1;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000";
 }
 ```
 
@@ -50,7 +52,7 @@ location /download/alpha/ {
 ## Workshop images
 
 ```
-location ~ /workshop/image/([0-9]+)/(.+)$ {
+location ~ ^/workshop/image/([0-9]+)/(.+)$ {
     access_log off;
     alias /var/www/keeperfx-website/workshop/$1/images/$2;
     expires 30d;
@@ -61,7 +63,7 @@ location ~ /workshop/image/([0-9]+)/(.+)$ {
 ## User avatars
 
 ```
-location ~ /avatar/(.+)$ {
+location ~ ^/avatar/(.+)$ {
     access_log off;
     alias /var/www/keeperfx-website/avatars/$1;
     expires 30d;
@@ -72,7 +74,7 @@ location ~ /avatar/(.+)$ {
 ## Crash Reports
 
 ```
-location ~ /dev/crash-report/download/(.+)$ {
+location ~ ^/dev/crash-report/download/(.+)$ {
     alias /var/www/keeperfx-website/crash-report/savefiles/$1;
 }
 ```
@@ -104,7 +106,7 @@ location /favicon.ico {
 ## Uploads
 
 ```
-location ~ /uploads/(.+)$ {
+location ~ ^/uploads/(.+)$ {
         access_log off;
         alias /var/www/keeperfx/storage/uploads/$1;
         expires 30d;
