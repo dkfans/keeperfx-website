@@ -57,6 +57,37 @@
 
                 {% if account %}
 
+                    {# Moderation Icon - Moderator/Developer/Admin #}
+                    {% if account.role >= roles.moderator %}
+                        <div class="dropdown" style="display: inline-block;">
+                            <a class="dropdown-toggle caret-off" href="/account" id="navbarAdminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 0;">
+                                <ion-icon name="build-outline" style="position: relative; font-size:23px; top:6px;" color="red"></ion-icon>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarAdminDropdown">
+
+                                    <li><a class="dropdown-item" href="/moderate/workshop/list">Workshop</a></li>
+                                    <li><a class="dropdown-item" href="/moderate/workshop-comments/list">Latest Comments</a></li>
+
+                                    {% if account.role >= roles.developer %}
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="/dev/alpha-patches/list">Alpha Patches</a></li>
+                                        <li><a class="dropdown-item" href="/dev/bundled-assets">Bundled Assets</a></li>
+                                        <li><a class="dropdown-item" href="/dev/crash-report/list">Crash Reports</a></li>
+                                    {% endif %}
+
+                                    {% if account.role >= roles.admin %}
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="/admin/news/list">News</a></li>
+                                        <li><a class="dropdown-item" href="/admin/user/list">Users</a></li>
+                                        <li><a class="dropdown-item" href="/admin/uploads">Uploads</a></li>
+                                        <li><a class="dropdown-item" href="/admin/server-info">Server Info</a></li>
+                                    {% endif %}
+
+                            </ul>
+                        </div>
+                    {% endif %}
+
                     {# Notification icon #}
                     <div class="dropdown" style="display: inline-block;">
                         <a class="dropdown-toggle caret-off" href="/account" id="navbarNotificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -126,29 +157,6 @@
                             <li><a class="dropdown-item" href="/account">Account Settings</a></li>
                             <li><a class="dropdown-item" href="/account/notifications/settings">Notification Settings</a></li>
                             <li><a class="dropdown-item" href="/account/connections">Connections</a></li>
-
-                            {% if account.role >= roles.moderator %}
-
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/moderate/workshop/list">Manage Workshop</a></li>
-                                <li><a class="dropdown-item" href="/moderate/workshop-comments/list">Latest Comments</a></li>
-
-                                {% if account.role >= roles.developer %}
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="/dev/alpha-patches/list">Manage Alpha Patches</a></li>
-                                    <li><a class="dropdown-item" href="/dev/bundled-assets">Bundled Assets</a></li>
-                                    <li><a class="dropdown-item" href="/dev/crash-report/list">Crash Reports</a></li>
-                                {% endif %}
-
-                                {% if account.role >= roles.admin %}
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="/admin/news/list">Manage News</a></li>
-                                    <li><a class="dropdown-item" href="/admin/user/list">Manage Users</a></li>
-                                    <li><a class="dropdown-item" href="/admin/uploads">Manage Uploads</a></li>
-                                    <li><a class="dropdown-item" href="/admin/server-info">Server Info</a></li>
-                                {% endif %}
-
-                            {% endif %}
 
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">Logout</a></li>
