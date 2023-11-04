@@ -30,7 +30,7 @@
                 {% for build in alpha_builds %}
                     <tr>
                         <td>
-                            <a href="/download/alpha/{{ build.filename }}" data-alpha-patch-download="true" download>
+                            <a href="/download/alpha/{{ build.filename|url_encode }}" data-alpha-patch-download="true" download>
                                 {{ build.name }}
                             </a>
                         </td>

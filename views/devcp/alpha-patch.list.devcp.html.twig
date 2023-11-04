@@ -31,7 +31,11 @@
                 {% for alpha_build in alpha_builds %}
                         <tr>
                             <td>{{ alpha_build.id }}</td>
-                            <td>{{ alpha_build.name }}</td>
+                            <td>
+                                <a href="/download/alpha/{{ alpha_build.filename|url_encode }}"download>
+                                    {{ alpha_build.name }}
+                                </a>
+                            </td>
                             <td>{{ alpha_build.artifactId }}</td>
                             <td>{{ alpha_build.workflowTitle|github_interact }}</td>
                             <td>{{ alpha_build.workflowRunId }}</td>
