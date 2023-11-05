@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <title>EmojiButtonList.js - Minimized - v0.1.1</title>
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+        <link rel="stylesheet" href="src/emojibuttonlistjs.min.css" />
+        <script src="src/emojibuttonlistjs.min.js"></script>
+
+        <style>
+            div.bottom {
+                position: absolute;
+                bottom: 10px;
+            }
+
+            div.middle {
+                position: absolute;
+                top: 50%;
+            }
+
+            input[type="text"] {
+                width: 200px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div>
+            <input id="text1" type="text" />
+            <button id="button1">Show</button>
+        </div>
+
+        <div class="middle">
+            <input id="text3" type="text" />
+            <button id="button3">Show</button>
+        </div>
+
+        <div class="bottom">
+            <input id="text2" type="text" />
+            <button id="button2">Show</button>
+        </div>
+    </body>
+
+    <script>
+        var margin = 10,
+            instance1 = new emojiButtonList( "button1", {
+                dropDownXAlign: "left",
+                textBoxID: "text1",
+                yAlignMargin: margin,
+                xAlignMargin: margin
+            } ),
+            instance2 = new emojiButtonList( "button2", {
+                dropDownXAlign: "right",
+                onEmojiClick: emojiClickEvent,
+                yAlignMargin: margin,
+                xAlignMargin: margin
+            } ),
+            instance3 = new emojiButtonList( "button3", {
+                dropDownXAlign: "center",
+                dropDownYAlign: "top",
+                textBoxID: "text3",
+                yAlignMargin: margin,
+                xAlignMargin: margin
+            } );
+
+        function emojiClickEvent( emojiText ) {
+            document.title += " " + emojiText;
+        }
+    </script>
+</html>

@@ -1,0 +1,85 @@
+/*
+ * EmojiButtonList.js Library v0.1.1
+ *
+ * Copyright 2021 Bunoon
+ * Released under the GNU AGPLv3 license
+ */
+
+$dark-color: #282828;
+$light-color: #F5F5F5;
+$border-radius: .25rem;
+$scroll-bar-border-style: inset 0 0 6px gray;
+ 
+div.emoji-drop-down {
+    height: 195px;
+    width: 100%;
+    max-width: 212px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    position: absolute;
+    background-color: $light-color;
+    border-radius: $border-radius;
+    white-space: normal;
+    text-align: center;
+    border: 1px solid $dark-color;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    color: $dark-color;
+    display: none;
+    padding: 5px;
+
+    div.emoji {
+        padding: 5px;
+        height: 35px;
+        width: 35px;
+        margin-bottom: 5px;
+        margin-right: 5px;
+        display: inline-block;
+        font-size: 20pt;
+        border-radius: $border-radius;
+    
+        &:hover {
+            cursor: pointer;
+            transition: all .3s;
+            background-color: $dark-color;
+            color: $light-color;
+        }
+
+        &:active {
+            cursor: pointer;
+            transition: all .3s;
+            opacity: 0.7;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+
+/*
+    -------------------------------------------------------------------------
+    EmojiButtonList.js - Custom Scroll Bar
+    -------------------------------------------------------------------------
+*/
+
+.custom-scroll-bars {
+    &::-webkit-scrollbar {
+        width: 12px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        -webkit-box-shadow: $scroll-bar-border-style;
+        box-shadow: $scroll-bar-border-style;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        -webkit-box-shadow: $scroll-bar-border-style;
+        box-shadow: $scroll-bar-border-style;
+        background: $light-color;
+    }
+}
