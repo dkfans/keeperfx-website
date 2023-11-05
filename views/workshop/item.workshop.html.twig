@@ -326,17 +326,21 @@
                     <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
                     <div class="" style="width: 100%; margin-left: 5px; padding: 0;">
                         <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
-                            <textarea class="form-control" name="content" rows="2" placeholder="Write a comment" required id="comment-input" tabindex="10"></textarea>
+                            <textarea class="form-control" name="content" rows="2" placeholder="Write a comment" id="comment-input" tabindex="10"></textarea>
                         </div>
                     </div>
                     <div class="display-flex justify-content-between px-1" id="comment-submit-extra">
-                        <span class="text-muted mx-2" style="font-size: 12px;">
-                            Markdown and spoilers supported.
-                            <a href="#" data-markdown-format-info-link="true">
-                                More info
-                            </a>
-                        </span>
                         <div>
+                            <button class="btn btn-sm btn-dark" data-emoji-picker="true">&#128516;</button>
+                            <span class="text-muted mx-2" style="font-size: 12px;">
+                                Markdown and spoilers supported.
+                                <a href="#" data-markdown-format-info-link="true">
+                                    More info
+                                </a>
+                            </span>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-medieval btn-medieval-gray" id="comment-cancel">Cancel</button>
                             <input type="submit" class="btn btn-medieval" value="Comment" tabindex="11" />
                         </div>
                     </div>
@@ -368,6 +372,7 @@
 {% endblock %}
 
 {% block body_javascript %}
+<script src="{{ asset('lib/EmojiButtonList.js/src/emojibuttonlistjs.min.js') }}"></script>
 <script>
     const workshop_item = {
         id: {{ item.id }},

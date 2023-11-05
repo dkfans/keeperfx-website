@@ -1,4 +1,8 @@
-
+var emojiPickerRanges = [
+    [128512, 128591],
+    [9989,9990],
+    [10060,10061]
+];
 
 function handleRatingHtml(el){
 
@@ -128,12 +132,10 @@ $(function(e){
             $('#comment-submit-extra').slideDown('fast');
         }
     });
-    $('#comment-input').on('focusout', function(e){
-        if($(this).val().length === 0){
-            $('#comment-submit-extra').slideUp('fast');
-        } else {
-            $('#comment-submit-extra').slideDown('fast');
-        }
+
+    // Hide comment area on cancel
+    $('#comment-cancel').on('click', function(e){
+        $('#comment-submit-extra').slideUp('fast');
     });
 
     // Handle remove rating
@@ -546,6 +548,28 @@ $(function(e){
                 }
             }
         });
+    });
+
+    var emojiCounter = 0;
+    $.each($('[data-emoji-picker="true"]'), function(i, el){
+
+        let textarea = $(el).parents('.workshop-item-comment-edit, form').find('textarea');
+        let textareaId = $(textarea).attr('id');
+
+        if(typeof textareaId == 'undefined'){
+            textareaId = 'textarea-' + emojiCounter;
+        }
+
+        let emojiPickerId = 'emoji-picker-' + emojiCounter;
+        emojiCounter++;
+
+        $(el).attr('id', emojiPickerId);
+        $(textarea).attr('id', textareaId);
+
+        new emojiButtonList( emojiPickerId, {
+            textBoxID: textareaId,
+            emojiRangesToShow: emojiPickerRanges
+        })
     });
 
 });

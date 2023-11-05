@@ -93,12 +93,15 @@
                 <div class="workshop-item-comment-edit pb-3" style="display:none;">
                     <textarea class="form-control mt-3 mb-2" rows="4" data-comment-edit-area="true" tabindex="{{ comment.id }}001"></textarea>
                     <div class="display-flex justify-content-between">
-                        <span class="text-muted mx-1" style="font-size: 12px;">
-                            Markdown and spoilers supported.
-                            <a href="#" data-markdown-format-info-link="true">
-                                More info
-                            </a>
-                        </span>
+                        <div>
+                            <button class="btn btn-sm btn-dark" data-emoji-picker="true">&#128516;</button>
+                            <span class="text-muted mx-1" style="font-size: 12px;">
+                                Markdown and spoilers supported.
+                                <a href="#" data-markdown-format-info-link="true">
+                                    More info
+                                </a>
+                            </span>
+                        </div>
                         <div>
                             <button class="btn btn-sm btn-medieval btn-medieval-gray mx-2" data-comment-action="cancel-edit" tabindex="{{ comment.id }}003">Cancel</button>
                             <input type="submit" class="btn btn-sm btn-medieval" data-comment-action="do-edit" value="Edit" tabindex="{{ comment.id }}002" />
@@ -116,12 +119,15 @@
                         </div>
                     </div>
                     <div class="display-flex justify-content-between px-1">
-                        <span class="text-muted mx-2" style="font-size: 12px;">
-                            Markdown and spoilers supported.
-                            <a href="#" data-markdown-format-info-link="true">
-                                More info
-                            </a>
-                        </span>
+                        <div>
+                            <button class="btn btn-sm btn-dark" data-emoji-picker="true">&#128516;</button>
+                            <span class="text-muted mx-2" style="font-size: 12px;">
+                                Markdown and spoilers supported.
+                                <a href="#" data-markdown-format-info-link="true">
+                                    More info
+                                </a>
+                            </span>
+                        </div>
                         <div>
                             <button class="btn btn-sm btn-medieval btn-medieval-gray mx-2" data-comment-action="cancel-reply" tabindex="{{ comment.id }}007">Cancel</button>
                             <input type="submit" class="btn btn-sm btn-medieval" value="Reply" tabindex="{{ comment.id }}006" />
