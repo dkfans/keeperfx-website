@@ -13,7 +13,7 @@
     {% for page in pagination %}
 
         <li class="page-item {% if page.active %}active{% endif %} {% if page.disabled %}disabled{% endif %}">
-            <a class="page-link" href="{{ page.url }}">
+            <a class="page-link" href="{{ page.url }}" data-instant>
                 {{ page.label }}
             </a>
         </li>
