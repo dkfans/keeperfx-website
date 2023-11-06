@@ -32,7 +32,7 @@
                     offering many new features, improvements, and much more while staying true to the original feeling of the game.
                 </p>
                 <p>
-                    You can delve into the <strong>original campaign</strong>, or enjoy custom content created by the community and shared on the <a href="/workshop/browse" alt="Browse Workshop">Workshop</a>.
+                    You can delve into the <strong>original campaign</strong>, or enjoy custom content created by the community and shared on <a href="/workshop/browse" alt="Browse Workshop" data-instant>the Workshop</a>.
                 </p>
                 <p>
                     <h5 style="margin-left: 15px; margin-top: 35px; border-bottom: 0;">Features</h5>
@@ -57,7 +57,7 @@
                     .
                 </p>
                 <p>
-                    It's very easy to get started but be sure to follow the <a href="/wiki/Home" target="_blank">installation instructions</a> as there is no automatic installer.
+                    It's very easy to get started but be sure to follow the <a href="/wiki/Home" target="_blank" data-instant>installation instructions</a> as there is no automatic installer.
                 </p>
 
             </div>
@@ -72,7 +72,7 @@
                             Latest News
                         </h2>
                         <div>
-                            <a href="/news">Browse all</a>
+                            <a href="/news" data-instant>Browse all</a>
                         </div>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                             <span class="news-date">{{ article.createdTimestamp|date('Y-m-d') }}</span>
                             <p class="news-content">{{ article.excerpt|markdown_to_html }}</p>
                             <p style="margin-bottom: 0px;">
-                                <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}">Read more</a>
+                                <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}" data-instant>Read more</a>
                             </p>
                         </div>
                     {% endfor %}
@@ -97,7 +97,7 @@
 
         {# Download Button #}
         {% if release %}
-            <a href="/downloads" alt="Download">
+            <a href="/downloads" alt="Download" data-instant>
                 <button class="btn btn-medieval" style="padding: 16px;width: 100%; margin-bottom: 25px">
                     <h3>Download</h3>
                     <span>{{ release.name }}</span>
@@ -220,7 +220,7 @@
                     {% endfor %}
 
                     <div style="padding-top: 16px; text-align: left;">
-                        <a href="/workshop/browse" style="margin: 0 auto;">Browse workshop</a>
+                        <a href="/workshop/browse" style="margin: 0 auto;" data-instant>Browse workshop</a>
                     </div>
                 </div>
             </div>
