@@ -97,6 +97,9 @@ class WorkshopCommentController {
         $item_id,
         $comment_id,
     ) {
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
         if(!$workshop_item){
@@ -198,6 +201,9 @@ class WorkshopCommentController {
         $item_id,
         $comment_id,
     ) {
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
         if(!$workshop_item){

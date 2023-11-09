@@ -112,6 +112,9 @@ class WorkshopRatingController {
             ])
         );
 
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         return $response;
     }
 
@@ -219,6 +222,9 @@ class WorkshopRatingController {
         $id
     )
     {
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
         if(!$workshop_item){
@@ -245,6 +251,7 @@ class WorkshopRatingController {
                     ],
                 ])
             );
+
             return $response;
         }
 
@@ -304,6 +311,9 @@ class WorkshopRatingController {
         $id
     )
     {
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
         if(!$workshop_item){

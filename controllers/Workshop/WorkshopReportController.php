@@ -29,6 +29,8 @@ class WorkshopReportController {
         NotificationCenter $nc,
         $comment_id
     ){
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
 
         // Get the comment
         /** @var WorkshopComment $item */
@@ -114,6 +116,10 @@ class WorkshopReportController {
                 'success' => true,
             ])
         );
+
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         return $response;
     }
 

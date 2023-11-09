@@ -54,6 +54,9 @@ class WorkshopBrowseApiController {
             \json_encode(['workshop_items' => $workshop_items])
         );
 
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         return $response;
     }
 

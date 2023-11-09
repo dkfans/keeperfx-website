@@ -50,6 +50,8 @@ class WorkshopItemApiController {
             ]])
         );
 
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         return $response;
     }
 
@@ -78,6 +80,8 @@ class WorkshopItemApiController {
                 ],
             ]])
         );
+
+        $response = $response->withHeader('Content-Type', 'application/json');
 
         return $response;
     }

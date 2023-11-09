@@ -38,6 +38,9 @@ class NewsApiController {
             \json_encode(['articles' => $articles])
         );
 
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         return $response;
     }
 

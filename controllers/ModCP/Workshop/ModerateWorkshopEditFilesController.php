@@ -365,6 +365,9 @@ class ModerateWorkshopEditFilesController {
             ])
         );
 
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         return $response;
     }
 

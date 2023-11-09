@@ -350,6 +350,8 @@ class WorkshopUploadController {
         EntityManager $em,
         $map_number,
     ){
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
 
         $map_number = (int)$map_number;
 

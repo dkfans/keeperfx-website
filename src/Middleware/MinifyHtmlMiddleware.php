@@ -50,7 +50,14 @@ class MinifyHtmlMiddleware implements MiddlewareInterface {
         // Handle everything as normal
         $response = $handler->handle($request);
 
+        // Check if minifying is enabled
         if(!isset($_ENV['APP_MINIFY_HTML']) || !(bool)$_ENV['APP_MINIFY_HTML']){
+            return $response;
+        }
+
+        // Don't minify anything that is requested using AJAX
+        // We don't need to minify JSON
+        if($request->getHeaderLine('X-Requested-With') === "XMLHttpRequest"){
             return $response;
         }
 

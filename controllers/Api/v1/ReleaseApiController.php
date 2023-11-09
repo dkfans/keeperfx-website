@@ -34,6 +34,9 @@ class ReleaseApiController {
             ]])
         );
 
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         return $response;
     }
 
@@ -58,6 +61,9 @@ class ReleaseApiController {
                 'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename())
             ]])
         );
+
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
 
         return $response;
     }

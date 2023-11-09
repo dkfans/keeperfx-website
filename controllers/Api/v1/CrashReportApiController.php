@@ -27,6 +27,9 @@ class CrashReportApiController {
         EntityManager $em,
         NotificationCenter $nc,
     ){
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
         // Get POST data
         $post = $request->getParsedBody();
         if($post == null){
