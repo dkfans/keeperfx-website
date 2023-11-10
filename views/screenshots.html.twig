@@ -143,23 +143,9 @@
 
 
 {% block body_javascript %}
-    <script type="module">
-        import PhotoSwipeLightbox from 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe-lightbox.esm.min.js';
-
-        // Initialize image lightbox
-        const lightbox = new PhotoSwipeLightbox({
-            bgOpacity: 0.8,
-            gallery: '#screenshots',
-            children: 'a',
-            pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.esm.min.js'),
-            mainClass: 'pswp-with-perma-preloader',
-        });
-
-        // Init lightbox
-        lightbox.init();
-    </script>
     <script>
         $(function(){
+
             // Preload the full sizes screenshots
             $.each($('a'), function(e, el){
                 let url = $(el).attr('href');
@@ -168,6 +154,18 @@
                     img.src = url;
                 }
             });
+
+            // Initialize image lightbox
+            var lightbox = new PhotoSwipeLightbox({
+                bgOpacity: 0.8,
+                gallery: '#screenshots',
+                children: 'a',
+                pswpModule: PhotoSwipe,
+                mainClass: 'pswp-with-perma-preloader',
+            });
+
+            // Init lightbox
+            lightbox.init();
         });
     </script>
 {% endblock %}

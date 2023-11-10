@@ -101,6 +101,20 @@ function handleRatingHtml(el){
 
 $(function(e){
 
+    // Initialize image lightbox
+    var lightbox = new PhotoSwipeLightbox({
+        bgOpacity: 0.8,
+        gallery: '#workshop-images',
+        children: 'a.workshop-image',
+        pswpModule: PhotoSwipe,
+        mainClass: 'pswp-with-perma-preloader',
+        initialZoomLevel: 'fit',
+        showHideAnimationType: 'zoom'
+    });
+
+    // Init lightbox
+    lightbox.init();
+
     // Render workshop ratings
     $.each($('[data-workshop-rating-type]'), function(i, el){
         handleRatingHtml(el);

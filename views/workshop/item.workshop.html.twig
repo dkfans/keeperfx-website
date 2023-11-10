@@ -372,7 +372,6 @@
 {% endblock %}
 
 {% block body_javascript %}
-<script src="{{ asset('lib/EmojiButtonList.js/src/emojibuttonlistjs.min.js') }}"></script>
 <script>
     const workshop_item = {
         id: {{ item.id }},
@@ -380,22 +379,6 @@
         submitter_id: {{ item.submitter.id ?? 'null' }}
     }
 </script>
-<script type="module">
-    import PhotoSwipeLightbox from 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe-lightbox.esm.min.js';
-
-    // Initialize image lightbox
-    const lightbox = new PhotoSwipeLightbox({
-        bgOpacity: 0.8,
-        gallery: '#workshop-images',
-        children: 'a.workshop-image',
-        pswpModule: () => import('https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.4/photoswipe.esm.min.js'),
-        mainClass: 'pswp-with-perma-preloader',
-        initialZoomLevel: 'fit',
-        showHideAnimationType: 'zoom'
-    });
-
-    // Init lightbox
-    lightbox.init();
-</script>
+<script src="{{ asset('lib/EmojiButtonList.js/src/emojibuttonlistjs.min.js') }}"></script>
 <script src="{{ asset('js/workshop.item.js') }}"></script>
 {% endblock %}
