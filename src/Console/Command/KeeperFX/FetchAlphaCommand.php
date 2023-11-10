@@ -20,7 +20,7 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 
 class FetchAlphaCommand extends Command
 {
-    public const IS_ENABLED = false;
+    public const IS_ENABLED = true;
 
     public const GITHUB_WORKFLOW_RUNS_URL = 'https://api.github.com/repos/dkfans/keeperfx/actions/runs';
 
