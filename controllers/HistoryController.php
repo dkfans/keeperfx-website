@@ -102,9 +102,9 @@ class HistoryController {
                 ],
                 [
                     'title'       => 'The Workshop is released on the KeeperFX.net website',
-                    'date'        => new \DateTime('2023-06-01'),
+                    'date'        => new \DateTime('2023-03-20'),
                     'date_format' => 'Y-m-d',
-                    'description' => 'The official Workshop gets released and allows users to easily share their creations and as well as find other players\' content. We also copied over a lot of custom content from Lubiki.',
+                    'description' => 'The official Workshop gets released and allows users to easily share their creations and find other players\' content.',
                 ],
                 [
                     'title'       => 'First KeeperFX tournament',
