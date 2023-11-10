@@ -77,16 +77,16 @@ class HistoryController {
                     'description' => 'Loobinex took the task of maintaining the project on himself with the blessing of Mefistotelis.',
                 ],
                 [
-                    'title'       => 'Delta Time is implemented',
+                    'title'       => 'The game logic gets decoupled from the FPS',
                     'date'        => new \DateTime('2022-08-15'),
                     'date_format' => 'Y-m-d',
                     'description' => 'rainlizard implemented Delta Time which decouples the game logic from the graphics loop, making the game always run at the same speed regardless of what FPS a player has.',
                 ],
                 [
-                    'title'       => 'ENET multiplayer protocol added',
+                    'title'       => 'First decent online Multiplayer implemented',
                     'date'        => new \DateTime('2022-10-30'),
                     'date_format' => 'Y-m-d',
-                    'description' => 'TheSim finished adding ENET as a new Multiplayer protocol, which is stable enough to allow 2 Keepers to play over the internet. It still requires a very fast connection.',
+                    'description' => 'TheSim finished adding ENET as a new Multiplayer protocol, which is stable enough to allow 2 Keepers to play over the internet over short distances. It still requires a very fast connection, but is much better than the earlier implemented protocols.',
                 ],
                 [
                     'title'       => 'Dungeon Keeper completely rewritten',
@@ -99,6 +99,12 @@ class HistoryController {
                     'date'        => new \DateTime('2023-01-08'),
                     'date_format' => 'Y-m-d',
                     'description' => 'KeeperFX.net goes live. Yani created the website which now serves as the main homepage for KeeperFX.',
+                ],
+                [
+                    'title'       => 'The Workshop is released on the KeeperFX.net website',
+                    'date'        => new \DateTime('2023-06-01'),
+                    'date_format' => 'Y-m-d',
+                    'description' => 'The official Workshop gets released and allows users to easily share their creations and as well as find other players\' content. We also copied over a lot of custom content from Lubiki.',
                 ],
                 [
                     'title'       => 'First KeeperFX tournament',
