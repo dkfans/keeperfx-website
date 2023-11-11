@@ -92,7 +92,7 @@ class HistoryController {
                     'title'       => 'Dungeon Keeper completely rewritten',
                     'date'        => new \DateTime('2022-12-28'),
                     'date_format' => 'Y-m-d',
-                    'description' => 'qqluqq rewrote the last parts of the DK code, making it so the DLL is no longer required and KeeperFX exists as its own program.',
+                    'description' => 'qqluqq rewrote the last parts of the DK code, making it so the DLL is no longer required and KeeperFX exists as its own program. This change makes it so the next big KeeperFX version will start at 1.0.0.',
                 ],
                 [
                     'title'       => 'KeeperFX.net launched',
@@ -111,6 +111,12 @@ class HistoryController {
                     'date'        => new \DateTime('2023-08-24'),
                     'date_format' => 'Y-m-d',
                     'description' => 'The first KeeperFX tournament has started. Featuring 11 players from Europe and 1 from Russia.',
+                ],
+                [
+                    'title'       => 'KeeperFX 1.0.0 is released!',
+                    'date'        => new \DateTime('2023-11-10'),
+                    'date_format' => 'Y-m-d',
+                    'description' => 'The long awaited 1.0.0 has been released! This is the first full version that makes no more use of the original converted DLL.',
                 ],
             ]])
         );
