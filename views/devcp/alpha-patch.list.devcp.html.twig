@@ -29,7 +29,7 @@
             </thead>
             <tbody>
                 {% for alpha_build in alpha_builds %}
-                        <tr>
+                        <tr data-build-id="{{ alpha_build.id }}">
                             <td>{{ alpha_build.id }}</td>
                             <td>
                                 <a href="/download/alpha/{{ alpha_build.filename|url_encode }}"download>
@@ -37,7 +37,7 @@
                                 </a>
                             </td>
                             <td>{{ alpha_build.artifactId }}</td>
-                            <td>{{ alpha_build.workflowTitle|github_interact }}</td>
+                            <td data-workflow-title>{{ alpha_build.workflowTitle|github_interact }}</td>
                             <td>{{ alpha_build.workflowRunId }}</td>
                             <td>{{ alpha_build.timestamp|date('Y-m-d G:i:s') }}</td>
                             <td>{{ alpha_build.sizeInBytes|format_bytes }}</td>
@@ -54,6 +54,8 @@
                                 {% else %}
                                     <a href="/dev/alpha-patches/{{ alpha_build.id }}/enable/{{ csrf.name }}/{{ csrf.value|url_encode }}">Enable</a>
                                 {% endif %}
+                                &bullet;
+                                <a href="#" data-edit-title="{{ alpha_build.workflowTitle|escape('html_attr') }}">Edit Title</a>
                             </td>
                         </tr>
                 {% endfor %}
@@ -63,4 +65,51 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block body_javascript %}
+<script>
+    $(function(e){
+
+        $('[data-edit-title]').on('click', function(e){
+            e.preventDefault();
+
+            var $editTitleAnchor = $(this);
+            let currentTitle = $editTitleAnchor.data('edit-title');
+            let buildId = $editTitleAnchor.parent().parent().data('build-id');
+
+            var newTitle = window.prompt("New workflow title", currentTitle);
+            if(newTitle.length < 1 || newTitle == currentTitle){
+                return;
+            }
+
+            $.ajax({
+                type: 'PUT',
+                url: '/dev/alpha-patches/' + buildId,
+                dataType: 'json', // return type data,
+                data: {
+                    'workflow_title': newTitle,
+                    [app_store.csrf.keys.name]: app_store.csrf.name,
+                    [app_store.csrf.keys.value]: app_store.csrf.value
+                },
+                complete: function(e) {
+                    // nothing
+                },
+                success: function(data){
+
+                    if(typeof data.success === 'undefined' || !data.success){
+                        toastr.error('Something went wrong.');
+                        return false;
+                    }
+
+                    toastr.success("Workflow title updated!");
+
+                    $editTitleAnchor.data('edit-title', newTitle);
+                    $editTitleAnchor.parent().parent().find('[data-workflow-title]').text(newTitle);
+                }
+            });
+        });
+
+    });
+</script>
 {% endblock %}

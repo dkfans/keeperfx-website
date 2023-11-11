@@ -98,4 +98,34 @@ class ModerateAlphaPatchController {
         $response = $response->withHeader('Location', '/dev/alpha-patches/list')->withStatus(302);
         return $response;
     }
+
+    public function edit(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        $id
+    ){
+        // Check if Alpha Build exists
+        $alpha_build = $em->getRepository(GithubAlphaBuild::class)->find($id);
+        if(!$alpha_build){
+            throw new HttpNotFoundException($request, "alpha build not found");
+        }
+
+        $post = $request->getParsedBody();
+
+        if(!isset($post['workflow_title']) || !is_string($post['workflow_title'])){
+            throw new HttpBadRequestException($request);
+        }
+
+        $alpha_build->setWorkflowTitle($post['workflow_title']);
+        $em->flush();
+
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(
+            \json_encode(['success' => true])
+        );
+
+        return $response;
+    }
 }
