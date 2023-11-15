@@ -66,22 +66,22 @@
 
                             <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarAdminDropdown">
 
-                                    <li><a class="dropdown-item" href="/moderate/workshop/list" data-instant>Workshop</a></li>
-                                    <li><a class="dropdown-item" href="/moderate/workshop-comments/list" data-instant>Latest Comments</a></li>
+                                    <li><a class="dropdown-item" href="/moderate/workshop/list">Workshop</a></li>
+                                    <li><a class="dropdown-item" href="/moderate/workshop-comments/list">Latest Comments</a></li>
 
                                     {% if account.role >= roles.developer %}
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="/dev/alpha-patches/list" data-instant>Alpha Patches</a></li>
-                                        <li><a class="dropdown-item" href="/dev/bundled-assets" data-instant>Bundled Assets</a></li>
-                                        <li><a class="dropdown-item" href="/dev/crash-report/list" data-instant>Crash Reports</a></li>
+                                        <li><a class="dropdown-item" href="/dev/alpha-patches/list">Alpha Patches</a></li>
+                                        <li><a class="dropdown-item" href="/dev/bundled-assets">Bundled Assets</a></li>
+                                        <li><a class="dropdown-item" href="/dev/crash-report/list">Crash Reports</a></li>
                                     {% endif %}
 
                                     {% if account.role >= roles.admin %}
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="/admin/news/list" data-instant>News</a></li>
-                                        <li><a class="dropdown-item" href="/admin/user/list" data-instant>Users</a></li>
-                                        <li><a class="dropdown-item" href="/admin/uploads" data-instant>Uploads</a></li>
-                                        <li><a class="dropdown-item" href="/admin/server-info" data-instant>Server Info</a></li>
+                                        <li><a class="dropdown-item" href="/admin/news/list">News</a></li>
+                                        <li><a class="dropdown-item" href="/admin/user/list">Users</a></li>
+                                        <li><a class="dropdown-item" href="/admin/uploads">Uploads</a></li>
+                                        <li><a class="dropdown-item" href="/admin/server-info">Server Info</a></li>
                                     {% endif %}
 
                             </ul>
@@ -148,15 +148,15 @@
                         <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarDropdown">
 
                             {# Workshop menu items #}
-                            <li><a class="dropdown-item" href="/workshop/browse?user={{ account.username|url_encode }}" data-instant>My workshop items</a></li>
-                            <li><a class="dropdown-item" href="/workshop/my-ratings" data-instant>My ratings</a></li>
+                            <li><a class="dropdown-item" href="/workshop/browse?user={{ account.username|url_encode }}">My workshop items</a></li>
+                            <li><a class="dropdown-item" href="/workshop/my-ratings">My ratings</a></li>
                             <li><hr class="dropdown-divider"></li>
 
                             {# User account menu items #}
                             {# <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li> #}
-                            <li><a class="dropdown-item" href="/account" data-instant>Account Settings</a></li>
-                            <li><a class="dropdown-item" href="/account/notifications/settings" data-instant>Notification Settings</a></li>
-                            <li><a class="dropdown-item" href="/account/connections" data-instant>Connections</a></li>
+                            <li><a class="dropdown-item" href="/account">Account Settings</a></li>
+                            <li><a class="dropdown-item" href="/account/notifications/settings">Notification Settings</a></li>
+                            <li><a class="dropdown-item" href="/account/connections">Connections</a></li>
 
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">Logout</a></li>
