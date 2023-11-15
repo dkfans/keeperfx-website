@@ -22,6 +22,37 @@
                 <h2>KeeperFX</h2>
             </div>
             <div class="content-body">
+                {# Screenhots to the right #}
+                <div class="d-none d-lg-block" id="homepage-screenshots">
+                    <a href="/screenshots/1-eversmile.png"
+                        data-pswp-width="1920"
+                        data-pswp-height="1080"
+                        data-cropped="true"
+                        target="_blank">
+                        <img src="/screenshots/thumbnail/1-eversmile.png" alt="" />
+                    </a>
+                    <a href="/screenshots/2-tulipscent.png"
+                        data-pswp-width="1920"
+                        data-pswp-height="1080"
+                        data-cropped="true"
+                        target="_blank">
+                        <img src="/screenshots/thumbnail/2-tulipscent.png" alt="" />
+                    </a>
+                    <a href="/screenshots/3-reaper-in-chair.png"
+                        data-pswp-width="1920"
+                        data-pswp-height="1080"
+                        data-cropped="true"
+                        target="_blank">
+                        <img src="/screenshots/thumbnail/3-reaper-in-chair.png" alt="" />
+                    </a>
+                    <a href="/screenshots/4-puzzlebox.png"
+                        data-pswp-width="1728"
+                        data-pswp-height="995"
+                        data-cropped="true"
+                        target="_blank">
+                        <img src="/screenshots/thumbnail/4-puzzlebox.png" alt="" />
+                    </a>
+                </div>
 
                 {# Intro #}
                 <p>
@@ -252,5 +283,33 @@
 
 </div>
 
+{% endblock %}
 
+
+{% block body_javascript %}
+    <script>
+        $(function(){
+
+            // Initialize image lightbox
+            var lightbox = new PhotoSwipeLightbox({
+                bgOpacity: 0.8,
+                gallery: '#homepage-screenshots',
+                children: 'a',
+                pswpModule: PhotoSwipe,
+                mainClass: 'pswp-with-perma-preloader',
+            });
+
+            // Init lightbox
+            lightbox.init();
+
+            // Preload the full sizes screenshots
+            $.each($('a'), function(e, el){
+                let url = $(el).attr('href');
+                if(url.startsWith('/screenshot/')){
+                    const img = new Image();
+                    img.src = url;
+                }
+            });
+        });
+    </script>
 {% endblock %}
