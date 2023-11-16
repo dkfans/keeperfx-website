@@ -10,13 +10,28 @@
         </div>
         <div class="content-body">
             {% for article in articles %}
-                <div class="news">
-                    <h3 class="news-title">{{ article.title }}</h3>
-                    <span class="news-date">{{ article.createdTimestamp|date('Y-m-d') }}</span>
-                    <p class="news-content">{{ article.excerpt|markdown_to_html }}</p>
-                    <p style="margin-bottom: 0px;">
-                        <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}">Read more</a>
-                    </p>
+                <div class="news d-flex" style="min-height: 168px;">
+
+                    <div>
+                        {% if article.image is not empty %}
+                            <img src="/news/image/{{ article.image }}" class="bd-keeper" style="float: left; margin: 0px 25px 0px 0px; height: 128px; width: 128px; object-fit: cover;" />
+                        {% else %}
+                            <img src="/img/horny-face-256.png" class="bd-keeper bg-keeper" style="float: left; margin: 0px 25px 0px 0px; height: 128px; width: 128px; object-fit: cover;" />
+                        {% endif %}
+                    </div>
+
+                    <div style="width: 100%">
+                        <div class="d-flex justify-content-between mt-1 mb-3" style="width: 100%">
+                            <h4 style="border:0; margin:0;">{{ article.title }}</h4>
+                            <span class="text-special">{{ article.createdTimestamp|date('Y-m-d') }}</span>
+                        </div>
+                        <div class="news-item-text">
+                            {{ article.excerpt|markdown_to_html }}
+                            <p>
+                                <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}" data-instant>Read more...</a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>

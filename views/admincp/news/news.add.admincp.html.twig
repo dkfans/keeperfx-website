@@ -10,7 +10,7 @@
     </div>
     <div class="content-body">
 
-        <form action="/admin/news/add" method="POST">
+        <form action="/admin/news/add" method="POST" enctype="multipart/form-data">
 
             <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
             <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
@@ -20,6 +20,19 @@
                     Title
                 </label>
                 <input type="text" class="form-control" id="title" name="title"/>
+            </div>
+
+            <div class="form-group">
+                <label for="title">
+                    Image
+                    <span class="text-muted">
+                        (Optional)
+                    </span>
+                </label>
+                <input type="file" class="form-control" id="image" name="image" {% if get_env('APP_NEWS_IMAGE_STORAGE') is empty %}disabled=disabled{% endif %} />
+                <div class="form-group mt-1">
+                    <span class="text-muted" style="font-size: 12px;">Maximum filesize: {{ globals.upload_limit.news_image.formatted }}</span>
+                </div>
             </div>
 
             <div class="form-group" style="margin-top: 30px;">
@@ -39,7 +52,7 @@
                 </a>
             </span>
 
-            <div class="form-group mt-4">
+            <div class="form-group mt-5">
                 <label for="excerpt">
                     Excerpt (Short Text to show on home page with a "Read more" link) -
                     <a href="https://chat.openai.com/" target="_blank">ChatGPT</a>

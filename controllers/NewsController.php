@@ -67,4 +67,41 @@ class NewsController {
         return $response;
     }
 
+    public function outputNewsImage(
+        Request $request,
+        Response $response,
+        $filename
+    ){
+        // Make sure the news image storage is set
+        if(!isset($_ENV['APP_NEWS_IMAGE_STORAGE']) || empty($_ENV['APP_NEWS_IMAGE_STORAGE'])){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Get image filepath
+        $filepath = $_ENV['APP_NEWS_IMAGE_STORAGE'] . '/' . $filename;
+
+        // Check if file exists
+        if(!\file_exists($filepath)){
+            throw new HttpNotFoundException($request, 'news image not found');
+        }
+
+        // Get mimetype of image
+        $finfo        = \finfo_open(\FILEINFO_MIME_TYPE);
+        $content_type = \finfo_file($finfo, $filepath);
+        \finfo_close($finfo);
+
+        // Return image
+        $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
+        $response = $response
+            ->withHeader('Pragma', 'public')
+            ->withHeader('Cache-Control', 'max-age=' . $cache_time)
+            ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
+            ->withHeader('Content-Type', $content_type);
+        $response->getBody()->write(
+            \file_get_contents($filepath)
+        );
+
+        return $response;
+    }
+
 }

@@ -11,6 +11,7 @@ class UploadSizeHelper
     private int $max_calculated_file_upload;
     private int $max_calculated_total_upload;
 
+    private int $news_image_max_upload_size;
     private int $avatar_max_upload_size;
     private int $workshop_item_max_upload_size;
     private int $workshop_image_max_upload_size;
@@ -34,6 +35,14 @@ class UploadSizeHelper
             $this->php_max_post,
             $this->php_memory_limit
         );
+
+        // Determine max news image upload size
+        $val = $_ENV['APP_NEWS_IMAGE_MAX_UPLOAD_SIZE'] ?? null;
+        if($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false){
+            $this->news_image_max_upload_size = $this->max_calculated_file_upload;
+        } else {
+            $this->news_image_max_upload_size = \min($val, $this->max_calculated_file_upload);;
+        }
 
         // Determine max Avatar upload size
         $val = $_ENV['APP_AVATAR_MAX_UPLOAD_SIZE'] ?? null;
@@ -59,6 +68,16 @@ class UploadSizeHelper
             $this->workshop_image_max_upload_size = \min($val, $this->max_calculated_file_upload);;
         }
 
+    }
+
+    /**
+     * Get final news image max upload filesize in bytes
+     *
+     * @return integer
+     */
+    public function getFinalNewsImageUploadSize(): int
+    {
+        return $this->news_image_max_upload_size;
     }
 
     /**

@@ -53,6 +53,12 @@ class TwigGlobalProvider {
                             BinaryFormatter::bytes($upload_size_helper->getMaxCalculatedFileUpload())->format() :
                             'N/A'
                     ],
+                    'news_image' => [
+                        'size'      => $upload_size_helper->getFinalNewsImageUploadSize(),
+                        'formatted' => ($upload_size_helper->getFinalNewsImageUploadSize() > 0) ?
+                            BinaryFormatter::bytes($upload_size_helper->getFinalNewsImageUploadSize())->format() :
+                            'N/A'
+                    ],
                 ]
             ]
         ];

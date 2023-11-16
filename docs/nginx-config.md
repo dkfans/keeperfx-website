@@ -71,6 +71,19 @@ location ~ ^/avatar/(.+)$ {
 }
 ```
 
+
+## News Images
+
+```
+location ~ ^/news/image/(.+)$ {
+    access_log off;
+    alias /var/www/keeperfx-website/news-image/$1;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000";
+}
+```
+
+
 ## Crash Reports
 
 ```

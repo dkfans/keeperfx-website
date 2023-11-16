@@ -10,7 +10,19 @@
     </div>
     <div class="content-body">
 
-        <form action="/admin/news/{{ article.id }}" method="POST">
+        <h5 style="border-bottom: 0;">Info</h5>
+        <table class="table mb-5">
+            <tr>
+                <td>Author</td>
+                <td>{{ article.author.username }}</td>
+            </tr>
+            <tr>
+                <td>URL title slug</td>
+                <td>{{ article.titleSlug }}</td>
+            </tr>
+        </table>
+
+        <form action="/admin/news/{{ article.id }}" method="POST" enctype="multipart/form-data">
 
             <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
             <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
@@ -22,10 +34,60 @@
                 <input type="text" class="form-control" id="title" name="title" value="{{ article.title }}" />
             </div>
 
-            <p style="margin-top: 30px;">
-                URL title slug: {{ article.titleSlug }}<br />
-                Author: {{ article.author.username }}
-            </p>
+            <div class="form-group">
+                <label for="title">
+                    Image
+                </label>
+                <div class="d-flex">
+                    <div>
+                        {% if article.image %}
+                            <img src="/news/image/{{ article.image }}" class="bd-keeper" style="max-height: 256px;" />
+                        {% else %}
+                            <img src="/img/no-image-256.png" />
+                        {% endif %}
+                    </div>
+                    <div style="margin-left: 30px;">
+                            <div class="form-group">
+                                <label for="image">
+                                    New image
+                                </label>
+                                <input type="file" class="form-control" id="image" name="image">
+                            </div>
+
+                            <div class="form-group mt-1 mb-3">
+                                <span class="text-muted" style="font-size: 12px;">Maximum filesize: {{ globals.upload_limit.news_image.formatted }}</span>
+                            </div>
+
+                        {% if article.image %}
+                            <a href="/admin/news/{{ article.id }}/delete-image/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove current image</a>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </div>
+
+            {# {% if article.image is not null %}
+                <div class="form-group">
+                    <label for="title">
+                        Image
+                    </label>
+                    <img src="/news/image/{{ article.image }}" class="bd-keeper" style="margin: 28px 30px 20px 35px; max-height: 256px;" />
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="title">
+                    Update Image
+                    <span class="text-muted">
+                        (Leave blank to not change)
+                    </span>
+                </label>
+                <input type="file" class="form-control" id="image" name="image" {% if get_env('APP_NEWS_IMAGE_STORAGE') is empty %}disabled=disabled{% endif %} />
+                <div class="form-group mt-1">
+                    <span class="text-muted" style="font-size: 12px;">Maximum filesize: {{ globals.upload_limit.news_image.formatted }}</span>
+                </div>
+            </div> #}
 
             <div class="form-group" style="margin-top: 30px;">
                 <label for="contents">

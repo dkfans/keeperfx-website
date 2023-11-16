@@ -21,6 +21,9 @@ class NewsArticle {
     #[ORM\ManyToOne(targetEntity: 'User')]
     private User $author;
 
+    #[ORM\Column(nullable: true)]
+    private string|null $image = null;
+
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
@@ -140,6 +143,24 @@ class NewsArticle {
     public function setExcerpt(string $excerpt): self
     {
         $this->excerpt = $excerpt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of image
+     */
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    /**
+     * Set the value of image
+     */
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

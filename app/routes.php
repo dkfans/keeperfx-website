@@ -25,6 +25,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/changelog/{tag}', [ChangelogController::class, 'changelogIndex']);
 
     $group->get('/news', [NewsController::class, 'newsListIndex']);
+    $group->get('/news/image/{filename}', [NewsController::class, 'outputNewsImage']);
     $group->get('/news/{id:\d+}[/{date_str}[/{slug}]]', [NewsController::class, 'newsArticleIndex']);
 
     $group->get('/downloads', [DownloadController::class, 'downloadsIndex']);
@@ -106,6 +107,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
                 $group->get('/{id:\d+}', [AdminCP\AdminNewsController::class, 'newsEditIndex']);
                 $group->post('/{id:\d+}', [AdminCP\AdminNewsController::class, 'newsEdit']);
                 $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminNewsController::class, 'newsDelete']);
+                $group->get('/{id:\d+}/delete-image/{token_name}/{token_value:.+}', [AdminCP\AdminNewsController::class, 'imageDelete']);
             });
 
             // Admin: USERS

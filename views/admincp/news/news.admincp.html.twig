@@ -18,6 +18,7 @@
                 <tr>
                     <th>Title</th>
                     <th>Author</th>
+                    <th>Image</th>
                     <th>Date</th>
                     <th>Actions</th>
                 </tr>
@@ -27,6 +28,13 @@
                         <tr>
                             <td><a href="/news/{{ article.id }}/{{ article.titleSlug }}">{{ article.title }}</a></td>
                             <td>{{ article.author.username }}</td>
+                            <td>
+                                {% if article.image is not null %}
+                                    <ion-icon name="image-outline"></ion-icon>
+                                {% else %}
+                                    <ion-icon name="image-outline" style="filter:brightness(0.45);" class="text-muted"></ion-icon>
+                                {% endif %}
+                            </td>
                             <td>{{ article.createdTimestamp|date('Y-m-d') }}</td>
                             <td>
                                 <a href="/news/{{ article.id }}" target="_blank">View</a>

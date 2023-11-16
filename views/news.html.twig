@@ -9,14 +9,24 @@
 
 {% block content %}
 
-    <div class="content-box bg-keeper bd-keeper">
-        <div class="content-header">
-    <span class="news-date">{{ article.createdTimestamp|date('Y-m-d') }}</span>
-            <h2>{{ article.title }}</h2>
-        </div>
-        <div class="content-body">
-            <p>{{ article.contents|markdown_to_html }}</p>
-            <p class="text-muted">- KeeperFX Team</p>
+    <div class="content-box bg-keeper bd-keeper" style="max-width: 920px; margin: 0 auto; min-height: 335px; padding: 15px;">
+
+        {% if article.image is not empty %}
+            <img src="/news/image/{{ article.image }}" class="bd-keeper" style="float: left; margin: 28px 30px 20px 35px; max-height: 256px;" />
+        {% endif %}
+
+        <div style="display: inline;">
+
+            <div style="margin: 35px 25px 0px 25px;" class="pb-0">
+                <h2>{{ article.title }}</h2>
+                <span class="text-special mt-3">{{ article.createdTimestamp|date('Y-m-d') }}</span>
+                <hr class="m-0 p-0 mt-4" />
+            </div>
+
+            <div class="content-body">
+                <p>{{ article.contents|markdown_to_html }}</p>
+                <p class="text-muted">- KeeperFX Team</p>
+            </div>
         </div>
     </div>
 
