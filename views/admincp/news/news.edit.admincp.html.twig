@@ -67,28 +67,6 @@
                 </div>
             </div>
 
-            {# {% if article.image is not null %}
-                <div class="form-group">
-                    <label for="title">
-                        Image
-                    </label>
-                    <img src="/news/image/{{ article.image }}" class="bd-keeper" style="margin: 28px 30px 20px 35px; max-height: 256px;" />
-                </div>
-            {% endif %}
-
-            <div class="form-group">
-                <label for="title">
-                    Update Image
-                    <span class="text-muted">
-                        (Leave blank to not change)
-                    </span>
-                </label>
-                <input type="file" class="form-control" id="image" name="image" {% if get_env('APP_NEWS_IMAGE_STORAGE') is empty %}disabled=disabled{% endif %} />
-                <div class="form-group mt-1">
-                    <span class="text-muted" style="font-size: 12px;">Maximum filesize: {{ globals.upload_limit.news_image.formatted }}</span>
-                </div>
-            </div> #}
-
             <div class="form-group" style="margin-top: 30px;">
                 <label for="contents">
                     Content
