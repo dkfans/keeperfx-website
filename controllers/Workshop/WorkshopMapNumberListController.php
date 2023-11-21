@@ -24,16 +24,6 @@ class WorkshopMapNumberListController {
         TwigEnvironment $twig,
         EntityManager $em
     ){
-
-        $map_numbers = [];
-        for($i = 202; $i < 32767; $i++)
-        {
-            $map_numbers[$i] = [
-                'available'     => true,
-                'workshop_item' => null,
-            ];
-        }
-
         $items = $em->getRepository(WorkshopItem::class)->findBy(['category' => WorkshopCategory::Map], ['map_number' => 'ASC']);
         foreach($items as $item){
             if($item->getMapNumber() === null)
@@ -42,7 +32,6 @@ class WorkshopMapNumberListController {
             }
 
             $map_numbers[$item->getMapNumber()] = [
-                'available'     => false,
                 'workshop_item' => $item,
             ];
         }
@@ -50,6 +39,7 @@ class WorkshopMapNumberListController {
         $response->getBody()->write(
             $twig->render('workshop/mapnumber.list.map.html.twig', ['map_numbers' => $map_numbers])
         );
+
         return $response;
 
     }

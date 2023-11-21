@@ -10,7 +10,7 @@
         </div>
         <div class="content-body">
             <p>
-                This is a list of mapnumbers and their availability.
+                This is a list of mapnumbers that are in use.
                 We want standalone maps in the KeeperFX.net workshop to have a unique mapnumber so they do not overwrite the files of other maps and their completion progress can be tracked.
             </p>
 
@@ -18,7 +18,6 @@
                 <thead>
                     <tr>
                         <th style="width: 50px;">Mapnumber</th>
-                        <th style="width: 60px;">Availability</th>
                         <th>Map</th>
                     </tr>
                 </thead>
@@ -26,13 +25,6 @@
                     {% for number, map_number in map_numbers %}
                         <tr>
                             <td style="width: 50px;">{{ number }}</td>
-                            <td style="width: 60px;">
-                                {% if map_number.available %}
-                                    <span style="color: lime">Available!</span>
-                                {% else %}
-                                    <span style="color: red">In use</span>
-                                {% endif %}
-                            </td>
                             <td>
                                 {% if map_number.workshop_item %}
                                     <a href="/workshop/item/{{ map_number.workshop_item.id }}/{{ map_number.workshop_item.name|slugify }}">{{ map_number.workshop_item.name }}</a>
