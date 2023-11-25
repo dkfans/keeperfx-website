@@ -48,7 +48,7 @@ class FetchForumActivityCommand extends Command
 
         $crawler = new Crawler((string)$content);
 
-        $threads = $crawler->filter('#threads .threadbit')->each(function (Crawler $node, $i) {
+        $threads = $crawler->filter('#threads .threadbit:not(.moved)')->each(function (Crawler $node, $i) {
             $replies_str = $node->filter('.threadstats li')->first()->text();
             $replies     = \preg_replace('/[^0-9]/', '', $replies_str ?? '');
             return [
