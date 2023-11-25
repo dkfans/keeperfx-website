@@ -77,6 +77,11 @@ class HandleTwitchStreamsCommand extends Command
 
         foreach($oauth_tokens as $token){
 
+            if($token->getToken() === null || $token->getRefreshToken() === null || $token->getExpiresTimestamp() === null){
+                $output->writeln("[-] Not checking invalidated token: {$token->getUser()->getUsername()}");
+                continue;
+            }
+
             // Refresh expired OAuth Token
             if($token->getExpiresTimestamp()->getTimestamp() < \time()){
 
