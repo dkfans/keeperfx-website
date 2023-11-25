@@ -82,10 +82,24 @@ class HandleTwitchStreamsCommand extends Command
 
                 $output->writeln("[>] Refreshing token of user: {$token->getUser()->getUsername()}");
 
-                // Get new OAuth Token from provider
-                $new_access_token = $provider->getAccessToken('refresh_token', [
-                    'refresh_token' => $token->getRefreshToken()
-                ]);
+                try {
+                    // Get new OAuth Token from provider
+                    $new_access_token = $provider->getAccessToken('refresh_token', [
+                        'refresh_token' => $token->getRefreshToken()
+                    ]);
+                } catch (\Exception $ex) {
+
+                    // Invalidate OAuth token in DB
+                    $token->setToken(null);
+                    $token->setRefreshToken(null);
+                    $token->setExpiresTimestamp(null);
+
+                    // Flush changes to DB
+                    $this->em->flush();
+
+                    $output->writeln("[!] Token invalidated: {$token->getUser()->getUsername()}");
+                    continue;
+                }
 
                 // Update OAuth Token in DB
                 $token->setToken($new_access_token->getToken());
