@@ -25,7 +25,8 @@ class FetchUnearthCommand extends Command
 {
     private const UNEARTH_WORKSHOP_ID = 1;
 
-    private const UNEARTH_VERSION_REGEX = "v([0-9\.]+[a-z]*?)\.";
+    private const UNEARTH_VERSION_REGEX_1 = "v([0-9\.]+[a-z]*?)\.";    // old way of versioning
+    private const UNEARTH_VERSION_REGEX_2 = "unearth\-([0-9\.]*?)\-";
 
     /** @var EntityManager $em */
     private $em;
@@ -45,10 +46,15 @@ class FetchUnearthCommand extends Command
 
     private function getUnearthVersionFromString(string $string): string|false
     {
-        if(\preg_match("~" . self::UNEARTH_VERSION_REGEX . "~", $string, $matches) !== 1){
-            return false;
+        if(\preg_match("~" . self::UNEARTH_VERSION_REGEX_1 . "~", $string, $matches) === 1){
+            return $matches[1];
         }
-        return $matches[1];
+
+        if(\preg_match("~" . self::UNEARTH_VERSION_REGEX_2 . "~", $string, $matches) === 1){
+            return $matches[1];
+        }
+
+        return false;
     }
 
     protected function execute(Input $input, Output $output)
@@ -96,7 +102,8 @@ class FetchUnearthCommand extends Command
         }
 
         // Get Windows download data
-        if(\preg_match("~data\-upload\_id\=\"(\d+)\".+?(Unearth\sv[0-9\.]+[a-z]*?\.zip)~", $response->getBody(), $matches) !== 1){
+        // old regex: "~data\-upload\_id\=\"(\d+)\".+?(Unearth\sv[0-9\.]+[a-z]*?\.zip)~"
+        if(\preg_match("~data\-upload\_id\=\"(\d+)\".+?title\=\"(.*?)\"~", $response->getBody(), $matches) !== 1){
             $output->writeln("[-] Failed to get Unearth Windows download filename");
             return Command::FAILURE;
         }
@@ -106,7 +113,8 @@ class FetchUnearthCommand extends Command
         $output->writeln("[+] Windows download: <info>{$windows_download_filename}</info> (#{$windows_download_id})");
 
         // Get Linux download data
-        if(\preg_match("~" . $windows_download_id . ".+?data\-upload\_id\=\"(\d+)\".+?(UnearthLinux\sv[0-9\.]+[a-z]*?\.zip)~", $response->getBody(), $matches) !== 1){
+        // old regex: "~" . $windows_download_id . ".+?data\-upload\_id\=\"(\d+)\".+?(UnearthLinux\sv[0-9\.]+[a-z]*?\.zip)~"
+        if(\preg_match("~" . $windows_download_id . ".+?data\-upload\_id\=\"(\d+)\".+?title\=\"(.*?)\"~", $response->getBody(), $matches) !== 1){
             $output->writeln("[-] Failed to get Unearth Linux download filename");
             return Command::FAILURE;
         }
