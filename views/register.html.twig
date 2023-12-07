@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="" style="align-items: center; width: 100%">
+<div class="" style="align-items: center; width: 100%" id="register">
 
     <div class="bg-keeper bd-keeper login-box">
 
@@ -84,4 +84,19 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block body_javascript %}
+<script>
+    $(function(){
+
+        // Position the register element in the middle of the screen
+        $('#register')[0].scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+            inline: 'center'
+        });
+
+    });
+</script>
 {% endblock %}
