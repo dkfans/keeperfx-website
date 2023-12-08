@@ -39,16 +39,66 @@ class ModerateBundledAssetsController {
             return $response;
         }
 
-        // Get files
-        $files = DirectoryHelper::tree($dir, true);
+        $tree = $this->buildWidgetFileTree($dir);
 
         // Response
         $response->getBody()->write(
             $twig->render('devcp/bundled-assets.devcp.html.twig', [
-                'files' => $files,
+                'directory_structure' => $tree,
             ])
         );
         return $response;
+    }
+
+    /**
+     * This function converts a directory into a `bootstrap-treeview.js` compatible array
+     *
+     * @param string $dir
+     * @return void
+     */
+    private function buildWidgetFileTree(string $dir) {
+
+        $return = [];
+
+        $i=0;
+
+        // Create nodelist
+        foreach (new \DirectoryIterator($dir) as $entry) {
+
+            $node = [
+                'text' => $entry->getBasename(),
+            ];
+
+            if($entry->isDot()){
+                continue;
+            }
+
+            if ($entry->isDir()) {
+                $node['nodes'] = $this->buildWidgetFileTree($dir . '/' . $entry->getBasename());
+            }
+
+            $return[$i++] = $node;
+        }
+
+        // Sort alphabetically
+        usort($return, function($a, $b){
+            return
+                \strtolower($a['text'])
+                <=>
+                \strtolower($b['text'])
+            ;
+        });
+
+        // Move directories up front
+        usort($return, function($a, $b){
+            return
+                (int) !isset($a['nodes'])
+                <=>
+                (int) !isset($b['nodes'])
+            ;
+        });
+
+        return $return;
     }
 
 }

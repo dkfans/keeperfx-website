@@ -6,7 +6,7 @@
 
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h2>Bundled Assets ({{ files|length }})</h2>
+        <h2>Bundled Assets</h2>
     </div>
     <div class="content-body">
 
@@ -14,25 +14,54 @@
             These files are automatically bundled with alpha patches that are served on this website.
         </div>
 
-        {% if files|length == 0 %}
+        {% if directory_structure|length == 0 %}
             <p>
                 No files being bundled
             </p>
         {% else %}
-            <table class="table">
-
-                {% for file in files %}
-                    <tr>
-                        <td>
-                            {{ file }}
-                        </td>
-                    </tr>
-                {% endfor %}
-
-            </table>
-    {% endif %}
+            <div id="tree"></div>
+        {% endif %}
 
     </div>
 </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.42.0/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css" />
+{% endblock %}
+
+{% block body_javascript %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.js"></script>
+
+    <script>
+
+        var tree = $('#tree').treeview({
+            data          : {{ directory_structure|json_encode()|raw }},
+            levels        : 1,
+            showBorder    : false,
+            showIcon      : true,
+            backColor     : "#222",
+            color         : "#f0f0f0",
+            onhoverColor  : "#2a2a2a",
+            expandIcon    : "ti ti-folder",
+            collapseIcon  : "ti ti-folder-open",
+            emptyIcon      : "ti ti-file-filled",
+            onNodeSelected: function(event, data) {
+
+                // Deselect again
+                $('#tree').treeview('toggleNodeSelected', [ data.nodeId, { silent: true } ]);
+
+                // Open or close directories
+                if(typeof data.nodes != 'undefined'){
+                    $('#tree').treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
+                }
+
+            }
+        });
+
+    </script>
 
 {% endblock %}
