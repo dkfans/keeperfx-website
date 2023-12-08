@@ -173,8 +173,7 @@ a.title-link {
 .header {
     font-size: 18px;
     font-family: 'Cinzel', serif;
-    padding: 10px 20px;
-    /* text-align: center; */
+    padding: 12px 20px;
 }
 
 .header a {
@@ -946,6 +945,18 @@ button.btn-medieval ion-icon {
     position: relative;
     top: 5px;
     margin-right: 7px;
+}
+
+.ion-icon-raw-top-nav-bar svg {
+    filter: invert(75%) sepia(40%);
+    height: 23px;
+    width: 23px;
+    position: relative;
+    top: 1px;
+}
+
+.ion-icon-raw-top-nav-bar svg:hover {
+    filter: invert(42%) sepia(100%) saturate(40) brightness(110%) hue-rotate(-30deg);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
