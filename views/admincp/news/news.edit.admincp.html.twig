@@ -70,9 +70,6 @@
             <div class="form-group" style="margin-top: 30px;">
                 <label for="contents">
                     Content
-                    <span class="text-muted">
-                        (Optional)
-                    </span>
                 </label>
                 <textarea class="form-control" name="contents" id="contents" rows="10">{{ article.contents }}</textarea>
             </div>
@@ -85,10 +82,13 @@
             </span>
 
             <div class="form-group mt-4">
-                <label for="excerpt">
-                    Excerpt (Short Text to show on home page with a "Read more" link) -
+            <label for="excerpt">
+                Excerpt
+                <span class="text-muted">
+                    (Optional) - Short Text to show on home page with a "Read more" link -
                     <a href="https://chat.openai.com/" target="_blank">ChatGPT</a>
-                </label>
+                </span>
+            </label>
                 <textarea class="form-control" name="excerpt" id="excerpt" rows="3">{{ article.excerpt }}</textarea>
             </div>
 
