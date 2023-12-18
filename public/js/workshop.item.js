@@ -1,9 +1,13 @@
+// Emoji UTF-8 ranges
 var emojiPickerRanges = [
     [128512, 128591],
     [9989,9990],
     [10060,10061]
 ];
 
+// This function handles the ratings.
+// It's done this way because when we update a rating the server provides a new HTML render,
+// but we want to make this new HTML also be able to handle the rating.
 function handleRatingHtml(el){
 
     var $ratingBox     = $(el);
@@ -99,6 +103,7 @@ function handleRatingHtml(el){
     });
 }
 
+// Wait for document load
 $(function(e){
 
     // Initialize image lightbox
