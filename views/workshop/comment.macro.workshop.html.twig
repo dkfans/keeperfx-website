@@ -73,6 +73,9 @@
                                 <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper">
                                     {% if account.role >= roles.moderator or comment.user.id == account.id  %}
                                         <li><a class="dropdown-item" data-comment-action="edit" href="#">Edit</a></li>
+                                        {% if account.role >= roles.moderator %}
+                                            <li><a class="dropdown-item" data-comment-action="move" href="#">Move</a></li>
+                                        {% endif %}
                                         <li><a class="dropdown-item" data-comment-action="delete" href="#">Delete</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     {% endif %}
@@ -159,6 +162,16 @@
                         {% endfor %}
                     </div>
                 {% endif %}
+
+                {# Move comment to this location button #}
+                <div class="workshop-item-move-box" style="display:none;">
+                    <button class="btn btn-primary" data-move-comment-to="{{ comment.id }}">Move comment here</button>
+                </div>
+
+                {# Disable comment move mode #}
+                <div class="workshop-item-move-cancel-box" style="display:none;">
+                    <button class="btn btn-sm btn-dark" data-disable-move-comment-mode="true">Disable comment move mode</button>
+                </div>
 
                 {# Replies #}
                 {% if comment.replies|length > 0 %}

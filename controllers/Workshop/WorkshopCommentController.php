@@ -137,29 +137,62 @@ class WorkshopCommentController {
 
         // Get post
         $post = $request->getParsedBody();
-        if(!\array_key_exists('content', $post) || !isset($post['content']) || !is_string($post['content'])){
-            $response->getBody()->write(
-                \json_encode([
-                    'success' => false,
-                    'error'   => 'CONTENT_NOT_SET'
-                ])
-            );
-            return $response;
+
+        // Check for updated content
+        if(\array_key_exists('content', $post)){
+
+            // New content can not be empty
+            if(!\is_string($post['content']) || empty($post['content']))
+            {
+                $response->getBody()->write(
+                    \json_encode([
+                        'success' => false,
+                        'error'   => 'EMPTY_CONTENT'
+                    ])
+                );
+                return $response;
+            }
+
+            // Update the comment
+            $comment->setContent($post['content']);
         }
 
-        // Make sure content is not empty
-        if($post['content'] === ""){
-            $response->getBody()->write(
-                \json_encode([
-                    'success' => false,
-                    'error'   => 'EMPTY_CONTENT'
-                ])
-            );
-            return $response;
+        // Check for updated parent comment
+        // Only workshop moderators are allowed to update the parent
+        if(
+            \array_key_exists('parent', $post) &&
+            $account->getUser()->getRole()->value >= UserRole::Moderator->value
+        ){
+
+            // Move comment to top
+            if(\is_string($post['parent']) && $post['parent'] === "top"){
+                $comment->setParent(null);
+            }
+
+            // Move comment under another comment
+            if(\is_numeric($post['parent'])){
+
+                // Find the parent comment
+                $parent_comment = $em->getRepository(WorkshopComment::class)->findOneBy([
+                    'id'   => (int) $post['parent'],
+                    'item' => $workshop_item,
+                ]);
+                if(!$parent_comment){
+                    $response->getBody()->write(
+                        \json_encode([
+                            'success' => false,
+                            'error'   => 'INVALID_PARENT_COMMENT'
+                        ])
+                    );
+                    return $response;
+                }
+
+                // Update the parent on our comment
+                $comment->setParent($parent_comment);
+            }
         }
 
-        // Update the comment
-        $comment->setContent($post['content']);
+        // Save changes to DB
         $em->flush();
 
         // Create HTML content from markdown

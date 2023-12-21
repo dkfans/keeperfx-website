@@ -5,6 +5,10 @@ var emojiPickerRanges = [
     [10060,10061]
 ];
 
+// Variables to temporary hold the comment we are moving
+var movingCommentId;
+var $movingCommentElement;
+
 // This function handles the ratings.
 // It's done this way because when we update a rating the server provides a new HTML render,
 // but we want to make this new HTML also be able to handle the rating.
@@ -101,6 +105,22 @@ function handleRatingHtml(el){
             'content': 'Rate this item ' + ratingScore + ' out of 5'
         });
     });
+}
+
+// Disable comment move mode
+function disableCommentMoveMode(){
+
+    // Reset elements
+    $('.comment-buttons').show();
+    $('.workshop-item-move-box').hide();
+    $('.workshop-item-move-cancel-box').hide();
+    $movingCommentElement.removeClass('border-primary');
+
+    // Reset variables
+    movingCommentId = null;
+    $movingCommentElement = null;
+
+    return;
 }
 
 // Wait for document load
@@ -361,7 +381,7 @@ $(function(e){
                 return true;
             }
 
-            // Edit the workshop item
+            // Edit the comment
             $.ajax({
                 type: 'PUT',
                 url: '/workshop/item/' + workshop_item.id + '/comment/' + commentId,
@@ -489,6 +509,69 @@ $(function(e){
             $('#reportModal').modal('show');
             return true;
         }
+
+        if(action === "move")
+        {
+            movingCommentId       = commentId;
+            $movingCommentElement = $commentElement;
+
+            // Hide all comment buttons because we are in "move" mode
+            $('.comment-buttons').hide();
+
+            // Highlight the current comment
+            $commentElement.addClass('border-primary');
+
+            // Show places where to move it to
+            $('.workshop-item-move-box').show();
+
+            // But don't show this place, instead show "cancel move"
+            $commentElement.find('.workshop-item-move-box').hide();
+            $commentElement.find('.workshop-item-move-cancel-box').show();
+
+            return true;
+        }
+    });
+
+    // Disable comment move mode
+    $('[data-disable-move-comment-mode="true"]').on('click', disableCommentMoveMode);
+
+    // Handle "Move comment here"
+    $('[data-move-comment-to]').on('click', function(e){
+
+        // Get the location where we need to move the comment to
+        let moveCommentTo = $(this).data('move-comment-to');
+
+        var moveTarget = $(this).parent();
+
+        // Edit the comment
+        $.ajax({
+            type: 'PUT',
+            url: '/workshop/item/' + workshop_item.id + '/comment/' + movingCommentId,
+            dataType: 'json', // return type data,
+            data: {
+                parent: moveCommentTo,
+                [app_store.csrf.keys.name]: app_store.csrf.name,
+                [app_store.csrf.keys.value]: app_store.csrf.value
+            },
+            success: function(data){
+
+                if(typeof data.success === 'undefined'){
+                    toastr.error('Something went wrong.');
+                    return false;
+                }
+
+                if(!data.success){
+                    toastr.error('Failed to move comment.');
+                    return false;
+                }
+
+                // Success
+                moveTarget.replaceWith($movingCommentElement);
+                toastr.success('Comment has been successfully moved!');
+
+                disableCommentMoveMode();
+            }
+        });
     });
 
     // Report modal: Select reason textarea on show
