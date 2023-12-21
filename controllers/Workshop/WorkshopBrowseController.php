@@ -86,18 +86,24 @@ class WorkshopBrowseController {
                 break;
             case 'highest-rated':
                 $query = $query->orderBy('item.rating_score', 'DESC');
+                $query = $query->andWhere($query->expr()->isNotNull('item.rating_score'));
                 $url_params['order_by'] = 'highest-rated';
                 break;
             case 'lowest-rated':
                 $query = $query->orderBy('item.rating_score', 'ASC');
+                $query = $query->andWhere($query->expr()->isNotNull('item.rating_score'));
                 $url_params['order_by'] = 'lowest-rated';
                 break;
             case 'most-difficult':
                 $query = $query->orderBy('item.difficulty_rating_score', 'DESC');
+                $query = $query->andWhere($query->expr()->isNotNull('item.difficulty_rating_score'));
+                $query = $query->andWhere('item.difficulty_rating_enabled = 1');
                 $url_params['order_by'] = 'most-difficult';
                 break;
             case 'least-difficult':
                 $query = $query->orderBy('item.difficulty_rating_score', 'ASC');
+                $query = $query->andWhere($query->expr()->isNotNull('item.difficulty_rating_score'));
+                $query = $query->andWhere('item.difficulty_rating_enabled = 1');
                 $url_params['order_by'] = 'least-difficult';
                 break;
             case 'oldest':
