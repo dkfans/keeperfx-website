@@ -956,7 +956,8 @@ button.btn-medieval ion-icon {
 }
 
 .ion-icon-raw-top-nav-bar svg:hover {
-    filter: invert(42%) sepia(100%) saturate(40) brightness(110%) hue-rotate(-30deg);
+    /* Figure out correct filter: https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: invert(43%) sepia(54%) saturate(6071%) hue-rotate(349deg) brightness(99%) contrast(106%);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
