@@ -3,7 +3,9 @@
 namespace App\Controller\AdminCP;
 
 use App\Entity\GithubAlphaBuild;
+use App\Entity\WorkshopComment;
 use App\Entity\WorkshopFile;
+
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
@@ -42,12 +44,20 @@ class AdminServerInfoController {
             }
         }
 
+        // Get workshop comment count
+        $workshop_comment_count = 0;
+        $workshop_comments = $em->getRepository(WorkshopComment::class)->findAll();
+        if($workshop_comments){
+           $workshop_comment_count = \count($workshop_comments);
+        }
+
         $response->getBody()->write(
             $twig->render('admincp/server-info.admincp.html.twig', [
                 'alpha_build_count'             => \count($alpha_builds),
                 'alpha_build_storage_size'      => $alpha_build_storage_size,
                 'workshop_file_count'           => \count($workshop_files),
                 'workshop_file_storage_size'    => $workshop_file_storage_size,
+                'workshop_comment_count'        => $workshop_comment_count,
                 'php_max_upload'                => $php_max_upload,
                 'php_max_post'                  => $php_max_post,
                 'php_memory_limit'              => $php_memory_limit,
