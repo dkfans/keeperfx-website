@@ -34,6 +34,9 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.role.name }}</td>
                         <td>
+                            {% if user.email is not null %}
+                                <ion-icon name="mail-outline"></ion-icon>
+                            {% endif %}
                             {% for token in user.connectionTokens %}
                                 {% if token.providerType.value == "discord" %}
                                     <ion-icon name="logo-discord" style="color: #5865F2;"></ion-icon>
