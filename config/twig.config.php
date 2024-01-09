@@ -51,6 +51,7 @@ return [
         \App\Twig\Extension\WorkshopGlobalsTwigExtension::class,
         \App\Twig\Extension\StringUniqueColorTwigExtension::class,
         \App\Twig\Extension\NotificationTwigExtension::class,
+        \App\Twig\Extension\CountryFlagExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
     ],

@@ -44,6 +44,36 @@ class AccountController {
         return $response;
     }
 
+    public function updateCountry(
+        Request $request,
+        Response $response,
+        Account $account,
+        EntityManager $em,
+        FlashMessage $flash
+    ){
+        // Get country list [XX => emoji flag]
+        $countries = require APP_ROOT . '/config/country.flag.config.php';
+
+        // Get post vars
+        $post         = $request->getParsedBody();
+        $country_code = (string) $post['country'] ?? '';
+
+        // Update country code
+        if (strlen($country_code) === 2 && \array_key_exists($country_code, $countries)){
+            $account->getUser()->setCountry($country_code);
+        } else {
+            $account->getUser()->setCountry(null);
+        }
+
+        // Save changes to DB
+        $em->flush();
+
+        $flash->success('Your country has been updated!');
+
+        $response = $response->withHeader('Location', '/account')->withStatus(302);
+        return $response;
+    }
+
     public function updateEmail(
         Request $request,
         Response $response,

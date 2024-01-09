@@ -27,6 +27,13 @@
                             <span class="user-username">{{ comment.user.username }}</span>
                         </a>
 
+                        {# Country #}
+                        {% if comment.user.country is not null %}
+                            <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px">
+                                {{ get_country_emoji(comment.user.country) }}
+                            </span>
+                        {% endif %}
+
                         {# Badge: If user is submitter #}
                         {% if item.submitter is not null and comment.user == item.submitter %}
                             <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Submitter</span>

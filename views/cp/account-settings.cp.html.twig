@@ -63,6 +63,36 @@
     </div>
 </div>
 
+{# Country #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Country</h2>
+    </div>
+    <div class="content-body">
+        <form action="/account/country" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            <div class="form-group" style="max-width: 400px;">
+                <select id="country" class="form-control form-select" name="country">
+                    <option value="">Not specified (Hidden)</option>
+                    {% for country_code in country_codes %}
+                        <option value="{{ country_code }}" {% if user.country is not null and user.country == country_code %}selected=selected{% endif %}>
+                            {{ get_country_emoji(country_code) }} &nbsp; {{ get_country_string(country_code) }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" class="btn btn-medieval" value="Update" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
 {# Change Email Address #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">

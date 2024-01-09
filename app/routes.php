@@ -78,6 +78,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->post('/email', [ControlPanel\AccountController::class, 'updateEmail']);
             $group->post('/password', [ControlPanel\AccountController::class, 'updatePassword']);
             $group->post('/avatar', [ControlPanel\AccountController::class, 'updateAvatar']);
+            $group->post('/country', [ControlPanel\AccountController::class, 'updateCountry']);
             $group->get('/remove-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeEmail']);
             $group->get('/remove-avatar/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeAvatar']);
 

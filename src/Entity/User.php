@@ -35,6 +35,9 @@ class User {
     #[ORM\Column(type: 'integer', enumType: UserRole::class)]
     private UserRole $role = UserRole::User;
 
+    #[ORM\Column(nullable: true)]
+    private string|null $country = null;
+
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
@@ -300,6 +303,24 @@ class User {
     public function setAvatarSmall(?string $avatar_small): self
     {
         $this->avatar_small = $avatar_small;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of country
+     */
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    /**
+     * Set the value of country
+     */
+    public function setCountry(?string $country): self
+    {
+        $this->country = $country;
 
         return $this;
     }
