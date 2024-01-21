@@ -29,7 +29,7 @@
 
                         {# Country #}
                         {% if comment.user.country is not null %}
-                            <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px">
+                            <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(comment.user.country) }}" data-bs-placement="top">
                                 {{ get_country_emoji(comment.user.country) }}
                             </span>
                         {% endif %}
