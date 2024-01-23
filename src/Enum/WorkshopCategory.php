@@ -16,6 +16,7 @@ enum WorkshopCategory: int {
     case Campaign           = 20;
     case MultiplayerMap     = 30;
     case MultiplayerMapPack = 35;
+    case Mod                = 40;
 
     // Without difficulty rating
     case Creature    = 45;
