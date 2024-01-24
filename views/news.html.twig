@@ -11,7 +11,7 @@
         image: article.image ? '/news/image/' ~ article.image : '/img/no-image-512.png'
     },
     article: {
-        published_time: article.createdTimestamp|date('Y-m-d')
+        published_time: article.createdTimestamp|date('c')
     }
 } %}
 
