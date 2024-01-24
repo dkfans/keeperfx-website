@@ -62,6 +62,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/avatar/{filename:[\w\d\-\.]+}', [AvatarController::class, 'outputAvatar']);
     $group->get('/avatar-generate/{size:\d+}/{username}.png', [AvatarController::class, 'generateAvatarPng']);
 
+    // Public download route for admin uploads
     $group->get('/uploads/{filename:[\w\d\(\)\_\-\.]+}', [UploadController::class, 'outputFile']);
 
     // LOGGED IN USERS
