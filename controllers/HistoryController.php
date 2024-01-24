@@ -118,6 +118,12 @@ class HistoryController {
                     'date_format' => 'Y-m-d',
                     'description' => 'The long awaited 1.0.0 has been released! This is the first full version that makes no more use of the original converted DLL.',
                 ],
+                [
+                    'title'       => 'AncientWay won the first KeeperFX tournament',
+                    'date'        => new \DateTime('2023-12-29'),
+                    'date_format' => 'Y-m-d',
+                    'description' => 'AncientWay won in the finals against Spatulade during the first official KeeperFX tournament. Congratulations!',
+                ],
             ]])
         );
 
