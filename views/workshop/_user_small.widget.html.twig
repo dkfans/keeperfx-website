@@ -37,16 +37,7 @@
             {% else %}
                 <img src="/avatar-generate/32/{{ workshop_item.submitter.username|url_encode }}.png" class="user-avatar" />
             {% endif %}
-
-            {# Username #}
             <span class="user-username">{{ workshop_item.submitter.username }}</span>
-        {% endif %}
         </a>
-
-        {# Country flag #}
-        {% if workshop_item.submitter.country is not null %}
-        <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(workshop_item.submitter.country) }}" data-bs-placement="top">
-            {{ get_country_emoji(workshop_item.submitter.country) }}
-        </span>
     {% endif %}
 {% endif %}
