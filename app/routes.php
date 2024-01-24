@@ -172,6 +172,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->get('/alpha-patches/{id:\d+}/disable/{token_name}/{token_value:.+}', [DevCP\ModerateAlphaPatchController::class, 'disable']);
             $group->put('/alpha-patches/{id}', [DevCP\ModerateAlphaPatchController::class, 'edit']);
 
+            // Moderate (dev) Prototypes
+            $group->get('/prototypes/list', [DevCP\ModeratePrototypeController::class, 'listIndex']);
+
             // Moderate (dev) Crash Reports
             $group->get('/crash-report/list', [DevCP\ModerateCrashReportController::class, 'listIndex']);
             $group->get('/crash-report/{id:\d+}', [DevCP\ModerateCrashReportController::class, 'view']);

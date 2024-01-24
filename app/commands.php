@@ -7,11 +7,13 @@ return [
     // KeeperFX
     \App\Console\Command\KeeperFX\FetchAlphaCommand::class,
     \App\Console\Command\KeeperFX\FetchStableCommand::class,
+    \App\Console\Command\KeeperFX\FetchPrototypeCommand::class,
     \App\Console\Command\KeeperFX\FetchWikiCommand::class,
     \App\Console\Command\KeeperFX\HandleCommitsCommand::class,
     \App\Console\Command\KeeperFX\PullRepoCommand::class,
     \App\Console\Command\KeeperFX\FetchForumActivityCommand::class,
     \App\Console\Command\KeeperFX\HandleTwitchStreamsCommand::class,
+    \App\Console\Command\KeeperFX\ClearOldPrototypesCommand::class,
 
     // User
     \App\Console\Command\User\CreateUserCommand::class,

@@ -1,0 +1,65 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Prototypes - DevCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Prototypes ({{ prototypes|length }})</h2>
+    </div>
+    <div class="content-body">
+
+        <table class="table" style="font-size: 11px;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Artifact ID</th>
+                    <th>Workflow Title</th>
+                    <th>Workflow Run ID</th>
+                    <th>Timestamp</th>
+                    <th>Size</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prototype in prototypes %}
+                        <tr data-build-id="{{ prototype.id }}">
+                            <td>{{ prototype.id }}</td>
+                            <td>
+                                <a href="/download/prototype/{{ prototype.filename|url_encode }}" download>
+                                    {{ prototype.name }}
+                                </a>
+                            </td>
+                            <td>{{ prototype.artifactId }}</td>
+                            <td data-workflow-title>{{ prototype.workflowTitle|github_interact }}</td>
+                            <td>{{ prototype.workflowRunId }}</td>
+                            <td>{{ prototype.timestamp|date('Y-m-d G:i:s') }}</td>
+                            <td>{{ prototype.sizeInBytes|format_bytes }}</td>
+                            <td>
+                                <a href="#" data-copy-url="{{ get_env('APP_ROOT_URL') }}/download/prototype/{{ prototype.filename|url_encode }}">
+                                    Copy URL
+                                </a>
+                            </td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block body_javascript %}
+<script>
+    $(function(e){
+        $('a[data-copy-url]').on('click', function(){
+            let url = $(this).data('copy-url');
+            navigator.clipboard.writeText(url);
+            toastr.info('URL copied!');
+        });
+    });
+</script>
+{% endblock %}

@@ -14,4 +14,10 @@ $task2
     ->description('Fetch the alpha patches from github')
     ->preventOverlapping();
 
+$task3 = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console kfx:fetch-prototype');
+$task3
+    ->everyFiveMinutes()
+    ->description('Fetch the prototypes from github')
+    ->preventOverlapping();
+
 return $schedule;

@@ -27,24 +27,37 @@ class ModerateBundledAssetsController {
         EntityManager $em
     ){
 
-        // Get directory
-        $dir = $_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE'];
+        // Get directories
+        $alpha_patch_bundle_dir = $_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE'];
+        $prototype_bundle_dir   = $_ENV['APP_PROTOTYPE_FILE_BUNDLE_STORAGE'];
 
-        // Make sure directory exists and is a dir
-        if(!\file_exists($dir) || !\is_dir($dir)){
-            $flash->error("Configured bundle directory does not exist or is not a directory: {$dir}");
+        // Make sure alpha patch directory exists and is a dir
+        if(!\file_exists($alpha_patch_bundle_dir) || !\is_dir($alpha_patch_bundle_dir)){
+            $flash->error("Configured alpha patch bundle directory does not exist or is not a directory: {$alpha_patch_bundle_dir}");
             $response->getBody()->write(
                 $twig->render('cp/_cp_layout.html.twig')
             );
             return $response;
         }
 
-        $tree = $this->buildWidgetFileTree($dir);
+        // Make sure prototype directory exists and is a dir
+        if(!\file_exists($prototype_bundle_dir) || !\is_dir($prototype_bundle_dir)){
+            $flash->error("Configured prototype bundle directory does not exist or is not a directory: {$prototype_bundle_dir}");
+            $response->getBody()->write(
+                $twig->render('cp/_cp_layout.html.twig')
+            );
+            return $response;
+        }
+
+        // Build file tree data structure for the widget on the output view
+        $alpha_patch_tree = $this->buildWidgetFileTree($alpha_patch_bundle_dir);
+        $prototype_tree   = $this->buildWidgetFileTree($prototype_bundle_dir);
 
         // Response
         $response->getBody()->write(
             $twig->render('devcp/bundled-assets.devcp.html.twig', [
-                'directory_structure' => $tree,
+                'alpha_patch_tree' => $alpha_patch_tree,
+                'prototype_tree'   => $prototype_tree,
             ])
         );
         return $response;

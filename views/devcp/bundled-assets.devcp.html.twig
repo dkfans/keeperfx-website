@@ -6,7 +6,7 @@
 
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h2>Bundled Assets</h2>
+        <h2>Bundled Alpha Patch Assets</h2>
     </div>
     <div class="content-body">
 
@@ -14,12 +14,34 @@
             These files are automatically bundled with alpha patches that are served on this website.
         </div>
 
-        {% if directory_structure|length == 0 %}
+        {% if alpha_patch_tree|length == 0 %}
             <p>
                 No files being bundled
             </p>
         {% else %}
-            <div id="tree"></div>
+            <div id="alpha_patch_tree"></div>
+            <noscript>Javascript is required to render the directory view</noscript>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Bundled Prototype Assets</h2>
+    </div>
+    <div class="content-body">
+
+        <div class="alert bg-dark">
+            These files are automatically bundled with mirrored prototypes.
+        </div>
+
+        {% if prototype_tree|length == 0 %}
+            <p>
+                No files being bundled
+            </p>
+        {% else %}
+            <div id="prototype_tree"></div>
             <noscript>Javascript is required to render the directory view</noscript>
         {% endif %}
 
@@ -39,8 +61,8 @@
 
     <script>
 
-        var tree = $('#tree').treeview({
-            data          : {{ directory_structure|json_encode()|raw }},
+        var alpha_patch_tree = $('#alpha_patch_tree').treeview({
+            data          : {{ alpha_patch_tree|json_encode()|raw }},
             levels        : 1,
             showBorder    : false,
             showIcon      : true,
@@ -53,11 +75,35 @@
             onNodeSelected: function(event, data) {
 
                 // Deselect again
-                $('#tree').treeview('toggleNodeSelected', [ data.nodeId, { silent: true } ]);
+                $('#alpha_patch_tree').treeview('toggleNodeSelected', [ data.nodeId, { silent: true } ]);
 
                 // Open or close directories
                 if(typeof data.nodes != 'undefined'){
-                    $('#tree').treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
+                    $('#alpha_patch_tree').treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
+                }
+
+            }
+        });
+
+        var prototype_tree = $('#prototype_tree').treeview({
+            data          : {{ prototype_tree|json_encode()|raw }},
+            levels        : 1,
+            showBorder    : false,
+            showIcon      : true,
+            backColor     : "#222",
+            color         : "#f0f0f0",
+            onhoverColor  : "#2a2a2a",
+            expandIcon    : "ti ti-folder",
+            collapseIcon  : "ti ti-folder-open",
+            emptyIcon     : "ti ti-file-filled",
+            onNodeSelected: function(event, data) {
+
+                // Deselect again
+                $('#prototype_tree').treeview('toggleNodeSelected', [ data.nodeId, { silent: true } ]);
+
+                // Open or close directories
+                if(typeof data.nodes != 'undefined'){
+                    $('#prototype_tree').treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
                 }
 
             }

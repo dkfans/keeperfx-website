@@ -33,13 +33,18 @@ server {
 }
 ```
 
-## Alpha build serving
+## Alpha build and prototype serving
 
 If you use the env var `APP_ALPHA_PATCH_STORAGE` you can setup nginx to serve those files using any chosen directory.
 
 ```nginx
 location ~ ^/download/alpha/(.+)$ {
     alias /var/www/keeperfx-website/keeperfx-alpha-builds/$1;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000";
+}
+location ~ ^/download/prototype/(.+)$ {
+    alias /var/www/keeperfx-website/keeperfx-prototypes/$1;
     expires 30d;
     add_header Cache-Control "public, max-age=2592000";
 }

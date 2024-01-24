@@ -2,7 +2,7 @@
 
 namespace App\Console\Command\KeeperFX;
 
-use App\Entity\GithubAlphaBuild;
+use App\Entity\GithubPrototype;
 
 use DateTime;
 use App\DiscordNotifier;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
 
-class FetchAlphaCommand extends Command
+class FetchPrototypeCommand extends Command
 {
     public const IS_ENABLED = true;
 
@@ -26,18 +26,15 @@ class FetchAlphaCommand extends Command
 
     private EntityManager $em;
 
-    private DiscordNotifier $discord_notifier;
-
-    public function __construct(EntityManager $em, DiscordNotifier $discord_notifier) {
+    public function __construct(EntityManager $em) {
         $this->em = $em;
-        $this->discord_notifier = $discord_notifier;
         parent::__construct();
     }
 
     protected function configure()
     {
-        $this->setName("kfx:fetch-alpha")
-            ->setDescription("Fetch the latest alpha releases");
+        $this->setName("kfx:fetch-prototype")
+            ->setDescription("Fetch the latest github prototypes");
     }
 
     protected function execute(Input $input, Output $output)
@@ -55,20 +52,20 @@ class FetchAlphaCommand extends Command
         }
 
         // Make sure an output directory is set
-        if(!empty($_ENV['APP_ALPHA_PATCH_STORAGE_CLI_PATH'])){
-            $storage_dir = $_ENV['APP_ALPHA_PATCH_STORAGE_CLI_PATH'];
-        } elseif (!empty($_ENV['APP_ALPHA_PATCH_STORAGE'])){
-            $storage_dir = $_ENV['APP_ALPHA_PATCH_STORAGE'];
+        if(!empty($_ENV['APP_PROTOTYPE_STORAGE_CLI_PATH'])){
+            $storage_dir = $_ENV['APP_PROTOTYPE_STORAGE_CLI_PATH'];
+        } elseif (!empty($_ENV['APP_PROTOTYPE_STORAGE'])){
+            $storage_dir = $_ENV['APP_PROTOTYPE_STORAGE'];
         } else {
-            $output->writeln("[-] Alpha build download directory is not set");
-            $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_STORAGE_CLI_PATH' or 'APP_ALPHA_PATCH_STORAGE'");
+            $output->writeln("[-] Prototype download directory is not set");
+            $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_STORAGE_CLI_PATH' or 'APP_PROTOTYPE_STORAGE'");
             return Command::FAILURE;
         }
 
         // Create output directory if it does not exist
         if(!\is_dir($storage_dir)){
             if(!@\mkdir($storage_dir)){
-                $output->writeln("[-] Failed to create alpha build download directory");
+                $output->writeln("[-] Failed to create prototype download directory");
                 $output->writeln("[>] DIR: {$storage_dir}");
                 return Command::FAILURE;
             }
@@ -76,7 +73,7 @@ class FetchAlphaCommand extends Command
 
         $output->writeln("[>] Download directory: <info>{$storage_dir}</info>");
 
-        $workflow_id = \intval($_ENV['APP_ALPHA_PATCH_GITHUB_WORKFLOW_ID'] ?? 0);
+        $workflow_id = \intval($_ENV['APP_PROTOTYPE_GITHUB_WORKFLOW_ID'] ?? 0);
 
         $output->writeln("[>] Grabbing latest workflow runs...");
         $output->writeln("[>] " . self::GITHUB_WORKFLOW_RUNS_URL);
@@ -99,14 +96,14 @@ class FetchAlphaCommand extends Command
             return Command::FAILURE;
         }
 
-        // Get runs and order them from old to newer
-        // This makes sure they get added in chronological order
-        $runs = \array_reverse((array) $json->workflow_runs);
+        // If you want to start with old builds first you can use array reverse here
+        // But we probably want the latest prototype first
+        $runs = (array) $json->workflow_runs;
 
         // Loop trough all fetched workflow runs
         foreach($runs as $run){
 
-            // Make sure this run is a successful alpha build
+            // Make sure this run is a successful prototype build
             if(
                 $run->status      !== 'completed' ||
                 $run->conclusion  !== 'success' ||
@@ -139,16 +136,17 @@ class FetchAlphaCommand extends Command
             }
 
             // Check if artifact is already downloaded
-            $db_build = $this->em->getRepository(GithubAlphaBuild::class)->findOneBy(['artifact_id' => $artifact->id]);
+            $db_build = $this->em->getRepository(GithubPrototype::class)->findOneBy(['artifact_id' => $artifact->id]);
             if($db_build){
                 $output->writeln("[>] Already downloaded and in database: {$artifact->id}");
                 continue;
             }
 
             // Create filename and output path
+            // Also add a random string to the new filename so the download URL can not be guessed
             $exp          = \explode('/', $artifact->archive_download_url);
             $filetype     = \end($exp);
-            $new_filename = $artifact->name . '.7z';
+            $new_filename = $artifact->name . '-' . \substr(sha1(time() . $artifact->name), 0, 8) . '.7z';
             $output_path  = $storage_dir . '/' . $new_filename;
 
             // Create temp filename and paths for extraction and repackage process
@@ -167,7 +165,7 @@ class FetchAlphaCommand extends Command
                 continue;
             }
 
-            // Download alpha build
+            // Download prototype
             try {
 
                 $output->writeln("[>] Downloading: {$artifact->name} -> <info>{$temp_archive_path}</info>");
@@ -185,12 +183,12 @@ class FetchAlphaCommand extends Command
                 $temp_archive->extract($temp_archive_dir);
 
                 // Add bundle files
-                if(!empty($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'])){
-                    $bundle_path = $_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'];
+                if(!empty($_ENV['APP_PROTOTYPE_FILE_BUNDLE_STORAGE_CLI_PATH'])){
+                    $bundle_path = $_ENV['APP_PROTOTYPE_FILE_BUNDLE_STORAGE_CLI_PATH'];
                     $output->writeln("[>] Adding file bundle...");
                     if(!\is_dir($bundle_path)){
                         $output->writeln("[-] File bundle path is not a dir");
-                        $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'");
+                        $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_FILE_BUNDLE_STORAGE_CLI_PATH'");
                         return Command::FAILURE;
                     } else {
                         $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);
@@ -268,7 +266,7 @@ class FetchAlphaCommand extends Command
             $display_title = \preg_replace('~(\s\(\#\d)\…$~', '…', $display_title);
 
             // Add to database
-            $build = new GithubAlphaBuild();
+            $build = new GithubPrototype();
             $build->setName($artifact->name);
             $build->setArtifactId($artifact->id);
             $build->setFilename($new_filename);
@@ -283,13 +281,6 @@ class FetchAlphaCommand extends Command
             // Show success message
             $output->writeln("[+] <info>{$artifact->name}</info> stored! -> <info>{$display_title}</info>");
             $output->writeln("[+] Output filesize: " . BinaryFormatter::bytes($output_filesize)->format());
-
-            // Send a notification on Discord
-            if(self::IS_ENABLED){
-                if($this->discord_notifier->notifyNewAlphaPatch($build)){
-                    $output->writeln("[+] Discord has been notified!");
-                }
-            }
 
             // Scan with VirusTotal
             // We do this so many Antivirus companies get a sample as soon as possible.
