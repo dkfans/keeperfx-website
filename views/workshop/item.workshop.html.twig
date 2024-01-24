@@ -226,6 +226,21 @@
 
                         </table>
 
+                        {# Show extra alpha patch notice #}
+                        {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
+                            <div class="alert bg-dark mx-3 mb-0" style="font-size: 13px;">
+                                <div class="d-flex">
+                                    <div style="flex-grow: 1; display:flex; align-items:center; margin-right: 10px; padding-bottom: 3px;">
+                                        <ion-icon name="alert-circle-outline" class="text-warning" style="font-size: 22px;"></ion-icon>
+                                    </div>
+                                    <div>
+                                        This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly.
+                                    </div>
+                                </div>
+
+                            </div>
+                        {% endif %}
+
                         {# Download button #}
                         {% if item.files|length > 0 %}
                             <div class="text-center" style="margin-bottom: 10px; width: 100%; margin-top: 30px;">

@@ -126,8 +126,19 @@
 
                         <div class="workshop-grid-item-info">
 
+                            {# Show a notice for items requiring the latest alpha patch #}
+                            {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
+                                    <ion-icon
+                                        name="alert-circle-outline"
+                                        class="text-warning workshop-grid-alpha-patch-notice"
+                                        data-bs-toggle="popover" data-bs-placement="top"
+                                        data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly."
+                                    ></ion-icon>
+                            {% endif %}
+
                             {# Title #}
-                            <div class="workshop-grid-item-title">
+                            {# Optionally add some padding to the right to make place for the alpha patch notice icon #}
+                            <div class="workshop-grid-item-title" {% if item.minGameBuild is not null and item.minGameBuild == -1 %}style="padding-right: 10px;"{% endif %}>
                                 <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" title="{{ item.name }}">
                                     {{ item.name }}
                                 </a>

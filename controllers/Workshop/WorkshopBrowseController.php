@@ -311,6 +311,7 @@ class WorkshopBrowseController {
                 'ratingScore'             => $workshop_item->getRatingScore(),
                 'difficultyRatingScore'   => $workshop_item->getDifficultyRatingScore(),
                 'comment_count'           => \count($workshop_item->getComments()),
+                'minGameBuild'            => $workshop_item->getMinGameBuild(),
             ];
         }
 
