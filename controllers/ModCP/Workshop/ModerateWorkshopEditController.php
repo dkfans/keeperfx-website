@@ -13,6 +13,7 @@ use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
 use Doctrine\ORM\EntityManager;
+use App\Workshop\WorkshopCache;
 use App\Workshop\WorkshopHelper;
 use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
@@ -71,6 +72,7 @@ class ModerateWorkshopEditController {
         FlashMessage $flash,
         Account $account,
         UploadSizeHelper $upload_size_helper,
+        WorkshopCache $workshop_cache,
         $id
     ){
         // Check if workshop item exists
@@ -335,6 +337,9 @@ class ModerateWorkshopEditController {
         WorkshopHelper::removeThumbnail($em, $workshop_item);
         WorkshopHelper::generateThumbnail($em, $workshop_item);
 
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
+
         $flash->success('Workshop item updated!');
         $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
         return $response;
@@ -348,6 +353,7 @@ class ModerateWorkshopEditController {
         Account $account,
         EntityManager $em,
         CsrfGuard $csrf_guard,
+        WorkshopCache $workshop_cache,
         $id,
         $token_name,
         $token_value,
@@ -383,6 +389,9 @@ class ModerateWorkshopEditController {
         // Remove from DB
         $em->remove($workshop_item);
         $em->flush();
+
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
 
         $flash->success('The workshop item has been removed.');
         $response = $response->withHeader('Location', '/moderate/workshop/list')->withStatus(302);
