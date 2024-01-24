@@ -48,8 +48,7 @@
     <meta property="og:url" content="{{ meta.og.url }}" />
 {% endif %}
 
-{# Date #}
-{% if meta.date is defined %}
-    <meta property="date" content="{{ meta.date }}" />
-    <meta property="datePublished" content="{{ meta.date }}" />
+{# Article: published_time #}
+{% if meta.article is defined and meta.article.published_time is defined %}
+    <meta property="article:published_time" content="{{ meta.article.published_time }}" />
 {% endif %}

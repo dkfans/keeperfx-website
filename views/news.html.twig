@@ -4,12 +4,14 @@
 
 {% set meta = {
     title: article.title ?? '',
-    date: article.createdTimestamp|date('Y-m-d'),
     description: article.excerpt ?? article.contents ?? null,
     og: {
         type: 'article',
         url: '/news/' ~ article.id ~ '/' ~ article.createdTimestamp|date('Y-m-d') ~ '/' ~ article.titleSlug,
         image: article.image ? '/news/image/' ~ article.image : '/img/no-image-512.png'
+    },
+    article: {
+        published_time: article.createdTimestamp|date('Y-m-d')
     }
 } %}
 
