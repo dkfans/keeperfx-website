@@ -43,7 +43,13 @@
     <meta property="og:type" content="website" />
 {% endif %}
 
-{# OG URL #}
+{# OG: URL #}
 {% if meta.og.url is defined %}
     <meta property="og:url" content="{{ meta.og.url }}" />
+{% endif %}
+
+{# Date #}
+{% if meta.date is defined %}
+    <meta property="date" content="{{ meta.date }}" />
+    <meta property="datePublished" content="{{ meta.date }}" />
 {% endif %}
