@@ -887,7 +887,7 @@ button.btn-medieval ion-icon {
 
 .workshop-grid-alpha-patch-notice:hover {
     color: white;
-    cursor: pointer;
+    cursor: default;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
