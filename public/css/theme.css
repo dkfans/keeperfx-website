@@ -43,7 +43,8 @@ body {
     --bs-danger-bg-subtle: #930916;
     --bs-danger-border-subtle: #ff001b;
     --bs-danger-text: #ffffff;
-    --bs-popover-border-color: #090909 !important;
+
+    --bs-popover-border-color: rgb(50, 48, 47) !important;
     --bs-popover-bg: #090909 !important;
     --bs-popover-body-color: #fff;
     --bs-popover-border-radius: 0 !important;
@@ -106,6 +107,10 @@ hr {
 
 ul+p {
     margin-top: 1rem;
+}
+
+.popover {
+    border: 1px solid var(--bs-popover-border-color);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
