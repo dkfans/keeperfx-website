@@ -32,49 +32,49 @@
                     </a>
                     {% if account.role >= roles.moderator %}
                         <hr style="background-color: transparent" />
-                        <a class="nav-link {% if path_equals('/moderate/workshop/*') %}active{% endif %}" href="/moderate/workshop/list" data-instant>
+                        <a class="nav-link {% if path_equals('/moderate/workshop/*') %}active{% endif %}" href="/moderate/workshop/list">
                             <ion-icon name="cube-outline"></ion-icon>
                             Workshop
                         </a>
-                        <a class="nav-link {% if path_equals('/moderate/workshop-comments/*') %}active{% endif %}" href="/moderate/workshop-comments/list" data-instant>
+                        <a class="nav-link {% if path_equals('/moderate/workshop-comments/*') %}active{% endif %}" href="/moderate/workshop-comments/list">
                             <ion-icon name="chatbubbles-outline"></ion-icon>
                             Latest Comments
                         </a>
                     {% endif %}
                     {% if account.role >= roles.developer %}
                         <hr style="background-color: transparent" />
-                        <a class="nav-link {% if path_equals('/dev/alpha-patches/*') %}active{% endif %}" href="/dev/alpha-patches/list" data-instant>
+                        <a class="nav-link {% if path_equals('/dev/alpha-patches/*') %}active{% endif %}" href="/dev/alpha-patches/list">
                             <ion-icon name="git-branch-outline"></ion-icon>
                             Alpha Patches
                         </a>
-                        <a class="nav-link {% if path_equals('/dev/prototypes/*') %}active{% endif %}" href="/dev/prototypes/list" data-instant>
+                        <a class="nav-link {% if path_equals('/dev/prototypes/*') %}active{% endif %}" href="/dev/prototypes/list">
                             <ion-icon name="play-outline"></ion-icon>
                             Prototypes
                         </a>
-                        <a class="nav-link {% if path_equals('/dev/bundled-assets') %}active{% endif %}" href="/dev/bundled-assets" data-instant>
+                        <a class="nav-link {% if path_equals('/dev/bundled-assets') %}active{% endif %}" href="/dev/bundled-assets">
                             <ion-icon name="document-attach-outline"></ion-icon>
                             Bundled Assets
                         </a>
-                        <a class="nav-link {% if path_equals('/dev/crash-report/*') %}active{% endif %}" href="/dev/crash-report/list" data-instant>
+                        <a class="nav-link {% if path_equals('/dev/crash-report/*') %}active{% endif %}" href="/dev/crash-report/list">
                             <ion-icon name="bug-outline"></ion-icon>
                             Crash Reports
                         </a>
                     {% endif %}
                     {% if account.role >= roles.admin %}
                         <hr style="background-color: transparent" />
-                        <a class="nav-link {% if path_equals('/admin/news/*') %}active{% endif %}" href="/admin/news/list" data-instant>
+                        <a class="nav-link {% if path_equals('/admin/news/*') %}active{% endif %}" href="/admin/news/list">
                             <ion-icon name="newspaper-outline"></ion-icon>
                             News
                         </a>
-                        <a class="nav-link {% if path_equals('/admin/user/*') %}active{% endif %}" href="/admin/user/list" data-instant>
+                        <a class="nav-link {% if path_equals('/admin/user/*') %}active{% endif %}" href="/admin/user/list">
                             <ion-icon name="people-outline"></ion-icon>
                             Users
                         </a>
-                        <a class="nav-link {% if path_equals('/admin/uploads') %}active{% endif %}" href="/admin/uploads" data-instant>
+                        <a class="nav-link {% if path_equals('/admin/uploads') %}active{% endif %}" href="/admin/uploads">
                             <ion-icon name="folder-outline"></ion-icon>
                             Uploads
                         </a>
-                        <a class="nav-link {% if path_equals('/admin/server-info') %}active{% endif %}" href="/admin/server-info" data-instant>
+                        <a class="nav-link {% if path_equals('/admin/server-info') %}active{% endif %}" href="/admin/server-info">
                             <ion-icon name="server-outline"></ion-icon>
                             Server Info
                         </a>
