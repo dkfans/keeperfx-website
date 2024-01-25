@@ -22,6 +22,7 @@
                     <th>#</th>
                     <th>Username</th>
                     <th>Role</th>
+                    <th>Country</th>
                     <th>Connections</th>
                     <th>Registration Date</th>
                     <th>Actions</th>
@@ -33,6 +34,13 @@
                         <td>{{ user.id }}</td>
                         <td>{{ user.username }}</td>
                         <td>{{ user.role.name }}</td>
+                        <td>
+                            {% if user.country is not null %}
+                                <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(user.country) }}" data-bs-placement="top">
+                                    {{ get_country_emoji(user.country) }}
+                                </span>
+                            {% endif %}
+                        </td>
                         <td>
                             {% if user.email is not null %}
                                 <ion-icon name="mail-outline"></ion-icon>
