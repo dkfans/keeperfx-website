@@ -1,16 +1,21 @@
 {% extends "core/_layout.html.twig" %}
 
-{% set page_title = 'Downloads' %}
+{% set page_title = 'Changelog for ' ~ release.name %}
+
+{% set meta = {
+    title: page_title,
+    description: 'An overview of commits for the ' ~ release.name ~ ' release.',
+} %}
 
 {% block content %}
 
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
-            <h2>Changelog: {{ release.name }}</h2>
+            <h2>Changelog: <strong>{{ release.name }}</strong></h2>
         </div>
         <div class="content-body">
             <p>
-                These are the latest commits for <strong>{{ release.name }}</strong>
+                This is a list of commits for the <strong>{{ release.name }}</strong> release.
             </p>
             <pre class="code"><code>{% for commit in commits %}{{ commit.message|github_interact }}&NewLine;{% endfor %}</code></pre>
             <p>
