@@ -122,7 +122,7 @@ class HistoryController {
                     'title'       => 'AncientWay won the first KeeperFX tournament',
                     'date'        => new \DateTime('2023-12-29'),
                     'date_format' => 'Y-m-d',
-                    'description' => "AncientWay won in the finals against Spatulade during the first official KeeperFX tournament. Congratulations! Third and fourth place go to Biervampir and Loobinex.",
+                    'description' => "AncientWay won in the finals against Spatulade during the first official KeeperFX tournament. **Congratulations!  \nThird and fourth place go to Biervampir and Loobinex.",
                 ],
             ]])
         );
