@@ -115,6 +115,11 @@ class RegisterController {
                 $success = false;
                 $flash->warning('This email address is already in use.');
             }
+
+        } else {
+
+            // Make sure email is set to NULL if no email is given
+            $email = null;
         }
 
         // Make sure a password is given

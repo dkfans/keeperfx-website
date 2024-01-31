@@ -152,6 +152,11 @@ class User {
      */
     public function setEmail(string|null $email): self
     {
+        // Empty email addresses should become NULL
+        if(empty($email)){
+            $email = null;
+        }
+
         $this->email = $email;
 
         return $this;

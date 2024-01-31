@@ -436,6 +436,11 @@ class OAuthUserController {
                 $success = false;
                 $flash->warning('This email address is already in use.');
             }
+
+        } else {
+
+            // Make sure email is set to NULL if no email is given
+            $email = null;
         }
 
         // Make sure ToS and privacy policy have been read and accepted
