@@ -28,12 +28,11 @@ class MinifyHtmlMiddleware implements MiddlewareInterface {
 
     private function minifyResponse(ResponseInterface $response): ResponseInterface
     {
+        $body = (string) $response->getBody();
+        $minified = $this->minifyHTML($body);
+
         $stream = new \Slim\Psr7\Stream(fopen('php://temp', 'r+'));
-        $stream->write(
-            $this->minifyHTML(
-                (string) $response->getBody()
-            )
-        );
+        $stream->write($minified);
 
         return $response->withBody($stream);
     }
