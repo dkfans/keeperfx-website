@@ -44,14 +44,19 @@ class HistoryController {
                     'date_format' => 'Y-m-d',
                     'description' => 'Mefisto shares the first version of his work. It has no name and is just an executable that runs the DLL file. The DLL file is a converted Dungeon Keeper Gold executable.',
                 ],
-
                 [
                     'title'       => 'First "KeeperFX" version is released',
                     'date'        => new \DateTime('2008-09-07'),
                     'date_format' => 'Y-m-d',
                     'description' => 'Mefisto releases version 0.1.1 of what he now calls "KeeperFX".',
                 ],
-
+                [
+                    'title'       => 'KeeperFX gets its own subforum',
+                    'date'        => new \DateTime('2009-09-04'),
+                    'date_format' => 'Y-m-d',
+                    'description' => "Dotted created the new Keeper Klan forum and the community moved from the old InvisionFree forum to the new home. " .
+                                     "During this move he created a KeeperFX subforum and made Mefisto its moderator.",
+                ],
                 [
                     'title'       => 'Loobinex releases an unofficial version of KeeperFX',
                     'date'        => new \DateTime('2016-08-06'),
