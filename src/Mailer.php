@@ -102,7 +102,6 @@ class Mailer {
             $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         }
 
-        //Recipients
         $php_mailer->setFrom($_ENV['APP_SMTP_FROM_ADDRESS'], $_ENV['APP_SMTP_FROM_NAME']);
 
         return $php_mailer;
