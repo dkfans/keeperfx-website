@@ -34,7 +34,7 @@ class WikiController {
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-        string $page = null,
+        ?string $page = null,
     ){
         // Redirect to the "/wiki/home" if no page is given
         if($page === null){
