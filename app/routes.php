@@ -282,7 +282,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
 $app->group('/tools', function (RouteCollectorProxy $group) use ($container) {
 
-    // API: News
+    // Tool: Creature CFG Diff Checker
     $group->get('/creature-cfg-diff', [Tools\CreatureDiffToolController::class, 'index']);
     $group->post('/creature-cfg-diff', [Tools\CreatureDiffToolController::class, 'compare']);
 
