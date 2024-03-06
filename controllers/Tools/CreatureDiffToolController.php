@@ -13,8 +13,8 @@ use Slim\Exception\HttpBadRequestException;
 use Xenokore\Utility\Helper\StringHelper;
 
 /**
- * The avatar controller is used to output avatars.
- * Updating an avatar is done in the AccountController.
+ * A tool to compare CFGs and show the differences.
+ * This is useful for fixing creature configs.
  */
 class CreatureDiffToolController {
 
