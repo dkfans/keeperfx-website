@@ -1,0 +1,43 @@
+{% extends "core/_layout.html.twig" %}
+
+{% set page_title = 'Creature Config Diff Tool' %}
+
+{% set meta = {
+    title: page_title,
+    description: 'A tool to seperate changed creature configuration properties.',
+} %}
+
+{% block content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Creature Config Diff Tool</h2>
+        </div>
+        <div class="content-body">
+
+            {% if diff_output is defined %}
+                <h5>Diff</h5>
+                <textarea class="form-control" name="right" rows=12>{{ diff_output }}</textarea>
+                <hr />
+            {% endif %}
+
+            <form method="POST">
+                <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+                <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Left</h5>
+                        <textarea class="form-control" name="left" rows=12>{{ get_post_var('left') }}</textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Right</h5>
+                        <textarea class="form-control" name="right" rows=12>{{ get_post_var('right') }}</textarea>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <input type="submit" class="btn btn-medieval" value="Get Diff" />
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
