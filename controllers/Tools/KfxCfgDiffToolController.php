@@ -63,14 +63,20 @@ class KfxCfgDiffToolController {
                 // Add difference to diff if:
                 // - the left side does not have the right side line
                 // - or the right side has a different line
-                // - or if the property name is Name (because we always want this)
                 if(
                     !isset($left_data[$section][$property])
                     || $left_data[$section][$property] !== $value
-                    || $property === 'Name'
                 ){
                     $diff[$section][$property] = $value;
                 }
+            }
+        }
+
+        // Add 'Name' to updated sections
+        foreach($diff as $section => $properties)
+        {
+            if(isset($left_data[$section]['Name']) && !empty($left_data[$section]['Name'])){
+                $diff[$section]['Name'] = $left_data[$section]['Name'];
             }
         }
 
