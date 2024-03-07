@@ -14,9 +14,9 @@ use Xenokore\Utility\Helper\StringHelper;
 
 /**
  * A tool to compare CFGs and show the differences.
- * This is useful for fixing creature configs.
+ * This is useful for getting only updated properties from KeeperFX configs.
  */
-class CreatureDiffToolController {
+class KfxCfgDiffToolController {
 
     public function index(
         Request $request,
@@ -24,7 +24,7 @@ class CreatureDiffToolController {
         TwigEnvironment $twig,
     ){
         $response->getBody()->write(
-            $twig->render('tools/creature_diff_tool.html.twig')
+            $twig->render('tools/kfx_cfg_diff_tool.html.twig')
         );
 
         return $response;
@@ -45,7 +45,7 @@ class CreatureDiffToolController {
         if(empty($left) || empty($right)){
             $flash->warning("Both the left and right side need to be given.");
             $response->getBody()->write(
-                $twig->render('tools/creature_diff_tool.html.twig')
+                $twig->render('tools/kfx_cfg_diff_tool.html.twig')
             );
             return $response;
         }
@@ -63,9 +63,11 @@ class CreatureDiffToolController {
                 // Add difference to diff if:
                 // - the left side does not have the right side line
                 // - or the right side has a different line
+                // - or if the property name is Name (because we always want this)
                 if(
-                    !isset($left_data[$section][$property]) ||
-                    $left_data[$section][$property] !== $value
+                    !isset($left_data[$section][$property])
+                    || $left_data[$section][$property] !== $value
+                    || $property === 'Name'
                 ){
                     $diff[$section][$property] = $value;
                 }
@@ -93,7 +95,7 @@ class CreatureDiffToolController {
 
         // Output back to user
         $response->getBody()->write(
-            $twig->render('tools/creature_diff_tool.html.twig', [
+            $twig->render('tools/kfx_cfg_diff_tool.html.twig', [
                 'diff_output' => $diff_output
             ])
         );
