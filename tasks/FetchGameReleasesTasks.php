@@ -10,13 +10,13 @@ $task
 
 $task2 = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console kfx:fetch-alpha');
 $task2
-    ->everyFiveMinutes()
+    ->everyMinute()
     ->description('Fetch the alpha patches from github')
     ->preventOverlapping();
 
 $task3 = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console kfx:fetch-prototype');
 $task3
-    ->everyFiveMinutes()
+    ->everyMinute()
     ->description('Fetch the prototypes from github')
     ->preventOverlapping();
 
