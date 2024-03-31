@@ -311,3 +311,5 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     $group->post('/v1/crash-report', [Api\v1\CrashReportApiController::class, 'upload']);
 
 });
+
+$app->redirect('/giveaways/dk3-beta-key', 'https://youtu.be/ceWFU2pBOPo', 301);
