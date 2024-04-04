@@ -7,9 +7,11 @@ use App\Entity\UserCookieToken;
 
 use App\Account;
 use App\FlashMessage;
-use App\Helper\ThumbnailHelper;
 use App\UploadSizeHelper;
+use App\Helper\ThumbnailHelper;
 use App\Workshop\WorkshopCache;
+
+use Fgribreau\MailChecker;
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
@@ -88,6 +90,13 @@ class AccountController {
         // Check for valid email address
         if(empty($email) || !\filter_var($email, \FILTER_VALIDATE_EMAIL)){
             $flash->error('Invalid email address.');
+            $response = $response->withHeader('Location', '/account')->withStatus(302);
+            return $response;
+        }
+
+        // Make sure this is not a throwaway email address
+        if(!MailChecker::isValid($email)){
+            $flash->warning('Invalid email address.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
         }

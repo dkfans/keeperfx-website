@@ -9,11 +9,14 @@ use App\Entity\User;
 use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
+
+use App\Notifications\NotificationCenter;
 use App\Notifications\Notification\NewUserNotification;
+
+use Fgribreau\MailChecker;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
 use Twig\Environment as TwigEnvironment;
-use App\Notifications\NotificationCenter;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -105,6 +108,12 @@ class RegisterController {
 
             // Validate email address
             if(!filter_var($email, \FILTER_VALIDATE_EMAIL)){
+                $success = false;
+                $flash->warning('Invalid email address.');
+            }
+
+            // Make sure this is not a throwaway email address
+            if(!MailChecker::isValid($email)){
                 $success = false;
                 $flash->warning('Invalid email address.');
             }
