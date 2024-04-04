@@ -68,6 +68,8 @@ class RegisterController {
         $repeat_password = (string) $post['repeat_password'] ?? '';
         $email           = (string) $post['email'] ?? '';
 
+        // Success will be false if anything fails
+        // This way we can show multiple warnings
         $success = true;
 
         // Validate username length
