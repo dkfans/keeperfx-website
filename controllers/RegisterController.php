@@ -66,7 +66,27 @@ class RegisterController {
         $username        = (string) $post['username'] ?? '';
         $password        = (string) $post['password'] ?? '';
         $repeat_password = (string) $post['repeat_password'] ?? '';
-        $email           = (string) $post['email'] ?? '';
+        $email           = (string) $post['_x_email'] ?? ''; // _x_email = real email input
+
+        // Get fake email POST var
+        // This is meant to catch spam bots
+        $fake_email = (string) $post['email'] ?? '';  // 'email' = fake email input
+        if(!empty($fake_email))
+        {
+            // Make the bot waste some extra time
+            // Sleep between 0.4 and 1.2 seconds
+            \usleep(\mt_rand(400, 1200) * 1000);
+
+            // Show a warning
+            $flash->warning('Invalid email address.');
+
+            // Render register page
+            $response->getBody()->write(
+                $twig->render('register.html.twig')
+            );
+
+            return $response;
+        }
 
         // Success will be false if anything fails
         // This way we can show multiple warnings

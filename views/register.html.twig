@@ -46,9 +46,15 @@
                     <input type="text" class="form-control" id="username" name="username" value="{{ get_post_var('username') }}" required>
                 </div>
 
-                <div class="form-group">
+                {# This input is meant to catch spammers and block them #}
+                <div class="form-group" id="catch_them">
                     <label for="email">Email address <span class="text-muted">(Optional)</span></label>
                     <input type="email" class="form-control" id="email" name="email" value="{{ get_post_var('email') }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="_x_email">Email address <span class="text-muted">(Optional)</span></label>
+                    <input type="email" class="form-control" id="_x_email" name="_x_email" value="{{ get_post_var('_x_email') }}">
                 </div>
 
                 <div class="form-group">
@@ -100,3 +106,4 @@
     });
 </script>
 {% endblock %}
+
