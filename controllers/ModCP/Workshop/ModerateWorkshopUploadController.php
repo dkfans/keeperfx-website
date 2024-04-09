@@ -19,6 +19,7 @@ use Doctrine\ORM\EntityManager;
 use ByteUnits\Binary as BinaryFormatter;
 use Twig\Environment as TwigEnvironment;
 
+use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -57,7 +58,8 @@ class ModerateWorkshopUploadController {
         EntityManager $em,
         Account $account,
         FlashMessage $flash,
-        UploadSizeHelper $upload_size_helper
+        UploadSizeHelper $upload_size_helper,
+        LoggerInterface $logger,
     ){
 
 
@@ -260,13 +262,36 @@ class ModerateWorkshopUploadController {
 
         // Create directories for files
         if(!DirectoryHelper::create($workshop_item_dir)){
-            throw new \Exception('Failed to create workshop item storage dir');
+            $logger->error("Failed to create workshop item storage dir: '{$workshop_item_dir}'");
+            $success = false;
         }
         if(!DirectoryHelper::create($workshop_item_files_dir)){
-            throw new \Exception('Failed to create workshop item files dir'); // TODO: move during migration
+            $logger->error("Failed to create workshop item files dir: '{$workshop_item_files_dir}'");
+            $success = false;
         }
         if(!DirectoryHelper::create($workshop_item_images_dir)){
-            throw new \Exception('Failed to create workshop item images dir');
+            $logger->error("Failed to create workshop item images dir: '{$workshop_item_images_dir}'");
+            $success = false;
+        }
+
+        // Check if we failed to create the storage directories
+        if(!$success){
+
+            // Remove the entity
+            $em->remove($workshop_item);
+            $em->flush();
+
+            $flash->error("Something went wrong while trying to store the workshop files. Please try again later.");
+
+            // TODO: remove post vars (request twig extension)
+            $response->getBody()->write(
+                $twig->render('workshop/upload.workshop.html.twig', [
+                    'name'                 => $name,
+                    'description'          => $description,
+                    'install_instructions' => $install_instructions,
+                ])
+            );
+            return $response;
         }
 
         // Get file and filename

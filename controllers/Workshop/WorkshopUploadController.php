@@ -35,11 +35,11 @@ use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
 
 use Slim\Psr7\UploadedFile;
+use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
 use Xenokore\Utility\Helper\DirectoryHelper;
 
 use Slim\Exception\HttpNotFoundException;
@@ -69,6 +69,7 @@ class WorkshopUploadController {
         DiscordNotifier $discord_notifier,
         NotificationCenter $nc,
         WorkshopCache $workshop_cache,
+        LoggerInterface $logger,
     ){
 
         $success = true;
@@ -219,13 +220,36 @@ class WorkshopUploadController {
 
         // Create directories for files
         if(!DirectoryHelper::create($workshop_item_dir)){
-            throw new \Exception("Failed to create workshop item storage dir: '{$workshop_item_dir}'");
+            $logger->error("Failed to create workshop item storage dir: '{$workshop_item_dir}'");
+            $success = false;
         }
         if(!DirectoryHelper::create($workshop_item_files_dir)){
-            throw new \Exception("Failed to create workshop item files dir: '{$workshop_item_files_dir}'");
+            $logger->error("Failed to create workshop item files dir: '{$workshop_item_files_dir}'");
+            $success = false;
         }
         if(!DirectoryHelper::create($workshop_item_images_dir)){
-            throw new \Exception("Failed to create workshop item images dir: '{$workshop_item_images_dir}'");
+            $logger->error("Failed to create workshop item images dir: '{$workshop_item_images_dir}'");
+            $success = false;
+        }
+
+        // Check if we failed to create the storage directories
+        if(!$success){
+
+            // Remove the entity
+            $em->remove($workshop_item);
+            $em->flush();
+
+            $flash->error("Something went wrong while trying to store the workshop files. Please try again later.");
+
+            // TODO: remove post vars (request twig extension)
+            $response->getBody()->write(
+                $twig->render('workshop/upload.workshop.html.twig', [
+                    'name'                 => $name,
+                    'description'          => $description,
+                    'install_instructions' => $install_instructions,
+                ])
+            );
+            return $response;
         }
 
         // Get file and filename
