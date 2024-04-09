@@ -365,18 +365,17 @@ class WorkshopEditController {
 
         // Get workshop item dir and check if it exists
         $workshop_item_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
-        if(!\is_dir($workshop_item_dir)){
-            throw new WorkshopException('workshop item dir does not exist');
-        }
-
-        // Clear workshop item dir
-        if(!DirectoryHelper::clear($workshop_item_dir)){
-            throw new WorkshopException('failed to clear and remove workshop item dir');
-        }
-
-        // Remove workshop item dir
         if(\is_dir($workshop_item_dir)){
-            @\rmdir($workshop_item_dir);
+
+            // Clear workshop item dir
+            if(!DirectoryHelper::clear($workshop_item_dir)){
+                throw new WorkshopException('failed to clear and remove workshop item dir');
+            }
+
+            // Remove workshop item dir
+            if(\is_dir($workshop_item_dir)){
+                @\rmdir($workshop_item_dir);
+            }
         }
 
         // Remove from DB
