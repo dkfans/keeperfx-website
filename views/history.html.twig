@@ -30,7 +30,7 @@
                                 {{ history.date|date(history.date_format) }}
                             </time>
                         </p>
-                        <p class="">
+                        <p class="markdown-body">
                             {% if history.description is not null %}
                                 {{ history.description|markdown_to_html }}
                             {% endif %}

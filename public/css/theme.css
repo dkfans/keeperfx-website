@@ -503,17 +503,28 @@ input:focus {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-code {
+code,
+.markdown-body code,
+.markdown-body pre>code {
     background-color: rgba(30, 30, 30, 0.7);
     border: 1px solid rgba(50, 50, 50, 1);
     padding: 4px;
     padding-bottom: 3px;
     color: rgb(238, 231, 224);
+    border-radius: 0;
+    font-family: monospace;
+    font-size: initial;
 }
 
-pre>code {
+pre>code,
+.markdown-body pre>code {
     display: block;
     padding: 5px;
+}
+
+.markdown-body pre {
+    background: transparent;
+    padding: 10px;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -1479,3 +1490,34 @@ div.emoji-drop-down div.emoji {
     top: -9999px;
     left: -999999px;
 }
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.markdown-body {
+    background-color: transparent;
+    font-family: 'Nunito';
+}
+
+.markdown-body a {
+    color: #e25130;
+}
+
+.markdown-body table tr {
+    background-color: rgba(30, 30, 30, 0.7);
+}
+
+.markdown-body table tr:nth-child(2n) {
+    background-color: rgba(40, 40, 40, 0.7);
+}
+
+.markdown-body strong {
+    font-weight: bolder;
+}
+
+.markdown-body li+li {
+    margin-top: .1em;
+}
+
+/* .workshop-item-comment-content .markdown-body  */
