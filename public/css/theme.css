@@ -1520,4 +1520,8 @@ div.emoji-drop-down div.emoji {
     margin-top: .1em;
 }
 
+.markdown-body hr {
+    height: .1em;
+}
+
 /* .workshop-item-comment-content .markdown-body  */
