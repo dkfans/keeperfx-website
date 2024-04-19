@@ -138,6 +138,11 @@ class WikiController {
                 continue;
             }
 
+            // Ignore comments
+            if(StringHelper::startsWith($line, '<!--')){
+                continue;
+            }
+
             // Ignore the sidebar title
             // The space after '##' is important
             if(StringHelper::startsWith($line, '##  ')){
