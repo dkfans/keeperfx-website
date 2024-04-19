@@ -73,19 +73,22 @@ class WikiController {
 
         // TODO: markdown titles should be #hash-bang linkable
 
-        // Get and handle 'sidebar' contents
+        // Get 'sidebar' contents
         $sidebar_contents = \file_get_contents(self::WIKI_ROOT . '/_Sidebar.md');
-        $sidebar_contents = $this->makeGithubUrlsLowercase($sidebar_contents);
-        $sidebar_contents = $this->fixMarkdownHeaderTagsSEO($sidebar_contents);
-        $sidebar_contents = \preg_replace('/\[(.+)\]\((.+)\)/', '[$1](/wiki/$2)', $sidebar_contents); // Replace sidebar URLs (/home -> /wiki/home)
+        if($sidebar_contents === false){
+            throw new \Exception("Sidebar markdown file not found");
+        }
+
+        // Get a nice array structure of the sidebar
+        $sidebar = $this->getWikiURLStructure($sidebar_contents);
 
         // Render
         $response->getBody()->write(
             $twig->render('wiki.html.twig', [
                 'wiki' => [
-                    'page_title'       => $page_title,
-                    'page_contents'    => $page_contents,
-                    'sidebar_contents' => $sidebar_contents
+                    'page_title'    => $page_title,
+                    'page_contents' => $page_contents,
+                    'sidebar'       => $sidebar,
                 ]
             ])
         );
@@ -116,6 +119,56 @@ class WikiController {
 
             return $matches[0];
         }, $string);
+    }
+
+    private function getWikiURLStructure(string $contents): array
+    {
+        $array = [];
+        $current_menu = null;
+
+        // Loop trough the sidebar menu contents
+        $lines = \explode(PHP_EOL, $contents);
+        foreach($lines as $line)
+        {
+            $line = \trim($line);
+
+            // If this is an empty line we are not in a list
+            if(empty($line)){
+                $current_menu = null;
+                continue;
+            }
+
+            // Ignore the sidebar title
+            // The space after '##' is important
+            if(StringHelper::startsWith($line, '##  ')){
+                continue;
+            }
+
+            // If this is a menu title
+            if(StringHelper::startsWith($line, '#### ')){
+                $name = substr($line, 5);
+                $current_menu = $name;
+                continue;
+            }
+
+            // If this is not a item it will be a subitem
+            if(StringHelper::startsWith($line, ['*', '-'])){
+
+                // We need to be in a menu
+                if($current_menu === null){
+                    continue;
+                }
+
+                // Find the link and title
+                if(!\preg_match('~\[(.+)\]\((.+)\)~', $line, $matches)){
+                    continue;
+                }
+
+                $array[$current_menu][$matches[1]] = '/wiki/' . \strtolower($matches[2]);
+            }
+        }
+
+        return $array;
     }
 
 }

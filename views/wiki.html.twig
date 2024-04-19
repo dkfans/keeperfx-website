@@ -9,8 +9,31 @@
         {# Sidebar #}
         <div class="col-3">
             <div class="content-box bg-keeper bd-keeper">
-                <div class="content-body wiki-menu">
-                    {{ wiki.sidebar_contents|markdown_to_html }}
+                <div class="content-header">
+                    <h2>KeeperFX Wiki</h2>
+                </div>
+                <div class="content-body">
+                    <nav class="nav flex-column">
+                        {% for title, subitems in wiki.sidebar %}
+
+                            {# Menu Title #}
+                            <a class="nav-link" {% if loop.index > 1 %}style="margin-top: 30px;"{% endif %} disabled>
+                                {{ title }}
+                            </a>
+
+                            {# Submenu #}
+                            <div class="nav-sidebar-sub-container" id="browseMenu">
+                                <nav class="nav nav-sidebar-sub">
+                                    {% for name, url in subitems %}
+                                        <a class="nav-link {% if path_equals(url) %}active{% endif %}" href="{{ url }}" data-instant>
+                                            {{ name }}
+                                        </a>
+                                    {% endfor %}
+                                </nav>
+                            </div>
+
+                        {% endfor %}
+                    </nav>
                 </div>
             </div>
         </div>
