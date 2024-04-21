@@ -889,14 +889,13 @@ button.btn-medieval ion-icon {
     text-overflow: ellipsis;
 }
 
-.workshop-grid-alpha-patch-notice {
+.workshop-grid-notice-icon {
     position: absolute;
     top: 8px;
-    right: 8px;
     font-size: 22px;
 }
 
-.workshop-grid-alpha-patch-notice:hover {
+.workshop-grid-notice-icon:hover {
     color: white;
     cursor: default;
 }
