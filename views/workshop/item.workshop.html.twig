@@ -226,18 +226,31 @@
 
                         </table>
 
+                        {# Show broken item notice #}
+                        {% if item.isLastFileBroken %}
+                            <div class="alert bg-dark mx-3" style="font-size: 13px;">
+                                <div class="d-flex">
+                                    <div style="flex-grow: 1; display:flex; align-items:center; margin-right: 15px; max-width: 20px;">
+                                        <ion-icon name="alert-circle-outline" class="text-danger" style="font-size: 20px; padding-bottom: 2px; color: #f91b1b !important;"></ion-icon>
+                                    </div>
+                                    <div style="padding-top: 1px">
+                                        This workshop item is considered <strong>broken</strong> by the KeeperFX team.
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
                         {# Show extra alpha patch notice #}
                         {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
-                            <div class="alert bg-dark mx-3 mb-0" style="font-size: 13px;">
+                            <div class="alert bg-dark mx-3" style="font-size: 13px;">
                                 <div class="d-flex">
-                                    <div style="flex-grow: 1; display:flex; align-items:center; margin-right: 10px; padding-bottom: 3px;">
-                                        <ion-icon name="alert-circle-outline" class="text-warning" style="font-size: 22px;"></ion-icon>
+                                    <div style="flex-grow: 1; display:flex; align-items:center; margin-right: 15px; max-width: 20px;">
+                                        <ion-icon name="alert-circle-outline" class="text-warning" style="font-size: 20px; padding-bottom: 2px;"></ion-icon>
                                     </div>
                                     <div>
                                         This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly.
                                     </div>
                                 </div>
-
                             </div>
                         {% endif %}
 

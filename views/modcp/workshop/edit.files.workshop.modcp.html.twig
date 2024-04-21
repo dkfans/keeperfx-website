@@ -56,6 +56,7 @@
                             <th>File</th>
                             <th>Filesize</th>
                             <th>Downloads</th>
+                            <th>Broken</th>
                             <th>Date</th>
                             <th>Action</th>
                         </tr>
@@ -113,6 +114,13 @@
                                 {# Downoad count #}
                                 <td style="vertical-align: middle;">{{ file.downloadCount }}</td>
 
+                                {# Is Broken #}
+                                <td style="vertical-align: middle;">
+                                    {% if file.isBroken %}
+                                        Yes
+                                    {% endif %}
+                                </td>
+
                                 {# Timestamp #}
                                 <td style="vertical-align: middle;">{{ file.createdTimestamp|date('Y-m-d') }}</td>
 
@@ -127,6 +135,24 @@
                                     >
                                         Delete
                                     </a>
+
+                                    {# Mark as broken #}
+                                    {% if file.isBroken %}
+                                    <a
+                                        href="/moderate/workshop/{{ workshop_item.id }}/files/{{ file.id }}/unmark_as_broken/{{ csrf.name }}/{{ csrf.value }}"
+                                        class="btn btn-medieval btn-medieval-gray"
+                                    >
+                                        Unmark as Broken
+                                    </a>
+                                    {% else %}
+                                        <a
+                                            href="/moderate/workshop/{{ workshop_item.id }}/files/{{ file.id }}/mark_as_broken/{{ csrf.name }}/{{ csrf.value }}"
+                                            class="btn btn-medieval btn-medieval-gray"
+                                            onclick="if (confirm('Are you sure you want to mark this file as broken?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
+                                        >
+                                            Mark as Broken
+                                        </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

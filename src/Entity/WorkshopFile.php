@@ -35,6 +35,9 @@ class WorkshopFile {
     #[ORM\Column(type: 'integer')]
     private int $download_count = 0;
 
+    #[ORM\Column]
+    private bool $is_broken = false;
+
     #[ORM\Column(type: 'integer', enumType: WorkshopScanStatus::class)]
     private WorkshopScanStatus $scan_status = WorkshopScanStatus::NOT_SCANNED_YET;
 
@@ -205,6 +208,24 @@ class WorkshopFile {
     public function setCreatedTimestamp(\DateTime $created_timestamp): self
     {
         $this->created_timestamp = $created_timestamp;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of is_broken
+     */
+    public function isBroken(): bool
+    {
+        return $this->is_broken;
+    }
+
+    /**
+     * Set the value of is_broken
+     */
+    public function setIsBroken(bool $is_broken): self
+    {
+        $this->is_broken = $is_broken;
 
         return $this;
     }

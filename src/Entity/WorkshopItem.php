@@ -51,6 +51,9 @@ class WorkshopItem {
     private bool $is_bundled_with_game = false;
 
     #[ORM\Column]
+    private bool $is_last_file_broken = false;
+
+    #[ORM\Column]
     private bool $difficulty_rating_enabled = true;
 
     #[ORM\Column(type: 'integer')]
@@ -88,6 +91,9 @@ class WorkshopItem {
     #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'item', cascade: ["remove"])]
     #[ORM\OrderBy(["created_timestamp" => "DESC"])]
     private Collection $comments;
+
+    #[ORM\OneToMany(targetEntity: WorkshopBrokenFile::class, mappedBy: 'original_item')]
+    private Collection $broken_files;
 
     #[ORM\Column]
     private ?\DateTime $creation_orderby_timestamp = null;
@@ -493,6 +499,32 @@ class WorkshopItem {
     public function setThumbnail(?string $thumbnail): self
     {
         $this->thumbnail = $thumbnail;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of broken_files
+     */
+    public function getBrokenFiles(): Collection
+    {
+        return $this->broken_files;
+    }
+
+    /**
+     * Get the value of is_last_file_broken
+     */
+    public function isLastFileBroken(): bool
+    {
+        return $this->is_last_file_broken;
+    }
+
+    /**
+     * Set the value of is_last_file_broken
+     */
+    public function setIsLastFileBroken(bool $is_last_file_broken): self
+    {
+        $this->is_last_file_broken = $is_last_file_broken;
 
         return $this;
     }

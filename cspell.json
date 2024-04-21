@@ -64,6 +64,7 @@
         "symfony",
         "TINYINT",
         "toastr",
+        "unmark",
         "urlify",
         "URLify",
         "usergroup",

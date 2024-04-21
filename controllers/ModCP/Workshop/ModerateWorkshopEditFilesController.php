@@ -8,6 +8,8 @@ use App\Entity\WorkshopFile;
 use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
+use App\Workshop\WorkshopBrokenFileHandler;
+
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
@@ -54,6 +56,7 @@ class ModerateWorkshopEditFilesController {
         Account $account,
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
+        WorkshopBrokenFileHandler $broken_file_handler,
         $item_id
     )
     {
@@ -130,6 +133,9 @@ class ModerateWorkshopEditFilesController {
         // Save to DB
         $em->flush();
 
+        // Handle broken file checker
+        $broken_file_handler->handleItem($workshop_item, true);
+
         // Show notice and navigate back to edit page
         $flash->success('File uploaded!');
         $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
@@ -143,7 +149,6 @@ class ModerateWorkshopEditFilesController {
         TwigEnvironment $twig,
         Account $account,
         EntityManager $em,
-        UploadSizeHelper $upload_size_helper,
         CsrfGuard $csrf_guard,
         $item_id,
         $file_id,
@@ -224,6 +229,7 @@ class ModerateWorkshopEditFilesController {
         Account $account,
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
+        WorkshopBrokenFileHandler $broken_file_handler,
         CsrfGuard $csrf_guard,
         $item_id,
         $file_id,
@@ -290,6 +296,8 @@ class ModerateWorkshopEditFilesController {
         // Save changes to DB
         $em->flush();
 
+        // Handle broken file checker
+        $broken_file_handler->handleItem($workshop_item, true);
 
         // Redirect back to file list
         $flash->success('The file has been successfully moved.');
@@ -371,4 +379,93 @@ class ModerateWorkshopEditFilesController {
         return $response;
     }
 
+    public function mark_as_broken(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        EntityManager $em,
+        CsrfGuard $csrf_guard,
+        WorkshopBrokenFileHandler $broken_file_handler,
+        $item_id,
+        $file_id,
+        $token_name,
+        $token_value,
+    ) {
+
+        // Check for valid CSRF token
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if workshop file exists
+        $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
+        if(!$workshop_file){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if file is attached to item
+        if($workshop_file->getItem() !== $workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Mark file as broken
+        $broken_file_handler->markFileAsBroken($workshop_file, true);
+
+        // Redirect back to file list
+        $flash->success('The file has been successfully marked as broken.');
+        $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
+        return $response;
+    }
+
+    public function unmark_as_broken(
+        Request $request,
+        Response $response,
+        FlashMessage $flash,
+        EntityManager $em,
+        CsrfGuard $csrf_guard,
+        WorkshopBrokenFileHandler $broken_file_handler,
+        $item_id,
+        $file_id,
+        $token_name,
+        $token_value,
+    ) {
+
+        // Check for valid CSRF token
+        $valid = $csrf_guard->validateToken($token_name, $token_value);
+        if(!$valid){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if workshop item exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
+        if(!$workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if workshop file exists
+        $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
+        if(!$workshop_file){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Check if file is attached to item
+        if($workshop_file->getItem() !== $workshop_item){
+            throw new HttpNotFoundException($request);
+        }
+
+        // Mark file as broken
+        $broken_file_handler->unmarkFileAsBroken($workshop_file, true);
+
+        // Redirect back to file list
+        $flash->success('The file has been successfully unmarked as broken.');
+        $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
+        return $response;
+    }
 }

@@ -5,10 +5,12 @@ namespace App\Controller\Workshop;
 use App\Entity\WorkshopItem;
 use App\Entity\WorkshopFile;
 
-use URLify;
 use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
+use App\Workshop\WorkshopBrokenFileHandler;
+
+use URLify;
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
@@ -65,6 +67,7 @@ class WorkshopEditFilesController {
         Account $account,
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
+        WorkshopBrokenFileHandler $broken_file_handler,
         $item_id
     )
     {
@@ -158,6 +161,9 @@ class WorkshopEditFilesController {
         // Save to DB
         $em->flush();
 
+        // Handle broken file checker
+        $broken_file_handler->handleItem($workshop_item, true);
+
         $flash->success('File uploaded!');
 
         // Show edit page
@@ -178,6 +184,7 @@ class WorkshopEditFilesController {
         Account $account,
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
+        WorkshopBrokenFileHandler $broken_file_handler,
         CsrfGuard $csrf_guard,
         $item_id,
         $file_id,
@@ -238,6 +245,9 @@ class WorkshopEditFilesController {
         // Save changes to DB
         $em->flush();
 
+        // Handle broken file checker
+        $broken_file_handler->handleItem($workshop_item, true);
+
         // Fix weights for existing files
         $query_builder = $em->getConnection()->createQueryBuilder();
         $query_builder
@@ -269,6 +279,7 @@ class WorkshopEditFilesController {
         Account $account,
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
+        WorkshopBrokenFileHandler $broken_file_handler,
         CsrfGuard $csrf_guard,
         $item_id,
         $file_id,
@@ -347,6 +358,9 @@ class WorkshopEditFilesController {
 
         // Save changes to DB
         $em->flush();
+
+        // Handle broken file checker
+        $broken_file_handler->handleItem($workshop_item, true);
 
         // Show success and redirect back to file list
         $flash->success('The file has been successfully moved.');
