@@ -22,7 +22,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
     $group->get('/', [IndexController::class, 'index']);
     $group->get('/screenshots', [ScreenshotController::class, 'screenshotsIndex']);
-    $group->get('/changelog/{tag}', [ChangelogController::class, 'changelogIndex']);
+    $group->get('/commits/{tag}', [CommitsController::class, 'commitsIndex']);
 
     $group->get('/news', [NewsController::class, 'newsListIndex']);
     $group->get('/news/image/{filename}', [NewsController::class, 'outputNewsImage']);

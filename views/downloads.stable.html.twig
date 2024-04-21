@@ -42,7 +42,7 @@
                         <td>{{ release.sizeInBytes|format_bytes }}</td>
                         <td>{{ release.timestamp|date('Y-m-d') }}</td>
                         <td>
-                            <a href="/changelog/{{ release.tag }}">Changelog</a>
+                            <a href="/commits/{{ release.tag }}">Commits</a>
                             ({{ release.commits.count }})
                         </td>
                     </tr>

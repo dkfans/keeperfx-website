@@ -1,6 +1,6 @@
 {% extends "core/_layout.html.twig" %}
 
-{% set page_title = 'Changelog for ' ~ release.name %}
+{% set page_title = 'Commits for ' ~ release.name %}
 
 {% set meta = {
     title: page_title,
@@ -11,7 +11,7 @@
 
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
-            <h2>Changelog: <strong>{{ release.name }}</strong></h2>
+            <h2>Commits for <strong>{{ release.name }}</strong></h2>
         </div>
         <div class="content-body">
             <p>

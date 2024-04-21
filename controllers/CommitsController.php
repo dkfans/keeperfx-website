@@ -9,9 +9,9 @@ use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class ChangelogController {
+class CommitsController {
 
-    public function changelogIndex(
+    public function commitsIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
@@ -32,7 +32,7 @@ class ChangelogController {
         }
 
         $response->getBody()->write(
-            $twig->render('changelog.html.twig', [
+            $twig->render('commits.html.twig', [
                 'release' => $release[0],
                 'commits' => $commits,
             ])
