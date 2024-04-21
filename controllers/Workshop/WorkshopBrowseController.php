@@ -9,10 +9,12 @@ use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
 use App\Entity\GithubRelease;
 
+use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
-use Doctrine\ORM\EntityManager;
 use App\Workshop\WorkshopCache;
+
+use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
 use Psr\Http\Message\ResponseInterface as Response;
@@ -26,6 +28,7 @@ class WorkshopBrowseController {
         TwigEnvironment $twig,
         EntityManager $em,
         WorkshopCache $workshop_cache,
+        Account $account,
         FlashMessage $flash
 
     ){
@@ -54,8 +57,7 @@ class WorkshopBrowseController {
 
         // Create query
         $query = $em->getRepository(WorkshopItem::class)->createQueryBuilder('item')
-            ->where('item.is_published = 1')
-            ->andWhere('item.is_last_file_broken = 0');
+            ->where('item.is_published = 1');
 
         // Get show item limit
         // TODO: make this user configurable
@@ -165,6 +167,11 @@ class WorkshopBrowseController {
                 $query                       = $query->andWhere('item.original_author IS NULL');
                 $submitter                   = $user->getUsername();
                 $url_params['user']          = $user->getUsername();
+
+                // Hide broken items except our own
+                if($account->getUser()->getUsername() !== $username){
+                    $query = $query->andWhere('item.is_last_file_broken = 0');
+                }
             }
         }
 
@@ -313,6 +320,7 @@ class WorkshopBrowseController {
                 'difficultyRatingScore'   => $workshop_item->getDifficultyRatingScore(),
                 'comment_count'           => \count($workshop_item->getComments()),
                 'minGameBuild'            => $workshop_item->getMinGameBuild(),
+                'isLastFileBroken'        => $workshop_item->isLastFileBroken(),
             ];
         }
 
