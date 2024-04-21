@@ -13,7 +13,8 @@ use Psr\SimpleCache\CacheInterface;
 class WorkshopBrokenFileHandler {
 
     public function __construct(
-        private EntityManager $em
+        private EntityManager $em,
+        private WorkshopCache $workshop_cache,
     ){}
 
     public function handleItem(WorkshopItem $item, bool $flush_after = true): void
@@ -36,12 +37,12 @@ class WorkshopBrokenFileHandler {
 
             // Set file (and item) as broken
             $this->setFileBroken($last_file, true, false);
-            $this->setItemLastIsBroken($item, true, $flush_after);
+            $this->setItemLastFileIsBroken($item, true, $flush_after);
 
         } else {
 
             // Item is not considered broken
-            $this->setItemLastIsBroken($item, false, $flush_after);
+            $this->setItemLastFileIsBroken($item, false, $flush_after);
         }
     }
 
@@ -54,13 +55,23 @@ class WorkshopBrokenFileHandler {
         }
     }
 
-    private function setItemLastIsBroken(WorkshopItem $item, bool $is_broken, bool $flush_after)
+    private function setItemLastFileIsBroken(WorkshopItem $item, bool $is_broken, bool $flush_after)
     {
-        $item->setIsLastFileBroken($is_broken);
+        // Only handle this if the item broken status is changed
+        if($is_broken !== $item->isLastFileBroken())
+        {
+            // Set the 'is last file broken' on the item
+            $item->setIsLastFileBroken($is_broken);
 
-        if($flush_after){
-            $this->em->flush();
+            // Save changes to the DB
+            if($flush_after){
+                $this->em->flush();
+            }
+
+            // Clear the workshop browse page cache so it reflects the new data
+            $this->workshop_cache->clearAllCachedBrowsePageData();
         }
+
     }
 
     public function markFileAsBroken(WorkshopFile $workshop_file, bool $flush_after = true)
