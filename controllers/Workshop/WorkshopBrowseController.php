@@ -54,7 +54,8 @@ class WorkshopBrowseController {
 
         // Create query
         $query = $em->getRepository(WorkshopItem::class)->createQueryBuilder('item')
-            ->where('item.is_published = 1');
+            ->where('item.is_published = 1')
+            ->andWhere('item.is_last_file_broken = 0');
 
         // Get show item limit
         // TODO: make this user configurable
