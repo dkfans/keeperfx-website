@@ -1500,7 +1500,7 @@ div.emoji-drop-down div.emoji {
 }
 
 .markdown-body a {
-    color: #e25130;
+    color: var(--special-text-color);
 }
 
 .markdown-body table tr {
