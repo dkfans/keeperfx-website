@@ -1,0 +1,53 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Releases - AdminCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Releases ({{ releases|length }})</h2>
+    </div>
+    <div class="content-body">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tag</th>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Timestamp</th>
+                    <th>Linked news Post</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for release in releases %}
+                        <tr>
+                            <td>{{ release.id }}</td>
+                            <td>{{ release.tag }}</td>
+                            <td>
+                                <a href="{{ release.downloadUrl }}" download>{{ release.name }}</a>
+                            </td>
+                            <td>{{ release.sizeInBytes|format_bytes }}</td>
+                            <td>{{ release.timestamp|date('Y-m-d') }}</td>
+                            <td>
+                                {% if release.linkedNewsPost is not null %}
+                                    <a href="/news/{{ release.linkedNewsPost.id }}/{{ release.linkedNewsPost.createdTimestamp|date('Y-m-d') }}/{{ release.linkedNewsPost.titleSlug }}">{{ release.linkedNewsPost.title }}</a>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/admin/releases/{{ release.id }}">Edit</a>
+                            </td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

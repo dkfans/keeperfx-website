@@ -1,0 +1,54 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Edit release: ' ~ release.name ~ ' - AdminCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Edit release: {{ release.name }}</h2>
+    </div>
+    <div class="content-body">
+
+        <form action="/admin/releases/{{ release.id }}" method="POST" enctype="multipart/form-data">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+            <div class="form-group">
+                <label for="name">
+                    Name
+                </label>
+                <input type="text" class="form-control text-muted" value="{{ release.name }}" readonly />
+            </div>
+
+            <div class="form-group">
+                <label for="news">
+                    Linked News Post
+                </label>
+                <select class="form-control form-select" id="news" name="news" required>
+                    <option value="0" {% if release.linkedNewsPost is null %}selected{% endif %}>None</option>
+                    {% if news_articles|length > 0 %}
+                        {% for article in news_articles %}
+                            <option value="{{ article.id }}" {% if release.linkedNewsPost is not null and release.linkedNewsPost.id == article.id %}selected{% endif %}>
+                                {{ article.title }}
+                            </option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+
+            <div class="d-flex" style="margin-top: 15px;">
+                <div class="pull-right">
+                    <input type="submit" class="btn btn-medieval" value="Edit" />
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% include 'markdown.format.html.twig' %}
+
+{% endblock %}

@@ -60,7 +60,8 @@
                     <th>Name</th>
                     <th>Size</th>
                     <th>Date</th>
-                    <th></th>
+                    <th>News Post</th>
+                    <th>Commits</th>
                 </tr>
             </thead>
             <tbody>
@@ -74,6 +75,13 @@
                         </td>
                         <td>{{ release.sizeInBytes|format_bytes }}</td>
                         <td>{{ release.timestamp|date('Y-m-d') }}</td>
+                        <td>
+                            {% if release.linkedNewsPost is not null %}
+                                <a href="/news/{{ release.linkedNewsPost.id }}/{{ release.linkedNewsPost.createdTimestamp|date('Y-m-d') }}/{{ release.linkedNewsPost.titleSlug }}">Release News</a>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="/commits/{{ release.tag }}">Commits</a>
                             ({{ release.commits.count }})

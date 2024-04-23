@@ -62,6 +62,10 @@
                     {% endif %}
                     {% if account.role >= roles.admin %}
                         <hr style="background-color: transparent" />
+                        <a class="nav-link {% if path_equals('/admin/releases/*') %}active{% endif %}" href="/admin/releases/list">
+                            <ion-icon name="game-controller-outline"></ion-icon>
+                            Releases
+                        </a>
                         <a class="nav-link {% if path_equals('/admin/news/*') %}active{% endif %}" href="/admin/news/list">
                             <ion-icon name="newspaper-outline"></ion-icon>
                             News

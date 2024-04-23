@@ -131,6 +131,13 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
                 $group->get('/{filename}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminUploadController::class, 'delete']);
             });
 
+            // Admin: RELEASES
+            $group->group('/releases', function (RouteCollectorProxy $group) use ($container) {
+                $group->get('/list', [AdminCP\AdminReleasesController::class, 'releasesIndex']);
+                $group->get('/{id:\d+}', [AdminCP\AdminReleasesController::class, 'releaseEditIndex']);
+                $group->post('/{id:\d+}', [AdminCP\AdminReleasesController::class, 'releaseEdit']);
+            });
+
             // Server info
             $group->get('/server-info', [AdminCP\AdminServerInfoController::class, 'serverInfoIndex']);
 

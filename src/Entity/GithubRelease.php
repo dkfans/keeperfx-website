@@ -31,6 +31,9 @@ class GithubRelease {
     #[ORM\Column]
     private bool $commits_handled = false;
 
+    #[ORM\ManyToOne(targetEntity: NewsArticle::class)]
+    private NewsArticle|null $linked_news_post = null;
+
     #[ORM\OneToMany(targetEntity: GitCommit::class, mappedBy: "release")]
     private $commits;
 
@@ -168,5 +171,23 @@ class GithubRelease {
     public function getCommits()
     {
         return $this->commits;
+    }
+
+    /**
+     * Get the value of linked_news_post
+     */
+    public function getLinkedNewsPost(): ?NewsArticle
+    {
+        return $this->linked_news_post;
+    }
+
+    /**
+     * Set the value of linked_news_post
+     */
+    public function setLinkedNewsPost(?NewsArticle $linked_news_post): self
+    {
+        $this->linked_news_post = $linked_news_post;
+
+        return $this;
     }
 }
