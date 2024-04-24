@@ -34,9 +34,9 @@
                             <td>{{ release.timestamp|date('Y-m-d') }}</td>
                             <td>
                                 {% if release.linkedNewsPost is not null %}
-                                    <a href="/news/{{ release.linkedNewsPost.id }}/{{ release.linkedNewsPost.createdTimestamp|date('Y-m-d') }}/{{ release.linkedNewsPost.titleSlug }}">{{ release.linkedNewsPost.title }}</a>
+                                    <a href="/news/{{ release.linkedNewsPost.id }}/{{ release.linkedNewsPost.createdTimestamp|date('Y-m-d') }}/{{ release.linkedNewsPost.titleSlug }}">Yes</a>
                                 {% else %}
-                                    <span class="text-muted">-</span>
+                                    <span class="text-muted">No</span>
                                 {% endif %}
                             </td>
                             <td>
