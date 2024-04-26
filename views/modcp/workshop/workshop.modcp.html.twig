@@ -69,6 +69,9 @@
 
 {% block body_javascript %}
 
+{# jQuery Debounce #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js" integrity="sha512-JZSo0h5TONFYmyLMqp8k4oPhuo6yNk9mHM+FY50aBjpypfofqtEWsAgRDQm94ImLCzSaHeqNvYuD9382CEn2zw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 {# mark.js (keyword highlighting) #}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha512-mhbv5DqBMgrWL+32MmsDOt/OAvqr/cHimk6B8y/bx/xS88MVkYGPiVv2ixKVrkywF2qHplNRUvFsAHUdxZ3Krg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -77,7 +80,7 @@
     // Handle search
     var $searchTable = $('#search').parent().find('table');
     var searchRows   = $searchTable.find('tbody tr');
-    $('#search').on('keyup', function(e){
+    $('#search').on('keyup', $.debounce(250, function(e){
 
         // Get search string
         var string = $(this).val().toLowerCase();
@@ -104,7 +107,7 @@
         // Mark the keyword
         $(searchRows).unmark();
         $(searchRows).mark(string);
-    });
+    }));
 </script>
 
 {% endblock %}
