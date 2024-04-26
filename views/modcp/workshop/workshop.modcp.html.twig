@@ -54,22 +54,56 @@
 </div>
 
 {% endblock %}
+
+
+{% block stylesheets %}
+
+<style>
+    mark{
+        background: var(--special-text-color);
+        color: black;
+        padding: 1px 0px;
+    }
+</style>
+{% endblock %}
+
 {% block body_javascript %}
+
+{# mark.js (keyword highlighting) #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha512-mhbv5DqBMgrWL+32MmsDOt/OAvqr/cHimk6B8y/bx/xS88MVkYGPiVv2ixKVrkywF2qHplNRUvFsAHUdxZ3Krg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
 
+    // Handle search
     var $searchTable = $('#search').parent().find('table');
     var searchRows   = $searchTable.find('tbody tr');
-
     $('#search').on('keyup', function(e){
+
+        // Get search string
         var string = $(this).val().toLowerCase();
+
+        // Handle clearing of search
+        if(string == ""){
+            $(searchRows).show();
+            $(searchRows).unmark();
+            return;
+        }
+
+        // Loop trough all rows
         $.each(searchRows, function(i, el){
-            $(el).show();
+
+            // Show or hide the row
             let content = $(el).text().toLowerCase();
             if(!content.includes(string)){
                 $(el).hide();
+            } else {
+                $(el).show();
             }
         });
+
+        // Mark the keyword
+        $(searchRows).unmark();
+        $(searchRows).mark(string);
     });
 </script>
 
