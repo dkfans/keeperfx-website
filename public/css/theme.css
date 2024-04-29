@@ -181,13 +181,15 @@ a.title-link {
     padding: 12px 20px;
 }
 
-.header a {
+.header a,
+.dropdown-keeper a {
     color: rgb(215, 197, 182);
     margin: 0 12px;
     /* margin: 0 40px; */
 }
 
-.header a:hover {
+.header a:hover,
+.dropdown-keeper a:hover {
     text-decoration: none;
     color: var(--special-text-color);
 }

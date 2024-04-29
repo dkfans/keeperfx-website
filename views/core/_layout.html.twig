@@ -71,7 +71,7 @@
                                 </span>
                             </a>
 
-                            <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarAdminDropdown">
+                            <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper" aria-labelledby="navbarAdminDropdown">
 
                                     <li><a class="dropdown-item" href="/moderate/workshop/list">Workshop</a></li>
                                     <li><a class="dropdown-item" href="/moderate/workshop-comments/list">Latest Comments</a></li>
@@ -118,7 +118,7 @@
                             {% endif %}
                         </a>
 
-                        <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarNotificationDropdown">
+                        <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper" aria-labelledby="navbarNotificationDropdown">
 
                             {% if unread_notifications|length > 0 %}
                                 {% for notification_id, notification in unread_notifications %}
@@ -161,7 +161,7 @@
                             {{ account.username }}
                         </a>
 
-                        <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper" aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper" aria-labelledby="navbarDropdown">
 
                             {# Workshop menu items #}
                             <li><a class="dropdown-item" href="/workshop/browse?user={{ account.username|url_encode }}">My workshop items</a></li>

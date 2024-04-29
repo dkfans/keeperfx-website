@@ -77,7 +77,7 @@
                                 <button class="btn dropdown-toggle caret-off" style="padding: 2px; height: 28px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper">
+                                <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper">
                                     {% if account.role >= roles.moderator or comment.user.id == account.id  %}
                                         <li><a class="dropdown-item" data-comment-action="edit" href="#">Edit</a></li>
                                         {% if account.role >= roles.moderator %}
