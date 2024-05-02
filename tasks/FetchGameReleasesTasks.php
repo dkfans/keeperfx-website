@@ -8,11 +8,11 @@ $task
     ->description('Fetch the stable releases from github')
     ->preventOverlapping();
 
-$task2 = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console kfx:fetch-alpha');
-$task2
-    ->everyMinute()
-    ->description('Fetch the alpha patches from github')
-    ->preventOverlapping();
+// $task2 = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console kfx:fetch-alpha');
+// $task2
+//     ->everyMinute()
+//     ->description('Fetch the alpha patches from github')
+//     ->preventOverlapping();
 
 $task3 = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console kfx:fetch-prototype');
 $task3
