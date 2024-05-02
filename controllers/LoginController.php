@@ -82,6 +82,12 @@ class LoginController {
                     $account->setUser($user);
                     $session['uid'] = $user->getId();
 
+                    // Log IP
+                    $ip = $request->getAttribute('ip_address');
+                    if($ip !== null){
+                        $account->logIp($ip);
+                    }
+
                     // Handle 'Remember me'
                     if(isset($post['remember_me'])){
 

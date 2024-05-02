@@ -192,7 +192,14 @@ class RegisterController {
         $em->flush();
 
         // Immediately log in the user
+        $account->setUser($user);
         $session['uid'] = $user->getId();
+
+        // Log IP
+        $ip = $request->getAttribute('ip_address');
+        if($ip !== null){
+            $account->logIp($ip);
+        }
 
         // Notify the admins
         $nc->sendNotificationToAllWithRole(UserRole::Admin, NewUserNotification::class, ['id' => $user->getId(), 'username' => $username]);

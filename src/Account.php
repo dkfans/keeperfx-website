@@ -4,6 +4,7 @@ namespace App;
 
 use App\Entity\User;
 use App\Entity\UserCookieToken;
+use App\Entity\UserIpLog;
 use App\Entity\UserOAuthToken;
 
 use Doctrine\ORM\EntityManager;
@@ -12,6 +13,7 @@ use Compwright\PhpSession\Session;
 use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\Modifier\SameSite;
 
+use App\Helper\IpHelper;
 use Xenokore\Utility\Helper\StringHelper;
 
 class Account {
@@ -97,5 +99,37 @@ class Account {
         $this->user = $user;
 
         return $this;
+    }
+
+    public function logIp(string $ip): void
+    {
+        // Check if user is logged in
+        if($this->isLoggedIn() === false){
+            return;
+        }
+
+        // Make sure IP is valid
+        if(IpHelper::isValidIp($ip) === false){
+            return;
+        }
+
+        // Check if this IP is already logged
+        $existing_ip_log = $this->em->getRepository(UserIpLog::class)->findOneBy(['user' => $this->user, 'ip' => $ip]);
+        if($existing_ip_log){
+
+            // Update the last seen timestamp
+            $existing_ip_log->setLastSeenTimestamp(new \DateTime("now"));
+            $this->em->flush();
+            return;
+        }
+
+        // Make a new IP log
+        $ip_log = new UserIpLog();
+        $ip_log->setUser($this->user);
+        $ip_log->setIp($ip);
+
+        // Add IP log to DB
+        $this->em->persist($ip_log);
+        $this->em->flush();
     }
 }

@@ -68,6 +68,9 @@ class User {
     #[ORM\OneToMany(targetEntity: WorkshopDifficultyRating::class, mappedBy: 'user', cascade: ["remove"])]
     private Collection $workshop_difficulty_ratings;
 
+    #[ORM\OneToMany(targetEntity: UserIpLog::class, mappedBy: 'user', cascade: ["remove"])]
+    private Collection $ip_logs;
+
     public function __construct() {
         $this->news_articles               = new ArrayCollection();
         $this->connection_tokens           = new ArrayCollection();
@@ -78,6 +81,7 @@ class User {
         $this->workshop_comments           = new ArrayCollection();
         $this->workshop_ratings            = new ArrayCollection();
         $this->workshop_difficulty_ratings = new ArrayCollection();
+        $this->ip_logs                     = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -292,6 +296,14 @@ class User {
     public function getWorkshopDifficultyRatings(): Collection
     {
         return $this->workshop_difficulty_ratings;
+    }
+
+    /**
+     * Get the value of workshop_difficulty_ratings
+     */
+    public function getIpLogs(): Collection
+    {
+        return $this->ip_logs;
     }
 
     /**
