@@ -2,6 +2,8 @@
 
 /**
  * Middlewares
+ *
+ * NOTE: Slim Router executes these in reverse order (bottom to top)
  */
 return [
 

@@ -59,7 +59,8 @@ foreach ((require APP_ROOT . '/app/middlewares.php') as $middleware_class) {
     $app->add($middleware_class);
 }
 
-// Add Session (Compwright\PhpSession) middlewares
+// Add Session (Compwright\PhpSession) middlewares.
+// We need to add these last because the middlewares are executed in reverse order. (Slim router)
 \Compwright\PhpSession\Frameworks\Slim\registerSessionMiddleware($app);
 
 // Add routes
