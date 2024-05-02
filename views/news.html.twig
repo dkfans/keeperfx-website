@@ -14,6 +14,8 @@
 
 {% block content %}
 
+{{ render_flash_messages() }}
+
     <div class="content-box bg-keeper bd-keeper" style="max-width: 920px; margin: 0 auto; min-height: 335px; padding: 15px;">
 
         {% if article.image is not empty %}

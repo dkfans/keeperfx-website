@@ -9,6 +9,8 @@
 
 {% block content %}
 
+{{ render_flash_messages() }}
+
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
             <h2>Commits for <strong>{{ release.name }}</strong></h2>

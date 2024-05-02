@@ -8,6 +8,8 @@
 
 {% block content %}
 
+{{ render_flash_messages() }}
+
 {# Download buttons #}
 <div class="content-box" style="padding: 10px; text-align: center;">
     {% if stable_releases|length > 0 %}
