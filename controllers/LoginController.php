@@ -79,8 +79,7 @@ class LoginController {
                 if(\password_verify($password, $user->getPassword())){
 
                     // Log user in
-                    $account->setUser($user);
-                    $session['uid'] = $user->getId();
+                    $account->setCurrentLoggedInUser($user);
 
                     // Log IP
                     $ip = $request->getAttribute('ip_address');

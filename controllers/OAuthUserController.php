@@ -178,15 +178,14 @@ class OAuthUserController {
             }
 
             // Login the user
-            $account->setUser($user_oauth_token->getUser());
-            $session['uid'] = $user_oauth_token->getUser()->getId();
-            $flash->success('You have successfully logged in!');
+            $account->setCurrentLoggedInUser($user_oauth_token->getUser());
 
             // Add a 'remember me' cookie for OAuth login
             $response = FigResponseCookies::set($response, $account->createRememberMeSetCookie($user_oauth_token));
 
             // Redirect user
             // TODO: check session for redirect-after-login
+            $flash->success('You have successfully logged in!');
             $response = $response->withHeader('Location', '/')->withStatus(302);
             return $response;
         }
@@ -324,8 +323,7 @@ class OAuthUserController {
                 if($token && \preg_match('~^[a-zA-Z0-9]+$~', $token) && $token === $cookie_token->getToken()){
 
                     // Log out user from the current session
-                    $account->setUser(null);
-                    $session['uid'] = null;
+                    $account->clearCurrentLoggedInUser();
                     $user_has_been_logged_out = true;
                 }
 
@@ -489,8 +487,7 @@ class OAuthUserController {
         unset($session['oauth_register']);
 
         // Immediately log in the user
-        $account->setUser($user);
-        $session['uid'] = $user->getId();
+        $account->setCurrentLoggedInUser($user);
 
         // Add a 'remember me' cookie for OAuth login
         $response = FigResponseCookies::set($response, $account->createRememberMeSetCookie($user_oauth_token));

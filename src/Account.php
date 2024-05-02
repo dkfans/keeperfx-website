@@ -84,7 +84,7 @@ class Account {
     /**
      * Get the value of user
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         return $this->user;
     }
@@ -94,11 +94,23 @@ class Account {
      *
      * @return  self
      */
-    public function setUser($user)
+    public function setUser(?User $user)
     {
         $this->user = $user;
 
         return $this;
+    }
+
+    public function setCurrentLoggedInUser(User $user)
+    {
+        $this->setUser($user);
+        $this->session['uid'] = $user->getId();
+    }
+
+    public function clearCurrentLoggedInUser()
+    {
+        $this->user = null;
+        $this->session['uid'] = null;
     }
 
     public function logIp(string $ip): void

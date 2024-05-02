@@ -212,7 +212,7 @@ class PasswordResetController {
         $em->flush();
 
         // Log the user in
-        $session['uid'] = $user->getId();
+        $account->setCurrentLoggedInUser($user);
 
         // Redirect to home page
         $flash->success('You have successfully reset your password!');

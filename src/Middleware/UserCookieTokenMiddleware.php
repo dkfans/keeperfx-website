@@ -109,8 +109,7 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
                     }
 
                     // Login the user
-                    $this->account->setUser($cookie_token->getUser());
-                    $this->session['uid'] = $cookie_token->getUser()->getId();
+                    $this->account->setCurrentLoggedInUser($cookie_token->getUser());
 
                     // Log the IP
                     $ip = $request->getAttribute('ip_address');

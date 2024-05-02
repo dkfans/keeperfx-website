@@ -358,6 +358,7 @@ class AccountController {
         CsrfGuard $csrf_guard,
         Session $session,
         EntityManager $em,
+        Account $account,
         $token_name,
         $token_value,
     ){
@@ -368,7 +369,7 @@ class AccountController {
         }
 
         // Logout user
-        $session['uid'] = null;
+        $account->clearCurrentLoggedInUser();
 
         // Check if 'remember me' token is set (and valid)
         $cookies = $request->getCookieParams();
