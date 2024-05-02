@@ -167,9 +167,7 @@ $(function(e){
 
     // Show comment submit extra when clicking in the comment box
     $('#comment-input').on('focus', function(e){
-        if($(this).val().length === 0){
-            $('#comment-submit-extra').slideDown('fast');
-        }
+        $('#comment-submit-extra').slideDown('fast');
     });
 
     // Hide comment area on cancel
