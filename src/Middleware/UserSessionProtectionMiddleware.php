@@ -66,7 +66,7 @@ class UserSessionProtectionMiddleware implements MiddlewareInterface {
             } else {
 
                 // Check if the IP has changed
-                if($this->session['ip'] !== $ip . '.a'){
+                if($this->session['ip'] !== $ip){
 
                     // Forget the IP
                     $this->session['ip'] = null;
