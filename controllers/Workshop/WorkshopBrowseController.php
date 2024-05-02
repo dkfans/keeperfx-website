@@ -169,7 +169,7 @@ class WorkshopBrowseController {
                 $url_params['user']          = $user->getUsername();
 
                 // When we are checking a single user, we want to hide broken items except if we are looking at our own items
-                if($account->getUser()->getUsername() !== $username){
+                if($account->isLoggedIn() && $account->getUser()->getUsername() !== $username){
                     $query = $query->andWhere('item.is_last_file_broken = 0');
                 }
             }
