@@ -12,6 +12,15 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Factory\ResponseFactory;
 
+/**
+ * TODO: Fix this?
+ *
+ * This implementation does not work correctly when we are behind CloudFlare and are listening both on a IPv4 and a IPv6 addresses.
+ * Some clients switch between them while our session is still active but the CloudFlare one isn't anymore.
+ *
+ * We can't really protect against this because if we would store both IPv4 and IPv6 and a user is only using IPv4,
+ * then an attacker could bypass this protection and hijack the session while connecting from a IPv6 address.
+ */
 class UserSessionProtectionMiddleware implements MiddlewareInterface {
 
     /** @var ResponseFactory $response_factory */
@@ -58,7 +67,7 @@ class UserSessionProtectionMiddleware implements MiddlewareInterface {
         if($this->account->isLoggedIn() && $ip !== null){
 
             // Check if the IP is not yet stored in the session
-            if(empty($this->session['ip'])){
+            if(empty($this->session['ip']) || \is_null($this->session['ip'])){
 
                 // Remember IP address for this session
                 $this->session['ip'] = $ip;
