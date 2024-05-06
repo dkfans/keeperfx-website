@@ -69,6 +69,7 @@ class User {
     private Collection $workshop_difficulty_ratings;
 
     #[ORM\OneToMany(targetEntity: UserIpLog::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OrderBy(["last_seen_timestamp" => "DESC"])]
     private Collection $ip_logs;
 
     public function __construct() {
