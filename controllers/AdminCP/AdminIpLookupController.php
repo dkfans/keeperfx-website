@@ -25,6 +25,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpInternalServerErrorException;
+use Xenokore\Utility\Helper\StringHelper;
 
 class AdminIpLookupController {
 
@@ -103,13 +104,20 @@ class AdminIpLookupController {
                 }
 
                 if($success){
-                    $info = $json;
+
+                    // Add IP (it's often set as query)
+                    if(IpHelper::isValidIp($json['query'])){
+                        $info['ip'] = $json['query'];
+                    }
+
+                    // Merge json into info array
+                    $info = \array_merge($info, $json);
 
                     // Remove API lookup data
                     unset($info['query']);
                     unset($info['status']);
 
-                    // Trick to convert boolean to string
+                    // Convert some booleans to strings
                     $info['mobile']  = \json_encode($json['mobile']);
                     $info['proxy']   = \json_encode($json['proxy']);
                     $info['hosting'] = \json_encode($json['hosting']);
