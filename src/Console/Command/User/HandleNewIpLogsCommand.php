@@ -95,11 +95,16 @@ class HandleNewIpLogsCommand extends Command
                 }
 
                 // Update IP log
-                $ip_log->setHostName(\gethostbyaddr($ip));
                 $ip_log->setCountry($json['countryCode'] ?? null);
                 $ip_log->setIsp($json['isp'] ?? null);
                 $ip_log->setIsProxy($json['proxy'] ?? null);
                 $ip_log->setIsHosting($json['hosting'] ?? null);
+
+                // Add unique hostname (must be different from IP)
+                $host = \gethostbyaddr($ip);
+                if($host !== $ip){
+                    $ip_log->setHostName($host);
+                }
 
                 $output->writeln("[+] Updated <query>{$ip}</query>");
             }
