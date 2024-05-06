@@ -29,13 +29,10 @@ class UserIpLog {
     private string|null $country;
 
     #[ORM\Column(nullable:true)]
-    private bool|null $is_vpn;
+    private bool|null $is_proxy;
 
     #[ORM\Column(nullable:true)]
-    private bool|null $is_tor;
-
-    #[ORM\Column(nullable:true)]
-    private bool|null $is_spam;
+    private bool|null $is_hosting;
 
     #[ORM\Column(nullable:true)]
     private string|null $host_name;
@@ -167,55 +164,37 @@ class UserIpLog {
     }
 
     /**
-     * Get the value of is_vpn
+     * Get the value of is_proxy
      */
-    public function isIsVpn(): ?bool
+    public function isProxy(): ?bool
     {
-        return $this->is_vpn;
+        return $this->is_proxy;
     }
 
     /**
-     * Set the value of is_vpn
+     * Set the value of is_proxy
      */
-    public function setIsVpn(?bool $is_vpn): self
+    public function setIsProxy(?bool $is_proxy): self
     {
-        $this->is_vpn = $is_vpn;
+        $this->is_proxy = $is_proxy;
 
         return $this;
     }
 
     /**
-     * Get the value of is_tor
+     * Get the value of is_hosting
      */
-    public function isIsTor(): ?bool
+    public function isHosting(): ?bool
     {
-        return $this->is_tor;
+        return $this->is_hosting;
     }
 
     /**
-     * Set the value of is_tor
+     * Set the value of is_hosting
      */
-    public function setIsTor(?bool $is_tor): self
+    public function setIsHosting(?bool $is_hosting): self
     {
-        $this->is_tor = $is_tor;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of is_spam
-     */
-    public function isIsSpam(): ?bool
-    {
-        return $this->is_spam;
-    }
-
-    /**
-     * Set the value of is_spam
-     */
-    public function setIsSpam(?bool $is_spam): self
-    {
-        $this->is_spam = $is_spam;
+        $this->is_hosting = $is_hosting;
 
         return $this;
     }

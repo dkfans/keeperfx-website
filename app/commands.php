@@ -20,6 +20,7 @@ return [
     \App\Console\Command\User\ClearOldPasswordResetTokensCommand::class,
     \App\Console\Command\User\ClearOldNotificationsCommand::class,
     \App\Console\Command\User\GenerateAllAvatarThumbnailsCommand::class,
+    \App\Console\Command\User\HandleNewIpLogsCommand::class,
 
     // Workshop
     \App\Console\Command\Workshop\AddWorkshopTagCommand::class,
