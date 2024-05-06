@@ -1531,4 +1531,10 @@ div.emoji-drop-down div.emoji {
     height: .1em;
 }
 
+.markdown-body img {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 /* .workshop-item-comment-content .markdown-body  */
