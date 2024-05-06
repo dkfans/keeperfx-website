@@ -138,6 +138,11 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
                 $group->post('/{id:\d+}', [AdminCP\AdminReleasesController::class, 'releaseEdit']);
             });
 
+            // Admin: IP LOOKUP
+            $group->group('/ip-lookup', function (RouteCollectorProxy $group) use ($container) {
+                $group->get('/{type}/{string}', [AdminCP\AdminIpLookupController::class, 'lookup']);
+            });
+
             // Server info
             $group->get('/server-info', [AdminCP\AdminServerInfoController::class, 'serverInfoIndex']);
 

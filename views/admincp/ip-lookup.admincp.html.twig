@@ -1,0 +1,87 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'IP Lookup - AdminCP' %}
+
+{% block page %}
+
+{# IP Lookup #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>{{ type|upper }}: <span class="monospace text-primary">{{ string }}</span></h2>
+    </div>
+    <div class="content-body">
+
+    {% if info|length > 0 %}
+
+        <table class="table">
+            <tbody>
+
+                {% for name, value in info %}
+                    <tr>
+                        <td>
+                            {{ name }}
+                        </td>
+                        <td>
+                            {{ value }}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
+
+    </div>
+</div>
+
+{# Users #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Associated Users</h2>
+    </div>
+    <div class="content-body">
+
+    {% if users|length == 0 %}
+
+        <p>
+            No associated users found.
+        </p>
+
+    {% else %}
+
+        <table class="table">
+            <thead>
+                <th>ID</th>
+                <th>User</th>
+                <th>Registration Date</th>
+                <th>Email</th>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>
+                            {{ user.id }}
+                        </td>
+                        <td>
+                            <a href="/admin/user/{{ user.id }}">
+                                {{ user.username }}
+                            </a>
+                        </td>
+                        <td>
+                            {{ user.createdTimestamp|date('Y-m-d H:i') }}
+                        </td>
+                        <td>
+                            {{ user.email }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

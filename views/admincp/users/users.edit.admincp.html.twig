@@ -88,7 +88,7 @@
                 <tbody>
                     {% for ip_log in user.ipLogs %}
 
-                        <tr {% if ip_log.isProxy or ip_log.isHosting %} style="background-color: rgba(190, 0, 0, 0.3);"{% endif %}>
+                        <tr {% if ip_log.isProxy or ip_log.isHosting %} style="background-color: rgba(255, 255, 255, 0.15);"{% endif %}>
 
                             {# Country #}
                             <td>
@@ -108,14 +108,14 @@
 
                             {# Host Name #}
                             <td>
-                                <a href="/admin/ip-lookup/host/{{ ip_log.ip|url_encode }}">
+                                <a href="/admin/ip-lookup/host_name/{{ ip_log.hostName|url_encode }}">
                                     {{ ip_log.hostName }}
                                 </a>
                             </td>
 
                             {# ISP #}
                             <td>
-                                <a href="/admin/ip-lookup/isp/{{ ip_log.ip|url_encode }}">
+                                <a href="/admin/ip-lookup/isp/{{ ip_log.isp|url_encode }}">
                                     {{ ip_log.isp }}
                                 </a>
                             </td>

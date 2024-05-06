@@ -73,7 +73,7 @@ class HandleNewIpLogsCommand extends Command
                 $res = $client->request('GET', 'http://ip-api.com/json/' . $ip . '?fields=status,message,countryCode,isp,proxy,hosting,query');
                 $content = $res->getBody();
                 if(!$content){
-                    $output->writeln("[-] Failed to grab content");
+                    $output->writeln("[-] Failed to get API response");
                     continue;
                 }
 
