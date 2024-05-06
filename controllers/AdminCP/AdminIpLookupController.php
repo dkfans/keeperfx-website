@@ -136,7 +136,9 @@ class AdminIpLookupController {
         $ip_logs = $em->getRepository(UserIpLog::class)->findBy([$type => $string]);
         if($ip_logs){
             foreach($ip_logs as $ip_log){
-                $users[] = $ip_log->getUser();
+                if(!in_array($ip_log->getUser(), $users)){
+                    $users[] = $ip_log->getUser();
+                }
             }
         }
 
