@@ -2,30 +2,18 @@
 
 namespace App\Controller\AdminCP;
 
-use App\Entity\NewsArticle;
-
-use App\Account;
-use App\FlashMessage;
-use App\DiscordNotifier;
 use App\Entity\UserIpLog;
-use App\Helper\IpHelper;
-use App\UploadSizeHelper;
-use App\Helper\ThumbnailHelper;
 
-use Slim\Csrf\Guard;
+use App\FlashMessage;
+use App\Helper\IpHelper;
+
 use Doctrine\ORM\EntityManager;
-use ByteUnits\Binary as BinaryFormatter;
-use Doctrine\Common\Collections\ArrayCollection;
 use Twig\Environment as TwigEnvironment;
 
-use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpInternalServerErrorException;
-use Xenokore\Utility\Helper\StringHelper;
 
 class AdminIpLookupController {
 
