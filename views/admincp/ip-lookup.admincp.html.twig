@@ -28,7 +28,22 @@
                             {% endif %}
                         </td>
                         <td>
-                            {{ value }}
+                            {% if name == 'isp' %}
+                                <a href="/admin/ip-lookup/isp/{{ value|url_encode }}">
+                                    {{ value }}
+                                </a>
+                            {% elseif name == 'ip' %}
+                                <a href="/admin/ip-lookup/ip/{{ value|url_encode }}">
+                                    {{ value }}
+                                </a>
+                            {% elseif name == 'reverse' %}
+                                <a href="/admin/ip-lookup/host_name/{{ value|url_encode }}">
+                                    {{ value }}
+                                </a>
+                            {# {% elseif name == 'asname' %} #}
+                            {% else %}
+                                {{ value }}
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
