@@ -76,7 +76,6 @@
                 <th>ID</th>
                 <th>User</th>
                 <th>Registration Date</th>
-                <th>Email</th>
             </thead>
             <tbody>
                 {% for user in users %}
@@ -91,9 +90,6 @@
                         </td>
                         <td>
                             {{ user.createdTimestamp|date('Y-m-d H:i') }}
-                        </td>
-                        <td>
-                            {{ user.email }}
                         </td>
                     </tr>
                 {% endfor %}
