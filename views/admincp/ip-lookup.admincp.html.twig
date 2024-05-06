@@ -19,7 +19,7 @@
                 {% for name, value in info %}
                     <tr>
                         <td>
-                            {% if name in ['isp', 'as'] %}
+                            {% if name in ['isp', 'as', 'ip'] %}
                                 {{ name|upper }}
                             {% elseif name == 'asname' %}
                                 AS Name
