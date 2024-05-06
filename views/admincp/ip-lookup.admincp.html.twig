@@ -19,7 +19,13 @@
                 {% for name, value in info %}
                     <tr>
                         <td>
-                            {{ name }}
+                            {% if name in ['isp', 'as'] %}
+                                {{ name|upper }}
+                            {% elseif name == 'asname' %}
+                                AS Name
+                            {% else %}
+                                {{ name|enum_beautify }}
+                            {% endif %}
                         </td>
                         <td>
                             {{ value }}
