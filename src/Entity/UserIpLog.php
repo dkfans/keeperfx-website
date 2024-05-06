@@ -26,19 +26,19 @@ class UserIpLog {
     private \DateTime $last_seen_timestamp;
 
     #[ORM\Column(nullable:true)]
-    private string|null $country;
+    private string|null $country = null;
 
     #[ORM\Column(nullable:true)]
-    private bool|null $is_proxy;
+    private bool|null $is_proxy = null;
 
     #[ORM\Column(nullable:true)]
-    private bool|null $is_hosting;
+    private bool|null $is_hosting = null;
 
     #[ORM\Column(nullable:true)]
-    private string|null $host_name;
+    private string|null $host_name = null;
 
     #[ORM\Column(nullable:true)]
-    private string|null $isp;
+    private string|null $isp = null;
 
     #[ORM\PrePersist]
     public function onPrePersist()
