@@ -1,0 +1,104 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'IP Logs - AdminCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>IP Logs ({{ ip_logs|length }})</h2>
+    </div>
+    <div class="content-body">
+
+    <table class="table table-bordered" style="font-size: 11px">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th style="width:25px;"></th>
+            <th>IP</th>
+            <th>Host</th>
+            <th>ISP</th>
+            <th>Last Seen</th>
+            <th>First Seen</th>
+            <th>Info</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ip_log in ip_logs %}
+
+            <tr {% if ip_log.isProxy or ip_log.isHosting %} style="background-color: rgba(255, 50, 50, 0.15);"{% endif %}>
+
+                {# User #}
+                <td>
+                    <a href="/admin/user/{{ ip_log.user.id }}">
+                        {{ ip_log.user.username }}
+                    </a>
+                </td>
+
+                {# Country #}
+                <td>
+                    {% if ip_log.country is not null %}
+                        <span style="font-size: 14px; position: relative; top: -4px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(ip_log.country) }}" data-bs-placement="top">
+                            {{ get_country_emoji(ip_log.country) }}
+                        </span>
+                    {% endif %}
+                </td>
+
+                {# IP #}
+                <td>
+                    <a href="/admin/ip-lookup/ip/{{ ip_log.ip|url_encode }}">
+                        {{ ip_log.ip }}
+                    </a>
+                </td>
+
+                {# Host Name #}
+                <td>
+                    <a href="/admin/ip-lookup/host_name/{{ ip_log.hostName|url_encode }}">
+                        {{ ip_log.hostName }}
+                    </a>
+                </td>
+
+                {# ISP #}
+                <td>
+                    <a href="/admin/ip-lookup/isp/{{ ip_log.isp|url_encode }}">
+                        {{ ip_log.isp }}
+                    </a>
+                </td>
+
+                {# Last Seen #}
+                <td>
+                    {{ ip_log.lastSeenTimestamp|date('Y-m-d, G:i') }}
+                </td>
+
+                {# First Seen #}
+                <td>
+                    {{ ip_log.firstSeenTimestamp|date('Y-m-d, G:i') }}
+                </td>
+
+                {# Info #}
+                <td style="width: 75px;">
+
+                    {# Proxy #}
+                    {% if ip_log.isProxy %}
+                        <span data-bs-toggle="popover" data-bs-content="Proxy, VPN or Tor" data-bs-placement="top">
+                            <ion-icon style="font-size: 16px;" name="shield-outline"></ion-icon>
+                        </span>
+                    {% endif %}
+
+                    {# Hosting #}
+                    {% if ip_log.isHosting %}
+                        <span data-bs-toggle="popover" data-bs-content="Hosting" data-bs-placement="top">
+                            <ion-icon style="font-size: 16px;" name="server-outline"></ion-icon>
+                        </span>
+                    {% endif %}
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+</table>
+
+    </div>
+</div>
+
+{% endblock %}

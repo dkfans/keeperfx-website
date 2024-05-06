@@ -17,6 +17,24 @@ use Slim\Exception\HttpNotFoundException;
 
 class AdminIpLookupController {
 
+    public function logsIndex(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        EntityManager $em,
+    ){
+        $ip_logs = $em->getRepository(UserIpLog::class)->findBy([], ['last_seen_timestamp' => 'DESC']);
+
+        $response->getBody()->write(
+            $twig->render('admincp/ip-logs.admincp.html.twig', [
+                'ip_logs' => $ip_logs
+            ])
+        );
+
+        return $response;
+
+    }
+
     public function lookup(
         Request $request,
         Response $response,
