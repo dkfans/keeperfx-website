@@ -2,6 +2,7 @@
 
 namespace App\Console\Command\KeeperFX;
 
+use App\SpamDetector;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -11,16 +12,16 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 
 class FetchForumActivityCommand extends Command
 {
+    public const MAX_THREAD_COUNT = 5;
+
     public const FORUM_URL = 'https://keeperklan.com/forums/52-KeeperFX';
 
     public const THREAD_URL_BASE = 'https://keeperklan.com/';
 
-    private CacheInterface $cache;
-
-    public function __construct(CacheInterface $cache)
-    {
-        $this->cache = $cache;
-
+    public function __construct(
+        private CacheInterface $cache,
+        private SpamDetector $spam_detector,
+    ) {
         parent::__construct();
     }
 
@@ -48,7 +49,7 @@ class FetchForumActivityCommand extends Command
 
         $crawler = new Crawler((string)$content);
 
-        $threads = $crawler->filter('#threads .threadbit:not(.moved)')->each(function (Crawler $node, $i) {
+        $found_threads = $crawler->filter('#threads .threadbit:not(.moved)')->each(function (Crawler $node, $i) {
             $replies_str = $node->filter('.threadstats li')->first()->text();
             $replies     = \preg_replace('/[^0-9]/', '', $replies_str ?? '');
             return [
@@ -59,16 +60,37 @@ class FetchForumActivityCommand extends Command
             ];
         });
 
-        if(\count($threads) < 5){
-            $output->writeln("[-] Failed to grab at least 5 threads");
+        $found_thread_count = \count($found_threads);
+        if($found_thread_count === 0){
+            $output->writeln("[-] No threads found");
+            $this->cache->delete('keeperfx_forum_threads');
             return Command::FAILURE;
         }
 
-        $output->writeln("[+] Grabbed " . \count($threads) . " threads");
+        $output->writeln("[+] Grabbed {$found_thread_count} threads");
 
-        $this->cache->set('keeperfx_forum_threads', \array_slice($threads, 0, 5));
+        // Make sure threads are not spam
+        $threads = [];
+        foreach($found_threads as $thread){
 
-        $output->writeln("[+] Stored 5 threads into cache");
+            // Don't cache more than 5 threads
+            if(\count($threads) == self::MAX_THREAD_COUNT){
+                break;
+            }
+
+            // Check title for spam
+            $title = $thread['title'];
+            if(empty($title) || $this->spam_detector->detectSpam($title)){
+                continue;
+            }
+
+            // Cache
+            $threads[] = $thread;
+        }
+
+        $this->cache->set('keeperfx_forum_threads', $threads);
+
+        $output->writeln("[+] Stored " . \count($threads) . " threads into cache");
         $output->writeln("[+] Done!");
 
         return Command::SUCCESS;
