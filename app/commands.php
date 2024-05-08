@@ -14,6 +14,7 @@ return [
     \App\Console\Command\KeeperFX\FetchForumActivityCommand::class,
     \App\Console\Command\KeeperFX\HandleTwitchStreamsCommand::class,
     \App\Console\Command\KeeperFX\ClearOldPrototypesCommand::class,
+    \App\Console\Command\KeeperFX\FetchDiscordInfoCommand::class,
 
     // User
     \App\Console\Command\User\CreateUserCommand::class,

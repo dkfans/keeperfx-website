@@ -209,11 +209,30 @@
                 <h2>Keeper Klan Discord</h2>
             </div>
             <div class="content-body">
-                <a href="{{ get_env('APP_DISCORD_INVITE_URL') }}" target="_blank" style="display:block;">
-                    <iframe
-                        src="https://discord.com/widget?id=480505152806191114&theme=dark" width="100%"
-                        height="74" allowtransparency="true" frameborder="0" style="pointer-events: none;">
-                    </iframe>
+
+                {# Discord Button Link #}
+                <a class="index-discord-button" href="https://discord.gg/{{ get_env('APP_DISCORD_INVITE_ID') }}" target="_blank">
+
+                    {# Discord Button #}
+                    <div>
+
+                            {# Logo #}
+                            <img src="/img/branding/discord-logo-white.svg" style="height: 26px;" />
+
+                            {# Info on the right #}
+                            <div style="font-size: 13px;">
+                                {% if discord_info is not empty %}
+                                <span style="position: relative; top: 1px; margin-right: 3px;"><ion-icon name="ellipse" style="color: #28a745;"></ion-icon></span>
+                                <span class="text-white" style="font-weight: 700;">{{ discord_info.approximate_presence_count }}</span>
+                                <span class="text-white" style="font-weight: 320;">Online</span>
+                                <br />
+                                <span style="position: relative; top: 1px; margin-right: 3px;"><ion-icon name="ellipse" style="color: #aaa;"></ion-icon></span>
+                                <span class="text-white" style="font-weight: 700;">{{ discord_info.approximate_member_count }}</span>
+                                <span class="text-white" style="font-weight: 320;">Members</span>
+                                {% endif %}
+                            </div>
+
+                    </div>
                 </a>
             </div>
         </div>

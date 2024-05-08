@@ -47,6 +47,7 @@ class IndexController {
                 'release'                   => $release,
                 'latest_workshop_items'     => $latest_workshop_items,
                 'forum_threads'             => $cache->get('keeperfx_forum_threads', []),
+                'discord_info'              => $cache->get('discord_info', []),
                 'twitch_channel'            => $twitch_channel,
                 'twitch_parent_host'        => \parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_HOST),
             ])
