@@ -9,6 +9,8 @@ use App\FlashMessage;
 use App\DiscordNotifier;
 use App\UploadSizeHelper;
 use App\Helper\ThumbnailHelper;
+use App\Notifications\NotificationCenter;
+use App\Notifications\Notification\NewsPostNotification;
 
 use Slim\Csrf\Guard;
 use Doctrine\ORM\EntityManager;
@@ -21,7 +23,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpInternalServerErrorException;
 
 class AdminNewsController {
 
@@ -62,7 +63,8 @@ class AdminNewsController {
         EntityManager $em,
         FlashMessage $flash,
         DiscordNotifier $discord_notifier,
-        UploadSizeHelper $upload_size_helper
+        UploadSizeHelper $upload_size_helper,
+        NotificationCenter $nc,
     ){
 
         // Get POST data
@@ -171,6 +173,14 @@ class AdminNewsController {
         // Save to DB
         $em->persist($article);
         $em->flush();
+
+        // Notify the users that are subscribed to news articles
+        $nc->sendNotificationToAll(NewsPostNotification::class, [
+            'id'          => $article->getId(),
+            'title'       => $article->getTitle(),
+            'title_slug'  => $article->getTitleSlug(),
+            'date_string' => $article->getCreatedTimestamp()->format("Y-m-d"),
+        ]);
 
         // Send a notification on Discord
         $discord_notifier->notifyNewNewsItem($article);
