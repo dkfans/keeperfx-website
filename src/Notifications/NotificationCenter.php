@@ -266,6 +266,9 @@ class NotificationCenter {
     /**
      * Clear all notifications that have specific data set.
      *
+     * This is useful for when somebody removes something comment that still has a notification for somebody pending.
+     * We don't want a notification that point to something that does not exist anymore.
+     *
      * If a value in the data to match is an array, the whole array needs to match, except if $check_multiple is true.
      *
      * If $check_multiple is true, an array that is given inside of the data to match, will have all of its values checked separately.
