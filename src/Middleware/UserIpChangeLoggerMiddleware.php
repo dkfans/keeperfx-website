@@ -13,15 +13,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Factory\ResponseFactory;
 
 /**
- * TODO: Fix this?
- *
- * This implementation does not work correctly when we are behind CloudFlare and are listening both on a IPv4 and a IPv6 addresses.
- * Some clients switch between them while our session is still active but the CloudFlare one isn't anymore.
- *
- * We can't really protect against this because if we would store both IPv4 and IPv6 and a user is only using IPv4,
- * then an attacker could bypass this protection and hijack the session while connecting from a IPv6 address.
+ * Stores the IP in our session and if it changes we try logging it again.
  */
-class UserSessionProtectionMiddleware implements MiddlewareInterface {
+class UserIpChangeLoggerMiddleware implements MiddlewareInterface {
 
     /** @var ResponseFactory $response_factory */
     public $response_factory;
@@ -77,19 +71,11 @@ class UserSessionProtectionMiddleware implements MiddlewareInterface {
                 // Check if the IP has changed
                 if($this->session['ip'] !== $ip){
 
-                    // Forget the IP
-                    $this->session['ip'] = null;
+                    // Log the IP
+                    $this->account->logIp($ip);
 
-                    // Logout the user
-                    $this->account->clearCurrentLoggedInUser();
-
-                    // Show nice message to our end user
-                    $this->flash->warning("Your session has been invalidated because your IP address has changed.");
-
-                    // Redirect back to this page so a new session is created
-                    return $this->response_factory->createResponse()
-                        ->withHeader('Location', $request->getUri()->getPath())
-                        ->withStatus(302);
+                    // Store the new IP in our session
+                    $this->session['ip'] = $ip;
                 }
             }
         }

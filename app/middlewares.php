@@ -10,7 +10,7 @@ return [
     App\Middleware\UserCookieTokenMiddleware::class,
     App\Middleware\MinifyHtmlMiddleware::class,
 
-    // App\Middleware\UserSessionProtectionMiddleware::class,
+    App\Middleware\UserIpChangeLoggerMiddleware::class,
 
     new \RKA\Middleware\IpAddress(),
 ];
