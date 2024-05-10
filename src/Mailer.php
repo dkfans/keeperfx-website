@@ -23,9 +23,9 @@ class Mailer {
      * @param string $receiver
      * @param string $subject
      * @param string $contents
-     * @return false|integer      The id of the mail on success. False on failure
+     * @return false|integer      The id of the mail on success. -1 if not persisted to DB yet, False on failure
      */
-    public function createMailInQueue(string $receiver, string $subject, string $body, ?string $html_body = null): int|false
+    public function createMailInQueue(string $receiver, string $subject, string $body, ?string $html_body = null, bool $flush_db = true): int|false
     {
         try {
             $mail = new Mail();
@@ -36,16 +36,19 @@ class Mailer {
             $mail->setStatus(MailStatus::NOT_SENT_YET);
 
             $this->em->persist($mail);
-            $this->em->flush();
+
+            if($flush_db){
+                $this->em->flush();
+            }
 
         } catch (\Exception $ex) {
             return false;
         }
 
-        return $mail->getId();
+        return $flush_db ? $mail->getId() : -1;
     }
 
-    public function createMailForUser(User $user, bool $must_be_verified, string $subject, string $body, ?string $html_body = null): int|false
+    public function createMailForUser(User $user, bool $must_be_verified, string $subject, string $body, ?string $html_body = null, bool $flush_db = true): int|false
     {
         if($user->getEmail() === null){
             return false;
@@ -57,7 +60,7 @@ class Mailer {
         //     }
         // }
 
-        return $this->createMailInQueue($user->getEmail(), $subject, $body, $html_body);
+        return $this->createMailInQueue($user->getEmail(), $subject, $body, $html_body, $flush_db);
     }
 
     public function sendMail(string $receiver, string $subject, string $body, ?string $html_body = null): bool
