@@ -25,35 +25,31 @@ class WebsiteChangelogController {
         {
             $commits = [];
 
-            try {
-                // Load git repo and load commits
-                $repo = new Repository(APP_ROOT);
-                $log  = $repo->getLogOperator();
-                $all_commits = $log->getCommitsSince("5ab2556bce81c5e247dcc098c8b0f8150a40747d");
-
-            } catch (\Exception $ex){
-
-                // Failed to get commits
-                $flash->error("Failed to get website changelog");
-                $response->getBody()->write(
-                    $twig->render('website.changelog.html.twig', ['commits' => null])
-                );
-                return $response;
+            // Run 'git log'
+            $result = \shell_exec("git log");
+            if(!$result){
+                throw new \Exception("no 'git log' result");
             }
 
-            // Combine commits by date
-            foreach($all_commits as $commit)
-            {
-                $date_str = $commit->getDate()->format('Y-m-d');
+            // Get all commits
+            $preg_result = \preg_match_all("/commit\s([a-f0-9]+)\nAuthor\:\s(.+)\nDate\:\s+(.+)\n\n\s+(.+)/", $result, $matches, \PREG_SET_ORDER);
+            if(!$preg_result){
+                throw new \Exception("No preg result");
+            }
 
-                // Add to commit array
-                // Also get all data out of the objects so we can easily store in cache
+            // Loop trough commits
+            foreach($matches as $match){
+
+                // Get date
+                $date_time = new \DateTime($match[3]);
+                $date_str  = $date_time->format('Y-m-d');
+
+                // Add to commits list
                 $commits[$date_str][] = [
-                    'author'  => (string) $commit->getAuthor(),
-                    'body'    => (string) $commit->getBody(),
-                    'hash'    => (string) $commit->getHash(),
-                    'subject' => (string) $commit->getSubject(),
-                    'date'    => $commit->getDate(),
+                    'hash'    => $match[1],
+                    'author'  => $match[2],
+                    'date'    => $date_time,
+                    'subject' => $match[4],
                 ];
             }
 
