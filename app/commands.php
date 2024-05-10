@@ -52,4 +52,7 @@ return [
 
     // Lubiki
     \App\Console\Command\Lubiki\LubikiAddFileDumpToWorkshopCommand::class,
+
+    // Website
+    \App\Console\Command\Website\CacheWebsiteChangelogCommand::class,
 ];

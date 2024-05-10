@@ -32,6 +32,7 @@ php ./console cache:warm
 # This allows users to continue using the website again
 php ./console maintenance:stop
 
-# Instantly run some tasks that grab data for the homepage
+# Instantly run some other caching tasks
+php ./console website:cache-git-commits
 php ./console kfx:fetch-discord-info
 php ./console kfx:fetch-forum-activity

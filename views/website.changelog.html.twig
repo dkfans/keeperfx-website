@@ -20,14 +20,24 @@
         </div>
         <div class="content-body">
 
-            <div class="mt-1 mb-5">
-                <p>A full list of all the changes and updates to the KeeperFX website.</p>
-            </div>
+            {% if commits|length == 0 %}
 
-            {% for date_str, date_commits in commits %}
-                <h4>{{ date_str }}</h4>
-                <pre class="code"><code>{% for commit in date_commits %}- {{ commit.subject }}&NewLine;{% endfor %}</code></pre>
-            {% endfor %}
+                <div class="alert alert-warning">
+                    Something went wrong with the changelog cache. Try again later.
+                </div>
+
+            {% else %}
+
+                <div class="mt-1 mb-5">
+                    <p>A full list of all the changes and updates to the KeeperFX website.</p>
+                </div>
+
+                {% for date_str, date_commits in commits %}
+                    <h4>{{ date_str }}</h4>
+                    <pre class="code"><code>{% for commit in date_commits %}- {{ commit.subject }}&NewLine;{% endfor %}</code></pre>
+                {% endfor %}
+
+            {% endif %}
         </div>
     </div>
 
