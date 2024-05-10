@@ -129,6 +129,12 @@ class HistoryController {
                     'date_format' => 'Y-m-d',
                     'description' => "AncientWay won in the finals against Spatulade during the first official KeeperFX tournament. **Congratulations!  \nThird and fourth place go to Biervampir and Loobinex.",
                 ],
+                [
+                    'title'       => 'New Keeper colors! Orange, Pink and Black',
+                    'date'        => new \DateTime('2024-05-10'),
+                    'date_format' => 'Y-m-d',
+                    'description' => "qqluqq implemented 3 new Keepers which can be played as and fought against. These Keepers use the colored icons that are made by Spatulade.",
+                ],
             ]])
         );
 
