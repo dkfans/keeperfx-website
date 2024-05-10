@@ -62,7 +62,8 @@
         "crunzphp/crunz": "^3.4",
         "lasserafn/php-initial-avatar-generator": "^4.3",
         "wyrihaximus/html-compress": "^4.2",
-        "fgribreau/mailchecker": "^6.0"
+        "fgribreau/mailchecker": "^6.0",
+        "sebastianfeldmann/git": "^3.11"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",

@@ -289,6 +289,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     // History
     $group->get('/history', [HistoryController::class, 'index']);
 
+    // Website Changelog
+    $group->get('/website-changelog', [WebsiteChangelogController::class, 'index']);
+
 })->add(\Slim\Csrf\Guard::class);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
