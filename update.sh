@@ -33,6 +33,6 @@ php ./console cache:warm
 php ./console maintenance:stop
 
 # Instantly run some other caching tasks
-php ./console website:cache-git-commits
 php ./console kfx:fetch-discord-info
 php ./console kfx:fetch-forum-activity
+php ./console website:cache-git-commits
