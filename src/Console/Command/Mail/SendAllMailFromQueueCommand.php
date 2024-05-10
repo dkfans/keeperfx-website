@@ -44,6 +44,17 @@ class SendAllMailFromQueueCommand extends Command
 
         foreach($mails as $mail_loop_entity)
         {
+            // Make sure mail has a valid receiver email
+            $email = $mail_loop_entity->getReceiver();
+            if($email === null || \filter_var($email, FILTER_VALIDATE_EMAIL) === false){
+
+                // Remove from DB
+                $output->writeln("[!] Removing #{$mail_loop_entity->getId()} because it has an invalid email address");
+                $this->em->remove($mail_loop_entity);
+                $this->em->flush();
+                continue;
+            }
+
             // Get mail again from DB to make sure it's not being sent by another process
             // Make sure status of mail did not change in the mean time
             $mail = $this->em->getRepository(Mail::class)->findOneBy([
