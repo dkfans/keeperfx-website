@@ -46,26 +46,29 @@ class NotificationCenter {
         }
     }
 
-    public function sendNotification(User $user, string $class, array|null $data = null): bool
+    public function sendNotification(User $user, string $class, array|null $data = null, bool $flush = true): bool
     {
         // Get the notification settings of the receiving user
         $setting = $this->notification_settings->getUserSetting($user, $class);
 
         // Check if we are creating a notification on the website
         if($setting['website'] === true){
+
             $notification = $this->createUserNotification($user, $class, $data);
             $this->em->persist($notification);
-            $this->em->flush();
+            $this->em->flush(); // We need to flush here because we need the ID
 
             // Clear this users cache
             $this->clearUserCache($user);
 
+            // Map an an entity to a notification definition
             $notification_object = $this->createNotificationObject($notification);
 
             // Check if we need to send an email
             if($setting['email']){
 
                 // Create and send mail
+                // TODO: add template functionality
                 $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
                 $email_body .= $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
                 $this->mailer->createMailForUser(
@@ -112,23 +115,33 @@ class NotificationCenter {
 
     public function sendNotificationToAllWithRole(UserRole $role, string $class, array|null $data = null): void
     {
-        $users = $this->em->getRepository(User::class)->findAll();
-        if($users){
-            foreach($users as $user){
+        $users = [];
+        $all_users = $this->em->getRepository(User::class)->findAll();
+        if($all_users){
+            foreach($all_users as $user){
                 if($user->getRole()->value >= $role->value){
-                    $this->sendNotification($user, $class, $data);
+                    $users[] = $user;
                 }
             }
+        }
+
+        if(\count($users) > 0){
+            $this->sendNotificationToMany($users, $class, $data);
         }
     }
 
     public function sendNotificationToAll(string $class, array|null $data = null): void
     {
-        $users = $this->em->getRepository(User::class)->findAll();
-        if($users){
-            foreach($users as $user){
-                $this->sendNotification($user, $class, $data);
+        $users = [];
+        $all_users = $this->em->getRepository(User::class)->findAll();
+        if($all_users){
+            foreach($all_users as $user){
+                $users[] = $user;
             }
+        }
+
+        if(\count($users) > 0){
+            $this->sendNotificationToMany($users, $class, $data);
         }
     }
 
@@ -138,13 +151,119 @@ class NotificationCenter {
             throw new \Exception("user needs to be logged in");
         }
 
-        $users = $this->em->getRepository(User::class)->findAll();
-        if($users){
-            foreach($users as $user){
+        $users = [];
+        $all_users = $this->em->getRepository(User::class)->findAll();
+        if($all_users){
+            foreach($all_users as $user){
                 if($user !== $this->account->getUser()){
-                    $this->sendNotification($user, $class, $data);
+                    $users[] = $user;
                 }
             }
+        }
+
+        if(\count($users) > 0){
+            $this->sendNotificationToMany($users, $class, $data);
+        }
+    }
+
+    public function sendNotificationToMany(array $users,  string $class, array|null $data = null)
+    {
+        // Variables
+        $notifications = [];
+        $users_with_email_notifications = [];
+
+        /** @var User $user */
+        foreach($users as $user){
+
+            $notification = null;
+
+            // Get the notification settings of the receiving user
+            $setting = $this->notification_settings->getUserSetting($user, $class);
+
+            // Check if we are creating a notification on the website
+            if($setting['website'] === true){
+
+                $notification = $this->createUserNotification($user, $class, $data);
+                $this->em->persist($notification);
+                $notifications[] = $notification;
+            }
+
+            // Check if we need to send an email
+            if($setting['email'] === true){
+                $users_with_email_notifications[] = [
+                    'user'         => $user,
+                    'notification' => $notification,
+                ];
+            }
+        }
+
+        // Handle new website notifications
+        if(\count($notifications) > 0){
+
+            // Save notifications to the DB
+            $this->em->flush();
+
+            // Clear user caches for users with a new notification
+            foreach($notifications as $notification){
+                $this->clearUserCache($notification->getUser());
+            }
+        }
+
+        // Send out emails
+        if(\count($users_with_email_notifications) > 0){
+
+            foreach($users_with_email_notifications as $user_email_notification){
+
+                $user         = $user_email_notification['user'];
+                $notification = $user_email_notification['notification'];
+
+                // Check if we need to send an email that is linked to a notification on the website
+                if($notification !== null){
+
+                    // Map the notification entity to a notification definition
+                    $notification_definition = $this->createNotificationObject($notification);
+
+                    // Create and send mail
+                    // TODO: add template functionality
+                    $email_body = $notification_definition->getNotificationTitle() . PHP_EOL . PHP_EOL;
+                    $email_body .= $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
+                    $this->mailer->createMailForUser(
+                        $user,
+                        true,
+                        $notification_definition->getNotificationTitle(),
+                        $email_body,
+                        null,
+                        false,
+                    );
+
+                } else {
+
+                    // Create an email WITHOUT a link to a notification on the website
+
+                    // Make a blank notification object so we can load the title
+                    $notification_object = new $class(
+                        null,
+                        $data,
+                        false,
+                    );
+
+                    // Create and send mail
+                    $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
+                    $email_body .= $_ENV['APP_ROOT_URL'] . $notification_object->getUri();
+                    $this->mailer->createMailForUser(
+                        $user,
+                        true,
+                        $notification_object->getNotificationTitle(),
+                        $email_body,
+                        null,
+                        false
+                    );
+                }
+
+            }
+
+            // Save changes to DB
+            $this->em->flush();
         }
     }
 
