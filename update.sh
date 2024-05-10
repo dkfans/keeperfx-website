@@ -31,3 +31,7 @@ php ./console cache:warm
 # Disable maintenance
 # This allows users to continue using the website again
 php ./console maintenance:stop
+
+# Instantly run some tasks that grab data for the homepage
+php ./console kfx:fetch-discord-info
+php ./console kfx:fetch-forum-activity
