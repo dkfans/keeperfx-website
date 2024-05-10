@@ -39,16 +39,21 @@ class NotificationSettings {
 
     public function getUserSetting(User $user, string $class){
 
-        $user_setting = $this->em->getRepository(UserNotificationSetting::class)->findOneBy([
-            'user'  => $user,
-            'class' => $class,
-        ]);
+        $user_settings = $user->getNotificationSettings();
 
-        if($user_setting){
-            return [
-                'website' => $user_setting->isWebsiteEnabled(),
-                'email'   => $user_setting->isEmailEnabled(),
-            ];
+        if($user_settings){
+
+            /** @var UserNotificationSetting $user_setting */
+            foreach($user_settings as $user_setting){
+
+                // Check if this user has a setting for this notification
+                if($user_setting->getClass() === $class){
+                    return [
+                        'website' => $user_setting->isWebsiteEnabled(),
+                        'email'   => $user_setting->isEmailEnabled(),
+                    ];
+                }
+            }
         }
 
         if(!\array_key_exists($class, $this->default_settings)){
