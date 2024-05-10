@@ -4,12 +4,64 @@
 
 {% block page %}
 
-{# Server Info #}
+{# Stats #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">
-        <h2>Server Information</h2>
+        <h2>Website Stats</h2>
     </div>
     <div class="content-body">
+
+        {# Users #}
+        <table class="table">
+            <tr>
+                <td style="width: 50%">
+                    Users
+                </td>
+                <td style="width: 50%" class="text-info">
+                    {{ user_count }}
+                </td>
+            </tr>
+            {% if last_user is not null %}
+                <tr>
+                    <td style="width: 50%">
+                        Last User
+                    </td>
+                    <td style="width: 50%" class="text-info">
+                        <a href="/admin/user/{{ last_user.id }}">
+                            {{ last_user.username }}
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td style="width: 50%">
+                    IP Logs
+                </td>
+                <td style="width: 50%" class="text-info">
+                    {{ ip_log_count }}
+                </td>
+            </tr>
+        </table>
+
+        {# Emails #}
+        <table class="table">
+            <tr>
+                <td style="width: 50%">
+                    Mails
+                </td>
+                <td style="width: 50%" class="text-info">
+                    {{ mails_count }}
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 50%">
+                    Mails in Queue
+                </td>
+                <td style="width: 50%" class="text-info">
+                    {{ mails_in_queue_count }}
+                </td>
+            </tr>
+        </table>
 
         {# Workshop info #}
         <table class="table">
@@ -59,6 +111,16 @@
                 </td>
             </tr>
         </table>
+
+    </div>
+</div>
+
+{# Server Info #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Server Information</h2>
+    </div>
+    <div class="content-body">
 
         {# Upload info #}
         <table class="table">
