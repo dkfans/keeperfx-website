@@ -52,8 +52,12 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="/commits/{{ release.tag }}">Commits</a>
-                            ({{ release.commits.count }})
+                            {% if release.commits.count > 0 %}
+                                <a href="/commits/{{ release.tag }}">Commits</a>
+                                ({{ release.commits.count }})
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
