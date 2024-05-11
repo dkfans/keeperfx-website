@@ -11,6 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+use App\Helper\GitHelper;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
 class HandleCommitsCommand extends Command
@@ -42,63 +43,72 @@ class HandleCommitsCommand extends Command
         }
 
         // Handle tags in ascending order: v1 -> v2 -> v3
-        $releases = $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'ASC']);
-        foreach($releases as $index => $release){
+        $github_releases = $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'ASC']);
+        foreach($github_releases as $index => $github_release){
 
             // ALready handled commits for this release
-            if($release->getCommitsHandled() === true){
+            if($github_release->getCommitsHandled() === true){
                 continue;
             }
 
             // Check if there is previous release
-            if(!isset($releases[$index - 1])){
+            if(!isset($github_releases[$index - 1])){
 
                 // Can't handle first release
-                $release->setCommitsHandled(true);
-                $this->em->persist($release);
+                $github_release->setCommitsHandled(true);
+                $this->em->persist($github_release);
                 continue;
             }
 
             // Get tag range
-            $current_tag  = $release->getTag();
-            $previous_tag = $releases[$index - 1]->getTag();
-            $output->writeln("[>] Handling commits: {$previous_tag}...{$current_tag}");
+            $current_tag  = $github_release->getTag();
+            $previous_tag = $github_releases[$index - 1]->getTag();
+            $output->writeln("[>] Handling commits: {$previous_tag} -> {$current_tag}");
 
-            // Get git log between tags
+            // Create process 'git log' between tags
+            // We use '<TAG> --not <TAG2>' instead of '<TAG>...<TAG2>' as this leaves out commits in a different branch
             $process = new Process([
+                // "git log {$previous_tag} --not {$current_tag}"
                 'git',
                 'log',
-                $current_tag . '...' . $previous_tag,
-                '--pretty=format:%H-----%aD-----%s'
+                $current_tag,
+                '--not',
+                $previous_tag,
             ], self::PROJECT_DIR);
 
+            // Run the process
             $process->run();
+
             if(!$process->isSuccessful()){
                 $output->writeln("[-] Failed to get git log");
                 return Command::FAILURE;
             }
 
-            $count = 0;
+            // Get the git log commits
+            $preg_matches = GitHelper::parseCommitsFromGitLog($process->getOutput());
+            if(!$preg_matches){
+                $output->writeln("[-] Failed to grab commits for {$current_tag}");
+                continue;
+            }
 
-            // Loop trough all git log lines
-            $log = $process->getOutput();
-            foreach(\preg_split("/((\r?\n)|(\r\n?))/", $log) as $line){
-                $exp = \explode('-----', $line);
+            // Loop trough all commits
+            $commit_count = 0;
+            foreach($preg_matches as $match){
 
                 $commit = new GitCommit();
-                $commit->setHash($exp[0]);
-                $commit->setTimestamp(new \DateTime($exp[1]));
-                $commit->setMessage($exp[2]);
-                $commit->setRelease($release);
+                $commit->setHash($match[1]);
+                $commit->setTimestamp(new \DateTime($match[3]));
+                $commit->setMessage($match[4]);
+                $commit->setRelease($github_release);
 
                 $this->em->persist($commit);
 
-                $count++;
+                $commit_count++;
             }
 
-            $output->writeln("[+] Handled {$count} commits");
+            $output->writeln("[+] Handled {$commit_count} commits");
 
-            $release->setCommitsHandled(true);
+            $github_release->setCommitsHandled(true);
         }
 
         $output->writeln("[>] Writing changes to database...");
