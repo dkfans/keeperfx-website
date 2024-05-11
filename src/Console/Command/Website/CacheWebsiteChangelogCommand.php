@@ -4,9 +4,12 @@ namespace App\Console\Command\Website;
 
 use App\Entity\GitCommit;
 use App\Entity\GithubRelease;
+
 use Doctrine\ORM\EntityManager;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Process\Process;
+
+use App\Helper\GitHelper;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
@@ -47,14 +50,14 @@ class CacheWebsiteChangelogCommand extends Command
         }
 
         // Get all commits
-        $preg_result = \preg_match_all("/commit\s([a-f0-9]+)\nAuthor\:\s(.+)\nDate\:\s+(.+)\n\n\s+(.+)/", $process->getOutput(), $matches, \PREG_SET_ORDER);
-        if(!$preg_result){
-            $output->writeln("[-] Failed to understand git log result");
+        $preg_matches = GitHelper::parseCommitsFromGitLog($process->getOutput());
+        if(!$preg_matches){
+            $output->writeln("[-] Failed to grab commits");
             return Command::FAILURE;
         }
 
         // Loop trough commits
-        foreach($matches as $match){
+        foreach($preg_matches as $match){
 
             // Get date
             $date_time = new \DateTime($match[3]);
