@@ -68,7 +68,6 @@ class HandleCommitsCommand extends Command
             // Create process 'git log' between tags
             // We use '<TAG> --not <TAG2>' instead of '<TAG>...<TAG2>' as this leaves out commits in a different branch
             $process = new Process([
-                // "git log {$previous_tag} --not {$current_tag}"
                 'git',
                 'log',
                 $current_tag,
@@ -78,7 +77,6 @@ class HandleCommitsCommand extends Command
 
             // Run the process
             $process->run();
-
             if(!$process->isSuccessful()){
                 $output->writeln("[-] Failed to get git log");
                 return Command::FAILURE;
