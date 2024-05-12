@@ -61,14 +61,16 @@ class FetchStableCommand extends Command
             }
 
             $tag = (string) $gh_release->tag_name;
-            $output->writeln("[>] Checking if exists locally: {$tag}");
+            // $output->writeln("[>] Checking if exists locally: {$tag}");
 
             // Check if release already exists in DB
             $db_release = $this->em->getRepository(GithubRelease::class)->findOneBy(['tag' => $tag]);
             if($db_release){
-                $output->writeln("[>] {$tag} already exists");
+                // $output->writeln("[>] {$tag} already exists");
                 continue;
             }
+
+            $output->writeln("[>] Adding {$tag}...");
 
             // Add release to DB
             $github_release = new GithubRelease();
