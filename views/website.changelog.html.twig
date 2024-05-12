@@ -34,7 +34,7 @@
 
                 {% for date_str, date_commits in commits %}
                     <h4>{{ date_str }}</h4>
-                    <pre class="code"><code>{% for commit in date_commits %}- {{ commit.subject }}&NewLine;{% endfor %}</code></pre>
+                    <pre class="code"><code>{% for commit in date_commits %}- {{ commit.message }}&NewLine;{% endfor %}</code></pre>
                 {% endfor %}
 
             {% endif %}

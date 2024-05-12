@@ -37,7 +37,6 @@ class CacheWebsiteChangelogCommand extends Command
     protected function execute(Input $input, Output $output)
     {
         $commits = [];
-        $commit_count = 0;
 
         $output->writeln("[>] Grabbing commits from local website repo...");
 
@@ -50,32 +49,26 @@ class CacheWebsiteChangelogCommand extends Command
         }
 
         // Get all commits
-        $preg_matches = GitHelper::parseCommitsFromGitLog($process->getOutput());
-        if(!$preg_matches){
+        $parsed_commits = GitHelper::parseCommitsFromGitLog($process->getOutput());
+        if(!$parsed_commits){
             $output->writeln("[-] Failed to grab commits");
             return Command::FAILURE;
         }
 
         // Loop trough commits
-        foreach($preg_matches as $match){
+        foreach($parsed_commits as $parsed_commit){
 
-            // Get date
-            $date_time = new \DateTime($match[3]);
-            $date_str  = $date_time->format('Y-m-d');
+            // Create date string
+            $date_str  = $parsed_commit['timestamp']->format('Y-m-d');
 
             // Add to commits list
             $commits[$date_str][] = [
-                'hash'    => $match[1],
-                'author'  => $match[2],
-                'date'    => $date_time,
-                'subject' => $match[4],
+                'message' => $parsed_commit['message'],
             ];
-
-            $commit_count++;
         }
 
         // Show commit count message
-        if($commit_count > 0){
+        if(($commit_count = \count($parsed_commits)) > 0){
             $output->writeln("[+] Found {$commit_count} commits!");
         } else {
             $output->writeln("[?] No commits found");

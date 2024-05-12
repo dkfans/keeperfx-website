@@ -33,6 +33,8 @@ class HandleCommitsCommand extends Command
 
     protected function execute(Input $input, Output $output)
     {
+        $commits_handled = false;
+
         $output->writeln("[>] Handling project commits...");
 
         // Make sure project directory exists
@@ -83,34 +85,42 @@ class HandleCommitsCommand extends Command
             }
 
             // Get the git log commits
-            $preg_matches = GitHelper::parseCommitsFromGitLog($process->getOutput());
-            if(!$preg_matches){
+            $parsed_commits = GitHelper::parseCommitsFromGitLog($process->getOutput());
+            if(!$parsed_commits){
                 $output->writeln("[-] Failed to grab commits for {$current_tag}");
                 continue;
             }
 
             // Loop trough all commits
-            $commit_count = 0;
-            foreach($preg_matches as $match){
+            foreach($parsed_commits as $parsed_commit){
 
                 $commit = new GitCommit();
-                $commit->setHash($match[1]);
-                $commit->setTimestamp(new \DateTime($match[3]));
-                $commit->setMessage($match[4]);
+                $commit->setHash($parsed_commit['hash']);
+                $commit->setTimestamp($parsed_commit['timestamp']);
+                $commit->setMessage($parsed_commit['message']);
                 $commit->setRelease($github_release);
 
                 $this->em->persist($commit);
-
-                $commit_count++;
             }
 
-            $output->writeln("[+] Handled {$commit_count} commits");
+            // Show commit count message
+            if(($commit_count = \count($parsed_commits)) > 0){
+                $output->writeln("[+] Handled {$commit_count} commits!");
+            } else {
+                $output->writeln("[?] No commits handled");
+            }
 
             $github_release->setCommitsHandled(true);
+
+            $commits_handled = true;
         }
 
-        $output->writeln("[>] Writing changes to database...");
-        $this->em->flush();
+        if($commits_handled){
+            $output->writeln("[>] Writing changes to database...");
+            $this->em->flush();
+        } else {
+            $output->writeln("[*] No commits were handled");
+        }
 
         $output->writeln("[+] Done!");
 
