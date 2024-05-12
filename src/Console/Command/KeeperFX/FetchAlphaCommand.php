@@ -102,6 +102,7 @@ class FetchAlphaCommand extends Command
         // Get runs and order them from old to newer
         // This makes sure they get added in chronological order
         $runs = \array_reverse((array) $json->workflow_runs);
+        $output->writeln("[+] Grabbed " . \count($runs) . " runs");
 
         // Loop trough all fetched workflow runs
         foreach($runs as $run){
@@ -114,8 +115,6 @@ class FetchAlphaCommand extends Command
             ) {
                 continue;
             }
-
-            $output->writeln("[>] Checking run {$run->id}");
 
             // Make sure this run has artifacts
             if(empty($run->artifacts_url)){
@@ -141,9 +140,10 @@ class FetchAlphaCommand extends Command
             // Check if artifact is already downloaded
             $db_build = $this->em->getRepository(GithubAlphaBuild::class)->findOneBy(['artifact_id' => $artifact->id]);
             if($db_build){
-                $output->writeln("[>] Already downloaded and in database: {$artifact->id}");
                 continue;
             }
+
+            $output->writeln("[>] New artifact found: {$run->id} -> {$artifact->id}");
 
             // Create filename and output path
             $exp          = \explode('/', $artifact->archive_download_url);
