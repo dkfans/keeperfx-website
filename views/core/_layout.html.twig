@@ -111,12 +111,13 @@
                             </span>
 
                             {# Notification count #}
-                            {% if unread_notifications|length > 0 %}
-                                <span class="position-absolute translate-middle badge rounded-pill bg-danger text-white" style="font-size: 8px; top: 6px !important; left: 34px; font-family: monospace;">
-                                    {{ unread_notifications|length }}
-                                    <span class="visually-hidden">unread notifications</span>
-                                </span>
-                            {% endif %}
+                            <span
+                                id="notificationBadge"
+                                class="position-absolute translate-middle badge rounded-pill bg-danger text-white"
+                                style="font-size: 8px; top: 6px !important; left: 34px; font-family: monospace;{% if unread_notifications|length == 0 %}display:none{% endif %}">
+                                {{ unread_notifications|length }}
+                                <span class="visually-hidden">unread notifications</span>
+                            </span>
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper" aria-labelledby="navbarNotificationDropdown">
