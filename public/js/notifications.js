@@ -6,28 +6,34 @@
 // Document ready
 $(function(){
 
-    var notificationPollIntervalTimeDefault = 5 * 60 * 1000; // 5 minutes
-    var notificationPollIntervalTimeWhenIdle = 20 * 60 * 1000; // 20 minutes
-
-    var notificationPollInterval;
-    var notificationPollIntervalTime = notificationPollIntervalTimeDefault; // 1 second
-
     // We only want to get live notifications when we are logged in
     if(app_store.account == null){
         return;
     }
 
+    // Time definitions
+    var notificationPollIntervalTimeDefault = 5 * 60 * 1000; // 5 minutes
+    var notificationPollIntervalTimeWhenIdle = 20 * 60 * 1000; // 20 minutes
+
+    // Variables
+    var notificationPollInterval;
+    var notificationPollIntervalTime = notificationPollIntervalTimeDefault; // Start with the default time interval
+
+    // The dropdown button
+    var $dropdownButton = $('#navbarNotificationDropdown');
+
     // The polling function
     function notificationPoll(){
 
         var $dropdown = $('[aria-labelledby="navbarNotificationDropdown"]');
-        var $dropdownButton = $('#navbarNotificationDropdown');
         var currentNotificationCount = $dropdown.find('.dropdown-item').length - 2;
 
+        // Do nothing if we have the notification dropdown open
         if($dropdownButton.hasClass('show')){
             return;
         }
 
+        // Poll
         $.ajax({
             type: 'GET',
             url: '/',
@@ -43,21 +49,20 @@ $(function(){
                 // And that there are either less or more notifications now
                 if($dropdownButton.hasClass('show') == false && currentNotificationCount != newNotificationCount){
 
-                        // Update the dropdown HTML
-                        $dropdown.html($newDropdown.html());
-                        $("time").timeago();
+                    // Update the dropdown HTML
+                    $dropdown.html($newDropdown.html());
+                    $("time").timeago();
 
-                        // Handle the badge
-                        if(newNotificationCount <= 0){
-                            $('#notificationBadge').hide();
-                        } else {
-                            $('#notificationBadge').text(newNotificationCount);
-                            $('#notificationBadge').show();
-                        }
+                    // Handle the badge
+                    if(newNotificationCount <= 0){
+                        $('#notificationBadge').hide();
+                    } else {
+                        $('#notificationBadge').text(newNotificationCount);
+                        $('#notificationBadge').show();
+                    }
                 }
             }
         });
-
     }
 
     // The function that starts the polling
@@ -74,7 +79,6 @@ $(function(){
 
     function notificationPollIntervalRefresh()
     {
-        console.log('refresh');
         notificationPollIntervalStop();
         notificationPollIntervalStart();
     }
@@ -85,13 +89,11 @@ $(function(){
     // Handle switching between browser tabs
     $(document).on('visibilitychange', function() {
         if (document.hidden) {
-            console.log('hidden!')
             // Tab is hidden
             // Switch to slow poll
             notificationPollIntervalTime = notificationPollIntervalTimeWhenIdle;
             notificationPollIntervalRefresh();
         } else {
-            console.log('shown!')
             // Tab is opened
             // Poll instantly
             notificationPoll();
