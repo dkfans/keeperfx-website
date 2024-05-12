@@ -110,11 +110,15 @@ class HandleCommitsCommand extends Command
                 $output->writeln("[?] No commits handled");
             }
 
+            // Make this release as handled
+            // This makes it so these commits are not handled again
             $github_release->setCommitsHandled(true);
 
+            // Remember if we handled some commits as we'll have to flush the DB changes
             $commits_handled = true;
         }
 
+        // If we handled commits we'll have to flush the DB changes
         if($commits_handled){
             $output->writeln("[>] Writing changes to database...");
             $this->em->flush();
