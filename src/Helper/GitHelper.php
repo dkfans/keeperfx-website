@@ -22,13 +22,6 @@ class GitHelper {
         $return = [];
         foreach($matches as $match)
         {
-
-            if(!isset($match[2])){
-
-            var_dump($match);
-            die();
-            }
-
             // Get timestamp
             $timestamp = null;
             if(isset($match[3])){
