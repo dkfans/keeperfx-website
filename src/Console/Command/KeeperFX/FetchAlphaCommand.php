@@ -303,6 +303,7 @@ class FetchAlphaCommand extends Command
 
         }
 
+        $output->writeln("[+] Done!");
         return Command::SUCCESS;
     }
 }

@@ -39,7 +39,7 @@ class FetchPrototypeCommand extends Command
 
     protected function execute(Input $input, Output $output)
     {
-        $output->writeln("[>] Fetching latest alpha releases...");
+        $output->writeln("[>] Fetching latest prototypes...");
 
         // Make sure a Github token is set
         if(
@@ -99,6 +99,7 @@ class FetchPrototypeCommand extends Command
         // If you want to start with old builds first you can use array reverse here
         // But we probably want the latest prototype first
         $runs = (array) $json->workflow_runs;
+        $output->writeln("[+] Grabbed " . \count($runs) . " runs");
 
         // Loop trough all fetched workflow runs
         foreach($runs as $run){
@@ -111,8 +112,6 @@ class FetchPrototypeCommand extends Command
             ) {
                 continue;
             }
-
-            $output->writeln("[>] Checking run {$run->id}");
 
             // Make sure this run has artifacts
             if(empty($run->artifacts_url)){
@@ -138,9 +137,10 @@ class FetchPrototypeCommand extends Command
             // Check if artifact is already downloaded
             $db_build = $this->em->getRepository(GithubPrototype::class)->findOneBy(['artifact_id' => $artifact->id]);
             if($db_build){
-                $output->writeln("[>] Already downloaded and in database: {$artifact->id}");
                 continue;
             }
+
+            $output->writeln("[>] New artifact found: {$run->id} -> {$artifact->id}");
 
             // Create filename and output path
             // Also add a random string to the new filename so the download URL can not be guessed
@@ -294,6 +294,7 @@ class FetchPrototypeCommand extends Command
 
         }
 
+        $output->writeln("[+] Done!");
         return Command::SUCCESS;
     }
 }
