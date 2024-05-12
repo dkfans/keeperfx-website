@@ -6,8 +6,8 @@
 // Document ready
 $(function(){
 
-    var notificationPollIntervalTimeDefault = 2 * 60 * 1000; // 2 minutes
-    var notificationPollIntervalTimeWhenIdle = 10 * 60 * 1000; // 10 minutes
+    var notificationPollIntervalTimeDefault = 5 * 60 * 1000; // 5 minutes
+    var notificationPollIntervalTimeWhenIdle = 20 * 60 * 1000; // 20 minutes
 
     var notificationPollInterval;
     var notificationPollIntervalTime = notificationPollIntervalTimeDefault; // 1 second
