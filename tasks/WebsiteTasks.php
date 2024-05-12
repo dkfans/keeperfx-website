@@ -6,6 +6,7 @@ $task = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console website
 $task
     ->everyFourHours()
     ->description('Cache the git commits for our website')
-    ->preventOverlapping();
+    ->preventOverlapping()
+    ->appendOutputTo(__DIR__ . '/../logs/tasks/' . basename(__FILE__, '.php') . '.log');
 
 return $schedule;

@@ -6,6 +6,7 @@ $task = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console user:ha
 $task
     ->everyMinute()
     ->description('Handle new ip logs and get info about them')
-    ->preventOverlapping();
+    ->preventOverlapping()
+    ->appendOutputTo(__DIR__ . '/../logs/tasks/' . basename(__FILE__, '.php') . '.log');
 
 return $schedule;

@@ -6,6 +6,7 @@ $task = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console mail:se
 $task
     ->everyMinute()
     ->description('Send all mails in the mail queue')
-    ->preventOverlapping();
+    ->preventOverlapping()
+    ->appendOutputTo(__DIR__ . '/../logs/tasks/' . basename(__FILE__, '.php') . '.log');
 
 return $schedule;

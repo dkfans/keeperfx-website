@@ -6,12 +6,14 @@ $task = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console worksho
 $task
     ->everyTenMinutes()
     ->description('Fetch latest version of Unearth')
-    ->preventOverlapping();
+    ->preventOverlapping()
+    ->appendOutputTo(__DIR__ . '/../logs/tasks/' . basename(__FILE__, '.php') . '.log');
 
 $task2 = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console workshop:fetch-creature-maker');
 $task2
     ->everyTenMinutes()
     ->description('Fetch latest version of CreatureMaker')
-    ->preventOverlapping();
+    ->preventOverlapping()
+    ->appendOutputTo(__DIR__ . '/../logs/tasks/' . basename(__FILE__, '.php') . '.log');
 
 return $schedule;

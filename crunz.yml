@@ -32,7 +32,7 @@ errors_log_file: ~
 # By default the output is not logged as they are redirected to the
 # null output.
 # Set this to true if you want to keep the outputs
-log_output: false
+log_output: true
 
 # This is the absolute path to the global output log file
 # The events which have dedicated log files (defined with them), won't be
@@ -41,7 +41,7 @@ output_log_file: ~
 
 # By default line breaks in logs aren't allowed.
 # Set the value to true to allow them.
-log_allow_line_breaks: false
+log_allow_line_breaks: true
 
 # By default empty context arrays are shown in the log.
 # Set the value to true to remove them.

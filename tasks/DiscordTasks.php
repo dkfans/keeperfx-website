@@ -6,6 +6,7 @@ $task = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console kfx:fet
 $task
     ->everyMinute()
     ->description('Fetch Discord information')
-    ->preventOverlapping();
+    ->preventOverlapping()
+    ->appendOutputTo(__DIR__ . '/../logs/tasks/' . basename(__FILE__, '.php') . '.log');
 
 return $schedule;

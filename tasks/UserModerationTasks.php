@@ -6,12 +6,14 @@ $task = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console user:cl
 $task
     ->daily()
     ->description('Remove stale password reset tokens')
-    ->preventOverlapping();
+    ->preventOverlapping()
+    ->appendOutputTo(__DIR__ . '/../logs/tasks/' . basename(__FILE__, '.php') . '.log');
 
 $task2 = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console user:clear-old-notifications');
 $task2
     ->daily()
     ->description('Remove old notifications')
-    ->preventOverlapping();
+    ->preventOverlapping()
+    ->appendOutputTo(__DIR__ . '/../logs/tasks/' . basename(__FILE__, '.php') . '.log');
 
 return $schedule;
