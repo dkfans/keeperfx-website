@@ -28,8 +28,6 @@ $(function(){
             return;
         }
 
-        console.log(Math.random());
-
         $.ajax({
             type: 'GET',
             url: '/',
