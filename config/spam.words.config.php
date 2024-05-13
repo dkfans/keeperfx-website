@@ -19,4 +19,6 @@ return [
     'abortion',
     'magical',
     'pill',
+    'south african',
+    'buy original',
 ];
