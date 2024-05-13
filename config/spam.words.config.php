@@ -4,6 +4,8 @@
  * A list of spam words that should be filtered
  *
  * IMPORTANT: All these words need to be lowercase
+ *
+ * Disable Spellchecker: cSpell:disable
  */
 return [
     'credit card',
