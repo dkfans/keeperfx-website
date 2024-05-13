@@ -23,4 +23,7 @@ return [
     'pill',
     'south african',
     'buy original',
+    '+27',
+    '+25',
+    'psychic healer',
 ];
