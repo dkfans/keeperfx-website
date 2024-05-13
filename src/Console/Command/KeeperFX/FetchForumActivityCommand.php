@@ -90,9 +90,9 @@ class FetchForumActivityCommand extends Command
                 break;
             }
 
-            // Check title for spam
+            // Check title for spam or emojis
             $title = $thread['title'];
-            if(empty($title) || $this->spam_detector->detectSpam($title)){
+            if(empty($title) || $this->spam_detector->detectSpam($title) || $this->spam_detector->detectEmojis($title)){
                 continue;
             }
 
