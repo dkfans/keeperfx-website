@@ -15,4 +15,8 @@ return [
     'buy fake',
     'warranty',
     'social security',
+    'dubai',
+    'abortion',
+    'magical',
+    'pill',
 ];
