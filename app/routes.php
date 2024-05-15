@@ -319,6 +319,7 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/v1/workshop/latest', [Api\v1\Workshop\WorkshopBrowseApiController::class, 'listLatest']);
     $group->get('/v1/workshop/item/{id:\d+}', [Api\v1\Workshop\WorkshopItemApiController::class, 'getItem']);
     $group->get('/v1/workshop/comment/{id:\d+}', [Api\v1\Workshop\WorkshopItemApiController::class, 'getComment']);
+    $group->get('/v1/workshop/search', [Api\v1\Workshop\WorkshopItemApiController::class, 'search']);
 
     // API: Downloads
     $group->get('/v1/stable/latest', [Api\v1\ReleaseApiController::class, 'latestStable']);

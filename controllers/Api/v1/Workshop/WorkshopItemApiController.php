@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManager;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
 use Slim\Exception\HttpNotFoundException;
 
 class WorkshopItemApiController {
@@ -83,6 +84,87 @@ class WorkshopItemApiController {
 
         $response = $response->withHeader('Content-Type', 'application/json');
 
+        return $response;
+    }
+
+    public function search(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+    ){
+
+        // Get queries
+        $q = $request->getQueryParams();
+
+        // Make sure a query is given
+        if(empty($q['q'])){
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error' => 'NO_SEARCH_QUERY_GIVEN'
+                ])
+            );
+            $response = $response->withHeader('Content-Type', 'application/json');
+            return $response;
+        }
+
+        // Create query
+        $query = $em->getRepository(WorkshopItem::class)->createQueryBuilder('item')
+            ->where('item.is_published = 1')
+            ->andWhere('item.is_last_file_broken = 0');
+
+
+        // Add search parameters
+        $query                = $query->leftJoin('item.submitter', 'submitter');
+        $query                = $query->andWhere($query->expr()->orX(
+            $query->expr()->like('item.name', ':search'),
+            $query->expr()->like('item.original_author', ':search'),
+            $query->expr()->like('item.map_number', ':search'),
+            $query->expr()->like('submitter.username', ':search')
+        ))->setParameter('search', '%' . \str_replace(' ', '%', $q['q']) . '%');
+
+        // Do the DB query
+        $result = $query->getQuery()->getResult();
+
+        // Loop trough all results
+        $workshop_items = [];
+        foreach($result as $workshop_item){
+            $workshop_items[] = [
+                'id' => $workshop_item->getId(),
+                'name' => $workshop_item->getName(),
+                'submitter' => $workshop_item->getSubmitter() === null ? null : [
+                    'id'          => $workshop_item->getSubmitter()->getId(),
+                    'username'    => $workshop_item->getSubmitter()->getUsername(),
+                    'avatar'      => $workshop_item->getSubmitter()->getAvatar(),
+                    'avatarSmall' => $workshop_item->getSubmitter()->getAvatarSmall(),
+                    'role'        => $workshop_item->getSubmitter()->getRole(),
+                ],
+                'category'                => $workshop_item->getCategory(),
+                'createdTimestamp'        => $workshop_item->getCreatedTimestamp(),
+                'updatedTimestamp'        => $workshop_item->getUpdatedTimestamp(),
+                'difficultyRatingEnabled' => $workshop_item->isDifficultyRatingEnabled(),
+                'downloadCount'           => $workshop_item->getDownloadCount(),
+                'originalAuthor'          => $workshop_item->getOriginalAuthor(),
+                'originalCreationDate'    => $workshop_item->getOriginalCreationDate(),
+                'thumbnail'               => $workshop_item->getThumbnail(),
+                'images'                  => \count($workshop_item->getImages()) === 0 ? [] : [
+                    0 => [
+                        'filename' => $workshop_item->getImages()->first()->getFilename(),
+                    ]
+                ],
+                'ratingScore'             => $workshop_item->getRatingScore(),
+                'difficultyRatingScore'   => $workshop_item->getDifficultyRatingScore(),
+                'comment_count'           => \count($workshop_item->getComments()),
+                'minGameBuild'            => $workshop_item->getMinGameBuild(),
+                'isLastFileBroken'        => $workshop_item->isLastFileBroken(),
+            ];
+        }
+
+
+        $response->getBody()->write(
+            \json_encode(['workshop_items' => $workshop_items])
+        );
+        $response = $response->withHeader('Content-Type', 'application/json');
         return $response;
     }
 }
