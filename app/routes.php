@@ -328,6 +328,9 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     // API: Crash Report
     $group->post('/v1/crash-report', [Api\v1\CrashReportApiController::class, 'upload']);
 
+    // API: Prototype
+    $group->get('/v1/prototype/run/{id:\d+}', [Api\v1\PrototypeApiController::class, 'getByRunId']);
+
 });
 
 
