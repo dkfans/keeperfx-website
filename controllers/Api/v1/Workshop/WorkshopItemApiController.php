@@ -113,15 +113,17 @@ class WorkshopItemApiController {
             ->where('item.is_published = 1')
             ->andWhere('item.is_last_file_broken = 0');
 
-
-        // Add search parameters
-        $query                = $query->leftJoin('item.submitter', 'submitter');
-        $query                = $query->andWhere($query->expr()->orX(
-            $query->expr()->like('item.name', ':search'),
-            $query->expr()->like('item.original_author', ':search'),
-            $query->expr()->like('item.map_number', ':search'),
-            $query->expr()->like('submitter.username', ':search')
-        ))->setParameter('search', '%' . \str_replace(' ', '%', $q['q']) . '%');
+        // Add search criteria
+        $query = $query->leftJoin('item.submitter', 'submitter');
+        $search_params = \explode(" ", $q['q']);
+        foreach($search_params as $i => $search_param){
+            $query = $query->andWhere($query->expr()->orX(
+                $query->expr()->like('item.name', ':search'.$i),
+                $query->expr()->like('item.original_author', ':search'.$i),
+                $query->expr()->like('item.map_number', ':search'.$i),
+                $query->expr()->like('submitter.username', ':search'.$i)
+            ))->setParameter('search'.$i, '%' . $search_param . '%');
+        }
 
         // Do the DB query
         $result = $query->getQuery()->getResult();
