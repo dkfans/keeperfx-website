@@ -218,7 +218,6 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         // Workshop item upload (LOGGED IN)
         $group->get('/upload', [Workshop\WorkshopUploadController::class, 'uploadIndex'])->add(LoggedInMiddleware::class);
         $group->post('/upload', [Workshop\WorkshopUploadController::class, 'upload'])->add(LoggedInMiddleware::class);
-        $group->get('/upload/map_number/{map_number:\d+}', [Workshop\WorkshopUploadController::class, 'checkMapNumber'])->add(LoggedInMiddleware::class);
 
         // Workshop edit (LOGGED IN)
         $group->group('/edit', function (RouteCollectorProxy $group) use ($container) {
@@ -320,6 +319,7 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/v1/workshop/item/{id:\d+}', [Api\v1\Workshop\WorkshopItemApiController::class, 'getItem']);
     $group->get('/v1/workshop/comment/{id:\d+}', [Api\v1\Workshop\WorkshopItemApiController::class, 'getComment']);
     $group->get('/v1/workshop/search', [Api\v1\Workshop\WorkshopItemApiController::class, 'search']);
+    $group->get('/v1/workshop/map_number/{map_number:\d+}', [Api\v1\Workshop\WorkshopItemApiController::class, 'checkMapNumber']);
 
     // API: Downloads
     $group->get('/v1/stable/latest', [Api\v1\ReleaseApiController::class, 'latestStable']);

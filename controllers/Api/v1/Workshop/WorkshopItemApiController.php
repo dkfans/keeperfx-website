@@ -169,4 +169,52 @@ class WorkshopItemApiController {
         $response = $response->withHeader('Content-Type', 'application/json');
         return $response;
     }
+
+
+    public function checkMapNumber(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        $map_number,
+    ){
+        // Output JSON
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        $map_number = (int)$map_number;
+
+        // Check if map number is valid
+        if($map_number < 202 || $map_number > 32767){
+            $response->getBody()->write(
+                \json_encode([
+                    'success'    => true,
+                    'map_number' => $map_number,
+                    'available'  => false,
+                ])
+            );
+            return $response;
+        }
+
+        // Check if a workshop item with this map number already exists
+        $workshop_item = $em->getRepository(WorkshopItem::class)->findOneBy(['map_number' => $map_number]);
+        if($workshop_item){
+            $response->getBody()->write(
+                \json_encode([
+                    'success'    => true,
+                    'map_number' => $map_number,
+                    'available'  => false,
+                ])
+            );
+            return $response;
+        }
+
+        // Map number is available!
+        $response->getBody()->write(
+            \json_encode([
+                'success'    => true,
+                'map_number' => $map_number,
+                'available'  => true,
+            ])
+        );
+        return $response;
+    }
 }
