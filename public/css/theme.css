@@ -586,6 +586,10 @@ footer {
     background: url(../img/bg-black.png) repeat;
 }
 
+.btn-medieval.disabled {
+    border-color: transparent !important;
+}
+
 .btn-disabled {
     cursor: default;
     opacity: 0.5;
