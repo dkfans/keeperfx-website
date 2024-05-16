@@ -93,7 +93,7 @@ class WorkshopRatingController {
                 'success'      => true,
                 'rating_score' => $rating_data['score'],
                 'rating_count' => $rating_data['count'],
-                'html'         => $workshop_rating_extension->renderWorkshopDifficultyRating($id, $rating_data['score']),
+                'html'         => $workshop_rating_extension->renderWorkshopQualityRating($id, $rating_data['score']),
                 'csrf'         => [
                     'keys' => [
                         'name'  => $csrf_guard->getTokenNameKey(),
