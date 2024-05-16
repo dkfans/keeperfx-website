@@ -89,6 +89,47 @@ $(function(){
     $('#image-widget-container').show();
     renderImageWidget();
 
+    // Enable file dragging
+    $("#image-widget-container").on('dragover', function(event) {
+        $(this).addClass('image-widget-drop')
+        event.preventDefault();
+    });
+    $("#image-widget-container").on('dragleave', function(event) {
+        $(this).removeClass('image-widget-drop');
+        event.preventDefault();
+    });
+
+    $("#image-widget-container").on('drop', function(event) {
+
+        $(this).removeClass('image-widget-drop');
+        event.preventDefault();
+
+        // Loop trough all files
+        $.each(event.originalEvent.dataTransfer.files, async function(i, file){
+
+            // Check file size
+            if(file.size > app_store.upload_limit.workshop_image.size){
+                toastr.warning('Image "' + file.name + '" exceeds maximum file size of ' + app_store.upload_limit.workshop_image.formatted);
+                return;
+            }
+
+            // let dataString = await blobToDataUrl(file);
+            // let data = dataString.split(',')[1];
+            let data = await blobToDataUrl(file);
+
+            // Add images to widget
+            imageWidgetData[Object.keys(imageWidgetData).length] = {
+                'id': null,
+                'name': file.name,
+                // 'size': file.size,
+                'src': null,
+                'data': data
+            };
+
+            renderImageWidget();
+        });
+    });
+
     // Handle sorting/drag/drop
     $('#image-widget-container').sortable({
         placeholder: "ui-sortable-placeholder",

@@ -1220,12 +1220,14 @@ a.user-link:hover span {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 10px;
+    border: 2px solid transparent;
 }
 
 .image-widget-box {
     border: 2px dashed #777777;
     border-radius: 3px;
     aspect-ratio: 1;
+    background-color: rgba(150, 150, 150, 0.05);
 }
 
 .image-widget-container .image-widget-box:not(.ui-sortable-helper):not(.image-widget-image-invisible):first-child {
@@ -1251,12 +1253,13 @@ a.user-link:hover span {
     /* Plus icon */
     background: url('data:image/svg+xml,<svg color="hsl(0, 0%, 35%)" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 112v288M400 256H112"/></svg>') 50% 50% no-repeat;
     background-size: 100px 100px;
+    background-color: rgba(150, 150, 150, 0.05);
 }
 
 .image-widget-upload-button:hover {
     filter: brightness(1.5);
     cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.03)
+    background-color: rgba(150, 150, 150, 0.06);
 }
 
 .image-widget-container .ui-sortable-placeholder:first-child {
@@ -1280,6 +1283,17 @@ a.user-link:hover span {
 
 .image-widget-image:hover .image-widget-delete-button {
     display: block;
+}
+
+.image-widget-drop {
+    border: 2px dashed #777777;
+    border-radius: 3px;
+    background: url('data:image/svg+xml,<svg color="hsl(0, 0%, 35%)" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 112v288M400 256H112"/></svg>') 50% 50% no-repeat;
+    background-color: rgba(150, 150, 150, 0.05);
+}
+
+.image-widget-drop * {
+    opacity: 0;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
