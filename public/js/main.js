@@ -34,4 +34,9 @@ $(function(){
 
         toastr.error('Something went wrong.');
     });
+
+    // Show button loader on form submits
+    $("form").on('submit', function(event){
+        $(this).find('.btn[type=submit]').buttonLoader(true);
+    });
 });

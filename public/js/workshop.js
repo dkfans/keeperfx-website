@@ -51,6 +51,8 @@ $(function(){
 
         e.preventDefault();
 
+        $(this).find('button[type=submit]').buttonLoader(true);
+
         // Check total upload size
         var totalUploadSize = 0;
 
@@ -63,6 +65,7 @@ $(function(){
                 'Maximum total upload size of ' + app_store.upload_limit.total.formatted + ' is exceeded. ' +
                 'If you have many images, try uploading the item without them and then add them later.'
             );
+            $(this).find('button[type=submit]').buttonLoader(false);
             return false;
         }
 
