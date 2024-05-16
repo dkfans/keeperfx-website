@@ -144,7 +144,7 @@ $(function(){
         // Check if map number is already in use
         $.ajax({
             type: 'GET',
-            url: '/workshop/upload/map_number/' + map_number,
+            url: '/api/v1/workshop/map_number/' + map_number,
             dataType: 'json', // return type data,
             error: function(data){
                 $mapNumberInput[0].setCustomValidity('Something went wrong');
