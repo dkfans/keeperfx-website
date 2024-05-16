@@ -45,7 +45,11 @@ if(Config::get('app.whoops.is_enabled') === true){
 // Add default error handler (for end users)
 if(Config::get('app.whoops.is_enabled') === false){
     $errorMiddleware = $app->addErrorMiddleware(true, true, true, $logger);
-    $errorHandler    = $errorMiddleware->getDefaultErrorHandler();
+    $errorMiddleware->setErrorHandler(
+        \Slim\Exception\HttpNotFoundException::class,
+        new HtmlErrorController($container->get(\Twig\Environment::class))
+    );
+    $errorHandler = $errorMiddleware->getDefaultErrorHandler();
     // TODO: add json errorcontroller
     $errorHandler->registerErrorRenderer('text/html', App\Controller\Error\HtmlErrorController::class);
 }
@@ -71,20 +75,5 @@ $app->add(\Compwright\PhpSession\Middleware\SessionBeforeMiddleware::class);
 // Add routes
 require APP_ROOT . '/app/routes.php';
 
-try {
-
-    // Start Slim App
-    $app->run();
-
-} catch (\Slim\Exception\HttpNotFoundException $ex) {
-
-    // Create error controller
-    $error_controller = new HtmlErrorController(
-        $container->get(\Twig\Environment::class
-    ));
-
-    // Output 404
-    die(
-        $error_controller($ex, $_ENV['APP_ENV'] === 'dev')
-    );
-}
+// Start Slim App
+$app->run();
