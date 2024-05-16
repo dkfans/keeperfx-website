@@ -13,6 +13,9 @@ use App\Helper\ThumbnailHelper;
 
 class WorkshopHelper {
 
+    public const int RATING_QUALITY = 1;
+    public const int RATING_DIFFICULTY = 2;
+
     public static function generateThumbnail(EntityManager $em, WorkshopItem $item): bool
     {
         // TODO: add env var check if we need to generate thumbnails
@@ -82,5 +85,51 @@ class WorkshopHelper {
         }
 
         return true;
+    }
+
+    /**
+     * Calculate the rating score of a workshop item.
+     *
+     * Returns an array with the 'score' and 'count' keys.
+     *
+     * @param WorkshopItem $workshop_item
+     * @param int $type
+     * @return array|null
+     */
+    public static function calculateRatingScore(WorkshopItem $workshop_item, int $type = self::RATING_QUALITY): array|null
+    {
+        $rating_score = null;
+
+        // Check what kind of rating we are handling
+        if($type === self::RATING_QUALITY){
+            $ratings = $workshop_item->getRatings();
+        } else if ($type === self::RATING_DIFFICULTY){
+            $ratings = $workshop_item->getDifficultyRatings();
+        } else {
+            throw new \InvalidArgumentException("'type' parameter should be either 'quality' or 'difficulty'");
+        }
+
+        // Handle item ratings
+        if($ratings && \count($ratings) > 0){
+
+            // Get all scores
+            $rating_scores = [];
+            foreach($ratings as $rating){
+                $rating_scores[] = $rating->getScore();
+            }
+
+            // Calculate the average
+            $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
+
+            // Round the average
+            $rating_score  = \round($rating_average, 2);
+
+            return [
+                'score' => $rating_score,
+                'count' => \count($ratings),
+            ];
+        }
+
+        return null;
     }
 }

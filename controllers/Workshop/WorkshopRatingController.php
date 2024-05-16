@@ -17,6 +17,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use App\Twig\Extension\WorkshopRatingTwigExtension;
 
+use App\Workshop\WorkshopHelper;
+
 class WorkshopRatingController {
 
     public function rateQuality(
@@ -73,22 +75,13 @@ class WorkshopRatingController {
         // Save changes to DB
         $em->flush();
 
-        // Get updated rating
-        $rating_score = null;
-        $ratings = $workshop_item->getRatings();
-        if($ratings && \count($ratings) > 0){
-            $rating_scores = [];
-            foreach($ratings as $rating){
-                $rating_scores[] = $rating->getScore();
-            }
-            $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
-            $rating_score  = \round($rating_average, 2);
-        }
+        // Get updated rating data
+        $rating_data = WorkshopHelper::calculateRatingScore($workshop_item, WorkshopHelper::RATING_QUALITY);
 
         // Set updated rating in item
         // This way we don't always have to calculate the rating when doing stuff like
         //   ordering workshop items by rating score
-        $workshop_item->setRatingScore($rating_score);
+        $workshop_item->setRatingScore($rating_data['score']);
         $em->flush();
 
         // Clear the workshop browse page cache so it reflects the new data
@@ -98,9 +91,9 @@ class WorkshopRatingController {
         $response->getBody()->write(
             \json_encode([
                 'success'      => true,
-                'rating_score' => $rating_score,
-                'rating_count' => \count($ratings),
-                'html'         => $workshop_rating_extension->renderWorkshopQualityRating($id, $rating_score),
+                'rating_score' => $rating_data['score'],
+                'rating_count' => $rating_data['count'],
+                'html'         => $workshop_rating_extension->renderWorkshopDifficultyRating($id, $rating_data['score']),
                 'csrf'         => [
                     'keys' => [
                         'name'  => $csrf_guard->getTokenNameKey(),
@@ -169,22 +162,13 @@ class WorkshopRatingController {
         // Save changes to DB
         $em->flush();
 
-        // Get updated rating
-        $rating_score = null;
-        $ratings = $workshop_item->getDifficultyRatings();
-        if($ratings && \count($ratings) > 0){
-            $rating_scores = [];
-            foreach($ratings as $rating){
-                $rating_scores[] = $rating->getScore();
-            }
-            $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
-            $rating_score  = \round($rating_average, 2);
-        }
+        // Get updated rating data
+        $rating_data = WorkshopHelper::calculateRatingScore($workshop_item, WorkshopHelper::RATING_DIFFICULTY);
 
         // Set updated rating in item
         // This way we don't always have to calculate the rating when doing stuff like
         //   ordering workshop items by rating score
-        $workshop_item->setDifficultyRatingScore($rating_score);
+        $workshop_item->setDifficultyRatingScore($rating_data['score']);
         $em->flush();
 
         // Clear the workshop browse page cache so it reflects the new data
@@ -194,9 +178,9 @@ class WorkshopRatingController {
         $response->getBody()->write(
             \json_encode([
                 'success'      => true,
-                'rating_score' => $rating_score,
-                'rating_count' => \count($ratings),
-                'html'         => $workshop_rating_extension->renderWorkshopDifficultyRating($id, $rating_score),
+                'rating_score' => $rating_data['score'],
+                'rating_count' => $rating_data['count'],
+                'html'         => $workshop_rating_extension->renderWorkshopDifficultyRating($id, $rating_data['score']),
                 'csrf'         => [
                     'keys' => [
                         'name'  => $csrf_guard->getTokenNameKey(),
