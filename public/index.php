@@ -1,6 +1,7 @@
 <?php
 
 use App\Config\Config;
+use App\Controller\Error\HtmlErrorController;
 
 // Check for maintenance mode and show notice
 // This should be the very first check that is ran.
@@ -70,5 +71,20 @@ $app->add(\Compwright\PhpSession\Middleware\SessionBeforeMiddleware::class);
 // Add routes
 require APP_ROOT . '/app/routes.php';
 
-// Start Slim App
-$app->run();
+try {
+
+    // Start Slim App
+    $app->run();
+
+} catch (\Slim\Exception\HttpNotFoundException $ex) {
+
+    // Create error controller
+    $error_controller = new HtmlErrorController(
+        $container->get(\Twig\Environment::class
+    ));
+
+    // Output 404
+    die(
+        $error_controller($ex, $_ENV['APP_ENV'] === 'dev')
+    );
+}
