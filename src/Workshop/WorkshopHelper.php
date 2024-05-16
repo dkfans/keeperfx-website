@@ -91,12 +91,13 @@ class WorkshopHelper {
      * Calculate the rating score of a workshop item.
      *
      * Returns an array with the 'score' and 'count' keys.
+     * 'score' can be null
      *
      * @param WorkshopItem $workshop_item
      * @param int $type
-     * @return array|null
+     * @return array
      */
-    public static function calculateRatingScore(WorkshopItem $workshop_item, int $type = self::RATING_QUALITY): array|null
+    public static function calculateRatingScore(WorkshopItem $workshop_item, int $type = self::RATING_QUALITY): array
     {
         $rating_score = null;
 
@@ -123,13 +124,11 @@ class WorkshopHelper {
 
             // Round the average
             $rating_score  = \round($rating_average, 2);
-
-            return [
-                'score' => $rating_score,
-                'count' => \count($ratings),
-            ];
         }
 
-        return null;
+        return [
+            'score' => $rating_score,
+            'count' => \count($ratings),
+        ];
     }
 }
