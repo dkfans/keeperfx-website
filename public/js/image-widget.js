@@ -107,6 +107,12 @@ $(function(){
         // Loop trough all files
         $.each(event.originalEvent.dataTransfer.files, async function(i, file){
 
+            // Check if image
+            if(file.type.includes('image') == false){
+                toastr.warning('"' + file.name + '" is not an image');
+                return;
+            }
+
             // Check file size
             if(file.size > app_store.upload_limit.workshop_image.size){
                 toastr.warning('Image "' + file.name + '" exceeds maximum file size of ' + app_store.upload_limit.workshop_image.formatted);
@@ -198,6 +204,12 @@ $(function(){
 
                 // Loop trough all files
                 $.each($(this)[0].files, async function(i, file){
+
+                    // Check if image
+                    if(file.type.includes('image') == false){
+                        toastr.warning('"' + file.name + '" is not an image');
+                        return;
+                    }
 
                     // Check file size
                     if(file.size > app_store.upload_limit.workshop_image.size){
