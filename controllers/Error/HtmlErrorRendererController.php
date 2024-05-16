@@ -9,7 +9,7 @@ use Slim\Exception\HttpNotFoundException;
 
 use Slim\Interfaces\ErrorRendererInterface;
 
-class HtmlErrorController implements ErrorRendererInterface
+class HtmlErrorRendererController implements ErrorRendererInterface
 {
     private Environment $twig;
 

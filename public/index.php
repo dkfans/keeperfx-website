@@ -1,7 +1,8 @@
 <?php
 
 use App\Config\Config;
-use App\Controller\Error\HtmlErrorController;
+use App\Controller\Error\HtmlErrorRendererController;
+use App\Controller\Error\HtmlErrorHandlerController;
 
 // Check for maintenance mode and show notice
 // This should be the very first check that is ran.
@@ -47,11 +48,11 @@ if(Config::get('app.whoops.is_enabled') === false){
     $errorMiddleware = $app->addErrorMiddleware(true, true, true, $logger);
     $errorMiddleware->setErrorHandler(
         \Slim\Exception\HttpNotFoundException::class,
-        new HtmlErrorController($container->get(\Twig\Environment::class))
+        new HtmlErrorHandlerController($container->get(\Twig\Environment::class))
     );
     $errorHandler = $errorMiddleware->getDefaultErrorHandler();
     // TODO: add json errorcontroller
-    $errorHandler->registerErrorRenderer('text/html', App\Controller\Error\HtmlErrorController::class);
+    $errorHandler->registerErrorRenderer('text/html', App\Controller\Error\HtmlErrorRendererController::class);
 }
 
 // Add default body parsing middlewares
