@@ -50,9 +50,11 @@
                             {% endif %}
 
                             {# Date #}
-                            <time class="text-muted" datetime="{{ comment.created_timestamp|date('c') }}">
-                                {{ comment.created_timestamp|date('Y/m/d - H:i') }}
-                            </time>
+                            <a href="/workshop/item/{{ comment.item.id }}/{{ comment.item.name|slugify }}#comment-{{ comment.id }}" class="text-muted">
+                                <time class="text-muted" datetime="{{ comment.created_timestamp|date('c') }}">
+                                    {{ comment.created_timestamp|date('Y/m/d - H:i') }}
+                                </time>
+                            </a>
 
                             {# Edited #}
                             <span class="text-muted workshop-comment-is-edited" {% if comment.created_timestamp == comment.updated_timestamp %}style="display:none;"{% endif %}>
