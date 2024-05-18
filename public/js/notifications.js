@@ -6,8 +6,8 @@
 // Document ready
 $(function(){
 
-    // We only want to get live notifications when we are logged in
-    if(app_store.account == null){
+    // Only poll when polling is enabled and we are logged in
+    if(app_store.polling == false || app_store.account == null){
         return;
     }
 
