@@ -171,14 +171,16 @@ class WorkshopBrowseController {
                 $url_params['user']          = $user->getUsername();
 
                 // When we are checking a single user, we want to hide broken items except if we are looking at our own items
-                if($account->isLoggedIn() && $account->getUser()->getUsername() !== $username){
-                    $query = $query->andWhere('item.is_last_file_broken = 0');
-                }
+                // NOTE: queries are cached so this is useless. We'll do this in the view instead
+                // if($account->isLoggedIn() && $account->getUser()->getUsername() !== $username){
+                //     $query = $query->andWhere('item.is_last_file_broken = 0');
+                // }
             }
         } else {
 
             // Always hide broken items when not on a single user page
-            $query = $query->andWhere('item.is_last_file_broken = 0');
+            // NOTE: queries are cached so this is useless. We'll do this in the view instead
+            // $query = $query->andWhere('item.is_last_file_broken = 0');
 
         }
 

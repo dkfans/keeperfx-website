@@ -109,112 +109,125 @@
             <div class="workshop-grid">
 
                 {% for item in workshop_items %}
-                    <div class="workshop-grid-item">
 
-                        {# Thumbnail #}
-                        <div class="workshop-grid-item-image-container">
-                            <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
-                                {% if item.thumbnail is not null %}
-                                    <img src="/workshop/image/{{ item.id }}/{{ item.thumbnail }}" />
-                                {% elseif item.images|length > 0 %}
-                                    <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}" />
-                                {% else %}
-                                    <img src="/img/no-image-256.png" />
-                                {% endif %}
-                            </a>
-                        </div>
+                    {# Hide broken items when not logged in or when we are not the owner of this item #}
+                    {% set hide = false %}
+                    {% if item.isLastFileBroken %}
+                        {% if account is null or account != item.submitter %}
+                            {% set hide = true %}
+                        {% endif %}
+                    {% endif %}
+                    {% if hide == false %}
 
-                        <div class="workshop-grid-item-info">
+                        <div class="workshop-grid-item">
 
-                            {# Show a notice for broken items #}
-                            {% if item.isLastFileBroken %}
-                                    <ion-icon
-                                        name="alert-circle-outline"
-                                        class="workshop-grid-notice-icon"
-                                        style="color: #f91b1b !important;
-                                        {% if item.minGameBuild is not null and item.minGameBuild == -1 %} right: 34px;{% else %} right:8px;{% endif %}
-                                        "
-                                        data-bs-toggle="popover" data-bs-placement="top"
-                                        data-bs-content="This workshop item is considered broken by the KeeperFX team."
-                                    ></ion-icon>
-                            {% endif %}
-
-                            {# Show a notice for items requiring the latest alpha patch #}
-                            {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
-                                    <ion-icon
-                                        name="alert-circle-outline"
-                                        class="text-warning workshop-grid-notice-icon"
-                                        style="right: 8px;";
-                                        data-bs-toggle="popover" data-bs-placement="top"
-                                        data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly."
-                                    ></ion-icon>
-                            {% endif %}
-
-                            {# Title #}
-                            <div class="workshop-grid-item-title"
-                                {# Optionally add some padding to the right to make place for the notice icons #}
-                                {% if item.minGameBuild is not null and item.minGameBuild == -1 and not item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
-                                {% if (item.minGameBuild is null or item.minGameBuild != -1) and item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
-                                {% if item.minGameBuild is not null and item.minGameBuild == -1 and item.isLastFileBroken %}style="padding-right: 20px;"{% endif %}
-                            >
-                                <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" title="{{ item.name }}">
-                                    {{ item.name }}
+                            {# Thumbnail #}
+                            <div class="workshop-grid-item-image-container">
+                                <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                    {% if item.thumbnail is not null %}
+                                        <img src="/workshop/image/{{ item.id }}/{{ item.thumbnail }}" />
+                                    {% elseif item.images|length > 0 %}
+                                        <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}" />
+                                    {% else %}
+                                        <img src="/img/no-image-256.png" />
+                                    {% endif %}
                                 </a>
                             </div>
 
-                            {# Info #}
-                            <div class="row" style="margin-top: 10px;">
+                            <div class="workshop-grid-item-info">
 
-                                <div class="col-7">
+                                {# Show a notice for broken items #}
+                                {% if item.isLastFileBroken %}
+                                        <ion-icon
+                                            name="alert-circle-outline"
+                                            class="workshop-grid-notice-icon"
+                                            style="color: #f91b1b !important;
+                                            {% if item.minGameBuild is not null and item.minGameBuild == -1 %} right: 34px;{% else %} right:8px;{% endif %}
+                                            "
+                                            data-bs-toggle="popover" data-bs-placement="top"
+                                            data-bs-content="This workshop item is considered broken by the KeeperFX team."
+                                        ></ion-icon>
+                                {% endif %}
 
-                                    {# Type #}
-                                    {# <span class="text-warning"> #}
-                                    <span style="margin-top: 2px; display: block; margin-bottom: 5px">
-                                        {{ item.category.name|enum_beautify }}
-                                    </span>
+                                {# Show a notice for items requiring the latest alpha patch #}
+                                {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
+                                        <ion-icon
+                                            name="alert-circle-outline"
+                                            class="text-warning workshop-grid-notice-icon"
+                                            style="right: 8px;";
+                                            data-bs-toggle="popover" data-bs-placement="top"
+                                            data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly."
+                                        ></ion-icon>
+                                {% endif %}
 
-                                    {# User or Original Author #}
-                                    <div class="workshop-grid-item-user">
-                                        {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: true} %}
+                                {# Title #}
+                                <div class="workshop-grid-item-title"
+                                    {# Optionally add some padding to the right to make place for the notice icons #}
+                                    {% if item.minGameBuild is not null and item.minGameBuild == -1 and not item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
+                                    {% if (item.minGameBuild is null or item.minGameBuild != -1) and item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
+                                    {% if item.minGameBuild is not null and item.minGameBuild == -1 and item.isLastFileBroken %}style="padding-right: 20px;"{% endif %}
+                                >
+                                    <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" title="{{ item.name }}">
+                                        {{ item.name }}
+                                    </a>
+                                </div>
+
+                                {# Info #}
+                                <div class="row" style="margin-top: 10px;">
+
+                                    <div class="col-7">
+
+                                        {# Type #}
+                                        {# <span class="text-warning"> #}
+                                        <span style="margin-top: 2px; display: block; margin-bottom: 5px">
+                                            {{ item.category.name|enum_beautify }}
+                                        </span>
+
+                                        {# User or Original Author #}
+                                        <div class="workshop-grid-item-user">
+                                            {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: true} %}
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-5" style="text-align: right;">
+
+                                        {# Quality Rating #}
+                                        {% if item.ratingScore is not null %}
+                                            {{ render_workshop_quality_rating(item.id, item.ratingScore) }}
+                                        {% endif %}
+
+                                        {# Difficulty Rating #}
+                                        {% if item.difficultyRatingEnabled and item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
+                                            {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
+                                        {% endif %}
+
+                                        {# Date #}
+                                        {# {% if item.originalCreationDate is not null %}
+                                            {{ item.originalCreationDate|date('Y-m-d') }}
+                                        {% else %}
+                                            {{ item.updatedTimestamp|date('Y-m-d') }}
+                                        {% endif %} #}
+
+                                        {# Downloads #}
+                                        {# <span style="margin-top: 7px; display: inline-block;">
+                                            {{ item.downloadCount }}
+                                            {% if item.downloadCount == 1 %}
+                                                download
+                                            {% else %}
+                                                downloads
+                                            {% endif %}
+                                        </span> #}
                                     </div>
 
                                 </div>
 
-                                <div class="col-5" style="text-align: right;">
-
-                                    {# Quality Rating #}
-                                    {% if item.ratingScore is not null %}
-                                        {{ render_workshop_quality_rating(item.id, item.ratingScore) }}
-                                    {% endif %}
-
-                                    {# Difficulty Rating #}
-                                    {% if item.difficultyRatingEnabled and item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
-                                        {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
-                                    {% endif %}
-
-                                    {# Date #}
-                                    {# {% if item.originalCreationDate is not null %}
-                                        {{ item.originalCreationDate|date('Y-m-d') }}
-                                    {% else %}
-                                        {{ item.updatedTimestamp|date('Y-m-d') }}
-                                    {% endif %} #}
-
-                                    {# Downloads #}
-                                    {# <span style="margin-top: 7px; display: inline-block;">
-                                        {{ item.downloadCount }}
-                                        {% if item.downloadCount == 1 %}
-                                            download
-                                        {% else %}
-                                            downloads
-                                        {% endif %}
-                                    </span> #}
-                                </div>
-
                             </div>
 
                         </div>
 
-                    </div>
+                    {% endif %}
+
                 {% endfor %}
 
                 {# Fix the grid having only 1 column when there is only 1 workshop item #}
