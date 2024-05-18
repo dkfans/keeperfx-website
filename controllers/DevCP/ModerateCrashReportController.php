@@ -73,6 +73,20 @@ class ModerateCrashReportController {
             return $response;
         }
 
+        // Delete savefile
+        $save_filename = $crash_report->getSaveFilename();
+        if($save_filename){
+            $dir = $_ENV['APP_SAVEFILE_STORAGE'];
+            if(\file_exists($dir)){
+                $filepath = $dir . '/' . $save_filename;
+                if(\file_exists($filepath)){
+                    if(\unlink($filepath) === false){
+                        throw new \Exception("failed to delete savefile: {$filepath}");
+                    }
+                }
+            }
+        }
+
         // Remove the crash report
         $em->remove($crash_report);
         $em->flush();
