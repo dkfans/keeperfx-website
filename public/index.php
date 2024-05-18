@@ -45,15 +45,10 @@ if(Config::get('app.whoops.is_enabled') === true){
 
 // Add default error handler (for end users)
 if(Config::get('app.whoops.is_enabled') === false){
-    $errorMiddleware = $app->addErrorMiddleware(true, true, true, $logger);
-    // WARNING: The following breaks sessions (and probably a lot more)
-    // $errorMiddleware->setErrorHandler(
-    //     \Slim\Exception\HttpNotFoundException::class,
-    //     new HtmlErrorHandlerController($container->get(\Twig\Environment::class))
-    // );
-    $errorHandler = $errorMiddleware->getDefaultErrorHandler();
-    // TODO: add json errorcontroller
-    $errorHandler->registerErrorRenderer('text/html', App\Controller\Error\HtmlErrorRendererController::class);
+    $error_middleware = $app->addErrorMiddleware(true, true, true);
+    $error_middleware->setDefaultErrorHandler(
+        $container->get(HtmlErrorHandlerController::class)
+    );
 }
 
 // Add default body parsing middlewares
