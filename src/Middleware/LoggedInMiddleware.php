@@ -52,7 +52,6 @@ class LoggedInMiddleware implements MiddlewareInterface {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
-
         if(!$this->account->isLoggedIn()){
 
             if(

@@ -1,8 +1,7 @@
 <?php
 
 use App\Config\Config;
-use App\Controller\Error\HtmlErrorRendererController;
-use App\Controller\Error\HtmlErrorHandlerController;
+use App\Middleware\ErrorMiddleware;
 
 // Check for maintenance mode and show notice
 // This should be the very first check that is ran.
@@ -37,29 +36,13 @@ if(!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int)$_ENV['APP_RAISE_EXCE
 // Create Slim App (with PHP-DI bridge)
 $app = \DI\Bridge\Slim\Bridge::create($container);
 
-// Add whoops error handler
+// Add Global Whoops handler
 if(Config::get('app.whoops.is_enabled') === true){
-
-    // Add Whoops Middleware
-    $app->add(new Zeuxisoo\Whoops\Slim\WhoopsMiddleware([
-        // Set IDE to open the source file from the error page
-        'editor' => Config::get('app.whoops.editor')
-    ]));
-
-    // Add Global Whoops handler
     $whoops = new \Whoops\Run;
     $pretty_page_handler = new \Whoops\Handler\PrettyPageHandler();
     $pretty_page_handler->setEditor(Config::get('app.whoops.editor'));
     $whoops->pushHandler($pretty_page_handler);
     $whoops->register();
-}
-
-// Add default error handler (for end users)
-if(Config::get('app.whoops.is_enabled') === false){
-    $error_middleware = $app->addErrorMiddleware(true, true, true);
-    $error_middleware->setDefaultErrorHandler(
-        $container->get(HtmlErrorHandlerController::class)
-    );
 }
 
 // Add default body parsing middlewares
@@ -70,6 +53,19 @@ $app->addBodyParsingMiddleware();
 foreach ((require APP_ROOT . '/app/middlewares.php') as $middleware_class) {
     // Middleware will be autowired
     $app->add($middleware_class);
+}
+
+// Add default error handler (for end users)
+if(Config::get('app.whoops.is_enabled') === false){
+    $app->add(ErrorMiddleware::class);
+}
+
+// Add Whoops Middleware
+if(Config::get('app.whoops.is_enabled') === true){
+    $app->add(new Zeuxisoo\Whoops\Slim\WhoopsMiddleware([
+        // Set IDE to open the source file from the error page
+        'editor' => Config::get('app.whoops.editor')
+    ]));
 }
 
 // Add Session (Compwright\PhpSession) middlewares.
