@@ -128,7 +128,7 @@ class AdminUsersController {
         return $response;
     }
 
-    public function userEditIndex(
+    public function userViewIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
@@ -146,7 +146,7 @@ class AdminUsersController {
         }
 
         $response->getBody()->write(
-            $twig->render('admincp/users/users.edit.admincp.html.twig', [
+            $twig->render('admincp/users/user.admincp.html.twig', [
                 'user' => $user,
             ])
         );
@@ -230,7 +230,7 @@ class AdminUsersController {
         // Output errors if not successful
         if(!$success){
             $response->getBody()->write(
-                $twig->render('admincp/users/users.edit.admincp.html.twig', ['user' => $user])
+                $twig->render('admincp/users/user.admincp.html.twig', ['user' => $user])
             );
             return $response;
         }
@@ -251,7 +251,7 @@ class AdminUsersController {
 
         // Return view
         $response->getBody()->write(
-            $twig->render('admincp/users/users.edit.admincp.html.twig', ['user' => $user])
+            $twig->render('admincp/users/user.admincp.html.twig', ['user' => $user])
         );
         return $response;
     }

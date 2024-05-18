@@ -117,7 +117,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
                 $group->get('/list', [AdminCP\AdminUsersController::class, 'usersIndex']);
                 $group->get('/add', [AdminCP\AdminUsersController::class, 'userAddIndex']);
                 $group->post('/add', [AdminCP\AdminUsersController::class, 'userAdd']);
-                $group->get('/{id:\d+}', [AdminCP\AdminUsersController::class, 'userEditIndex']);
+                $group->get('/{id:\d+}', [AdminCP\AdminUsersController::class, 'userViewIndex']);
                 $group->post('/{id:\d+}', [AdminCP\AdminUsersController::class, 'userEdit']);
                 $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminUsersController::class, 'userDelete']);
                 $group->get('/{id:\d+}/mail', [AdminCP\AdminUsersController::class, 'userMailIndex']);

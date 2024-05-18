@@ -43,23 +43,29 @@
                         </td>
                         <td>
                             {% if user.email is not null %}
+                            <span data-bs-toggle="popover"  data-bs-content="Email" data-bs-placement="top">
                                 <ion-icon name="mail-outline"></ion-icon>
+                            </span>
                             {% endif %}
                             {% for token in user.connectionTokens %}
                                 {% if token.providerType.value == "discord" %}
-                                    <ion-icon name="logo-discord" style="color: #5865F2;"></ion-icon>
+                                    <span data-bs-toggle="popover"  data-bs-content="Discord" data-bs-placement="top">
+                                        <ion-icon name="logo-discord" style="color: #5865F2;"></ion-icon>
+                                    </span>
                                 {% endif %}
                                 {% if token.providerType.value == "twitch" %}
-                                    <ion-icon name="logo-twitch" style="color: rgb(169, 112, 255);"></ion-icon>
+                                    <span data-bs-toggle="popover"  data-bs-content="Twitch" data-bs-placement="top">
+                                        <ion-icon name="logo-twitch" style="color: rgb(169, 112, 255);"></ion-icon>
+                                    </span>
                                 {% endif %}
                             {% endfor %}
                         </td>
                         <td>{{ user.createdTimestamp|date('Y-m-d') }}</td>
                         <td>
+                            <a class="btn btn-sm btn-medieval" href="/admin/user/{{ user.id }}"><ion-icon name="person-outline"></ion-icon></a>
                             {% if user.email is not null %}
                                 <a class="btn btn-sm btn-medieval btn-medieval-gray" href="/admin/user/{{ user.id }}/mail"><ion-icon name="mail-outline"></ion-icon></a>
                             {% endif %}
-                            <a class="btn btn-sm btn-medieval" href="/admin/user/{{ user.id }}"><ion-icon name="settings-outline"></ion-icon></a>
                         </td>
                     </tr>
                 {% endfor %}

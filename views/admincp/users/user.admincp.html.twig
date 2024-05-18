@@ -1,0 +1,288 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Edit user: ' ~ user.username ~ ' - AdminCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>{{ user.username }}</h2>
+        <div>
+            <a href="/admin/user/list">Back to user list</a>
+        </div>
+    </div>
+    <div class="content-body">
+
+        <div class="row">
+            <div class="col-md-6">
+
+                <form action="/admin/user/{{ user.id }}" method="POST">
+
+                    <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+                    <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="text" class="form-control" id="password" name="password" placeholder="Leave empty to not change password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">
+                            Email address
+                            <span class="text-muted">
+                                (Optional)
+                            </span>
+                            {% if user.email is not empty %}
+                                <a href="/admin/user/{{ user.id }}/mail">Send Mail</a>
+                            {% endif %}
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email ?? '' }}" >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Role</label>
+                        <select class="form-control form-select" id="role" name="role">
+                            <option value="{{ roles.user }}" {% if user.role.value == roles.user %}selected{% endif %}>User</option>
+                            <option value="{{ roles.moderator }}" {% if user.role.value == roles.moderator %}selected{% endif %}>Moderator</option>
+                            <option value="{{ roles.developer }}" {% if user.role.value == roles.developer %}selected{% endif %}>Developer</option>
+                            <option value="{{ roles.admin }}" {% if user.role.value == roles.admin %}selected{% endif %}>Admin</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex" style="margin-top: 15px;">
+
+                        {% if account.id != user.id %}
+                            <a href="/admin/user/{{ user.id }}/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}" class="btn btn-medieval btn-medieval-gray">Remove</a>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-medieval">Save</button>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+            <div class="col-md-6">
+                <div class="workshop-info-box" style="min-height: 100%;">
+
+                    <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 20px auto 20px">
+                        {% if user.avatar %}
+                            <img src="/avatar/{{ user.avatar }}"/>
+                                {% else %}
+                            <img src="/avatar-generate/128/{{ user.username|url_encode }}.png" />
+                        {% endif %}
+                    </div>
+
+                    <table style="margin: 20px;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Username
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ user.username }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Country
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {% if user.country is not null %}
+                                        <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(user.country) }}" data-bs-placement="top">
+                                            {{ get_country_emoji(user.country) }}
+                                        </span>
+                                        {{ get_country_string(user.country) }}
+                                    {% else %}
+                                        <span class="text-muted">Not set</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Registration Date
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ user.createdTimestamp|date('Y-m-d G:i') }}
+                                </td>
+                            </tr>
+                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Workshop Items
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {% if user.workshopItems|length > 0 %}
+                                        <a href="/workshop/browse?user={{ user.username }}">{{ user.workshopItems|length }} items</a>
+                                    {% else %}
+                                        None
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Comments
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ user.workshopComments|length }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Ratings
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ user.workshopRatings|length }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Difficulty Ratings
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ user.workshopDifficultyRatings|length }}
+                                </td>
+                            </tr>
+                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Connections
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {% if user.email is null and user.connectionTokens|length == 0 %}
+                                        <span class="text-muted">None</span>
+                                    {% else %}
+                                        {% if user.email is not null %}
+                                            <span data-bs-toggle="popover"  data-bs-content="Email" data-bs-placement="top">
+                                                <ion-icon name="mail-outline"></ion-icon>
+                                            </span>
+                                        {% endif %}
+                                        {% for token in user.connectionTokens %}
+                                            {% if token.providerType.value == "discord" %}
+                                                <span data-bs-toggle="popover"  data-bs-content="Discord" data-bs-placement="top">
+                                                    <ion-icon name="logo-discord" style="color: #5865F2;"></ion-icon>
+                                                </span>
+                                            {% endif %}
+                                            {% if token.providerType.value == "twitch" %}
+                                                <span data-bs-toggle="popover"  data-bs-content="Twitch" data-bs-placement="top">
+                                                    <ion-icon name="logo-twitch" style="color: rgb(169, 112, 255);"></ion-icon>
+                                                </span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>IP logs for {{ user.username }}</h2>
+    </div>
+    <div class="content-body">
+
+        {% if user.ipLogs|length == 0 %}
+            <p>
+                No IP logs found.
+            </p>
+        {% else %}
+            <table class="table table-bordered" style="font-size: 11px">
+                <thead>
+                    <tr>
+                        <th style="width:25px;"></th>
+                        <th>IP</th>
+                        <th>Host</th>
+                        <th>ISP</th>
+                        <th>Last Seen</th>
+                        <th>First Seen</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ip_log in user.ipLogs %}
+
+                        <tr {% if ip_log.isProxy or ip_log.isHosting %} style="background-color: rgba(255, 50, 50, 0.15);"{% endif %}>
+
+                            {# Country #}
+                            <td>
+                                {% if ip_log.country is not null %}
+                                    <span style="font-size: 14px; position: relative; top: -4px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(ip_log.country) }}" data-bs-placement="top">
+                                        {{ get_country_emoji(ip_log.country) }}
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            {# IP #}
+                            <td>
+                                <a href="/admin/ip-lookup/ip/{{ ip_log.ip|url_encode }}">
+                                    {{ ip_log.ip }}
+                                </a>
+                            </td>
+
+                            {# Host Name #}
+                            <td>
+                                <a href="/admin/ip-lookup/host_name/{{ ip_log.hostName|url_encode }}">
+                                    {{ ip_log.hostName }}
+                                </a>
+                            </td>
+
+                            {# ISP #}
+                            <td>
+                                <a href="/admin/ip-lookup/isp/{{ ip_log.isp|url_encode }}">
+                                    {{ ip_log.isp }}
+                                </a>
+                            </td>
+
+                            {# Last Seen #}
+                            <td>
+                                {{ ip_log.lastSeenTimestamp|date('Y-m-d, G:i') }}
+                            </td>
+
+                            {# First Seen #}
+                            <td>
+                                {{ ip_log.firstSeenTimestamp|date('Y-m-d, G:i') }}
+                            </td>
+
+                            {# Info #}
+                            <td style="width: 75px;">
+
+                                {# Proxy #}
+                                {% if ip_log.isProxy %}
+                                    <span data-bs-toggle="popover" data-bs-content="Proxy, VPN or Tor" data-bs-placement="top">
+                                        <ion-icon style="font-size: 16px;" name="shield-outline"></ion-icon>
+                                    </span>
+                                {% endif %}
+
+                                {# Hosting #}
+                                {% if ip_log.isHosting %}
+                                    <span data-bs-toggle="popover" data-bs-content="Hosting" data-bs-placement="top">
+                                        <ion-icon style="font-size: 16px;" name="server-outline"></ion-icon>
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+            </table>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
