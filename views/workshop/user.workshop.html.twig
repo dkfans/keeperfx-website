@@ -4,7 +4,7 @@
 
 {% set meta = {
     title: page_title,
-    description: 'Check out ' ~ user.username ~ '\'s profile!',
+    description: 'Check out ' ~ user.username ~ '\'s profile on KeeperFX.net!',
     og: {
         url: '/workshop/user/' ~ user.username|url_encode,
         image: user.avatar ? '/avatar/' ~ user.avatar : '/avatar-generate/128/' ~ user.username|url_encode ~ '.png'
