@@ -120,6 +120,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
                 $group->post('/add', [AdminCP\AdminUsersController::class, 'userAdd']);
                 $group->get('/{id:\d+}', [AdminCP\AdminUsersController::class, 'userViewIndex']);
                 $group->post('/{id:\d+}', [AdminCP\AdminUsersController::class, 'userEdit']);
+                $group->post('/{id:\d+}/bio', [AdminCP\AdminUsersController::class, 'userBioEdit']);
                 $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminUsersController::class, 'userDelete']);
                 $group->get('/{id:\d+}/mail', [AdminCP\AdminUsersController::class, 'userMailIndex']);
                 $group->post('/{id:\d+}/mail', [AdminCP\AdminUsersController::class, 'userMail']);

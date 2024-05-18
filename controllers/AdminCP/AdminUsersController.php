@@ -5,17 +5,20 @@ namespace App\Controller\AdminCP;
 use App\Enum\UserRole;
 
 use App\Entity\User;
+use App\Entity\UserBio;
 
 use App\Mailer;
 use App\Account;
-use Slim\Csrf\Guard;
 use App\FlashMessage;
+
+use Slim\Csrf\Guard;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
-use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
+use Slim\Exception\HttpNotFoundException;
 
 class AdminUsersController {
 
@@ -248,6 +251,58 @@ class AdminUsersController {
         $em->flush();
 
         $flash->success('User successfully updated!');
+
+        // Return view
+        $response->getBody()->write(
+            $twig->render('admincp/users/user.admincp.html.twig', ['user' => $user])
+        );
+        return $response;
+    }
+
+    public function userBioEdit(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        EntityManager $em,
+        FlashMessage $flash,
+        $id
+    ){
+        // Get user
+        $user = $em->getRepository(User::class)->find($id);
+        if(!$user){
+            $flash->warning('User not found.');
+            $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+            return $response;
+        }
+
+        // Get post vars
+        $post  = $request->getParsedBody();
+        $about_me = (string) ($post['about_me'] ?? '');
+
+        // Check if user has a bio
+        $bio = $user->getBio();
+        if(empty($about_me)){
+
+            // Handle removal
+            if($bio){
+                $em->remove($bio);
+                $em->flush();
+            }
+        } else {
+
+            // Handle update/creation
+            if($bio){
+                $bio->setBio($about_me);
+            } else {
+                $new_bio = new UserBio();
+                $new_bio->setBio($about_me);
+                $new_bio->setUser($user);
+                $em->persist($new_bio);
+            }
+            $em->flush();
+        }
+
+        $flash->success('About-me updated!.');
 
         // Return view
         $response->getBody()->write(
