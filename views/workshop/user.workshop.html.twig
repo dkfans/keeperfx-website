@@ -1,8 +1,15 @@
 {% extends "workshop/_workshop_layout.html.twig" %}
 
-{% set page_title = user.username ~ '\'s Workshop Page' %}
+{% set page_title = user.username ~ ' - Profile' %}
 
-
+{% set meta = {
+    title: page_title,
+    description: user.username ~ '\' profile on KeeperFX.net',
+    og: {
+        url: '/workshop/user/' ~ user.username|url_encode,
+        image: user.avatar ? '/avatar/' ~ user.avatar : '/avatar-generate/128/' ~ user.username|url_encode ~ '.png'
+    }
+} %}
 
 {% block workshop_content %}
 
