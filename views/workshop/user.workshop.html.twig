@@ -24,7 +24,7 @@
             <div class="col-md-6">
                 <div class="workshop-info-box" style="min-height: 100%;">
 
-                    <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 20px auto 20px">
+                    <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 28px auto 28px">
                         {% if user.avatar %}
                             <img src="/avatar/{{ user.avatar }}"/>
                                 {% else %}
@@ -32,22 +32,23 @@
                         {% endif %}
                     </div>
 
-                    <table style="margin: 20px;">
+                    <table style="margin: 20px; width:100%">
                         <tbody>
                             <tr>
                                 <td style="width: 50%;">
                                     Username
                                 </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
+                                <td class="text-stand-out">
                                     {{ user.username }}
                                 </td>
                             </tr>
                             {% if user.country is not null %}
+                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
                             <tr>
                                 <td>
                                     Country
                                 </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
+                                <td class="text-stand-out">
                                         <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(user.country) }}" data-bs-placement="top">
                                             {{ get_country_emoji(user.country) }}
                                         </span>
@@ -60,8 +61,8 @@
                                 <td style="width: 50%;">
                                     Registration Date
                                 </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
-                                    {{ user.createdTimestamp|date('Y-m-d G:i') }}
+                                <td class="text-stand-out">
+                                    {{ user.createdTimestamp|date('Y-m-d') }}
                                 </td>
                             </tr>
                             <tr style="height: 15px;">{# Empty table row spacer #}</tr>
@@ -69,11 +70,11 @@
                                 <td style="width: 50%;">
                                     Workshop Items
                                 </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
+                                <td class="text-stand-out">
                                     {% if user.workshopItems|length > 0 %}
                                         <a href="/workshop/browse?user={{ user.username }}">{{ user.workshopItems|length }} items</a>
                                     {% else %}
-                                        None
+                                        <span class="text-muted">None</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -81,7 +82,7 @@
                                 <td style="width: 50%;">
                                     Comments
                                 </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
+                                <td class="text-stand-out">
                                     {{ user.workshopComments|length }}
                                 </td>
                             </tr>
@@ -89,7 +90,7 @@
                                 <td style="width: 50%;">
                                     Ratings
                                 </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
+                                <td class="text-stand-out">
                                     {{ user.workshopRatings|length }}
                                 </td>
                             </tr>
@@ -97,7 +98,7 @@
                                 <td style="width: 50%;">
                                     Difficulty Ratings
                                 </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
+                                <td class="text-stand-out">
                                     {{ user.workshopDifficultyRatings|length }}
                                 </td>
                             </tr>
