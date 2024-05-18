@@ -38,6 +38,9 @@ class User {
     #[ORM\Column(nullable: true)]
     private string|null $country = null;
 
+    #[ORM\OneToOne(targetEntity: UserBio::class, mappedBy: 'user', cascade: ["remove"])]
+    private UserBio|null $bio = null;
+
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
@@ -339,6 +342,24 @@ class User {
     public function setCountry(?string $country): self
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of bio
+     */
+    public function getBio(): ?UserBio
+    {
+        return $this->bio;
+    }
+
+    /**
+     * Set the value of bio
+     */
+    public function setBio(?UserBio $bio): self
+    {
+        $this->bio = $bio;
 
         return $this;
     }

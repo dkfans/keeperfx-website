@@ -3,6 +3,7 @@
 namespace App\Controller\ControlPanel;
 
 use App\Entity\User;
+use App\Entity\UserBio;
 use App\Entity\UserCookieToken;
 
 use App\Account;
@@ -72,6 +73,45 @@ class AccountController {
 
         $flash->success('Your country has been updated!');
 
+        $response = $response->withHeader('Location', '/account')->withStatus(302);
+        return $response;
+    }
+
+    public function updateAboutMe(
+        Request $request,
+        Response $response,
+        Account $account,
+        EntityManager $em,
+        FlashMessage $flash
+    ){
+        // Get post vars
+        $post  = $request->getParsedBody();
+        $about_me = (string) ($post['about_me'] ?? '');
+
+        // Check if user has a bio
+        $bio = $account->getUser()->getBio();
+        if(empty($about_me)){
+
+            // Handle removal
+            if($bio){
+                $em->remove($bio);
+                $em->flush();
+            }
+        } else {
+
+            // Handle update/creation
+            if($bio){
+                $bio->setBio($about_me);
+            } else {
+                $new_bio = new UserBio();
+                $new_bio->setBio($about_me);
+                $new_bio->setUser($account->getUser());
+                $em->persist($new_bio);
+            }
+            $em->flush();
+        }
+
+        $flash->success('About-me updated!.');
         $response = $response->withHeader('Location', '/account')->withStatus(302);
         return $response;
     }

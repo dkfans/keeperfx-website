@@ -80,6 +80,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->post('/password', [ControlPanel\AccountController::class, 'updatePassword']);
             $group->post('/avatar', [ControlPanel\AccountController::class, 'updateAvatar']);
             $group->post('/country', [ControlPanel\AccountController::class, 'updateCountry']);
+            $group->post('/about-me', [ControlPanel\AccountController::class, 'updateAboutMe']);
             $group->get('/remove-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeEmail']);
             $group->get('/remove-avatar/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeAvatar']);
 
@@ -253,6 +254,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
         // Browse items
         $group->get('/browse', [Workshop\WorkshopBrowseController::class, 'browseIndex']);
+
+        // User page
+        $group->get('/user/{username}', [Workshop\WorkshopUserController::class, 'userIndex']);
 
         // Random workshop item
         $group->get('/random/{item_category}', [Workshop\WorkshopRandomController::class, 'navRandomItem']);

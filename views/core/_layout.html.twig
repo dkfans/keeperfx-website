@@ -166,8 +166,9 @@
                         <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper" aria-labelledby="navbarDropdown">
 
                             {# Workshop menu items #}
-                            <li><a class="dropdown-item" href="/workshop/browse?user={{ account.username|url_encode }}">My workshop items</a></li>
-                            <li><a class="dropdown-item" href="/workshop/my-ratings">My ratings</a></li>
+                            <li><a class="dropdown-item" href="/workshop/user/{{ account.username|url_encode }}">Profile</a></li>
+                            <li><a class="dropdown-item" href="/workshop/browse?user={{ account.username|url_encode }}">Workshop items</a></li>
+                            <li><a class="dropdown-item" href="/workshop/my-ratings">Ratings</a></li>
                             <li><hr class="dropdown-divider"></li>
 
                             {# User account menu items #}

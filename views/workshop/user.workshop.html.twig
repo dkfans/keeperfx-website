@@ -1,0 +1,260 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = user.username ~ '\'s Workshop Page' %}
+
+
+
+{% block workshop_content %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>
+            {{ user.username }}
+        </h2>
+    </div>
+    <div class="content-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="workshop-info-box" style="min-height: 100%;">
+
+                    <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 20px auto 20px">
+                        {% if user.avatar %}
+                            <img src="/avatar/{{ user.avatar }}"/>
+                                {% else %}
+                            <img src="/avatar-generate/128/{{ user.username|url_encode }}.png" />
+                        {% endif %}
+                    </div>
+
+                    <table style="margin: 20px;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Username
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ user.username }}
+                                </td>
+                            </tr>
+                            {% if user.country is not null %}
+                            <tr>
+                                <td>
+                                    Country
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                        <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(user.country) }}" data-bs-placement="top">
+                                            {{ get_country_emoji(user.country) }}
+                                        </span>
+                                        {{ get_country_string(user.country) }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Registration Date
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ user.createdTimestamp|date('Y-m-d G:i') }}
+                                </td>
+                            </tr>
+                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Workshop Items
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {% if user.workshopItems|length > 0 %}
+                                        <a href="/workshop/browse?user={{ user.username }}">{{ user.workshopItems|length }} items</a>
+                                    {% else %}
+                                        None
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Comments
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ user.workshopComments|length }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Ratings
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ user.workshopRatings|length }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    Difficulty Ratings
+                                </td>
+                                <td class="text-stand-out" style="padding-left: 25px;">
+                                    {{ user.workshopDifficultyRatings|length }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="workshop-info-box" style="padding: 25px 30px 30px;">
+                    <h4>About Me</h4>
+                    {% if user.bio is not null and user.bio.bio is not empty %}
+                        {{ user.bio.bio|markdown_to_html }}
+                    {% else %}
+                        <p><i class="text-muted">I have not written anything here yet.</i></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <div class="content-box bg-keeper bd-keeper">
+
+        <div class="content-body mt-4" style="padding-top: 0px;">
+
+            {# Show notice when no items #}
+            {% if workshop_items|length == 0 %}
+                <p style="margin: 15px 0 0 0;">No workshop items found</p>
+            {% endif %}
+
+            <div class="workshop-grid">
+
+                {% for item in workshop_items %}
+
+                    {# Hide broken items when not logged in or when we are not the owner of this item #}
+                    {% set hide = false %}
+                    {% if item.isLastFileBroken %}
+                        {% if account is null or account != item.submitter %}
+                            {% set hide = true %}
+                        {% endif %}
+                    {% endif %}
+                    {% if hide == false %}
+
+                        <div class="workshop-grid-item">
+
+                            {# Thumbnail #}
+                            <div class="workshop-grid-item-image-container">
+                                <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                    {% if item.thumbnail is not null %}
+                                        <img src="/workshop/image/{{ item.id }}/{{ item.thumbnail }}" />
+                                    {% elseif item.images|length > 0 %}
+                                        <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}" />
+                                    {% else %}
+                                        <img src="/img/no-image-256.png" />
+                                    {% endif %}
+                                </a>
+                            </div>
+
+                            <div class="workshop-grid-item-info">
+
+                                {# Show a notice for broken items #}
+                                {% if item.isLastFileBroken %}
+                                        <ion-icon
+                                            name="alert-circle-outline"
+                                            class="workshop-grid-notice-icon"
+                                            style="color: #f91b1b !important;
+                                            {% if item.minGameBuild is not null and item.minGameBuild == -1 %} right: 34px;{% else %} right:8px;{% endif %}
+                                            "
+                                            data-bs-toggle="popover" data-bs-placement="top"
+                                            data-bs-content="This workshop item is considered broken by the KeeperFX team."
+                                        ></ion-icon>
+                                {% endif %}
+
+                                {# Show a notice for items requiring the latest alpha patch #}
+                                {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
+                                        <ion-icon
+                                            name="alert-circle-outline"
+                                            class="text-warning workshop-grid-notice-icon"
+                                            style="right: 8px;";
+                                            data-bs-toggle="popover" data-bs-placement="top"
+                                            data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly."
+                                        ></ion-icon>
+                                {% endif %}
+
+                                {# Title #}
+                                <div class="workshop-grid-item-title"
+                                    {# Optionally add some padding to the right to make place for the notice icons #}
+                                    {% if item.minGameBuild is not null and item.minGameBuild == -1 and not item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
+                                    {% if (item.minGameBuild is null or item.minGameBuild != -1) and item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
+                                    {% if item.minGameBuild is not null and item.minGameBuild == -1 and item.isLastFileBroken %}style="padding-right: 20px;"{% endif %}
+                                >
+                                    <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" title="{{ item.name }}">
+                                        {{ item.name }}
+                                    </a>
+                                </div>
+
+                                {# Info #}
+                                <div class="row" style="margin-top: 10px;">
+
+                                    <div class="col-7">
+
+                                        {# Type #}
+                                        {# <span class="text-warning"> #}
+                                        <span style="margin-top: 2px; display: block; margin-bottom: 5px">
+                                            {{ item.category.name|enum_beautify }}
+                                        </span>
+
+                                        {# User or Original Author #}
+                                        <div class="workshop-grid-item-user">
+                                            {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: true} %}
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-5" style="text-align: right;">
+
+                                        {# Quality Rating #}
+                                        {% if item.ratingScore is not null %}
+                                            {{ render_workshop_quality_rating(item.id, item.ratingScore) }}
+                                        {% endif %}
+
+                                        {# Difficulty Rating #}
+                                        {% if item.difficultyRatingEnabled and item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
+                                            {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
+                                        {% endif %}
+
+                                        {# Date #}
+                                        {# {% if item.originalCreationDate is not null %}
+                                            {{ item.originalCreationDate|date('Y-m-d') }}
+                                        {% else %}
+                                            {{ item.updatedTimestamp|date('Y-m-d') }}
+                                        {% endif %} #}
+
+                                        {# Downloads #}
+                                        {# <span style="margin-top: 7px; display: inline-block;">
+                                            {{ item.downloadCount }}
+                                            {% if item.downloadCount == 1 %}
+                                                download
+                                            {% else %}
+                                                downloads
+                                            {% endif %}
+                                        </span> #}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endif %} {# /hide #}
+
+                {% endfor %}
+
+                {# Fix the grid having only 1 column when there is only 1 workshop item #}
+                {% if workshop_items|length == 1 %}
+                    <div></div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
