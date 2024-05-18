@@ -21,7 +21,7 @@ class WorkshopBrowseApiController {
         // TODO: CacheInterface $cache,
     ){
         $workshop_items = [];
-        $workshop_item_entities = $em->getRepository(WorkshopItem::class)->findBy([], ['creation_orderby_timestamp' => 'DESC'], 10);
+        $workshop_item_entities = $em->getRepository(WorkshopItem::class)->findBy(['is_last_file_broken' => false], ['creation_orderby_timestamp' => 'DESC'], 10);
 
         if($workshop_item_entities){
             /** @var WorkshopItem $entity */
