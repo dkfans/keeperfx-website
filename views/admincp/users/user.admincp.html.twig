@@ -1,6 +1,6 @@
 {% extends "cp/_cp_layout.html.twig" %}
 
-{% set page_title = 'Edit user: ' ~ user.username ~ ' - AdminCP' %}
+{% set page_title = user.username ~ ' - AdminCP' %}
 
 {% block page %}
 
@@ -56,13 +56,13 @@
 
                     <div class="d-flex" style="margin-top: 15px;">
 
-                        {% if account.id != user.id %}
-                            <a href="/admin/user/{{ user.id }}/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}" class="btn btn-medieval btn-medieval-gray">Remove</a>
-                        {% endif %}
-
                         <div class="form-group">
                             <button type="submit" class="btn btn-medieval">Save</button>
                         </div>
+
+                        {% if account.id != user.id %}
+                            <a href="/admin/user/{{ user.id }}/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}" class="btn btn-medieval btn-medieval-gray" style="margin-left: 10px;">Remove</a>
+                        {% endif %}
 
                     </div>
 
