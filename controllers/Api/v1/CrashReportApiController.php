@@ -137,6 +137,18 @@ class CrashReportApiController {
             $savefile_filename = $post['save_file_name'];
             $savefile_data     = \base64_decode($post['save_file_data']);
 
+            // Make sure the savefile is not too big
+            $file_size_in_bytes = \strlen($savefile_data);
+            if($file_size_in_bytes > (int)$_ENV['APP_SAVEFILE_MAX_UPLOAD_SIZE']){
+                $response->getBody()->write(
+                    \json_encode([
+                        'success' => false,
+                        'error'   => 'SAVEFILE_TOO_BIG'
+                    ])
+                );
+                return $response;
+            }
+
             // Get and check extension
             $savefile_ext = \strtolower(\pathinfo($savefile_filename, \PATHINFO_EXTENSION));
             if(!\in_array($savefile_ext, ['sav', 'zip', '7z'])){
