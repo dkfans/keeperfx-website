@@ -21,7 +21,8 @@
 
                         {# Username #}
                         <a
-                        href="/workshop/browse?user={{ comment.user.username }}"
+                        href="/workshop/user/{{ comment.user.username|url_encode }}"
+                        {# href="/workshop/browse?user={{ comment.user.username }}" #}
                         title="Browse {{ comment.user.username }}'s Workshop Items"
                         class="user-link d-inline-block me-2">
                             <span class="user-username">{{ comment.user.username }}</span>
