@@ -27,7 +27,8 @@
 
         {# Normal User #}
         <a
-        href="/workshop/browse?user={{ workshop_item.submitter.username }}"
+        href="/workshop/user/{{ workshop_item.submitter.username|url_encode }}"
+        {# href="/workshop/browse?user={{ workshop_item.submitter.username }}" #}
         title="Browse {{ workshop_item.submitter.username }}'s Workshop Items"
         class="user-link d-inline-block">
             {% if workshop_item.submitter.avatarSmall %}
