@@ -14,10 +14,18 @@
 {% block workshop_content %}
 
 <div class="content-box bg-keeper bd-keeper">
-    <div class="content-header">
-        <h2>
-            {{ user.username }}
-        </h2>
+
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>{{ user.username }}</h2>
+        <div>
+            {% if account is not null and account.role >= roles.admin %}
+                <a href="/admin/user/{{ user.id }}" style="right: 0;">
+                    <button class="btn btn-medieval btn-medieval-black">
+                        Mod View
+                    </button>
+                </a>
+            {% endif %}
+        </div>
     </div>
     <div class="content-body">
         <div class="row">
