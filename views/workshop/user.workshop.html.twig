@@ -1,10 +1,10 @@
 {% extends "workshop/_workshop_layout.html.twig" %}
 
-{% set page_title = user.username ~ ' - Profile' %}
+{% set page_title = user.username %}
 
 {% set meta = {
     title: page_title,
-    description: user.username ~ '\' profile on KeeperFX.net',
+    description: 'Check out ' ~ user.username ~ '\'s profile!',
     og: {
         url: '/workshop/user/' ~ user.username|url_encode,
         image: user.avatar ? '/avatar/' ~ user.avatar : '/avatar-generate/128/' ~ user.username|url_encode ~ '.png'
