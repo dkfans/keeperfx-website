@@ -139,7 +139,7 @@ a {
     text-decoration: none;
 }
 
-a:hover {
+a:hover:not(a:has(button)) {
     text-decoration: underline;
 }
 
