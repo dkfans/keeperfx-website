@@ -19,6 +19,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpForbiddenException;
 
 class AdminUsersController {
 
@@ -323,20 +324,22 @@ class AdminUsersController {
     ){
 
         // Check for valid CSRF token
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request);
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
+        // Find user
         $user = $em->getRepository(User::class)->find($id);
         if(!$user){
             throw new HttpNotFoundException($request);
         }
 
+        // Delete user
         $em->remove($user);
         $em->flush();
         $flash->success('User successfully removed!');
 
+        // Response
         $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
         return $response;
     }

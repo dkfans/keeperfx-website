@@ -15,6 +15,7 @@ use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
 
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpForbiddenException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -156,10 +157,9 @@ class ModerateWorkshopEditFilesController {
         $token_value,
     )
     {
-        // Check for valid CSRF check
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request);
+        // Check for valid CSRF token
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists
@@ -244,9 +244,8 @@ class ModerateWorkshopEditFilesController {
         }
 
         // Check for valid CSRF token
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request);
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists
@@ -393,9 +392,8 @@ class ModerateWorkshopEditFilesController {
     ) {
 
         // Check for valid CSRF token
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request);
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists
@@ -438,9 +436,8 @@ class ModerateWorkshopEditFilesController {
     ) {
 
         // Check for valid CSRF token
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request);
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists

@@ -28,6 +28,7 @@ use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
 use Vertisan\OAuth2\Client\Provider\TwitchHelixResourceOwner;
 
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpForbiddenException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -74,10 +75,9 @@ class OAuthUserController {
         // Step 1. Get authorization code
         if(!isset($query_params['code']) || !\is_string($query_params['code'])){
 
-            // Check for valid request (anti CSRF)
-            $valid = $csrf_guard->validateToken($token_name, $token_value);
-            if(!$valid){
-                throw new HttpNotFoundException($request);
+            // Check for valid CSRF token
+            if(!$csrf_guard->validateToken($token_name, $token_value)){
+                throw new HttpForbiddenException($request);
             }
 
             // Redirect user to OAuth Provider's login page
@@ -96,7 +96,7 @@ class OAuthUserController {
             || !isset($session['oauth_state'])
             || $query_params['state'] !== $session['oauth_state']
         ) {
-            return $response;
+            throw new HttpForbiddenException($request);
         }
 
         // Step 2. Get an access token using the provided authorization code
@@ -288,10 +288,9 @@ class OAuthUserController {
             throw new HttpNotFoundException($request);
         }
 
-        // Check for valid request (anti CSRF)
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request);
+        // Check for valid CSRF token
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // TODO: MAKE SURE THAT OUR ACCOUNT WILL NOT GET DELETED !

@@ -16,6 +16,7 @@ use Directory;
 use Slim\Csrf\Guard as CsrfGuard;
 
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpForbiddenException;
 use Psr\Http\Message\UploadedFileInterface;
 use Slim\Exception\HttpBadRequestException;
 use Xenokore\Utility\Helper\DirectoryHelper;
@@ -140,7 +141,7 @@ class AdminUploadController {
     ) {
         // Check for valid CSRF token
         if(!$csrf_guard->validateToken($token_name, $token_value)){
-            throw new HttpBadRequestException($request);
+            throw new HttpForbiddenException($request);
         }
 
         // Check if uploads are enabled

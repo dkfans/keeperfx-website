@@ -27,6 +27,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpForbiddenException;
 
 class AccountController {
 
@@ -169,12 +170,9 @@ class AccountController {
         $token_name,
         $token_value
     ){
-        // Make sure CSRF check is valid
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            $flash->error('Invalid CSRF token.');
-            $response = $response->withHeader('Location', '/account')->withStatus(302);
-            return $response;
+        // Check for valid CSRF token
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Update to new email address
@@ -338,12 +336,9 @@ class AccountController {
         $token_name,
         $token_value
     ){
-        // Check for valid CSRF check
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            $flash->error('Invalid CSRF token.');
-            $response = $response->withHeader('Location', '/account')->withStatus(302);
-            return $response;
+        // Check for valid CSRF token
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Check if user has an avatar
@@ -402,10 +397,9 @@ class AccountController {
         $token_name,
         $token_value,
     ){
-        // Check for valid CSRF check
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request);
+        // Check for valid CSRF token
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Logout user

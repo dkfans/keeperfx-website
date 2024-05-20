@@ -24,6 +24,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpForbiddenException;
 use App\Workshop\Exception\WorkshopException;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
@@ -345,10 +346,9 @@ class WorkshopEditController {
         $token_name,
         $token_value,
     ){
-        // Check for valid CSRF check
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request);
+         // Check for valid CSRF token
+         if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists

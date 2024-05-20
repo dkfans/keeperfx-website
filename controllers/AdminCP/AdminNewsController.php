@@ -23,6 +23,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpForbiddenException;
 
 class AdminNewsController {
 
@@ -356,17 +357,21 @@ class AdminNewsController {
 
         // Check for valid CSRF token
         $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if($valid){
-
-            $article = $em->getRepository(NewsArticle::class)->find($id);
-            if($article){
-
-                $em->remove($article);
-                $em->flush();
-                $flash->success('News article successfully removed!');
-            }
+        if(!$valid){
+            throw new HttpForbiddenException($request);
         }
 
+        // Get article
+        $article = $em->getRepository(NewsArticle::class)->find($id);
+        if($article){
+
+            // Delete article
+            $em->remove($article);
+            $em->flush();
+            $flash->success('News article successfully removed!');
+        }
+
+        // Response
         $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
         return $response;
     }
@@ -386,7 +391,7 @@ class AdminNewsController {
         // Check for valid CSRF token
         $valid = $csrf_guard->validateToken($token_name, $token_value);
         if(!$valid){
-            throw new HttpBadRequestException($request);
+            throw new HttpForbiddenException($request);
         }
 
         // Get the article

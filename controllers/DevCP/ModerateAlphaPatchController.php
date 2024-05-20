@@ -13,6 +13,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpForbiddenException;
 
 class ModerateAlphaPatchController {
 
@@ -44,9 +45,8 @@ class ModerateAlphaPatchController {
     ){
 
         // Check for valid CSRF token
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request, "invalid csrf token");
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Check if Alpha Build exists
@@ -78,9 +78,8 @@ class ModerateAlphaPatchController {
     ){
 
         // Check for valid CSRF token
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request, "invalid csrf token");
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Check if Alpha Build exists
