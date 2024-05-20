@@ -8,6 +8,7 @@ use App\Entity\UserOAuthToken;
 use App\Entity\UserCookieToken;
 
 use App\Account;
+use App\BanChecker;
 use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
@@ -27,7 +28,8 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
         private Account $account,
         private Session $session,
         private FlashMessage $flash,
-        private OAuthProviderService $provider_service
+        private BanChecker $ban_checker,
+        private OAuthProviderService $provider_service,
     ) {}
 
     /**
@@ -111,10 +113,32 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
                     // Login the user
                     $this->account->setCurrentLoggedInUser($cookie_token->getUser());
 
-                    // Log the IP
+                    // Get the IP
                     $ip = $request->getAttribute('ip_address');
-                    if($ip !== null){
+                    $hostname = \gethostbyaddr($ip);
+
+                    // Log IP
+                    if($ip){
                         $this->account->logIp($ip);
+                    }
+
+                    // Check if this IP or hostname is banned
+                    if($this->ban_checker->checkAll($ip, $hostname)){
+
+                        // Make them wait :)
+                        \sleep(1 + \random_int(0, 3));
+
+                        // Ambiguous message
+                        $this->flash->error("Something went wrong.");
+
+                        // Logout user
+                        $this->account->clearCurrentLoggedInUser();
+
+                        // Invalidate cookie token
+                        $this->em->remove($cookie_token);
+                        $this->em->flush();
+
+                        // TODO: ban the user account too
                     }
                 }
             }

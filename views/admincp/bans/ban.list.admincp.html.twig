@@ -1,0 +1,50 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Bans - AdminCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Bans ({{ bans|length }})</h2>
+        <a href="/admin/ban/add" style="right: 0;">
+            <button class="btn btn-medieval">Create new ban pattern</button>
+        </a>
+    </div>
+    <div class="content-body">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Pattern</th>
+                    <th>Reason</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ban in bans %}
+                        <tr>
+                            <td>{{ ban.type.name }}</td>
+                            <td><code>{{ ban.pattern }}</code></td>
+                            <td>
+                                {% if ban.reason is not empty %}
+                                    {{ ban.reason }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ ban.createdTimestamp|date('Y-m-d G:i') }}</td>
+                            <td>
+                                <a href="/admin/ban/{{ ban.id }}">Edit</a>
+                            </td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

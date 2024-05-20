@@ -146,6 +146,16 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
                 $group->get('/{type}/{string:.+}', [AdminCP\AdminIpLookupController::class, 'lookup']);
             });
 
+            // Admin: BANS
+            $group->group('/ban', function (RouteCollectorProxy $group) use ($container) {
+                $group->get('/list', [AdminCP\AdminBanController::class, 'bansIndex']);
+                $group->get('/add', [AdminCP\AdminBanController::class, 'banAddIndex']);
+                $group->post('/add', [AdminCP\AdminBanController::class, 'banAdd']);
+                $group->get('/{id:\d+}', [AdminCP\AdminBanController::class, 'banEditIndex']);
+                $group->post('/{id:\d+}', [AdminCP\AdminBanController::class, 'banEdit']);
+                $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminBanController::class, 'banDelete']);
+            });
+
             // Server info
             $group->get('/server-info', [AdminCP\AdminServerInfoController::class, 'serverInfoIndex']);
 

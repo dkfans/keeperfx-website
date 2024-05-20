@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 
 use App\Account;
+use App\BanChecker;
 use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
@@ -56,7 +57,8 @@ class LoginController {
         TwigEnvironment $twig,
         Session $session,
         Account $account,
-        FlashMessage $flash
+        FlashMessage $flash,
+        BanChecker $ban_checker,
     ){
 
         // Only logged-out guests allowed
@@ -65,6 +67,10 @@ class LoginController {
             // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
         }
+
+        // Get the IP and hostname
+        $ip = $request->getAttribute('ip_address');
+        $hostname = \gethostbyaddr($ip);
 
         $post = $request->getParsedBody();
         $username = (string) ($post['username'] ?? '');
@@ -78,12 +84,27 @@ class LoginController {
 
                 if(\password_verify($password, $user->getPassword())){
 
+                    // Check if this IP or hostname is banned
+                    if($ban_checker->checkAll($ip, $hostname)){
+
+                        // Make them wait :)
+                        \sleep(1 + \random_int(0, 3));
+
+                        // Ambiguous message
+                        $flash->error("Something went wrong.");
+
+                        // Show login screen again
+                        $response->getBody()->write(
+                            $twig->render('login.html.twig')
+                        );
+                        return $response;
+                    }
+
                     // Log user in
                     $account->setCurrentLoggedInUser($user);
 
                     // Log IP
-                    $ip = $request->getAttribute('ip_address');
-                    if($ip !== null){
+                    if($ip){
                         $account->logIp($ip);
                     }
 

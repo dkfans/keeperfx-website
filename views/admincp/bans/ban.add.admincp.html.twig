@@ -1,0 +1,81 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Create new ban pattern - AdminCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Create new ban pattern</h2>
+        <a href="/admin/ban/list">Go back to list</a>
+    </div>
+    <div class="content-body">
+
+        <p class="alert alert-info mb-5">
+            Note: ISP ban patterns are not implemented yet.
+        </p>
+
+        <form action="/admin/ban/add" method="POST" enctype="multipart/form-data">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="type">
+                            Type
+                            <span class="text-danger">
+                                *
+                            </span>
+                        </label>
+                        <select class="form-control form-select" id="type" name="type" required>
+                            <option value="" disabled selected hidden></option>
+                            {% if ban_types|length > 0 %}
+                                {% for ban_type in ban_types %}
+                                    <option value="{{ ban_type.value }}">
+                                        {{ ban_type.name }}
+                                    </option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="title">
+                    Pattern
+                    <span class="text-danger">
+                        *
+                    </span>
+                    <span class="text-muted">
+                        (wild cards <code>*</code> are accepted)
+                    </span>
+                </label>
+                <input type="text" class="form-control" id="pattern" name="pattern"/>
+            </div>
+
+            <div class="form-group">
+                <label for="title">
+                    Reason
+                    <span class="text-muted">
+                        (Optional)
+                    </span>
+                </label>
+                <input type="text" class="form-control" id="reason" name="reason"/>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-medieval" style="margin-top: 15px;">Create</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+{% include 'markdown.format.html.twig' %}
+
+{% endblock %}

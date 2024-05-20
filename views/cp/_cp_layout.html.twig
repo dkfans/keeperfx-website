@@ -78,6 +78,10 @@
                             <ion-icon name="globe-outline"></ion-icon>
                             IP Logs
                         </a>
+                        <a class="nav-link {% if path_equals('/admin/ban/*') %}active{% endif %}" href="/admin/ban/list">
+                            <ion-icon name="ban-outline"></ion-icon>
+                            Bans
+                        </a>
                         <a class="nav-link {% if path_equals('/admin/uploads') %}active{% endif %}" href="/admin/uploads">
                             <ion-icon name="folder-outline"></ion-icon>
                             Uploads
