@@ -7,28 +7,29 @@ use App\Enum\OAuthProviderType;
 
 use App\Entity\User;
 use App\Entity\UserOAuthToken;
+use App\Entity\UserCookieToken;
 
 use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
-use App\Entity\UserCookieToken;
+use App\Notifications\NotificationCenter;
+use App\Notifications\Notification\NewUserNotification;
+
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
-use App\OAuth\OAuthProviderService;
 use Twig\Environment as TwigEnvironment;
-use App\Notifications\NotificationCenter;
 use Dflydev\FigCookies\FigResponseCookies;
+
+use App\OAuth\OAuthProviderService;
+use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
+use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
+use Vertisan\OAuth2\Client\Provider\TwitchHelixResourceOwner;
 
 use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use League\OAuth2\Client\Token\AccessToken;
-use League\OAuth2\Client\Provider\ResourceOwnerInterface;
-
-use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
-use Vertisan\OAuth2\Client\Provider\TwitchHelixResourceOwner;
 
 class OAuthUserController {
 
