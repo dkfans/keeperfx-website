@@ -58,8 +58,6 @@ class FixWorkshopRatingsCommand extends Command
             $quality_rating_data    = WorkshopHelper::calculateRatingScore($item, WorkshopHelper::RATING_QUALITY);
             $difficulty_rating_data = WorkshopHelper::calculateRatingScore($item, WorkshopHelper::RATING_DIFFICULTY);
 
-            if($item->getId() === 632)
-
             // Update quality rating
             if($item->getRatingScore() !== $quality_rating_data['score']){
                 $item->setRatingScore($quality_rating_data['score']);
