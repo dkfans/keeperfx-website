@@ -19,6 +19,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpForbiddenException;
 
 class NotificationController {
 
@@ -175,9 +176,8 @@ class NotificationController {
         $token_value,
     ){
         // Check for valid CSRF token
-        $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
-            throw new HttpNotFoundException($request);
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
         }
 
         // Update read status of all notifications
