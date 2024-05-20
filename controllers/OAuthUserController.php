@@ -76,7 +76,7 @@ class OAuthUserController {
         if(!isset($query_params['code']) || !\is_string($query_params['code'])){
 
             // Check for valid CSRF token
-            if(!$csrf_guard->validateToken($token_name, $token_value)){
+            if(is_null($token_name) || is_null($token_value) || !$csrf_guard->validateToken($token_name, $token_value)){
                 throw new HttpForbiddenException($request);
             }
 
