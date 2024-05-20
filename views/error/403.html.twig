@@ -1,0 +1,34 @@
+{% extends "core/_layout.html.twig" %}
+
+{% set page_title = '403 - Forbidden - Access Denied' %}
+
+{% block content %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>403 - Forbidden - Access Denied</h2>
+    </div>
+    <div class="content-body">
+        <p>
+            We're sorry, but your request could not be processed for security reasons. This might happen if:
+            <ul class="m-3 my-4">
+                <li>You took too long to submit the form.</li>
+                <li>You navigated away from the page and returned to submit the form.</li>
+                <li>Your session expired or there was an issue with your session.</li>
+            </ul>
+        </p>
+        <p>
+            Please try the following steps to resolve the issue:
+            <ul class="m-3 my-4">
+                <li>Refresh the page and try again.</li>
+                <li>Ensure you are still logged in if you have an account.</li>
+                <li>If the problem persists, contact us for assistance.</li>
+            </ul>
+        </p>
+        <p>
+            Thank you for your understanding and cooperation.
+        </p>
+    </div>
+</div>
+
+{% endblock %}

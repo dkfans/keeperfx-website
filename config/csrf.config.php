@@ -36,5 +36,7 @@ return [
      *      function($request, $handler) and must return a Response.
      * Setting this to null (default) will simply return a page saying 'Invalid CSRF token'
      */
-    'failure_handler' => null,
+    'failure_handler' => function($request, $handler){
+        throw new \Slim\Exception\HttpForbiddenException($request);
+    },
 ];
