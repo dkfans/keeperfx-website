@@ -15,25 +15,19 @@
         </div>
         <div class="content-body">
 
-            <p class="m-2 mb-4">
+            <p class="py-3 bd-keeper" style="background-color: rgba(0,0,0,0.3)">
                 This tool can be used to check if a KeeperFX ENET multiplayer lobby can be joined by other players.
-            </p>
-
-            <p class="m-2 mb-4">
+                <br /><br />
                 The lobby needs to be <strong>OPEN</strong>. (Click "Create Game")
-            </p>
-
-            <p class="m-2">
+                <br /><br />
                 If you need help, feel free to ask in the <a href="https://discord.gg/WxgE8WZBku" target="_blank">Keeper Klan discord</a>.
             </p>
 
-            <p class="mt-5">
-
-                <input type="text" id="test-ip" class="form-control" style="max-width: 350px" value="{{ ip }}" placeholder="IP Address" />
-
+            <p class="mt-4">
+                <p>IP Address: <span class="text-muted">(without :5556)</span></p>
+                <input type="text" id="test-ip" class="form-control" style="margin-left: 15px; max-width: 350px" value="{{ ip }}" placeholder="IP Address" />
                 <p style="font-size: 20px; margin-top: 15px" id="test-result"></p>
-
-                <button id="test-button" class="btn btn-medieval m-3 mb-1">Test</button>
+                <button id="test-button" class="btn btn-medieval m-3 mb-0 mt-1">Test</button>
             </p>
 
         </div>
