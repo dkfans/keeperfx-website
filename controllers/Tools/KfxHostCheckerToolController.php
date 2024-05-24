@@ -31,8 +31,6 @@ class KfxHostCheckerToolController {
             $ip = null;
         }
 
-        $ip = null;
-
         // Response
         $response->getBody()->write(
             $twig->render('tools/kfx_host_checker_tool.html.twig', ['ip' => $ip])
