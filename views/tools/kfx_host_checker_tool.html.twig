@@ -15,16 +15,26 @@
         </div>
         <div class="content-body">
 
-            <p>
-                This tool can be used to check if a KeeperFX ENET multiplayer lobby is accessible from the internet.
-                <br />It will send a handshake packet to port 5556 over UDP.
+            <p class="m-2 mb-4">
+                This tool can be used to check if a KeeperFX ENET multiplayer lobby can be joined by other players.
             </p>
 
-            <input type="text" id="test-ip" class="form-control" style="max-width: 350px" value="{{ ip }}" />
+            <p class="m-2 mb-4">
+                The lobby needs to be <strong>OPEN</strong>. (Click "Create Game")
+            </p>
 
-            <p style="font-size: 20px; margin-top: 15px" id="test-result"></p>
+            <p class="m-2">
+                If you need help, feel free to ask in the <a href="https://discord.gg/WxgE8WZBku" target="_blank">Keeper Klan discord</a>.
+            </p>
 
-            <button id="test-button" class="btn btn-medieval">Test</button>
+            <p class="mt-5">
+
+                <input type="text" id="test-ip" class="form-control" style="max-width: 350px" value="{{ ip }}" placeholder="IP Address" />
+
+                <p style="font-size: 20px; margin-top: 15px" id="test-result"></p>
+
+                <button id="test-button" class="btn btn-medieval m-3 mb-1">Test</button>
+            </p>
 
         </div>
     </div>
