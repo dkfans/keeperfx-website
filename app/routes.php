@@ -318,6 +318,10 @@ $app->group('/tools', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/kfx-cfg-diff', [Tools\KfxCfgDiffToolController::class, 'index']);
     $group->post('/kfx-cfg-diff', [Tools\KfxCfgDiffToolController::class, 'compare']);
 
+
+    $group->get('/kfx-host-checker', [Tools\KfxHostCheckerToolController::class, 'index']);
+    $group->get('/kfx-host-checker/ping/{ip:.+}', [Tools\KfxHostCheckerToolController::class, 'ping']);
+
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
