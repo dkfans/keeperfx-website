@@ -1,0 +1,62 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = 'Tools' %}
+
+
+{% block workshop_content %}
+
+    <div class="content-box bd-keeper bg-keeper">
+        <div class="content-header">
+            <div class="d-flex justify-content-between">
+                <h2>
+                    Tools
+                </h2>
+            </div>
+        </div>
+        <div class="content-body pb-2">
+
+            {% for tool in tools %}
+
+                <div class="workshop-grid-item mb-3">
+
+                    <div class="workshop-grid-item-info">
+
+                        <div class="workshop-grid-item-title mt-2">
+                            <a href="{{ tool.url }}" title="{{ tool.title }}">
+                                {{ tool.title }}
+                            </a>
+                        </div>
+
+                        <p class="mt-3 p-0">
+                            {{ tool.description }}
+                        </p>
+
+                        <div class="mt-0 mb-3">
+                            <a
+                            href="/workshop/user/{{ tool.user.username|url_encode }}"
+                            {# href="/workshop/browse?user={{ tool.user.username }}" #}
+                            title="Browse {{ tool.user.username }}'s Workshop Items"
+                            class="user-link d-inline-block">
+                                {% if tool.user.avatarSmall %}
+                                    <img src="/avatar/{{ tool.user.avatarSmall }}" class="user-avatar" />
+                                {% elseif tool.user.avatar %}
+                                    <img src="/avatar/{{ tool.user.avatar }}" class="user-avatar" />
+                                {% else %}
+                                    <img src="/avatar-generate/32/{{ tool.user.username|url_encode }}.png" class="user-avatar" />
+                                {% endif %}
+                                <span class="user-username">{{ tool.user.username }}</span>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            {% endfor %}
+
+            <p class="text-muted mt-4">
+                Please contact the KeeperFX team if you wish to have a tool added. (You can write them in PHP or JS)
+            </p>
+
+        </div>
+    </div>
+
+    {% endblock %}

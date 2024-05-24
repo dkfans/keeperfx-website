@@ -286,6 +286,22 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->delete('/comment/{report_id:\d+}', [Workshop\WorkshopReportController::class, 'removeCommentReport'])->add(AuthModCPMiddleware::class); // AJAX
 
         })->add(LoggedInMiddleware::class);
+
+
+        // Workshop Tools
+        $group->group('/tools', function (RouteCollectorProxy $group) use ($container) {
+
+            $group->get('', [Workshop\Tools\WorkshopToolsController::class, 'index']);
+
+            // Tool: KeeperFX CFG Diff
+            $group->get('/kfx-cfg-diff', [Workshop\Tools\WorkshopKfxCfgDiffToolController::class, 'index']);
+            $group->post('/kfx-cfg-diff', [Workshop\Tools\WorkshopKfxCfgDiffToolController::class, 'compare']);
+
+            // Tool: KeeperFX Host Checker
+            $group->get('/kfx-host-checker', [Workshop\Tools\WorkshopKfxHostCheckerToolController::class, 'index']);
+            $group->get('/kfx-host-checker/ping/{ip:.+}', [Workshop\Tools\WorkshopKfxHostCheckerToolController::class, 'ping']);
+
+        });
     });
 
     // ToS & Privacy Policy
@@ -307,22 +323,6 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/website-changelog', [WebsiteChangelogController::class, 'index']);
 
 })->add(\Slim\Csrf\Guard::class);
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////// Tools
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-$app->group('/tools', function (RouteCollectorProxy $group) use ($container) {
-
-    // Tool: KeeperFX CFG Diff
-    $group->get('/kfx-cfg-diff', [Tools\KfxCfgDiffToolController::class, 'index']);
-    $group->post('/kfx-cfg-diff', [Tools\KfxCfgDiffToolController::class, 'compare']);
-
-
-    $group->get('/kfx-host-checker', [Tools\KfxHostCheckerToolController::class, 'index']);
-    $group->get('/kfx-host-checker/ping/{ip:.+}', [Tools\KfxHostCheckerToolController::class, 'ping']);
-
-});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////// API
@@ -359,3 +359,7 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
 
 // April fools 2024
 $app->redirect('/giveaways/dk3-beta-key', 'https://youtu.be/ceWFU2pBOPo', 301);
+
+// Tools moved to workshop
+$app->redirect('/tools/kfx-cfg-diff', '/workshop/tools/kfx-cfg-diff', 301);
+$app->redirect('/tools/kfx-host-checker', '/workshop/tools/kfx-host-checker', 301);

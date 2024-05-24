@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Tools;
+namespace App\Controller\Workshop\Tools;
 
 use App\FlashMessage;
 use Twig\Environment as TwigEnvironment;
@@ -16,7 +16,7 @@ use Xenokore\Utility\Helper\StringHelper;
  * A tool to compare CFGs and show the differences.
  * This is useful for getting only updated properties from KeeperFX configs.
  */
-class KfxHostCheckerToolController {
+class WorkshopKfxHostCheckerToolController {
 
     public function index(
         Request $request,
@@ -33,7 +33,7 @@ class KfxHostCheckerToolController {
 
         // Response
         $response->getBody()->write(
-            $twig->render('tools/kfx_host_checker_tool.html.twig', ['ip' => $ip])
+            $twig->render('workshop/tools/kfx_host_checker_tool.html.twig', ['ip' => $ip])
         );
         return $response;
     }

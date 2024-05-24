@@ -1,4 +1,4 @@
-{% extends "core/_layout.html.twig" %}
+{% extends "workshop/_workshop_layout.html.twig" %}
 
 {% set page_title = 'KeeperFX ENET multiplayer lobby checker' %}
 
@@ -7,11 +7,14 @@
     description: 'A tool to check if a KeeperFX ENET multiplayer lobby can be joined by other players.',
 } %}
 
-{% block content %}
+{% block workshop_content %}
 
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
-            <h2>KeeperFX Multiplayer Host Checker (ENET)</h2>
+            <div class="d-flex justify-content-between">
+                <h2>KeeperFX Multiplayer Host Checker (ENET)</h2>
+                <a href="/workshop/tools">Go back to tools</a>
+            </div>
         </div>
         <div class="content-body">
 
@@ -65,7 +68,7 @@
         // Poll
         $.ajax({
             type: 'GET',
-            url: '/tools/kfx-host-checker/ping/' + ipaddress,
+            url: '/workshop/tools/kfx-host-checker/ping/' + ipaddress,
             dataType: 'json',
             success: function(data){
                 if(data.success){

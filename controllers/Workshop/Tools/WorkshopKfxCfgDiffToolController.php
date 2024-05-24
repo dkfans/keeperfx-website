@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Tools;
+namespace App\Controller\Workshop\Tools;
 
 use App\FlashMessage;
 use Twig\Environment as TwigEnvironment;
@@ -16,7 +16,7 @@ use Xenokore\Utility\Helper\StringHelper;
  * A tool to compare CFGs and show the differences.
  * This is useful for getting only updated properties from KeeperFX configs.
  */
-class KfxCfgDiffToolController {
+class WorkshopKfxCfgDiffToolController {
 
     public function index(
         Request $request,
@@ -24,7 +24,7 @@ class KfxCfgDiffToolController {
         TwigEnvironment $twig,
     ){
         $response->getBody()->write(
-            $twig->render('tools/kfx_cfg_diff_tool.html.twig')
+            $twig->render('workshop/tools/kfx_cfg_diff_tool.html.twig')
         );
 
         return $response;
@@ -45,7 +45,7 @@ class KfxCfgDiffToolController {
         if(empty($left) || empty($right)){
             $flash->warning("Both the left and right side need to be given.");
             $response->getBody()->write(
-                $twig->render('tools/kfx_cfg_diff_tool.html.twig')
+                $twig->render('workshop/tools/kfx_cfg_diff_tool.html.twig')
             );
             return $response;
         }
@@ -101,7 +101,7 @@ class KfxCfgDiffToolController {
 
         // Output back to user
         $response->getBody()->write(
-            $twig->render('tools/kfx_cfg_diff_tool.html.twig', [
+            $twig->render('workshop/tools/kfx_cfg_diff_tool.html.twig', [
                 'diff_output' => $diff_output
             ])
         );
