@@ -23,12 +23,20 @@ class KfxHostCheckerToolController {
         Response $response,
         TwigEnvironment $twig,
     ){
+        // Get IP
         $ip = $request->getAttribute('ip_address');
 
+        // Make sure IP is valid IPv4 address
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) == false) {
+            $ip = null;
+        }
+
+        $ip = null;
+
+        // Response
         $response->getBody()->write(
             $twig->render('tools/kfx_host_checker_tool.html.twig', ['ip' => $ip])
         );
-
         return $response;
     }
 
