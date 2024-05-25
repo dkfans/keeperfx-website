@@ -20,13 +20,18 @@ use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
+use Xenokore\Utility\Helper\JsonHelper;
+use Xenokore\Utility\Helper\StringHelper;
 
 class FetchUnearthCommand extends Command
 {
+    private const UNEARTH_GITHUB_RELEASE_URL = 'https://api.github.com/repos/rainlizard/Unearth/releases';
+
     private const UNEARTH_WORKSHOP_ID = 1;
 
     private const UNEARTH_VERSION_REGEX_1 = "v([0-9\.]+[a-z]*?)\.";    // old way of versioning
     private const UNEARTH_VERSION_REGEX_2 = "unearth\-([0-9\.]*?)\-";
+    private const UNEARTH_VERSION_REGEX_3 = "unearth\-[a-z]*?\-([0-9\.]*?)\.(?:zip|7z)";
 
     /** @var EntityManager $em */
     private $em;
@@ -51,6 +56,10 @@ class FetchUnearthCommand extends Command
         }
 
         if(\preg_match("~" . self::UNEARTH_VERSION_REGEX_2 . "~", $string, $matches) === 1){
+            return $matches[1];
+        }
+
+        if(\preg_match("~" . self::UNEARTH_VERSION_REGEX_3 . "~", $string, $matches) === 1){
             return $matches[1];
         }
 
@@ -86,75 +95,64 @@ class FetchUnearthCommand extends Command
         ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
 
-        // Create HTTP client
         $client = new \GuzzleHttp\Client(
             ['verify' => false] // Don't verify SSL connection
         );
 
-        $output->writeln("[>] Fetching Unearth page...");
+        $res = $client->request('GET', self::UNEARTH_GITHUB_RELEASE_URL);
+        $gh_releases = JsonHelper::decode($res->getBody());
 
-        // GET page
-        $url = "https://rainlizard.itch.io/unearth";
-        $response = $client->get($url);
-        if($response->getStatusCode() !== 200){
-            $output->writeln("[-] Failed to grab Unearth release page: {$url}");
+        if(empty($gh_releases)){
+            $output->writeln("[-] Failed to fetch releases");
             return Command::FAILURE;
         }
 
-        // Get Windows download data
-        // old regex: "~data\-upload\_id\=\"(\d+)\".+?(Unearth\sv[0-9\.]+[a-z]*?\.zip)~"
-        if(\preg_match("~data\-upload\_id\=\"(\d+)\".+?title\=\"(.*?)\"~", $response->getBody(), $matches) !== 1){
-            $output->writeln("[-] Failed to get Unearth Windows download filename");
+        $release = $gh_releases[0];
+
+        // Make sure github release data is valid
+        if(empty($release->tag_name) || empty($release->assets) || empty($release->assets[0]->browser_download_url)){
+            $output->writeln("[-] Invalid github release data...");
             return Command::FAILURE;
         }
 
-        $windows_download_id       = $matches[1];
-        $windows_download_filename = $matches[2];
-        $output->writeln("[+] Windows download: <info>{$windows_download_filename}</info> (#{$windows_download_id})");
+        $version = (string) $release->tag_name;
 
-        // Get Linux download data
-        // old regex: "~" . $windows_download_id . ".+?data\-upload\_id\=\"(\d+)\".+?(UnearthLinux\sv[0-9\.]+[a-z]*?\.zip)~"
-        if(\preg_match("~" . $windows_download_id . ".+?data\-upload\_id\=\"(\d+)\".+?title\=\"(.*?)\"~", $response->getBody(), $matches) !== 1){
-            $output->writeln("[-] Failed to get Unearth Linux download filename");
-            return Command::FAILURE;
-        }
-
-        $linux_download_id       = $matches[1];
-        $linux_download_filename = $matches[2];
-        $output->writeln("[+] Linux download: <info>{$linux_download_filename}</info> (#{$linux_download_id})");
-
-        // Get CSRF token
-        if(\preg_match("~csrf_token\"\svalue\=\"(.+?)\"~", $response->getBody(), $matches) !== 1){
-            $output->writeln("[-] Failed to get CSRF token");
-            return Command::FAILURE;
-        }
-
-        $csrf_token = $matches[1];
-        $output->writeln("[+] CSRF token: {$csrf_token}");
-
-        ////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////
-
-        // Get remote Unearth version
-        $remote_unearth_version = $this->getUnearthVersionFromString($windows_download_filename);
-        if(!$remote_unearth_version){
-            $output->writeln("[-] Failed to figure out new Unearth version");
-            return Command::FAILURE;
-        }
-        $output->writeln("[+] Remote Unearth version: <info>{$remote_unearth_version}</info>");
-
-        // Check if we need to update
-        if($remote_unearth_version === $local_unearth_version){
-            $output->writeln("[+] Already at latest version!");
+        if($version === $local_unearth_version){
+            $output->writeln("[+] Already latest Unearth version!");
             return Command::SUCCESS;
         }
 
+        $output->writeln("[+] New version found: <info>{$version}</info>");
+
+
         ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
 
-        // Get download URLs
-        $windows_download_url = $this->getDownloadURL($windows_download_id, $client, $csrf_token);
-        $linux_download_url   = $this->getDownloadURL($linux_download_id, $client, $csrf_token);
+        $linux_download_url = null;
+        $linux_download_filename = null;
+        $windows_download_url = null;
+        $windows_download_filename = null;
+
+        foreach($release->assets as $asset){
+            if(StringHelper::contains(\strtolower($asset->name), 'linux')){
+                $linux_download_url      = $asset->browser_download_url;
+                $linux_download_filename = $asset->name;
+            }
+            if(StringHelper::contains(\strtolower($asset->name), 'window')){
+                $windows_download_url      = $asset->browser_download_url;
+                $windows_download_filename = $asset->name;
+            }
+        }
+
+        if( $linux_download_url == null || $windows_download_url == null ||
+            $linux_download_filename == null || $windows_download_filename == null){
+
+            $output->writeln("[-] Failed to get required download data");
+            return Command::FAILURE;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////
 
         // Define local download paths
         $windows_temp_archive_filename = \str_replace(" ", "_", $windows_download_filename);
@@ -312,25 +310,8 @@ class FetchUnearthCommand extends Command
         ////////////////////////////////////////////////////////////////////////////////////
 
         // Success
-        $output->writeln("[+] Successfully updated Unearth v{$local_unearth_version} to v{$remote_unearth_version}!");
+        $output->writeln("[+] Successfully updated Unearth v{$local_unearth_version} to v{$version}!");
         $output->writeln("[+] Done!");
         return Command::SUCCESS;
     }
-
-    private function getDownloadURL(int $file_id, Client $client, string $csrf_token)
-    {
-        $response = $client->post("https://rainlizard.itch.io/unearth/file/" . $file_id . "?source=view_game&as_props=1&after_download_lightbox=true", [
-            'csrf_token' => $csrf_token
-        ]);
-        if($response->getStatusCode() !== 200){
-            return;
-        }
-        $json = \json_decode($response->getBody(), true);
-        if(!isset($json['url'])){
-            return;
-        }
-
-        return $json['url'];
-    }
-
 }
