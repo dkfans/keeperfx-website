@@ -303,7 +303,6 @@ class FetchUnearthCommand extends Command
         ////////////////////////////////////////////////////////////////////////////////////
 
         // Update last updated date on the workshop item
-        $workshop_item = $workshop_file->getItem();
         $workshop_item->setUpdatedTimestamp(new \DateTime("now"));
 
         // Save changes to DB
