@@ -15,19 +15,25 @@ use App\Entity\WorkshopFile;
 use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
+use App\DiscordNotifier;
+use App\Workshop\WorkshopCache;
+
+use App\Notifications\NotificationCenter;
+use App\Notifications\Notification\WorkshopItemNotification;
+
 use Doctrine\ORM\EntityManager;
 use ByteUnits\Binary as BinaryFormatter;
 use Twig\Environment as TwigEnvironment;
 
 use Psr\Log\LoggerInterface;
-use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+use App\Workshop\WorkshopHelper;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
-use App\Workshop\Exception\WorkshopException;
+use Slim\Exception\HttpNotFoundException;
 
 class ModerateWorkshopUploadController {
 
@@ -60,6 +66,9 @@ class ModerateWorkshopUploadController {
         FlashMessage $flash,
         UploadSizeHelper $upload_size_helper,
         LoggerInterface $logger,
+        DiscordNotifier $discord_notifier,
+        NotificationCenter $nc,
+        WorkshopCache $workshop_cache,
     ){
 
 
@@ -376,6 +385,31 @@ class ModerateWorkshopUploadController {
 
         // Flush again so filenames are added to DB entity
         $em->flush();
+
+        // Clear it so the first image will be found
+        $em->clear();
+
+        // Create or update thumbnail
+        // TODO: improve this
+        $workshop_item = $em->getRepository(WorkshopItem::class)->find($workshop_item->getId());
+        WorkshopHelper::removeThumbnail($em, $workshop_item);
+        WorkshopHelper::generateThumbnail($em, $workshop_item);
+
+        // Send a notification on Discord
+        $discord_notifier->notifyNewWorkshopItem($workshop_item);
+
+        // Notify everybody who wants to receive this notification
+        $nc->sendNotificationToAllExceptSelf(
+            WorkshopItemNotification::class,
+            [
+                'item_id'    => $workshop_item->getId(),
+                'item_name'  => $workshop_item->getName(),
+                'username'   => $workshop_item->getSubmitter()->getUsername(),
+            ]
+        );
+
+        // Clear the workshop browse page cache so it reflects the new data
+        $workshop_cache->clearAllCachedBrowsePageData();
 
         // Show upload success message and redirect to workshop item page
         $flash->success('The workshop item has been uploaded!');
