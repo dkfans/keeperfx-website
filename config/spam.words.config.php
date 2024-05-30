@@ -26,4 +26,5 @@ return [
     '+27',
     '+25',
     'psychic healer',
+    'sangoma',
 ];
