@@ -75,6 +75,12 @@ class WorkshopKfxCfgDiffToolController {
         // Add 'Name' to updated sections
         foreach($diff as $section => $properties)
         {
+            // If name is already set in the right side, don't change it
+            if(isset($diff[$section]['Name'])){
+                continue;
+            }
+
+            // Move name from left side to right
             if(isset($left_data[$section]['Name']) && !empty($left_data[$section]['Name'])){
                 $diff[$section]['Name'] = $left_data[$section]['Name'];
             }
