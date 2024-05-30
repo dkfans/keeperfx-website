@@ -16,7 +16,8 @@ git checkout master
 git pull
 
 # Clear the cache
-php ./console cache:clear
+# The -i parameter makes it ignore user sessions
+php ./console cache:clear -i
 
 # Install new PHP libraries
 composer install --no-dev
