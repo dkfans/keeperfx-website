@@ -53,6 +53,9 @@ class User {
     #[ORM\OneToMany(targetEntity: UserCookieToken::class, mappedBy: 'user', cascade: ["remove"])]
     private Collection $cookie_tokens;
 
+    #[ORM\OneToMany(targetEntity: UserPasswordResetToken::class, mappedBy: 'user', cascade: ["remove"])]
+    private Collection $password_reset_tokens;
+
     #[ORM\OneToMany(targetEntity: UserNotification::class, mappedBy: 'user', cascade: ["remove"])]
     private Collection $notifications;
 
@@ -79,6 +82,7 @@ class User {
         $this->news_articles               = new ArrayCollection();
         $this->connection_tokens           = new ArrayCollection();
         $this->cookie_tokens               = new ArrayCollection();
+        $this->password_reset_tokens       = new ArrayCollection();
         $this->notifications               = new ArrayCollection();
         $this->notification_settings       = new ArrayCollection();
         $this->workshop_items              = new ArrayCollection();
@@ -362,5 +366,13 @@ class User {
         $this->bio = $bio;
 
         return $this;
+    }
+
+    /**
+     * Get the value of password_reset_tokens
+     */
+    public function getPasswordResetTokens(): Collection
+    {
+        return $this->password_reset_tokens;
     }
 }
