@@ -93,35 +93,6 @@
     </div>
 </div>
 
-{# About Me #}
-<div class="content-box bg-keeper bd-keeper">
-    <div class="content-header">
-        <h2>About Me</h2>
-    </div>
-    <div class="content-body">
-        <form action="/account/about-me" method="POST">
-
-            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
-            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
-
-            <div class="form-group">
-                <textarea class="form-control mb-1" name="about_me" rows="6">{% if user.bio is not null and user.bio.bio is not empty %}{{ user.bio.bio }}{% endif %}</textarea>
-                <span class="text-muted mx-2" style="font-size: 12px;">
-                    Markdown and spoilers supported.
-                    <a href="#" data-markdown-format-info-link="true">
-                        More info
-                    </a>
-                </span>
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-medieval">Update</button>
-            </div>
-
-        </form>
-    </div>
-</div>
-
 {# Change Email Address #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">
@@ -153,6 +124,35 @@
 
             <div class="form-group">
                 <button type="submit" class="btn btn-medieval">Update Email Address</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{# About Me #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>About Me</h2>
+    </div>
+    <div class="content-body">
+        <form action="/account/about-me" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            <div class="form-group">
+                <textarea class="form-control mb-1" name="about_me" rows="6">{% if user.bio is not null and user.bio.bio is not empty %}{{ user.bio.bio }}{% endif %}</textarea>
+                <span class="text-muted mx-2" style="font-size: 12px;">
+                    Markdown and spoilers supported.
+                    <a href="#" data-markdown-format-info-link="true">
+                        More info
+                    </a>
+                </span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-medieval">Update</button>
             </div>
 
         </form>
