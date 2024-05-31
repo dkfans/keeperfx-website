@@ -92,6 +92,7 @@ class NotificationController {
 
         foreach($notification_settings as $class_name => $settings)
         {
+            /** @var NotificationInterface $class */
             $class = new $class_name();
 
             if($class->getRequiredUserRole()->value > $account->getUser()->getRole()->value){
