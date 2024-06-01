@@ -67,6 +67,7 @@ class SendAllMailFromQueueCommand extends Command
             }
 
             // Instantly update status for mail
+            // TODO: change to "SENT" after
             $mail->setStatus(MailStatus::SENDING);
             $this->em->flush();
 

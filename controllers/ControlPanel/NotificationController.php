@@ -83,13 +83,13 @@ class NotificationController {
         Account $account,
         NotificationCenter $nc,
         NotificationSettings $ns,
+        FlashMessage $flash,
         TwigEnvironment $twig,
     )
     {
+        // Get user notification settings
         $user_settings = [];
-
         $notification_settings = $nc->getNotificationSettings();
-
         foreach($notification_settings as $class_name => $settings)
         {
             /** @var NotificationInterface $class */
@@ -108,6 +108,12 @@ class NotificationController {
             ];
         }
 
+        // Check if email is verified
+        if($account->getUser()->getEmail() !== null && $account->getUser()->isEmailVerified() === false){
+            $flash->info('You have not verified your email address yet. Please verify it to enable additional functionality. You can re-send the activation email on the <a href="/account">Account Settings page</a>.');
+        }
+
+        // Response
         $response->getBody()->write(
             $twig->render('cp/notification.settings.cp.html.twig', [
                 'settings' => $user_settings

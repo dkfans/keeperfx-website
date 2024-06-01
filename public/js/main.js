@@ -39,4 +39,14 @@ $(function(){
     $("form").on('submit', function(event){
         $(this).find('.btn[type=submit]').buttonLoader(true);
     });
+
+    // Send email verifications
+    if(app_store.send_email !== false){
+
+        $.ajax({
+            type: 'GET',
+            url: '/email/send/' + app_store.send_email,
+            dataType: 'json'
+        });
+    }
 });

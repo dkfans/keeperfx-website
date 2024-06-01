@@ -65,6 +65,12 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     // Public download route for admin uploads
     $group->get('/uploads/{filename:[\w\d\(\)\_\-\.]+}', [UploadController::class, 'outputFile']);
 
+    // Verify email address
+    $group->get('/verify-email/{user_id:\d+}/{token}', [EmailVerificationController::class, 'verify']);
+
+    // Send email Ajax endpoint
+    $group->get('/email/send/{id:\d+}', [EmailController::class, 'sendEmail']);
+
     // LOGGED IN USERS
     $group->group('', function (RouteCollectorProxy $group) use ($container) {
 
@@ -83,6 +89,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->post('/about-me', [ControlPanel\AccountController::class, 'updateAboutMe']);
             $group->get('/remove-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeEmail']);
             $group->get('/remove-avatar/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeAvatar']);
+            $group->get('/resend-verification-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'resendVerificationEmail']);
 
             // Account Connections
             $group->get('/connections', [ControlPanel\ConnectionController::class, 'index']);

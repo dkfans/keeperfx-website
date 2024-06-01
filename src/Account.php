@@ -3,9 +3,10 @@
 namespace App;
 
 use App\Entity\User;
-use App\Entity\UserCookieToken;
 use App\Entity\UserIpLog;
 use App\Entity\UserOAuthToken;
+use App\Entity\UserCookieToken;
+use App\Entity\UserEmailVerification;
 
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
@@ -23,6 +24,7 @@ class Account {
     public function __construct(
         private Session $session,
         private EntityManager $em,
+        private Mailer $mailer,
     ) {
         if(isset($session['uid']) && !is_null($session['uid'])){
             $user = $em->getRepository(User::class)->find($session['uid']);
@@ -74,6 +76,73 @@ class Account {
             ->withHttpOnly((bool)$_ENV['APP_COOKIE_HTTP_ONLY'])
             ->withSameSite(SameSite::fromString($_ENV['APP_COOKIE_SAMESITE'])
         );
+    }
+
+    /**
+     * Create an email verification.
+     *
+     * Returns false on failure and the email ID on success.
+     *
+     * @return integer|false Email ID on success or false on failure.
+     */
+    public function createEmailVerification(): int|false
+    {
+        // Make sure user is logged in
+        if(!$this->isLoggedIn()){
+            throw new \Exception("need to be logged in to check if we need email verification");
+        }
+
+        // Create the verification in the DB
+        $verification = new UserEmailVerification();
+        $verification->setUser($this->user);
+        $this->em->persist($verification);
+        $this->em->flush();
+
+        return $this->createEmailVerificationMail($verification);
+    }
+
+    public function createEmailVerificationMail(UserEmailVerification $verification): int|false
+    {
+        // Create a mail
+        // TODO: add template functionality
+        $email_body = "Please verify your email address for KeeperFX using the following link: " . PHP_EOL;
+        $email_body .= $_ENV['APP_ROOT_URL'] . '/verify-email/' . $this->user->getId() . '/' . $verification->getToken();
+
+        // Create the mail in the mail queue and return the mail ID or FALSE on failure
+        return $this->mailer->createMailForUser(
+            $this->user,
+            'Verify your email address',
+            $email_body,
+            null,
+            true,
+        );
+    }
+
+    public function hasPendingEmailVerification(): bool
+    {
+        if(!$this->isLoggedIn()){
+            throw new \Exception("need to be logged in to check if we need email verification");
+        }
+
+        $verification = $this->user->getEmailVerification();
+        return $verification !== null;
+    }
+
+    public function removeExistingEmailVerification(): void
+    {
+        // User needs to be logged in
+        if(!$this->isLoggedIn()){
+            throw new \Exception("need to be logged in to check if we need to remove email verification");
+        }
+
+        // Check if there is a verification pending
+        $verification = $this->user->getEmailVerification();
+        if(!$verification){
+            return;
+        }
+
+        $this->em->remove($verification);
+        $this->em->flush();
     }
 
     public function isLoggedIn(): bool

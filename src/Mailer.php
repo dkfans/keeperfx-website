@@ -48,17 +48,11 @@ class Mailer {
         return $flush_db ? $mail->getId() : -1;
     }
 
-    public function createMailForUser(User $user, bool $must_be_verified, string $subject, string $body, ?string $html_body = null, bool $flush_db = true): int|false
+    public function createMailForUser(User $user, string $subject, string $body, ?string $html_body = null, bool $flush_db = true): int|false
     {
         if($user->getEmail() === null){
             return false;
         }
-
-        // if($must_be_verified === true){
-        //     if($user->isEmailVerified() === false){
-        //         return false;
-        //     }
-        // }
 
         return $this->createMailInQueue($user->getEmail(), $subject, $body, $html_body, $flush_db);
     }

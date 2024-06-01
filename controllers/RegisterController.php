@@ -6,6 +6,7 @@ use App\Enum\BanType;
 use App\Enum\UserRole;
 
 use App\Entity\User;
+use App\Entity\UserEmailVerification;
 
 use App\Account;
 use App\BanChecker;
@@ -239,11 +240,23 @@ class RegisterController {
             $account->logIp($ip);
         }
 
+        // Send an email verification
+        if($email !== null){
+            $mail_id = $account->createEmailVerification();
+            if($mail_id){
+                $session['send_email'] = $mail_id;
+            } else {
+                $flash->warning('Something went wrong while sending the verification email. Try again later.');
+            }
+        }
+
         // Notify the admins
         $nc->sendNotificationToAllWithRole(UserRole::Admin, NewUserNotification::class, ['id' => $user->getId(), 'username' => $username]);
 
+        // Show notification that we are registered, yay!
+        $flash->success('Registration successful! You are now logged in.');
+
         // Navigate to account page
-        $flash->success('Successfully registered. You are now logged in.');
         $response = $response->withHeader('Location', '/account')->withStatus(302);
         return $response;
     }

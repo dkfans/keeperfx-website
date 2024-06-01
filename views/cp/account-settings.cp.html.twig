@@ -109,7 +109,16 @@
                 {% if user.email %}
                     Email address:
                     <strong style="margin-left: 20px;">{{ user.email }}</strong>
-                    <a style="margin-left: 15px;" href="/account/remove-email/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove</a>
+                    <span class="text-muted mx-2">&bullet;</span>
+                    {% if user.isEmailVerified %}
+                        <span class="text-success">Verified</span>
+                    {% else %}
+                        <span class="text-info">Not verified</span>
+                        <span class="text-muted mx-2">&bullet;</span>
+                        <a href="/account/resend-verification-email/{{ csrf.name }}/{{ csrf.value|url_encode }}">Resend verification mail</a>
+                    {% endif %}
+                    <span class="text-muted mx-2">&bullet;</span>
+                    <a href="/account/remove-email/{{ csrf.name }}/{{ csrf.value|url_encode }}">Remove</a>
                 {% else %}
                     There is no email address linked to this account.
                 {% endif %}

@@ -5,6 +5,7 @@ namespace App\Controller\ControlPanel;
 use App\Entity\User;
 use App\Entity\UserBio;
 use App\Entity\UserCookieToken;
+use App\Entity\UserEmailVerification;
 
 use App\Account;
 use App\FlashMessage;
@@ -18,14 +19,14 @@ use Slim\Csrf\Guard as CsrfGuard;
 use Compwright\PhpSession\Session;
 use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
-
+use Crunz\HttpClient\HttpClientException;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\SetCookie;
 
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
+use Psr\SimpleCache\CacheInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpForbiddenException;
 
@@ -36,12 +37,22 @@ class AccountController {
         Response $response,
         TwigEnvironment $twig,
         Account $account,
+        FlashMessage $flash,
         EntityManager $em
     ){
 
+        // Check if email is verified
+        $email_needs_verification = false;
+        if($account->getUser()->getEmail() !== null && $account->getUser()->isEmailVerified() === false){
+            $flash->info('You have not verified your email address yet. Please verify it to enable additional functionality. You can re-send the activation email below.');
+            $email_needs_verification = true;
+        }
+
+        // Response
         $response->getBody()->write(
             $twig->render('cp/account-settings.cp.html.twig', [
-                'user' => $account->getUser()
+                'user'                     => $account->getUser(),
+                'email_needs_verification' => $email_needs_verification,
             ])
         );
 
@@ -122,6 +133,7 @@ class AccountController {
         Response $response,
         Account $account,
         EntityManager $em,
+        Session $session,
         FlashMessage $flash
     ){
         // Get post vars
@@ -152,10 +164,90 @@ class AccountController {
 
         // Update to new email address
         $account->getUser()->setEmail($email);
+        $account->getUser()->setEmailVerified(false);
         $em->flush();
 
+        // Email verification
+        $account->removeExistingEmailVerification();
+        $email_id = $account->createEmailVerification();
+        // Add the mail ID to the session so it's instantly sent
+        if($email_id){
+            $session['send_email'] = $email_id;
+        }
+
+        // Show message to user
         $flash->success('Your email address has been updated!');
 
+        // Move back to user account page
+        $response = $response->withHeader('Location', '/account')->withStatus(302);
+        return $response;
+    }
+
+    public function resendVerificationEmail(
+        Request $request,
+        Response $response,
+        Account $account,
+        CsrfGuard $csrf_guard,
+        FlashMessage $flash,
+        Session $session,
+        CacheInterface $cache,
+        $token_name,
+        $token_value
+    ){
+        // Check for valid CSRF token
+        if(!$csrf_guard->validateToken($token_name, $token_value)){
+            throw new HttpForbiddenException($request);
+        }
+
+        // Make sure email address is not verified yet
+        if($account->getUser()->isEmailVerified()){
+            $flash->warning('Your email address has already been verified.');
+            $response = $response->withHeader('Location', '/account')->withStatus(302);
+            return $response;
+        }
+
+        // Get the verification
+        $verification = $account->getUser()->getEmailVerification();
+        if(!$verification){
+
+            // Create new verification
+            $email_id = $account->createEmailVerification(); // This also flushes any DB changes
+            if(!$email_id){
+                throw new \Exception('failed to create new verification');
+            }
+
+            // Make the email sent instantly when the user loads the next page
+            $session['send_email'] = $email_id;
+
+            // Show sent and return
+            $flash->success('Verification email sent!');
+            $response = $response->withHeader('Location', '/account')->withStatus(302);
+            return $response;
+        }
+
+        // Make sure user is not trying to send emails too fast
+        $cache_key = 'email_verification:' . $verification->getToken();
+        if($cache->has($cache_key)){
+            $flash->warning('Please wait a few minutes before resending the verification email.');
+            $response = $response->withHeader('Location', '/account')->withStatus(302);
+            return $response;
+        }
+
+        // Make a new email
+        $email_id = $account->createEmailVerificationMail($verification);
+        if(!$email_id){
+            $flash->warning('Something went wrong while sending the verification email. Try again later.');
+        } else {
+            $flash->success('Verification email sent!');
+
+            // Make the email sent instantly when the user loads the next page
+            $session['send_email'] = $email_id;
+
+            // Remember that this mail has been sent
+            $cache->set($cache_key, true, 180); // 3 minutes
+        }
+
+        // Return
         $response = $response->withHeader('Location', '/account')->withStatus(302);
         return $response;
     }
@@ -175,8 +267,15 @@ class AccountController {
             throw new HttpForbiddenException($request);
         }
 
+        // Check if this user needed to be verified
+        $verification = $account->getUser()->getEmailVerification();
+        if($verification){
+            $em->remove($verification);
+        }
+
         // Update to new email address
         $account->getUser()->setEmail(null);
+        $account->getUser()->setEmailVerified(false);
         $em->flush();
 
         $flash->success('Your email address has been removed!');

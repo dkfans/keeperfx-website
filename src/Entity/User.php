@@ -26,6 +26,9 @@ class User {
     #[ORM\Column(nullable: true)]
     private string|null $email = null;
 
+    #[ORM\Column]
+    private bool $email_verified = false;
+
     #[ORM\Column(nullable: true)]
     private string|null $avatar = null;
 
@@ -40,6 +43,9 @@ class User {
 
     #[ORM\OneToOne(targetEntity: UserBio::class, mappedBy: 'user', cascade: ["remove"])]
     private UserBio|null $bio = null;
+
+    #[ORM\OneToOne(targetEntity: UserEmailVerification::class, mappedBy: 'user', cascade: ["remove"])]
+    private UserEmailVerification|null $email_verification = null;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
@@ -170,6 +176,24 @@ class User {
         }
 
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of email_verified
+     */
+    public function isEmailVerified(): bool
+    {
+        return $this->email_verified;
+    }
+
+    /**
+     * Set the value of email_verified
+     */
+    public function setEmailVerified(bool $email_verified): self
+    {
+        $this->email_verified = $email_verified;
 
         return $this;
     }
@@ -374,5 +398,23 @@ class User {
     public function getPasswordResetTokens(): Collection
     {
         return $this->password_reset_tokens;
+    }
+
+    /**
+     * Get the value of email_verification
+     */
+    public function getEmailVerification(): ?UserEmailVerification
+    {
+        return $this->email_verification;
+    }
+
+    /**
+     * Set the value of email_verification
+     */
+    public function setEmailVerification(?UserEmailVerification $email_verification): self
+    {
+        $this->email_verification = $email_verification;
+
+        return $this;
     }
 }

@@ -65,7 +65,7 @@ class NotificationCenter {
             $notification_object = $this->createNotificationObject($notification);
 
             // Check if we need to send an email
-            if($setting['email']){
+            if($setting['email'] && $user->isEmailVerified()){
 
                 // Create and send mail
                 // TODO: add template functionality
@@ -73,7 +73,6 @@ class NotificationCenter {
                 $email_body .= $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
                 $this->mailer->createMailForUser(
                     $user,
-                    true,
                     $notification_object->getNotificationTitle(),
                     $email_body
                 );
@@ -84,7 +83,7 @@ class NotificationCenter {
 
         // Check if we did not create a website notification and just need to send an email.
         // This is important because the URL in the email will not point to a notification itself.
-        if($setting['website'] === false && $setting['email'] === true){
+        if($setting['website'] === false && $setting['email'] === true && $user->isEmailVerified()){
 
             if(!\class_exists($class)){
                 throw new NotificationClassNotFoundException("notification class '{$class}' not found");
@@ -102,7 +101,6 @@ class NotificationCenter {
             $email_body .= $_ENV['APP_ROOT_URL'] . $notification_object->getUri();
             $this->mailer->createMailForUser(
                 $user,
-                true,
                 $notification_object->getNotificationTitle(),
                 $email_body
             );
@@ -189,7 +187,7 @@ class NotificationCenter {
             }
 
             // Check if we need to send an email
-            if($setting['email'] === true){
+            if($setting['email'] === true && $user->isEmailVerified()){
                 $users_with_email_notifications[] = [
                     'user'         => $user,
                     'notification' => $notification,
@@ -229,7 +227,6 @@ class NotificationCenter {
                     $email_body .= $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
                     $this->mailer->createMailForUser(
                         $user,
-                        true,
                         $notification_definition->getNotificationTitle(),
                         $email_body,
                         null,
@@ -252,7 +249,6 @@ class NotificationCenter {
                     $email_body .= $_ENV['APP_ROOT_URL'] . $notification_object->getUri();
                     $this->mailer->createMailForUser(
                         $user,
-                        true,
                         $notification_object->getNotificationTitle(),
                         $email_body,
                         null,

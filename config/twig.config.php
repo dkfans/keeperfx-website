@@ -52,6 +52,7 @@ return [
         \App\Twig\Extension\StringUniqueColorTwigExtension::class,
         \App\Twig\Extension\NotificationTwigExtension::class,
         \App\Twig\Extension\CountryFlagExtension::class,
+        \App\Twig\Extension\EmailTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
     ],
