@@ -71,10 +71,8 @@ class EmailVerificationController {
             $flash->success('Your email address has been verified!');
         }
 
-        $response->getBody()->write(
-            $twig->render('email.verification.html.twig')
-        );
-
+        // Navigate user to the account page
+        $response = $response->withHeader('Location', '/account')->withStatus(302);
         return $response;
     }
 
