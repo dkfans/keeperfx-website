@@ -50,6 +50,7 @@ return [
     \App\Console\Command\Mail\SendMailCommand::class,
     // \App\Console\Command\Mail\SendMailFromQueueCommand::class,
     \App\Console\Command\Mail\SendAllMailFromQueueCommand::class,
+    \App\Console\Command\Mail\MassVerifyEmailCommand::class,
 
     // Lubiki
     \App\Console\Command\Lubiki\LubikiAddFileDumpToWorkshopCommand::class,
