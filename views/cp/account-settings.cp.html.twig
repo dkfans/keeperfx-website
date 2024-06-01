@@ -109,11 +109,10 @@
                 {% if user.email %}
                     Email address:
                     <strong style="margin-left: 20px;">{{ user.email }}</strong>
-                    <span class="text-muted mx-2">&bullet;</span>
                     {% if user.isEmailVerified %}
-                        <span class="text-success">Verified</span>
+                        <span class="badge bg-success">Verified</span>
                     {% else %}
-                        <span class="text-info">Not verified</span>
+                        <span class="badge bg-danger">Not verified</span>
                         <span class="text-muted mx-2">&bullet;</span>
                         <a href="/account/resend-verification-email/{{ csrf.name }}/{{ csrf.value|url_encode }}">Resend verification mail</a>
                     {% endif %}
