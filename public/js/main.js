@@ -41,7 +41,7 @@ $(function(){
     });
 
     // Send email verifications
-    if(app_store.send_email !== -1){
+    if(app_store.send_email != -1){
 
         $.ajax({
             type: 'GET',

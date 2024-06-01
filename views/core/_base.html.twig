@@ -64,8 +64,7 @@
                     categories_without_difficulty: {{ workshop_globals.categories_without_difficulty|json_encode()|raw }}
                 },
                 polling: {% if get_env('APP_POLLING_NOTIFICATIONS') == '1' %}true{% else %}false{% endif %},
-                {% set send_email_id = get_email_id_to_send() %}
-                send_email: {% if send_email_id == -1 %}false{% else %}{{ send_email_id }}{% endif %}
+                send_email: {{ get_email_id_to_send() }}
             };
         </script>
 
