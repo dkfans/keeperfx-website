@@ -379,10 +379,55 @@ class WorkshopRatingController {
         EntityManager $em,
         Account $account,
     ){
-        $ratings = $em->getRepository(WorkshopRating::class)->findBy(['user' => $account->getUser()], ['updated_timestamp' => 'DESC']);
 
+        $ratings = [];
+
+        // Add quality ratings to output array
+        $quality_ratings    = $em->getRepository(WorkshopRating::class)->findBy(['user' => $account->getUser()], ['updated_timestamp' => 'DESC']);
+        foreach($quality_ratings as $q_rating)
+        {
+            $ratings[$q_rating->getItem()->getId()] = [
+                'item'             => $q_rating->getItem(),
+                'quality_score'    => $q_rating->getScore(),
+                'difficulty_score' => null,
+                'date'             => $q_rating->getUpdatedTimestamp(),
+            ];
+        }
+
+        // Add difficulty ratings to output array
+        $difficulty_ratings = $em->getRepository(WorkshopDifficultyRating::class)->findBy(['user' => $account->getUser()], ['updated_timestamp' => 'DESC']);
+        foreach($difficulty_ratings as $d_rating)
+        {
+            $id = $d_rating->getItem()->getId();
+            if(isset($ratings[$id])){
+
+                $ratings[$id]['difficulty_score'] = $d_rating->getScore();
+
+                if($d_rating->getUpdatedTimestamp() > $ratings[$id]['date']){
+                    $ratings[$id]['date'] = $d_rating->getUpdatedTimestamp();
+                }
+
+            } else {
+                $ratings[$d_rating->getItem()->getId()] = [
+                    'item'             => $d_rating->getItem(),
+                    'quality_score'    => null,
+                    'difficulty_score' => $d_rating->getScore(),
+                    'date'             => $d_rating->getUpdatedTimestamp(),
+                ];
+            }
+        }
+
+        // Sort by date (descending)
+        // It can be changed to ascending by changing switching the variables around the spaceship operator.
+        \uasort($ratings, function($a, $b){
+            return $b['date'] <=> $a['date'];
+        });
+
+        // Return
         $response->getBody()->write(
-            $twig->render('workshop/my-ratings.html.twig', ['ratings' => $ratings])
+            $twig->render('workshop/my-ratings.html.twig', [
+                'ratings' => $ratings,
+            ])
         );
 
         return $response;

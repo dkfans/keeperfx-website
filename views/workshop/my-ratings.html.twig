@@ -24,7 +24,8 @@
                     <thead>
                         <tr>
                             <th>Workshop Item</th>
-                            <th>My Rating</th>
+                            <th>Rating</th>
+                            <th>Difficulty Rating</th>
                             <th>Date</th>
                         </tr>
                     </thead>
@@ -34,13 +35,23 @@
                                 <td>
                                     {% if rating.item %}
                                         <a href="/workshop/item/{{ rating.item.id }}/{{ rating.item.name|slugify }}">{{ rating.item.name }}</a>
+                                        {% if rating.item.submitter is not null and rating.item.submitter.id == account.id %}
+                                            <span class="text-muted">(self)</span>
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {{ render_workshop_quality_rating(rating.item.id, rating.score) }}
+                                    {% if rating.quality_score %}
+                                        {{ render_workshop_quality_rating(rating.item.id, rating.quality_score) }}
+                                    {% endif %}
                                 </td>
                                 <td>
-                                    {{ rating.updatedTimestamp|date('Y-m-d') }}
+                                    {% if rating.difficulty_score %}
+                                        {{ render_workshop_difficulty_rating(rating.item.id, rating.difficulty_score) }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ rating.date|date('Y-m-d') }}
                                 </td>
                             </tr>
                         {% endfor %}
