@@ -27,6 +27,7 @@ class EmailVerificationController {
         string $token,
     ){
         // Get user
+        /** @var User $user */
         $user = $em->getRepository(User::class)->find($user_id);
         if(!$user){
             $flash->warning('Invalid email verification token.');
@@ -39,6 +40,15 @@ class EmailVerificationController {
         // Make sure that this token does not belong to another user
         if($account->isLoggedIn() && $account->getUser() !== $user){
             $flash->warning('Invalid email verification token.');
+            $response->getBody()->write(
+                $twig->render('email.verification.html.twig')
+            );
+            return $response;
+        }
+
+        // Check if user already has a verified email address
+        if($user->isEmailVerified()){
+            $flash->info('Already verified.');
             $response->getBody()->write(
                 $twig->render('email.verification.html.twig')
             );
