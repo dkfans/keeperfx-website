@@ -99,7 +99,7 @@ class Mailer {
             $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         }
 
-        if((bool)$_ENV['APP_SMTP_VERIFY_CERT'] === true)
+        if((bool)$_ENV['APP_SMTP_VERIFY_CERT'] === false)
         {
             $php_mailer->SMTPOptions = [
                 'ssl' => [
