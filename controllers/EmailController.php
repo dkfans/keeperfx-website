@@ -53,6 +53,9 @@ class EmailController {
             $php_mailer = $mailer->createPhpMailerInstanceFromEntity($mail);
             $php_mailer->send();
 
+            $mail->setStatus(MailStatus::SENT);
+            $em->flush();
+
         } catch (\Exception $ex) {
 
             // Try sending again later

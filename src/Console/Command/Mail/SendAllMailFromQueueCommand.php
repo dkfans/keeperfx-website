@@ -79,6 +79,9 @@ class SendAllMailFromQueueCommand extends Command
 
                 $output->writeln("[+] #{$mail->getId()} -> SENT! <info>{$mail->getSubject()}</info>");
 
+                $mail->setStatus(MailStatus::SENT);
+                $this->em->flush();
+
             } catch (\Exception $ex) {
 
                 $output->writeln("[-] Failed to send mail #{$mail->getId()} -> {$ex->getMessage()}");
