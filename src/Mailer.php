@@ -99,6 +99,26 @@ class Mailer {
             $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         }
 
+        if((bool)$_ENV['APP_SMTP_VERIFY_CERT'] === true)
+        {
+            $php_mailer->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ]
+            ];
+        }
+        else {
+            $php_mailer->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer' => true,
+                    'verify_peer_name' => true,
+                    'allow_self_signed' => false,
+                ]
+            ];
+        }
+
         $php_mailer->setFrom($_ENV['APP_SMTP_FROM_ADDRESS'], $_ENV['APP_SMTP_FROM_NAME']);
 
         return $php_mailer;
