@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Enum\MailStatus;
 
 use App\Entity\Mail;
+
 use App\Mailer;
 use Doctrine\ORM\EntityManager;
+use Compwright\PhpSession\Session;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -24,6 +26,7 @@ class EmailController {
         Response $response,
         EntityManager $em,
         Mailer $mailer,
+        Session $session,
         int $id,
     ){
 
@@ -43,7 +46,6 @@ class EmailController {
         }
 
         // Instantly update status for mail
-        // TODO: change to "SENT" after
         $mail->setStatus(MailStatus::SENDING);
         $em->flush();
 
@@ -53,8 +55,16 @@ class EmailController {
             $php_mailer = $mailer->createPhpMailerInstanceFromEntity($mail);
             $php_mailer->send();
 
+            // Update status of email
             $mail->setStatus(MailStatus::SENT);
             $em->flush();
+
+            // Remove send mail action from session
+            if(!empty($session['send_mail']))
+            {
+                $session['send_mail'] = -1;
+                unset($session['send_mail']);
+            }
 
         } catch (\Exception $ex) {
 
