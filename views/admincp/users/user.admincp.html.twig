@@ -43,24 +43,24 @@
                         <input type="email" class="form-control" id="email" name="email" value="{{ user.email ?? '' }}" >
                     </div>
 
-                    <p class="m-4 px-2 mx-0 mt-3 d-flex justify-content-between">
-                        <span>
-                            Status:
-                            {% if user.isEmailVerified %}
-                                <span class="badge bg-success">
-                                    Verified
-                                </span>
-                            {% else %}
-                                <span class="badge bg-danger">
-                                    Not verified
-                                </span>
-                            {% endif %}
-                        </span>
+                    {% if user.email is not empty %}
+                        <p class="m-4 px-2 mx-0 mt-3 d-flex justify-content-between">
+                            <span>
+                                Status:
+                                {% if user.isEmailVerified %}
+                                    <span class="badge bg-success">
+                                        Verified
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger">
+                                        Not verified
+                                    </span>
+                                {% endif %}
+                            </span>
 
-                        {% if user.email is not empty %}
                             <a href="/admin/user/{{ user.id }}/mail">Send Mail</a>
-                        {% endif %}
-                    </p>
+                        </p>
+                    {% endif %}
 
                     <div class="form-group">
                         <label for="exampleFormControlSelect1">Role</label>
