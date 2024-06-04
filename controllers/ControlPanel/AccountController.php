@@ -40,19 +40,10 @@ class AccountController {
         FlashMessage $flash,
         EntityManager $em
     ){
-
-        // Check if email is verified
-        $email_needs_verification = false;
-        if($account->getUser()->getEmail() !== null && $account->getUser()->isEmailVerified() === false){
-            $flash->info('You have not verified your email address yet. Please verify it to enable additional functionality. You can re-send the activation email below.');
-            $email_needs_verification = true;
-        }
-
         // Response
         $response->getBody()->write(
             $twig->render('cp/account-settings.cp.html.twig', [
-                'user'                     => $account->getUser(),
-                'email_needs_verification' => $email_needs_verification,
+                'user' => $account->getUser(),
             ])
         );
 

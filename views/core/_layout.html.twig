@@ -200,8 +200,17 @@
         </nav>
 
         {% if get_env('APP_HEADER_ALERT_TEXT') is not empty %}
-            <div class="alert bg-{% if get_env('APP_HEADER_ALERT_TYPE') is not empty %}{{ get_env('APP_HEADER_ALERT_TYPE') }}{% else %}info{% endif %}">
+            <div class="alert alert-{% if get_env('APP_HEADER_ALERT_TYPE') is not empty %}{{ get_env('APP_HEADER_ALERT_TYPE') }}{% else %}info{% endif %}">
                 {{ get_env('APP_HEADER_ALERT_TEXT')|nl2br }}
+            </div>
+        {% endif %}
+
+        {% if account is not null and account.email is not null and account.is_email_verified == false %}
+            <div class="alert alert-info">
+                Your email address has not been verified yet.
+                Please verify it to enable additional functionality.
+                <br />
+                If you have not received the verification email, you can resend it from the <a href="/account">Account Settings</a> page.
             </div>
         {% endif %}
 
