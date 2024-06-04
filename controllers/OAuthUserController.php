@@ -49,6 +49,9 @@ class OAuthUserController {
         $token_name = null,
         $token_value = null,
     ){
+        // Get IP address and host name
+        $ip = $request->getAttribute('ip_address');
+        $hostname = \gethostbyaddr($ip);
 
         // Make sure provider is valid
         $provider_type = OAuthProviderType::tryFrom($provider_name);
@@ -181,6 +184,11 @@ class OAuthUserController {
 
             // Login the user
             $account->setCurrentLoggedInUser($user_oauth_token->getUser());
+
+            // Log IP
+            if($ip){
+                $account->logIp($ip);
+            }
 
             // Add a 'remember me' cookie for OAuth login
             $response = FigResponseCookies::set($response, $account->createRememberMeSetCookie($user_oauth_token));
