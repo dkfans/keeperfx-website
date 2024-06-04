@@ -1,0 +1,59 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'IP Log Associations - AdminCP' %}
+
+{% block page %}
+
+{# Stats #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header d-flex justify-content-between">
+        <h2>IP Log Associations</h2>
+        <a href="/admin/ip-lookup/logs">Back to IP logs</a>
+    </div>
+    <div class="content-body">
+
+        <table class="table">
+
+            {% for ip, users in ip_assoc %}
+                <tr>
+                    <td>
+                        <a href="/admin/ip-lookup/ip/{{ ip|url_encode }}">
+                            {{ ip }}
+                        </a>
+                    </td>
+                    <td>
+                        {% for user in users %}
+                            <a href="/admin/user/{{ user.id }}">
+                                {{ user.username }}
+                            </a>
+                            <br />
+                        {% endfor %}
+                    <td>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            {% for host, users in host_assoc %}
+                <tr>
+                    <td>
+                        <a href="/admin/ip-lookup/host_name/{{ host|url_encode }}">
+                            {{ host }}
+                        </a>
+                    </td>
+                    <td>
+                        {% for user in users %}
+                            <a href="/admin/user/{{ user.id }}">
+                                {{ user.username }}
+                            </a>
+                            <br />
+                        {% endfor %}
+                    <td>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+</div>
+
+{% endblock %}

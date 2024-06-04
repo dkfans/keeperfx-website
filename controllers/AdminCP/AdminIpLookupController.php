@@ -32,7 +32,6 @@ class AdminIpLookupController {
         );
 
         return $response;
-
     }
 
     public function lookup(
@@ -148,6 +147,105 @@ class AdminIpLookupController {
                 'string' => $string,
                 'info'   => $info,
                 'users'  => $users,
+            ])
+        );
+
+        return $response;
+    }
+
+    public function associationsIndex(
+        Request $request,
+        Response $response,
+        TwigEnvironment $twig,
+        FlashMessage $flash,
+        EntityManager $em,
+    ){
+        $associations = [
+            'ip'   => [],
+            'host' => [],
+        ];
+
+        $check_array = [
+            'ip'   => [],
+            'host' => [],
+        ];
+
+        /** @var UserIpLog[] $logs */
+        $logs = $em->getRepository(UserIpLog::class)->findAll();
+
+        foreach($logs as $log)
+        {
+            $ip   = $log->getIp();
+            $host = $log->getHostName();
+            $user = $log->getUser();
+
+            if(!isset($check_array['ip'][$ip])){
+                $check_array['ip'][$ip][] = $user;
+            } else {
+
+                foreach($check_array['ip'][$ip] as $check_user){
+
+                    if($check_user != $user){
+
+                        if(!isset($associations['ip'][$ip])){
+                            $associations['ip'][$ip][] = $user;
+                            $associations['ip'][$ip][] = $check_user;
+                        } else {
+                            if(!\array_search($user, $associations['ip'][$ip])){
+                                $associations['ip'][$ip][] = $user;
+                            }
+
+                            if(!\array_search($check_user, $associations['ip'][$ip])){
+                                $associations['ip'][$ip][] = $check_user;
+                            }
+
+                            if(!\array_search($user, $check_array['ip'][$ip])){
+                                $check_array['ip'][$ip][] = $user;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if($host !== null)
+            {
+
+                if(!isset($check_array['host'][$host])){
+                    $check_array['host'][$host][] = $user;
+                } else {
+
+                    foreach($check_array['host'][$host] as $check_user){
+
+                        if($check_user != $user){
+
+                            if(!isset($associations['host'][$host])){
+                                $associations['host'][$host][] = $user;
+                                $associations['host'][$host][] = $check_user;
+                            } else {
+
+                                if(!\array_search($user, $associations['host'][$host])){
+                                    $associations['host'][$host][] = $user;
+                                }
+
+                                if(!\array_search($check_user, $associations['host'][$host])){
+                                    $associations['host'][$host][] = $check_user;
+                                }
+
+                                if(!\array_search($user, $check_array['host'][$host])){
+                                    $check_array['host'][$host][] = $user;
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $response->getBody()->write(
+            $twig->render('admincp/ip-associations.admincp.html.twig', [
+                'ip_assoc'   => $associations['ip'],
+                'host_assoc' => $associations['host'],
             ])
         );
 

@@ -150,6 +150,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             // Admin: IP LOOKUP
             $group->group('/ip-lookup', function (RouteCollectorProxy $group) use ($container) {
                 $group->get('/logs', [AdminCP\AdminIpLookupController::class, 'logsIndex']);
+                $group->get('/associations', [AdminCP\AdminIpLookupController::class, 'associationsIndex']);
                 $group->get('/{type}/{string:.+}', [AdminCP\AdminIpLookupController::class, 'lookup']);
             });
 
