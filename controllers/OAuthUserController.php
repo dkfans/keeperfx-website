@@ -528,6 +528,21 @@ class OAuthUserController {
         // Immediately log in the user
         $account->setCurrentLoggedInUser($user);
 
+        // Log IP
+        if($ip){
+            $account->logIp($ip);
+        }
+
+        // Send an email verification
+        if($email !== null){
+            $mail_id = $account->createEmailVerification();
+            if($mail_id){
+                $session['send_email'] = $mail_id;
+            } else {
+                $flash->warning('Something went wrong while sending the verification email. Try again later.');
+            }
+        }
+
         // Add a 'remember me' cookie for OAuth login
         $response = FigResponseCookies::set($response, $account->createRememberMeSetCookie($user_oauth_token));
 
