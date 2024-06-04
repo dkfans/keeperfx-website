@@ -63,7 +63,7 @@ class EmailController {
             $response->getBody()->write(
                 \json_encode([
                     'success'=> false,
-                    'error' => 'MAIL_NOT_FOUND'
+                    'error' => 'FAILED_TO_SEND_MAIL'
                 ])
             );
             return $response;
