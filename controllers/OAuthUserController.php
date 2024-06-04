@@ -10,6 +10,7 @@ use App\Entity\UserOAuthToken;
 use App\Entity\UserCookieToken;
 
 use App\Account;
+use App\BanChecker;
 use App\FlashMessage;
 use App\Config\Config;
 use App\Notifications\NotificationCenter;
@@ -355,8 +356,13 @@ class OAuthUserController {
         EntityManager $em,
         Session $session,
         NotificationCenter $nc,
+        BanChecker $ban_checker,
         $provider_name
     ){
+        // Get IP address and host name
+        $ip = $request->getAttribute('ip_address');
+        $hostname = \gethostbyaddr($ip);
+
         // Check if flow is valid. User should have this populated
         if(empty($session['oauth_register'])){
             return $response;
@@ -366,6 +372,39 @@ class OAuthUserController {
         if($account->isLoggedIn()){
             $response = $response->withHeader('Location', '/')->withStatus(302);
             // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
+            return $response;
+        }
+
+        // Check if IP or hostname is banned
+        if($ban_checker->checkAll($ip, $hostname)){
+
+            // Make them wait :)
+            \sleep(1 + \random_int(0, 3));
+
+            // Show a random message
+            switch(\random_int(1, 5)){
+                case 1:
+                    $flash->error("Something went wrong. Please try again.");
+                    break;
+                case 2:
+                    $flash->warning('Username already in use.');
+                    break;
+                case 3:
+                    $flash->warning('Invalid email address.');
+                    break;
+                case 4:
+                    $flash->warning('The given passwords did not match.');
+                    break;
+                case 5:
+                    $flash->warning('You did not accept the Terms of Service and Privacy Policy.');
+                    break;
+            }
+
+            // Render register page again
+            $response->getBody()->write(
+                $twig->render('register.oauth.html.twig')
+            );
+
             return $response;
         }
 
