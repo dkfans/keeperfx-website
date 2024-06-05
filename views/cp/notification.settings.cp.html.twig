@@ -50,7 +50,7 @@
                             <td>
                                 <input
                                     type="checkbox"
-                                    {% if account.email is not null and account.email_verified %}
+                                    {% if account.email is not null and account.is_email_verified %}
                                         name="settings[{{ setting.class_name }}][email]"
                                         {% if setting.email %}checked=checked{% endif %}
                                     {% else %}
