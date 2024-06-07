@@ -99,7 +99,7 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
             'style="' . self::SPAN_STYLE . '" ' .
             'data-workshop-item-id="' . $item_id . '" ' .
             'data-workshop-rating-type="' . $type . '" ' .
-            'data-workshop-rating-score="' . \round($rating, 2) . '" ' .
+            'data-workshop-rating-score="' . \round($rating ?? 0, 2) . '" ' .
             '>%s</span>';
 
         if($rating === null){
