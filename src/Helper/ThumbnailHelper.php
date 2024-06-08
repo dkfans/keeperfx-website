@@ -28,14 +28,15 @@ class ThumbnailHelper {
             @\unlink($thumbnail_filepath);
         }
 
-        // Generate thumbnail
+        // Fix a possible libpng error that might arise
         try {
-
-            // Fix a possible libpng error that might arise
             if(\is_callable('shell_exec') && SystemHelper::verifyShellCommand('mogrify')){
                 @\shell_exec("mogrify -interlace none {$image_filepath}");
             }
+        } catch (\Exception $ex) {}
 
+        // Generate thumbnail
+        try {
             $thumbnail = new ImageResize($image_filepath);
             $thumbnail->interlace = 0;
             $thumbnail->crop($height, $width, false, $position);
