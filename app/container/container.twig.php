@@ -1,8 +1,12 @@
 <?php
 
 use App\Config\Config;
+
 use App\Twig\TwigGlobalProvider;
 use App\Twig\TwigExtensionLoader;
+
+use DebugBar\StandardDebugBar;
+use DebugBar\Bridge\NamespacedTwigProfileCollector;
 
 use Twig\RuntimeLoader\RuntimeLoaderInterface;
 
@@ -82,6 +86,13 @@ return [
                 }
             }
         });
+
+        // Add profiler to debugbar
+        if($_ENV['APP_ENV'] == 'dev'){
+            $profile = new \Twig\Profiler\Profile();
+            $twig->addExtension(new \Twig\Extension\ProfilerExtension($profile));
+            $container->get(StandardDebugBar::class)->addCollector(new NamespacedTwigProfileCollector($profile, $twig));
+        }
 
         return $twig;
     },

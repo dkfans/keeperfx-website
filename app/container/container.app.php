@@ -1,13 +1,22 @@
 <?php
 
-use Slim\Csrf\Guard;
-use Compwright\PhpSession\Session;
 
-use Slim\Psr7\Factory\ResponseFactory;
+use Compwright\PhpSession\Session;
+use DebugBar\Bridge\NamespacedTwigProfileCollector;
+use Psr\Container\ContainerInterface;
 
 use Psr\Log\LoggerInterface;
-use Psr\Container\ContainerInterface;
+use Slim\Psr7\Factory\ResponseFactory;
+
+use Twig\Environment as TwigEnvironment;
 
 return [
 
+    // Debug bar
+    \DebugBar\StandardDebugBar::class => function(LoggerInterface $logger){
+
+        $debugbar = new \DebugBar\StandardDebugBar();
+        $debugbar->addCollector(new DebugBar\Bridge\MonologCollector($logger));
+        return $debugbar;
+    },
 ];

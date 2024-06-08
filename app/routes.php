@@ -71,6 +71,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     // Send email Ajax endpoint
     $group->get('/email/send/{id:\d+}', [EmailController::class, 'sendEmail']);
 
+    // Debug Bar assets
+    $group->get('/assets/debugbar/{path:.+}', [DebugBarAssetController::class, 'outputAsset']);
+
     // LOGGED IN USERS
     $group->group('', function (RouteCollectorProxy $group) use ($container) {
 

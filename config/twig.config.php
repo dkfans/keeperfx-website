@@ -53,6 +53,7 @@ return [
         \App\Twig\Extension\NotificationTwigExtension::class,
         \App\Twig\Extension\CountryFlagExtension::class,
         \App\Twig\Extension\EmailTwigExtension::class,
+        \App\Twig\Extension\DebugBarTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
     ],

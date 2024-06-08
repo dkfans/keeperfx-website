@@ -1,0 +1,223 @@
+.phpdebugbar {
+    background: 0;
+    background-color: #111;
+    color: #eee;
+}
+
+.phpdebugbar .phpdebugbar-header {
+    background-color: #0B0B0B;
+    border-bottom: 0;
+    border: 0;
+}
+
+.phpdebugbar .phpdebugbar-panel {
+    background-color: #111;
+    color: #eee;
+}
+
+
+div.phpdebugbar-closed,
+div.phpdebugbar-minimized {
+    border-top-color: #262626 !important;
+}
+
+div.phpdebugbar-resize-handle {
+    border-bottom-color: #262626 !important;
+}
+
+a.phpdebugbar-restore-btn {
+    border-right-color: #262626 !important;
+}
+
+
+a.phpdebugbar-close-btn {
+    border: 0;
+}
+
+div.phpdebugbar .phpdebugbar-header select {
+    background: #263238;
+}
+
+.phpdebugbar .phpdebugbar-tab {
+    background-color: #0B0B0B;
+    color: #eee;
+}
+
+.phpdebugbar-header a.phpdebugbar-active {
+    box-sizing: border-box !important;
+    background: 0;
+    background-color: #151515 !important;
+    box-shadow: inset 0px -2px 0px 0px #ff4217;
+}
+
+.phpdebugbar-header a:hover {
+    text-decoration: none;
+    filter: brightness(1.3);
+}
+
+a.phpdebugbar-active .phpdebugbar-text {
+    color: #fff;
+}
+
+a.phpdebugbar-tab span.phpdebugbar-badge {
+    background: 0;
+    background-color: #333;
+    color: white;
+}
+
+.phpdebugbar .phpdebugbar-header .phpdebugbar-indicator {
+    border: 0;
+    margin: 0 3px;
+}
+
+.phpdebugbar .phpdebugbar-body {
+    border-top: 1px solid #262626;
+}
+
+.phpdebugbar .phpdebugbar-panel {
+    padding: 2px;
+}
+
+.phpdebugbar-active {
+    border: 0 !important;
+}
+
+a.phpdebugbar-restore-btn {
+    background-color: #151515;
+    background-size: 18px 18px;
+    background-position: 7px 3px;
+    background-repeat: no-repeat;
+    background-image: url("data:image/webp;base64,UklGRr4AAABXRUJQVlA4TLIAAAAvC8ACEK/AJgCANLi7v3SmJjdMgiiJJMlZfDl4OHpiX+B7ePpEUSNJyiwd88k4sSd4P/MfADAXvwZPhhgcOGlG/Yw884+TZlxnyoyzQkJ5M92HYUO3Idu177POB4cB2KaNFFZgSgr/H9sdEdH/BOC9vSY+X/fZaw0A9n2f7TUE2+dse/UUxFKWPUohyeflHHwaKb6kxJcMUiaLSMYAaczfiDVFAOpjzpQTPmUyJPxLKgAA");
+    filter: contrast(1.1) saturate(1.1);
+}
+
+dl.phpdebugbar-widgets-kvlist dt,
+dl.phpdebugbar-widgets-kvlist dd {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+}
+
+dl.phpdebugbar-widgets-kvlist dt:nth-of-type(odd),
+dl.phpdebugbar-widgets-kvlist dd:nth-of-type(odd) {
+    background-color: #222;
+}
+
+.phpdebugbar-widgets-varlist {
+    display: grid;
+    grid-template-columns: 250px 100%;
+}
+
+.phpdebugbar-widgets-varlist dt {
+    font-weight: bold;
+    grid-column: 1;
+    width: 250px !important;
+    /* Place dt elements in the first column */
+}
+
+.phpdebugbar-widgets-varlist dd {
+    grid-column: 2;
+    margin-left: 0px !important;
+}
+
+.phpdebugbar-widgets-list-item {
+    border-bottom: 0 !important;
+}
+
+.phpdebugbar-widgets-list-item:nth-of-type(odd) {
+    background-color: #222 !important;
+}
+
+.phpdebugbar-widgets-list-item {
+    background-color: #111 !important;
+}
+
+.phpdebugbar-widgets-list-item:nth-of-type(odd):hover {
+    filter: brightness(1.2);
+}
+
+.phpdebugbar-widgets-list-item:hover {
+    filter: brightness(1.2);
+}
+
+div.phpdebugbar-widgets-templates div.phpdebugbar-widgets-status {
+    background: unset;
+    border-bottom: none;
+}
+
+/***************************************************************************************************************************/
+/***************************************************************************************************************************/
+/***************************************************************************************************************************/
+
+.phpdebugbar-widgets-code-block .language-php {
+    color: #eee;
+}
+
+div.phpdebugbar .hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 0.5em;
+    background: #282a36;
+}
+
+div.phpdebugbar .hljs-built_in,
+div.phpdebugbar .hljs-selector-tag,
+div.phpdebugbar .hljs-section,
+div.phpdebugbar .hljs-link {
+    color: #8be9fd;
+}
+
+div.phpdebugbar .hljs-keyword {
+    color: #ff79c6;
+}
+
+div.phpdebugbar .hljs,
+div.phpdebugbar .hljs-subst {
+    color: #f8f8f2;
+}
+
+div.phpdebugbar .hljs-title,
+div.phpdebugbar .hljs-attr,
+div.phpdebugbar .hljs-meta-keyword {
+    font-style: italic;
+    color: #50fa7b;
+}
+
+div.phpdebugbar .hljs-string,
+div.phpdebugbar .hljs-meta,
+div.phpdebugbar .hljs-name,
+div.phpdebugbar .hljs-type,
+div.phpdebugbar .hljs-symbol,
+div.phpdebugbar .hljs-bullet,
+div.phpdebugbar .hljs-addition,
+div.phpdebugbar .hljs-variable,
+div.phpdebugbar .hljs-template-tag,
+div.phpdebugbar .hljs-template-variable {
+    color: #72d78d;
+}
+
+div.phpdebugbar .hljs-comment,
+div.phpdebugbar .hljs-quote,
+div.phpdebugbar .hljs-deletion {
+    color: #6272a4;
+}
+
+div.phpdebugbar .hljs-keyword,
+div.phpdebugbar .hljs-selector-tag,
+div.phpdebugbar .hljs-literal,
+div.phpdebugbar .hljs-title,
+div.phpdebugbar .hljs-section,
+div.phpdebugbar .hljs-doctag,
+div.phpdebugbar .hljs-type,
+div.phpdebugbar .hljs-name,
+div.phpdebugbar .hljs-strong {
+    font-weight: bold;
+}
+
+div.phpdebugbar .hljs-literal,
+div.phpdebugbar .hljs-number {
+    color: #ec7b65;
+}
+
+div.phpdebugbar .hljs-emphasis {
+    font-style: italic;
+}

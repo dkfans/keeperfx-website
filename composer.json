@@ -63,7 +63,8 @@
         "lasserafn/php-initial-avatar-generator": "^4.3",
         "wyrihaximus/html-compress": "^4.2",
         "fgribreau/mailchecker": "^6.0",
-        "predis/predis": "^2.2"
+        "predis/predis": "^2.2",
+        "maximebf/debugbar": "^1.22"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",

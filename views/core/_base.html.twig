@@ -101,6 +101,12 @@
             </style>
         {% endif %}
 
+        {# Debug Bar #}
+        {% if get_env('APP_ENV') == 'dev' %}
+            {{ debug_bar_render_head() }}
+            <link rel="stylesheet" href="{{ asset('/css/debugbar.css') }}" />
+        {% endif %}
+
     </head>
 
     <body style="background-color: #222;" data-no-instant>
@@ -134,6 +140,11 @@
         {# Photoswipe JS #}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/umd/photoswipe.umd.min.js" integrity="sha512-xH3c1Jh7FbAehFlrbmiFLL7fm2YxZRXtRJ0O9Kc+RkCW5VLkLeARPe8RwgCfzYt4N1JRqzxZtBMgsJzLehA4Tw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.2/umd/photoswipe-lightbox.umd.min.js" integrity="sha512-OB04yghyy2BT/S1t5HihjY4Jw9Us/5Fw1p5Jw41DIx71Kx+G4SjiPpd3n2ecsYAp7gJL0saH0J6k5elzVHp2+Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        {# Debug Bar #}
+        {% if get_env('APP_ENV') == 'dev' %}
+            {{ debug_bar_render_body() }}
+        {% endif %}
 
     </body>
 
