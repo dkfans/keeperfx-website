@@ -87,6 +87,15 @@ return [
             }
         });
 
+        // Add debug bar collector
+        // We do this here so the Twig session extension does not load the session before the request middleware loads it
+        if($_ENV['APP_ENV'] === 'dev'){
+            $debugbar = $container->get(\DebugBar\StandardDebugBar::class);
+            $profile = new \Twig\Profiler\Profile();
+            $twig->addExtension(new \Twig\Extension\ProfilerExtension($profile));
+            $debugbar->addCollector(new \DebugBar\Bridge\NamespacedTwigProfileCollector($profile, $twig));
+        }
+
         return $twig;
     },
 ];

@@ -69,6 +69,7 @@ if(Config::get('app.whoops.is_enabled') === true){
 }
 
 // Add debug bar collectors
+// The Twig collector is found in the container definition (otherwise it will try to load the session before the request middlewares)
 if($_ENV['APP_ENV'] === 'dev'){
 
     // Get the debugbar
@@ -82,12 +83,6 @@ if($_ENV['APP_ENV'] === 'dev'){
     $debug_stack = new Doctrine\DBAL\Logging\DebugStack();
     $em->getConnection()->getConfiguration()->setSQLLogger($debug_stack);
     $debugbar->addCollector(new \DebugBar\Bridge\DoctrineCollector($debug_stack));
-
-    // Twig collector
-    $twig = $container->get(\Twig\Environment::class);
-    $profile = new \Twig\Profiler\Profile();
-    $twig->addExtension(new \Twig\Extension\ProfilerExtension($profile));
-    $debugbar->addCollector(new \DebugBar\Bridge\NamespacedTwigProfileCollector($profile, $twig));
 }
 
 // Add Session (Compwright\PhpSession) middlewares.
