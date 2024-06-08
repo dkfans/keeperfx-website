@@ -101,5 +101,11 @@ $app->add(\Compwright\PhpSession\Middleware\SessionBeforeMiddleware::class);
 // Add routes
 require APP_ROOT . '/app/routes.php';
 
+// Enable Slim route caching
+if($_ENV['APP_ENV'] === 'prod'){
+    $routeCollector = $app->getRouteCollector();
+    $routeCollector->setCacheFile(APP_ROOT . '/cache/router.cache');
+}
+
 // Start Slim App
 $app->run();
