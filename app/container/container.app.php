@@ -13,10 +13,6 @@ use Twig\Environment as TwigEnvironment;
 return [
 
     // Debug bar
-    \DebugBar\StandardDebugBar::class => function(LoggerInterface $logger){
+    \DebugBar\StandardDebugBar::class => DI\create(),
 
-        $debugbar = new \DebugBar\StandardDebugBar();
-        $debugbar->addCollector(new DebugBar\Bridge\MonologCollector($logger));
-        return $debugbar;
-    },
 ];

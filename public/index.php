@@ -68,6 +68,28 @@ if(Config::get('app.whoops.is_enabled') === true){
     ]));
 }
 
+// Add debug bar collectors
+if($_ENV['APP_ENV'] === 'dev'){
+
+    // Get the debugbar
+    $debugbar = $container->get(\DebugBar\StandardDebugBar::class);
+
+    // Monolog collector
+    $debugbar->addCollector(new DebugBar\Bridge\MonologCollector($logger));
+
+    // Doctrine collector
+    $em = $container->get(\Doctrine\ORM\EntityManager::class);
+    $debug_stack = new Doctrine\DBAL\Logging\DebugStack();
+    $em->getConnection()->getConfiguration()->setSQLLogger($debug_stack);
+    $debugbar->addCollector(new \DebugBar\Bridge\DoctrineCollector($debug_stack));
+
+    // Twig collector
+    $twig = $container->get(\Twig\Environment::class);
+    $profile = new \Twig\Profiler\Profile();
+    $twig->addExtension(new \Twig\Extension\ProfilerExtension($profile));
+    $debugbar->addCollector(new \DebugBar\Bridge\NamespacedTwigProfileCollector($profile, $twig));
+}
+
 // Add Session (Compwright\PhpSession) middlewares.
 // We need to add these last because the middlewares are executed in reverse order. (Slim router)
 // The order here is really important.

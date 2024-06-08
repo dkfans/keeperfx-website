@@ -13,7 +13,7 @@ use App\Account;
 use App\FlashMessage;
 use App\Config\Config;
 use App\Workshop\WorkshopCache;
-
+use DebugBar\StandardDebugBar;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 
@@ -29,8 +29,8 @@ class WorkshopBrowseController {
         EntityManager $em,
         WorkshopCache $workshop_cache,
         Account $account,
-        FlashMessage $flash
-
+        FlashMessage $flash,
+        StandardDebugBar $debugbar,
     ){
 
         // Get queries
@@ -44,6 +44,9 @@ class WorkshopBrowseController {
             );
             return $response;
         }
+
+        // Start measuring
+        $debugbar['time']->startMeasure('browse', 'Workshop browse page query');
 
         // Remember URL params to return for links
         $url_params = [];
@@ -343,6 +346,9 @@ class WorkshopBrowseController {
             'submitter'                     => $submitter,
             'original_author'               => $original_author,
         ];
+
+        // Stop measure
+        $debugbar['time']->stopMeasure('browse');
 
         // Cache the view data
         $workshop_cache->setCachedBrowsePageData($q, $view_data);

@@ -139,16 +139,36 @@ dl.phpdebugbar-widgets-kvlist dd:nth-of-type(odd) {
     filter: brightness(1.2);
 }
 
-div.phpdebugbar-widgets-templates div.phpdebugbar-widgets-status {
-    background: unset;
-    border-bottom: none;
+div.phpdebugbar-widgets-status {
+    background: unset !important;
+    border-bottom: none !important;
 }
 
 /***************************************************************************************************************************/
 /***************************************************************************************************************************/
 /***************************************************************************************************************************/
 
-.phpdebugbar-widgets-code-block .language-php {
+.phpdebugbar-widgets-warning {
+    color: var(--bs-warning) !important;
+}
+
+.phpdebugbar-widgets-success,
+.phpdebugbar-widgets-ok {
+    color: var(--bs-success) !important;
+}
+
+.phpdebugbar-widgets-error,
+.phpdebugbar-widgets-danger {
+    color: var(--bs-danger) !important;
+}
+
+/***************************************************************************************************************************/
+/***************************************************************************************************************************/
+/***************************************************************************************************************************/
+
+.phpdebugbar-widgets-code-block .language-php,
+div.phpdebugbar code,
+div.phpdebugbar pre {
     color: #eee;
 }
 

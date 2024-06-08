@@ -13,7 +13,6 @@ class DebugBarTwigExtension extends \Twig\Extension\AbstractExtension
 
     public function __construct(StandardDebugBar $debug_bar)
     {
-        $debug_bar["messages"]->addMessage("hello world!");
         $this->js_renderer = $debug_bar->getJavascriptRenderer($_ENV['APP_ROOT_URL'] . '/assets/debugbar');
     }
 

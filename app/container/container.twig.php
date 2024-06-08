@@ -87,13 +87,6 @@ return [
             }
         });
 
-        // Add profiler to debugbar
-        if($_ENV['APP_ENV'] == 'dev'){
-            $profile = new \Twig\Profiler\Profile();
-            $twig->addExtension(new \Twig\Extension\ProfilerExtension($profile));
-            $container->get(StandardDebugBar::class)->addCollector(new NamespacedTwigProfileCollector($profile, $twig));
-        }
-
         return $twig;
     },
 ];
