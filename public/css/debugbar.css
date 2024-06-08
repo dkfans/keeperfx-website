@@ -139,9 +139,49 @@ dl.phpdebugbar-widgets-kvlist dd:nth-of-type(odd) {
     filter: brightness(1.2);
 }
 
-div.phpdebugbar-widgets-status {
+div.phpdebugbar-widgets-status,
+.phpdebugbar-widgets-measure {
     background: unset !important;
     border-bottom: none !important;
+}
+
+.phpdebugbar input {
+    background-color: #0B0B0B !important;
+    color: #eee !important;
+    height: 100%;
+}
+
+.phpdebugbar input::placeholder {
+    color: #999;
+    opacity: 1;
+}
+
+.phpdebugbar-widgets-toolbar {
+    height: 26px;
+    background-color: #0B0B0B !important;
+}
+
+ul.phpdebugbar-widgets-timeline li:hover {
+    background: unset;
+    filter: brightness(1.2);
+}
+
+.phpdebugbar-widgets-measure .phpdebugbar-widgets-label {
+    color: #eee !important;
+}
+
+.phpdebugbar-widgets-measure>.phpdebugbar-widgets-value {
+    background: #ff4217 !important;
+}
+
+td>.phpdebugbar-widgets-measure>.phpdebugbar-widgets-label {
+    /* color: rgb(255, 0, 251) !important; */
+    text-shadow: #0B0B0B;
+    font-weight: 700;
+}
+
+.phpdebugbar td {
+    border: 0 !important;
 }
 
 /***************************************************************************************************************************/
