@@ -94,7 +94,9 @@ class PasswordResetController {
                 $reset_url = $_ENV['APP_ROOT_URL'] . '/password-reset/' . $token;
 
                 // Add mail to queue
-                $mailer->createMailInQueue($user->getEmail(), "Password Reset", "You can reset your KeeperFX password by visiting the following link: \n\n{$reset_url}");
+                $mailer->createMailInQueue($user->getEmail(), "Password Reset",
+                    "You can reset your KeeperFX password by visiting the following link: \n{$reset_url}\n\nUsername:{$user->getUsername()}"
+                );
 
             }
 
