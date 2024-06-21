@@ -119,6 +119,7 @@ return [
     'MA' => 'Morocco',
     'MZ' => 'Mozambique',
     'MM' => 'Myanmar',
+    'MQ' => 'Martinique',
     'NA' => 'Namibia',
     'NR' => 'Nauru',
     'NP' => 'Nepal',
