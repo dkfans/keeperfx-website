@@ -42,10 +42,10 @@ class CountryFlagExtension extends \Twig\Extension\AbstractExtension implements 
     }
 
     public function getCountryString(string $country_code){
-        return $this->country_names[$country_code];
+        return $this->country_names[$country_code] ?? $country_code;
     }
 
     public function getCountryEmoji(string $country_code){
-        return $this->country_emojis[$country_code];
+        return $this->country_emojis[$country_code] ?? '';
     }
 }
