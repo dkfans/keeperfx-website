@@ -22,17 +22,6 @@ if(\file_exists(__DIR__ . '/../__MAINTENANCE_MODE_ACTIVE')){
 // Bootstrap application
 require __DIR__ . '/../app/bootstrap/bootstrap.php';
 
-// Custom error handler to convert warnings and notices into exceptions
-if(!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int)$_ENV['APP_RAISE_EXCEPTION_ON_WARNING'] === 1){
-    \set_error_handler(function ($severity, $message, $file, $line) {
-        if (!(\error_reporting() & $severity)) {
-            // This error code is not included in error_reporting
-            return false;
-        }
-        throw new ErrorException($message, 0, $severity, $file, $line);
-    });
-}
-
 // Create Slim App (with PHP-DI bridge)
 $app = \DI\Bridge\Slim\Bridge::create($container);
 

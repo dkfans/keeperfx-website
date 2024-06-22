@@ -31,6 +31,17 @@ Dotenv::createImmutable(APP_ROOT)->safeLoad();
 // Load app config
 Config::loadDir(APP_ROOT . '/config');
 
+// Custom error handler to convert warnings and notices into exceptions
+if(!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int)$_ENV['APP_RAISE_EXCEPTION_ON_WARNING'] === 1){
+    \set_error_handler(function ($severity, $message, $file, $line) {
+        if (!(\error_reporting() & $severity)) {
+            // This error code is not included in error_reporting
+            return false;
+        }
+        throw new ErrorException($message, 0, $severity, $file, $line);
+    });
+}
+
 // Create logger
 $logger = new Logger('app');
 foreach(Config::get('logger.logs') as $log){
