@@ -10,8 +10,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-class ErrorMiddleware implements MiddlewareInterface {
 
+use Slim\Exception\HttpSpecializedException;
+
+class ErrorMiddleware implements MiddlewareInterface
+{
     public function __construct(
         private ResponseFactory $response_factory,
         private TwigEnvironment $twig,
@@ -34,8 +37,8 @@ class ErrorMiddleware implements MiddlewareInterface {
 
         } catch (\Throwable $ex) {
 
-            // Log error if not 404
-            if($this->logger && !\in_array($ex->getCode(), [404])){
+            // Log error if not a normal HTTP exception
+            if($this->logger && !($ex instanceof HttpSpecializedException)){
                 $this->logger->error($ex->getMessage());
             }
 
