@@ -27,4 +27,7 @@ return [
     '+25',
     'psychic healer',
     'sangoma',
+    'crypto',
+    'bitcoin',
+    'usd',
 ];
