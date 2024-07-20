@@ -30,4 +30,7 @@ return [
     'crypto',
     'bitcoin',
     'usd',
+    'encrypter',
+    'maestro',
+    'skype',
 ];
