@@ -33,4 +33,5 @@ return [
     'encrypter',
     'maestro',
     'skype',
+    'https',
 ];
