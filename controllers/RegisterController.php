@@ -75,24 +75,8 @@ class RegisterController {
             // Make them wait :)
             \sleep(1 + \random_int(0, 3));
 
-            // Show a random message
-            switch(\random_int(1, 5)){
-                case 1:
-                    $flash->error("Something went wrong. Please try again.");
-                    break;
-                case 2:
-                    $flash->warning('Username already in use.');
-                    break;
-                case 3:
-                    $flash->warning('Invalid email address.');
-                    break;
-                case 4:
-                    $flash->warning('The given passwords did not match.');
-                    break;
-                case 5:
-                    $flash->warning('You did not accept the Terms of Service and Privacy Policy.');
-                    break;
-            }
+            // Ambiguous message
+            $flash->error("Something went wrong.");
 
             // Render register page again
             $response->getBody()->write(
