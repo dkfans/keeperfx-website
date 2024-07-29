@@ -54,6 +54,7 @@ return [
         \App\Twig\Extension\CountryFlagExtension::class,
         \App\Twig\Extension\EmailTwigExtension::class,
         \App\Twig\Extension\DebugBarTwigExtension::class,
+        \App\Twig\Extension\MoonPhaseExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
     ],

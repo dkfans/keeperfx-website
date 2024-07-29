@@ -317,6 +317,75 @@
             </div>
         {% endif %}
 
+        {# Moon Phase #}
+        <div class="content-box bg-keeper bd-keeper">
+            <div class="content-header">
+                <h2>Moon Phase</h2>
+            </div>
+            <div class="content-body">
+
+                <div class="d-flex">
+
+                    {# Current moon phase image #}
+                    <div>
+                        <img style="max-width: 72px; max-height: 72px;"class="" src="{{ moon_phase.img }}" />
+                    </div>
+
+                    <div style="padding-left: 15px;">
+
+                        {# Name of the current moon #}
+                        <strong class="fs-5">{{ moon_phase.name }}</strong>
+
+                        {# Full moon info #}
+                        <div class="d-flex" style="margin-top: 15px;">
+                            <div>
+                                <img src="/img/moon/full-moon.png" style="height: 16px; width: 16px; position: relative; top: -2px;" />
+                            </div>
+                            <div style="margin-left: 6px;">
+                                Full Moon Levels:
+                                {% if moon_phase.is_full_moon %}
+                                    <span class="text-success">Available</span>
+                                {% elseif moon_phase.is_near_full_moon %}
+                                    <span class="text-warning">Visible</span>
+                                {% else %}
+                                    <span class="text-muted">Not available</span>
+                                {% endif %}
+                                <br />
+                                Next Full Moon:
+                                <time class="text-special" datetime="{{ moon_phase.next_full_moon|date('c') }}">
+                                    {{ moon_phase.next_full_moon|date('Y/m/d - H:i') }}
+                                </time>
+                            </div>
+                        </div>
+
+                        {# New moon info #}
+                        <div class="d-flex" style="margin-top: 15px;">
+                            <div>
+                                <img src="/img/moon/new-moon.png" style="height: 16px; width: 16px; position: relative; top: -2px;" />
+                            </div>
+                            <div style="margin-left: 6px;">
+                                New Moon Levels:
+                                {% if moon_phase.is_new_moon %}
+                                    <span class="text-success">Available</span>
+                                {% elseif moon_phase.is_near_new_moon %}
+                                    <span class="text-warning">Visible</span>
+                                {% else %}
+                                    <span class="text-muted">Not available</span>
+                                {% endif %}
+                                <br />
+                                Next New Moon:
+                                <time class="text-special" datetime="{{ moon_phase.next_new_moon|date('c') }}">
+                                    {{ moon_phase.next_new_moon|date('Y/m/d - H:i') }}
+                                </time>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div>
