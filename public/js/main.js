@@ -18,6 +18,7 @@ $(function(){
     // Load dynamic timestamps
     jQuery.timeago.settings.allowFuture = true;
     $("time").timeago();
+    $("time").attr("title", null);
 
     // Handle failed/invalid json responses for Ajax calls
     $(document).ajaxError(function (event, xhr, settings){

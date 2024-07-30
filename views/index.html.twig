@@ -352,7 +352,10 @@
                                 {% endif %}
                                 <br />
                                 Next Full Moon:
-                                <time class="text-special" datetime="{{ moon_phase.next_full_moon|date('c') }}">
+                                <time
+                                    class="text-special" datetime="{{ moon_phase.next_full_moon|date('c') }}"
+                                    data-bs-toggle="popover"  data-bs-content="{{ moon_phase.next_full_moon|date('Y/m/d - H:i') }}" data-bs-placement="top"
+                                >
                                     {{ moon_phase.next_full_moon|date('Y/m/d - H:i') }}
                                 </time>
                             </div>

@@ -46,7 +46,7 @@
                         {% endif %}
 
                         {# Date #}
-                        <a href="#comment-{{ comment.id }}" class="text-muted">
+                        <a href="#comment-{{ comment.id }}" class="text-muted" data-bs-toggle="popover"  data-bs-content="{{ comment.createdTimestamp|date('Y/m/d - H:i') }}" data-bs-placement="top">
                             <time class="text-muted" datetime="{{ comment.createdTimestamp|date('c') }}">
                                 {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
                             </time>
