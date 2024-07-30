@@ -361,6 +361,9 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     // API: Prototype
     $group->get('/v1/prototype/run/{id:\d+}', [Api\v1\PrototypeApiController::class, 'getByRunId']);
 
+    // API: Moon Phase
+    $group->get('/v1/moon_phase', [Api\v1\MoonPhaseApiController::class, 'outputInfo']);
+
 });
 
 
