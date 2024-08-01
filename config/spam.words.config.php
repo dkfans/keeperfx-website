@@ -34,4 +34,5 @@ return [
     'maestro',
     'skype',
     'https',
+    'cannabis',
 ];
