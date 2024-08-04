@@ -50,14 +50,34 @@ class MoonPhaseExtension extends \Twig\Extension\AbstractExtension implements \T
         // Get phase image URL
         $phase_img_url = '/img/moon/' . $phase_img_filename;
 
+        // Get next full moon
+        $next_full_moon = $this->moon_phase->getPhaseFullMoon();
+        if($next_full_moon < (new \DateTime("now"))->getTimestamp()) {
+            $next_full_moon = $this->moon_phase->getPhaseNextFullMoon();
+        }
+
+        // Get upcoming full moon
+        // If the current full moon is passed we use the next one instead
+        $next_full_moon = $this->moon_phase->getPhaseFullMoon();
+        if($next_full_moon < (new \DateTime("now"))->getTimestamp()) {
+            $next_full_moon = $this->moon_phase->getPhaseNextFullMoon();
+        }
+
+        // Get upcoming new moon
+        // If the current new moon is passed we use the next one instead
+        $next_new_moon = $this->moon_phase->getPhaseNewMoon();
+        if($next_new_moon < (new \DateTime("now"))->getTimestamp()) {
+            $next_new_moon = $this->moon_phase->getPhaseNextNewMoon();
+        }
+
         // Return
         return [
             'moon_phase' => [
                 'phase'             => $phase,
                 'name'              => $this->moon_phase->getPhaseName(),
                 'img'               => $phase_img_url,
-                'next_full_moon'    => (new \DateTime())->setTimestamp((int) $this->moon_phase->getPhaseNextFullMoon()),
-                'next_new_moon'     => (new \DateTime())->setTimestamp((int) $this->moon_phase->getPhaseNextNewMoon()),
+                'next_full_moon'    => (new \DateTime())->setTimestamp((int) $next_full_moon),
+                'next_new_moon'     => (new \DateTime())->setTimestamp((int) $next_new_moon),
                 'is_full_moon'      => $is_full_moon,
                 'is_near_full_moon' => $is_near_full_moon,
                 'is_new_moon'       => $is_new_moon,
