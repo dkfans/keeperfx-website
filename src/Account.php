@@ -185,6 +185,9 @@ class Account {
     {
         $this->setUser($user);
         $this->session['uid'] = $user->getId();
+
+        // Make sure theme is instantly loaded
+        $this->theme->setTheme($user->getTheme());
     }
 
     public function clearCurrentLoggedInUser()
