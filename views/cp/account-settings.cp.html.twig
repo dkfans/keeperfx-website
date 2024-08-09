@@ -167,6 +167,36 @@
     </div>
 </div>
 
+
+{# Change Theme #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Website Theme</h2>
+    </div>
+    <div class="content-body">
+        <form action="/account/theme" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            <div class="form-group" style="max-width: 400px;">
+                <select id="theme_id" class="form-control form-select" name="theme_id">
+                    {% for theme in website_theme.all %}
+                        <option value="{{ theme.id }}" {% if website_theme.current.id is not null and website_theme.current.id == theme.id %}selected=selected{% endif %}>
+                            {{ theme.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-medieval">Update</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
 {# Change Password #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">

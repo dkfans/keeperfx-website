@@ -36,6 +36,7 @@ class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements 
                 'avatar_small'      => $this->account->getUser()->getAvatarSmall(),
                 'email'             => $this->account->getUser()->getEmail(),
                 'is_email_verified' => $this->account->getUser()->isEmailVerified(),
+                'theme'             => $this->account->getTheme(),
             ],
         ];
     }

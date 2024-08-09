@@ -92,6 +92,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->post('/avatar', [ControlPanel\AccountController::class, 'updateAvatar']);
             $group->post('/country', [ControlPanel\AccountController::class, 'updateCountry']);
             $group->post('/about-me', [ControlPanel\AccountController::class, 'updateAboutMe']);
+            $group->post('/theme', [ControlPanel\AccountController::class, 'updateTheme']);
             $group->get('/remove-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeEmail']);
             $group->get('/remove-avatar/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeAvatar']);
             $group->get('/resend-verification-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'resendVerificationEmail']);

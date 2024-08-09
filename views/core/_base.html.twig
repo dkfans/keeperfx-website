@@ -50,6 +50,11 @@
         {# CSS #}
         <link rel="stylesheet" href="{{ asset('/css/theme.css') }}" />
 
+        {# Other User themes #}
+        {% if account is not null and account.theme.id != 'default' %}
+            <link rel="stylesheet" href="{{ asset('/css/' ~ account.theme.stylesheet) }}" />
+        {% endif %}
+
         {# Page specific stylesheets #}
         {% block stylesheets %}{% endblock %}
 

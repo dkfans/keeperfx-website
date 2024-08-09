@@ -48,6 +48,9 @@ class User {
     private UserEmailVerification|null $email_verification = null;
 
     #[ORM\Column]
+    private string $theme = 'default';
+
+    #[ORM\Column]
     private \DateTime $created_timestamp;
 
     #[ORM\OneToMany(targetEntity: NewsArticle::class, mappedBy: 'author', cascade: ["remove"])]
@@ -414,6 +417,24 @@ class User {
     public function setEmailVerification(?UserEmailVerification $email_verification): self
     {
         $this->email_verification = $email_verification;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of theme
+     */
+    public function getTheme(): string
+    {
+        return $this->theme;
+    }
+
+    /**
+     * Set the value of theme
+     */
+    public function setTheme(string $theme): self
+    {
+        $this->theme = $theme;
 
         return $this;
     }

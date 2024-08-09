@@ -7,6 +7,7 @@ use App\Entity\UserBio;
 use App\Entity\UserCookieToken;
 use App\Entity\UserEmailVerification;
 
+use App\Theme;
 use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
@@ -38,12 +39,17 @@ class AccountController {
         TwigEnvironment $twig,
         Account $account,
         FlashMessage $flash,
-        EntityManager $em
+        EntityManager $em,
+        Theme $theme,
     ){
         // Response
         $response->getBody()->write(
             $twig->render('cp/account-settings.cp.html.twig', [
                 'user' => $account->getUser(),
+                'website_theme' => [
+                    'current' => $theme->getCurrentTheme(),
+                    'all'     => $theme->getAllThemes(),
+                ],
             ])
         );
 
@@ -307,6 +313,32 @@ class AccountController {
         $em->flush();
 
         $flash->success('You successfully updated your password!');
+        $response = $response->withHeader('Location', '/account')->withStatus(302);
+        return $response;
+    }
+
+    public function updateTheme(
+        Request $request,
+        Response $response,
+        Account $account,
+        EntityManager $em,
+        TwigEnvironment $twig,
+        Theme $theme,
+        FlashMessage $flash,
+    ){
+        // Get post vars
+        $post     = $request->getParsedBody();
+        $theme_id = (string) $post['theme_id'] ?? '';
+
+        // Update the theme on the account
+        if($account->updateTheme($theme_id) === false){
+            $flash->error('Failed to update theme');
+            $response = $response->withHeader('Location', '/account')->withStatus(302);
+            return $response;
+        }
+
+        // Return success
+        $flash->success('Theme updated!');
         $response = $response->withHeader('Location', '/account')->withStatus(302);
         return $response;
     }

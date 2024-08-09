@@ -25,17 +25,28 @@ class Account {
         private Session $session,
         private EntityManager $em,
         private Mailer $mailer,
+        private Theme $theme,
     ) {
+        // Check if current user is logged in
         if(isset($session['uid']) && !is_null($session['uid'])){
+
+            // Search this user in the DB
+            // In case a user has a session without a valid user account
             $user = $em->getRepository(User::class)->find($session['uid']);
             if($user){
+
+                // Set the currently logged in user
                 $this->user = $user;
+
+                // Set the theme
+                $theme->setTheme($user->getTheme());
             }
         }
     }
 
     public function createRememberMeSetCookie(?UserOAuthToken $oauth_token = null): SetCookie
     {
+        // Make sure user is logged in
         if(!$this->user){
             throw new \Exception('user not set');
         }
@@ -212,5 +223,34 @@ class Account {
         // Add IP log to DB
         $this->em->persist($ip_log);
         $this->em->flush();
+    }
+
+    public function updateTheme(string $theme_id = 'default'): bool
+    {
+        $theme_id = \strtolower($theme_id);
+
+        // Make sure we are logged in
+        if($this->isLoggedIn() === false){
+            throw new \Exception('user needs to be logged in before we can set their theme');
+        }
+
+        // Try and update the theme
+        if($this->theme->setTheme($theme_id) === false){
+            return false;
+        }
+
+        // Check if user needs updating
+        if($this->user->getTheme() !== $theme_id){
+            // Update user
+            $this->user->setTheme($theme_id);
+            $this->em->flush();
+        }
+
+         return true;
+    }
+
+    public function getTheme(): array
+    {
+        return $this->theme->getCurrentTheme();
     }
 }

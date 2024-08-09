@@ -1,0 +1,50 @@
+body {
+    background: #0A0A0A !important;
+}
+
+.bd-keeper {
+    border: 0;
+}
+
+.bg-keeper {
+    background: #111;
+}
+
+.workshop-info-box {
+    border: 0;
+}
+
+.workshop-item-comment {
+    border: 0;
+}
+
+.workshop-grid-item {
+    border: 0;
+}
+
+.news {
+    border: 0;
+}
+
+.screenshot img {
+    box-shadow: none;
+    border: 1px solid #333;
+}
+
+.content-body h1,
+.content-body h2,
+.content-body h3,
+.content-body h4,
+.content-body h5,
+.content-body h6 {
+    border-bottom: 0;
+}
+
+.workshop-item-image {
+    border: 1px solid #333;
+}
+
+.content-header {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
