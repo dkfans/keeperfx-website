@@ -1,0 +1,227 @@
+@font-face {
+    font-family: 'w95font';
+    font-display: swap;
+    src: url(/font/w95font/webfont/w95font.woff) format('woff');
+}
+
+* {
+    box-shadow: none !important;
+    text-shadow: none !important;
+
+    --bs-table-bg: rgb(176, 176, 176);
+
+    --bs-table-color-state: black;
+    --bs-table-color-type: black;
+    --bs-table-color: black;
+
+    --bs-secondary-color: #333;
+}
+
+body {
+    background: #008080 !important;
+    color: black;
+    font-family: 'w95font';
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'w95font';
+}
+
+* {
+    color: black;
+}
+
+.bd-keeper {
+    border: 0;
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+}
+
+.bg-keeper {
+    background: rgb(176, 176, 176);
+}
+
+a {
+    text-decoration: underline;
+}
+
+.container-lg .content-box:first-child>img {
+    filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='b' x='0' y='0'%3E%3CfeFlood x='4' y='4' height='2' width='2'/%3E%3CfeComposite width='10' height='10'/%3E%3CfeTile result='a'/%3E%3CfeComposite in='SourceGraphic' in2='a' operator='in'/%3E%3CfeMorphology operator='dilate' radius='5'/%3E%3C/filter%3E%3C/svg%3E#b");
+}
+
+#nav-top a.active {
+    color: orangered;
+}
+
+#nav-top a {
+    color: black;
+}
+
+.header {
+    font-family: 'w95font';
+    font-size: 16px;
+}
+
+.form-control {
+    color: black;
+}
+
+.form-control:focus {
+    background-color: white;
+    color: black;
+    border: 0;
+    border-top: 2px solid rgb(12, 36, 83);
+    border-left: 2px solid rgb(12, 36, 83);
+    border-right: 2px solid rgb(80, 117, 241);
+    border-bottom: 2px solid rgb(80, 117, 241);
+}
+
+.form-group .btn-medieval,
+.btn-medieval,
+.form-group .btn-medieval .workshop-info-box {
+    background-image: none;
+    border: 0;
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    background-color: #d4d0c8;
+    font-family: 'w95font';
+    border-radius: 0;
+    color: black;
+}
+
+#homepage-screenshots img {
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+    border-right: 3px solid black;
+    border-bottom: 3px solid black;
+    background-color: rgb(130, 130, 130);
+
+}
+
+.form-control::placeholder {
+    color: #666;
+}
+
+.btn,
+.btn-dark {
+    border-radius: 0;
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    background-color: white;
+    color: black;
+}
+
+.btn:hover,
+.btn-medieval:hover,
+.btn-medieval-black:hover,
+.btn-dark:hover,
+.btn:active,
+.btn-medieval:active,
+.btn-medieval-black:active,
+.btn-dark:active {
+    background-color: white;
+    color: black !important;
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+}
+
+.form-control {
+    border-radius: 0;
+
+    border-top: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    background-color: white;
+}
+
+.form-control-sm {
+    border-radius: 0;
+}
+
+.workshop-item-comment,
+.workshop-grid-item,
+.news,
+.table {
+    border: 0;
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    background-color: rgb(130, 130, 130);
+}
+
+.table th,
+.table td {
+    font-family: 'w95font';
+}
+
+a.title-link {
+    font-family: 'w95font';
+}
+
+.screenshot img {
+    box-shadow: none;
+    border: 0;
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+}
+
+.content-body h1,
+.content-body h2,
+.content-body h3,
+.content-body h4,
+.content-body h5,
+.content-body h6 {
+    font-family: 'w95font';
+    border-bottom: 0;
+    color: black;
+}
+
+.workshop-item-image {
+    border: 1px solid #333;
+}
+
+.content-header {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.workshop-info-box {
+    border: 0;
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    background-color: rgb(130, 130, 130);
+}
+
+#nav-top a.active,
+a,
+a.user-link span {
+    color: rgb(0, 145, 255);
+}
+
+footer a {
+    color: orangered;
+}
+
+.table td,
+.table th {
+    border: 1px solid black;
+}
