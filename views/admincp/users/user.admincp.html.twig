@@ -88,9 +88,9 @@
 
             </div>
             <div class="col-md-6">
-                <div class="workshop-info-box" style="min-height: 100%;">
+                <div class="workshop-info-box" style="min-height: 100%; padding: 20px;">
 
-                    <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 20px auto 20px">
+                    <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 0 auto; margin-bottom: 20px;">
                         {% if user.avatar %}
                             <img src="/avatar/{{ user.avatar }}"/>
                                 {% else %}
@@ -98,7 +98,7 @@
                         {% endif %}
                     </div>
 
-                    <table style="margin: 20px;">
+                    <table>
                         <tbody>
                             <tr>
                                 <td style="width: 50%;">

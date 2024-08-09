@@ -30,9 +30,9 @@
     <div class="content-body">
         <div class="row">
             <div class="col-md-6">
-                <div class="workshop-info-box" style="min-height: 100%; margin-bottom: 8px;">
+                <div class="workshop-info-box" style="min-height: 100%; margin-bottom: 8px; padding-top: 28px;">
 
-                    <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 28px auto 28px">
+                    <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 0 auto;">
                         {% if user.avatar %}
                             <img src="/avatar/{{ user.avatar }}"/>
                                 {% else %}
@@ -132,7 +132,7 @@
 
     <div class="content-box bg-keeper bd-keeper">
 
-        <div class="content-body mt-4" style="padding-top: 0px;">
+        <div class="content-body">
 
             {# Show notice when no items #}
             {% if workshop_items|length == 0 %}
