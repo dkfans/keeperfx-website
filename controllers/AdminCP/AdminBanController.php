@@ -86,7 +86,16 @@ class AdminBanController {
             return $response;
         }
 
-        // TODO: loop trough admins and don't allow anything that matches them
+        // Make sure IP pattern is not private/protected
+        if($type == BanType::IP) {
+            if(false == \filter_var($pattern, \FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE)){
+                $flash->warning('Invalid IP pattern.');
+                $response->getBody()->write(
+                    $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
+                );
+                return $response;
+            }
+        }
 
         // Create ban
         $ban = new Ban();
