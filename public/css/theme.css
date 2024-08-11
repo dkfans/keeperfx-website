@@ -1434,9 +1434,18 @@ a.user-link:hover span {
     user-select: none;
 }
 
-.spoiler:hover {
+.spoiler-hover:hover {
     background-color: inherit;
     color: inherit;
+    transition: 0.3s;
+}
+
+.spoiler-clickable {
+    cursor: pointer;
+}
+
+.spoiler-clickable:hover {
+    background-color: #3A3A3A;
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/

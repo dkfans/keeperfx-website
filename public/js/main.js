@@ -51,4 +51,20 @@ $(function(){
             dataType: 'json'
         });
     }
+
+    // Handle spoilers
+    $.each($('.spoiler'), function(i, el){
+        let $el = $(el);
+
+        // Remove fallback spoiler CSS
+        $el.removeClass('spoiler-hover');
+        $el.addClass('spoiler-clickable');
+
+        // Handle click
+        $el.on('click', function(e){
+            $(this).css('transition', '0.3s');
+            $(this).removeClass('spoiler-clickable');
+            $(this).removeClass('spoiler');
+        });
+    });
 });
