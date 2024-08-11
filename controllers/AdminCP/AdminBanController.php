@@ -126,11 +126,11 @@ class AdminBanController {
             {
                 // Check if this IP log matches the new pattern
                 $matches_admin = false;
-                if($type == BanType::IP) {
+                if($type == BanType::IP && $ip_log->getIp() !== null) {
                     if(StringHelper::match($ip_log->getIp(), $pattern)){
                         $matches_admin = true;
                     }
-                } elseif ($type == BanType::Hostname) {
+                } elseif ($type == BanType::Hostname && $ip_log->getHostName() !== null) {
                     if(StringHelper::match($ip_log->getHostName(), $pattern)){
                         $matches_admin = true;
                     }
@@ -144,6 +144,42 @@ class AdminBanController {
                     );
                     return $response;
                 }
+            }
+        }
+
+        // Check if we only want to preview this ban
+        if(\array_key_exists('preview', $post))
+        {
+            $matches = [];
+
+            // Loop trough all IP logs
+            $ip_logs = $em->getRepository(UserIpLog::class)->findAll();
+            /** @var UserIpLog $ip_log */
+            foreach($ip_logs as $ip_log)
+            {
+                if($type == BanType::IP && $ip_log->getIp() !== null) {
+                    if(StringHelper::match($ip_log->getIp(), $pattern)){
+                        $matches[] = $ip_log;
+                    }
+                } elseif ($type == BanType::Hostname && $ip_log->getHostName() !== null) {
+                    if(StringHelper::match($ip_log->getHostName(), $pattern)){
+                        $matches[] = $ip_log;
+                    }
+                }
+            }
+
+            if(\count($matches) === 0)
+            {
+                $flash->info('No IP logs match this ban pattern');
+                $response->getBody()->write(
+                    $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
+                );
+                return $response;
+            } else {
+                $response->getBody()->write(
+                    $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases(), 'ip_logs' => $matches])
+                );
+                return $response;
             }
         }
 
