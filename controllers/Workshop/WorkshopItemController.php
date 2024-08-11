@@ -64,7 +64,7 @@ class WorkshopItemController {
         }
 
         // Show non-published notice
-        if(!$workshop_item->getIsPublished()){
+        if(!$workshop_item->isPublished()){
             $flash->warning('The requested workshop item has not been published.');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')

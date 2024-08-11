@@ -31,7 +31,15 @@
                 {% for workshop_item in workshop_items %}
                     <tr>
                         <td style="vertical-align: middle;">{{ workshop_item.id }}</td>
-                        <td style="vertical-align: middle;">{{ workshop_item.name }}</td>
+                        <td style="vertical-align: middle;">
+                            {% if not workshop_item.is_published %}
+                                <s class="text-warning">
+                            {% endif %}
+                            {{ workshop_item.name }}
+                            {% if not workshop_item.is_published %}
+                                </s>
+                            {% endif %}
+                        </td>
                         <td style="vertical-align: middle;">{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, includeOriginalAuthor: false} %}</td>
                         <td style="vertical-align: middle;">{{ workshop_item.originalAuthor }}</td>
                         <td style="vertical-align: middle; width: ">{{ workshop_item.createdTimestamp|date('Y-m-d G:i') }}</td>

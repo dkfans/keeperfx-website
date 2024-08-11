@@ -61,6 +61,11 @@ class WorkshopUserController {
         $workshop_items_serialized = [];
         foreach($workshop_items as $workshop_item){
 
+            // Ignore non published ones
+            if($workshop_item->isPublished() === false){
+                continue;
+            }
+
             // Serialize
             $workshop_items_serialized[] = [
                 'id' => $workshop_item->getId(),

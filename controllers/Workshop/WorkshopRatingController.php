@@ -47,7 +47,7 @@ class WorkshopRatingController {
         }
 
         // Check if workshop item has been accepted
-        if($workshop_item->getIsPublished() !== true){
+        if($workshop_item->isPublished() !== true){
             return $response;
         }
 
@@ -138,7 +138,7 @@ class WorkshopRatingController {
         }
 
         // Check if workshop item has been accepted
-        if($workshop_item->getIsPublished() !== true){
+        if($workshop_item->isPublished() !== true){
             return $response;
         }
 

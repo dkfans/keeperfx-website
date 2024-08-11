@@ -25,7 +25,7 @@ class WorkshopItemApiController {
     ){
         /** @var WorkshopItem $item */
         $item = $em->getRepository(WorkshopItem::class)->find($id);
-        if(!$item || $item->getIsPublished() == false){
+        if(!$item || $item->isPublished() == false){
             throw new HttpNotFoundException($request);
         }
 

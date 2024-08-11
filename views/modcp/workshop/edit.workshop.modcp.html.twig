@@ -237,6 +237,22 @@
                                 <input class="form-check-input" type="checkbox" name="is_bundled_with_game" id="is_bundled_with_game" {% if workshop_item.isBundledWithGame %}checked=checked{% endif %}>
                                 <label class="form-check-label" for="is_bundled_with_game">
                                     Already bundled with KeeperFX
+                                    <span class="text-primary">(Mod)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Is Published #}
+                <div class="row" style="margin-bottom: 25px;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_published" id="is_published" {% if workshop_item.isPublished %}checked=checked{% endif %}>
+                                <label class="form-check-label" for="is_published">
+                                    Is published
+                                    <span class="text-primary">(Mod)</span>
                                 </label>
                             </div>
                         </div>

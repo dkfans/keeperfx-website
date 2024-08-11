@@ -56,7 +56,7 @@ class WorkshopImageController {
         }
 
         // Handle non published workshop item
-        if($workshop_item->getIsPublished() === false){
+        if($workshop_item->isPublished() === false){
             if(
                 !$account->isLoggedIn()
                 || (

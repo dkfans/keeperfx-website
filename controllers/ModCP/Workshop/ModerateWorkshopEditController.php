@@ -184,6 +184,7 @@ class ModerateWorkshopEditController {
         $workshop_item->setSubmitter($submitter);
         $workshop_item->setDifficultyRatingEnabled(\array_key_exists('enable_difficulty_rating', $post));
         $workshop_item->setIsBundledWithGame(\array_key_exists('is_bundled_with_game', $post));
+        $workshop_item->setIsPublished(\array_key_exists('is_published', $post));
 
         // Set optional minimum game build
         $workshop_item->setMinGameBuild(null);

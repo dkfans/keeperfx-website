@@ -179,9 +179,17 @@ class WorkshopItem {
     /**
      * Get the value of is_published
      */
-    public function getIsPublished(): bool
+    public function isPublished(): bool
     {
         return $this->is_published;
+    }
+
+    /**
+     * Fallback for Twig
+     */
+    public function is_published(): bool
+    {
+        return $this->isPublished();
     }
 
     /**
