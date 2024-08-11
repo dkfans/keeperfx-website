@@ -93,12 +93,24 @@ class AdminBanController {
 
         // Make sure IP pattern is not private/protected
         if($type == BanType::IP) {
-            if(false == \filter_var($pattern, \FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE)){
-                $flash->warning('Invalid IP pattern.');
-                $response->getBody()->write(
-                    $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
-                );
-                return $response;
+            foreach([
+                '0.0.0.0',
+                '127.0.0.1',
+                '192.168.0.0',
+                '255.255.255.255',
+                '::',
+                '::1',
+                'ff00::',
+                'fc00::',
+            ] as $protected_ip)
+            {
+                if(StringHelper::match($protected_ip, $pattern)){
+                    $flash->warning('This IP pattern would affect a protected or private IP');
+                    $response->getBody()->write(
+                        $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
+                    );
+                    return $response;
+                }
             }
         }
 
