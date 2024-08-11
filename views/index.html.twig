@@ -342,7 +342,7 @@
                                 <img src="/img/moon/full-moon.png" style="height: 16px; width: 16px; position: relative; top: -2px;" />
                             </div>
                             <div style="margin-left: 6px;">
-                                Full Moon Levels:
+                                Full Moon levels:
                                 {% if moon_phase.is_full_moon %}
                                     <span class="text-success">Available</span>
                                 {% elseif moon_phase.is_near_full_moon %}
@@ -362,12 +362,12 @@
                         </div>
 
                         {# New moon info #}
-                        {# <div class="d-flex" style="margin-top: 15px;">
+                        <div class="d-flex" style="margin-top: 15px;">
                             <div>
                                 <img src="/img/moon/new-moon.png" style="height: 16px; width: 16px; position: relative; top: -2px;" />
                             </div>
                             <div style="margin-left: 6px;">
-                                New Moon Levels:
+                                New Moon levels:
                                 {% if moon_phase.is_new_moon %}
                                     <span class="text-success">Available</span>
                                 {% elseif moon_phase.is_near_new_moon %}
@@ -381,7 +381,7 @@
                                     {{ moon_phase.next_new_moon|date('Y/m/d - H:i') }}
                                 </time>
                             </div>
-                        </div> #}
+                        </div>
 
                     </div>
 
