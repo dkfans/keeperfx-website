@@ -3,8 +3,11 @@
 namespace App\Controller\AdminCP;
 
 use App\Enum\BanType;
+use App\Enum\UserRole;
 
 use App\Entity\Ban;
+use App\Entity\User;
+use App\Entity\UserIpLog;
 
 use App\Account;
 use App\BanChecker;
@@ -22,6 +25,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpException;
 use Slim\Exception\HttpForbiddenException;
+
+use Xenokore\Utility\Helper\StringHelper;
 
 class AdminBanController {
 
@@ -94,6 +99,39 @@ class AdminBanController {
                     $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
                 );
                 return $response;
+            }
+        }
+
+        // Loop trough admins and make sure this wouldn't ban one of them
+        $admins = $em->getRepository(User::class)->findBy(['role' => UserRole::Admin]);
+        /** @var User $admin */
+        foreach($admins as $admin)
+        {
+            // Loop trough IP logs
+            $ip_logs = $admin->getIpLogs();
+            /** @var UserIpLog $ip_log */
+            foreach($ip_logs as $ip_log)
+            {
+                // Check if this IP log matches the new pattern
+                $matches_admin = false;
+                if($type == BanType::IP) {
+                    if(StringHelper::match($ip_log->getIp(), $pattern)){
+                        $matches_admin = true;
+                    }
+                } elseif ($type == BanType::Hostname) {
+                    if(StringHelper::match($ip_log->getHostName(), $pattern)){
+                        $matches_admin = true;
+                    }
+                }
+
+                // This would ban an admin
+                if($matches_admin === true) {
+                    $flash->warning('Unable to create a ban pattern that would affect an admin.');
+                    $response->getBody()->write(
+                        $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
+                    );
+                    return $response;
+                }
             }
         }
 
