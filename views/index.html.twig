@@ -355,6 +355,7 @@
                                 <time
                                     class="text-special" datetime="{{ moon_phase.next_full_moon|date('c') }}"
                                     data-bs-toggle="popover"  data-bs-content="{{ moon_phase.next_full_moon|date('Y/m/d - H:i') }}" data-bs-placement="top"
+                                    style="cursor: default;"
                                 >
                                     {{ moon_phase.next_full_moon|date('Y/m/d - H:i') }}
                                 </time>
@@ -377,7 +378,11 @@
                                 {% endif %}
                                 <br />
                                 Next New Moon:
-                                <time class="text-special" datetime="{{ moon_phase.next_new_moon|date('c') }}">
+                                <time
+                                    class="text-special" datetime="{{ moon_phase.next_new_moon|date('c') }}"
+                                    data-bs-toggle="popover"  data-bs-content="{{ moon_phase.next_new_moon|date('Y/m/d - H:i') }}" data-bs-placement="top"
+                                    style="cursor: default;"
+                                >
                                     {{ moon_phase.next_new_moon|date('Y/m/d - H:i') }}
                                 </time>
                             </div>
