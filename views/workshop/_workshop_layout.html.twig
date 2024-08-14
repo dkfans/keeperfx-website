@@ -60,7 +60,7 @@
                             <ion-icon name="star-outline"></ion-icon>
                             My ratings
                         </a>
-                        <a class="nav-link {% if path_equals('/workshop/browse?*user=' ~ account.username|url_encode ~ '*') %}active{% endif %}" href="/workshop/browse?user={{ account.username|url_encode }}" data-instant>
+                        <a class="nav-link {% if path_equals('/workshop/my-items') %}active{% endif %}" href="/workshop/my-items" data-instant>
                             <ion-icon name="person-outline"></ion-icon>
                             My workshop items
                         </a>

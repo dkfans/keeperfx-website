@@ -1,0 +1,176 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = 'My Workshop Items' %}
+
+{% block workshop_content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>
+                My workshop items
+                <span class="text-muted">({{ workshop_items|length }})</span>
+            </h2>
+        </div>
+        <div class="content-body" id="items">
+
+            {% if workshop_items|length == 0 %}
+                <p>
+                    You do not have any workshop items yet.
+                </p>
+            {% else %}
+
+                <input class="form-control form-form-control-sm" id="search" placeholder="Search" style="margin-bottom: 15px;" />
+
+                {% for item in workshop_items %}
+
+                    <div class="workshop-grid-item mb-3">
+
+                        {# Thumbnail #}
+                        <div class="workshop-grid-item-image-container">
+                            <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                {% if item.thumbnail is not null %}
+                                    <img src="/workshop/image/{{ item.id }}/{{ item.thumbnail }}" />
+                                {% elseif item.images|length > 0 %}
+                                    <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}" />
+                                {% else %}
+                                    <img src="/img/no-image-256.png" />
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <div class="workshop-grid-item-info">
+
+                            <div class="workshop-grid-item-header display-flex justify-content-between">
+
+                                {# Title #}
+                                <div class="workshop-grid-item-title">
+                                    <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" title="{{ item.name }}">
+                                        {{ item.name }}
+                                    </a>
+                                </div>
+
+                                {# Notices #}
+                                <div  style="display: flex; align-items: center; gap: 5px;">
+
+                                    {# Show a notice for broken items #}
+                                    {% if item.isLastFileBroken %}
+                                        <span class="badge bg-danger text-white"  data-bs-toggle="popover" data-bs-placement="top"
+                                                data-bs-content="This workshop item is considered broken by the KeeperFX team.">
+                                            Broken
+                                        </span>
+                                    {% endif %}
+
+                                    {# Show a notice for items requiring the latest alpha patch #}
+                                    {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
+                                        <span class="badge bg-warning text-black"  data-bs-toggle="popover" data-bs-placement="top"
+                                                data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly.">
+                                            Alpha patch
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+
+                            {# Info #}
+                            <div class="row" style="margin-top: 6px;">
+
+                                <div class="col-7">
+
+                                    {# Type #}
+                                    {# <span class="text-warning"> #}
+                                    <span style="margin-top: 2px; display: block; margin-bottom: 5px">
+                                        {{ item.category.name|enum_beautify }}
+                                    </span>
+
+                                    {# Downloads #}
+                                    <span data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Downloads">
+                                        <ion-icon name="download-outline" style="position: relative; top: 2px;"></ion-icon>
+                                        {{ item.downloadCount  }}
+                                    </span>
+
+                                    {# Comments #}
+                                    <span class="mx-3" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Comments">
+                                        <ion-icon name="chatbubbles-outline" style="position: relative; top: 2px;"></ion-icon>
+                                        {{ item.comments|length }}
+                                    </span>
+
+                                </div>
+
+                                <div class="col-5" style="text-align: right;">
+
+                                    {# Quality Rating #}
+                                    {% if item.ratingScore is not null %}
+                                        {{ render_workshop_quality_rating(item.id, item.ratingScore) }}
+                                    {% endif %}
+
+                                    {% if item.ratingScore is not null and item.difficultyRatingEnabled and item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
+                                        <br />
+                                    {% endif %}
+
+                                    {# Difficulty Rating #}
+                                    {% if item.difficultyRatingEnabled and item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
+                                        {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block body_javascript %}
+
+    {# jQuery Debounce #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js" integrity="sha512-JZSo0h5TONFYmyLMqp8k4oPhuo6yNk9mHM+FY50aBjpypfofqtEWsAgRDQm94ImLCzSaHeqNvYuD9382CEn2zw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    {# mark.js (keyword highlighting) #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha512-mhbv5DqBMgrWL+32MmsDOt/OAvqr/cHimk6B8y/bx/xS88MVkYGPiVv2ixKVrkywF2qHplNRUvFsAHUdxZ3Krg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        $(function(){
+
+            // Handle search
+            var items   = $('#items').find('.workshop-grid-item');
+            $('#search').on('keyup', $.debounce(250, function(e){
+
+                // Get search string
+                var string = $(this).val().toLowerCase();
+
+                // Handle clearing of search
+                if(string == ""){
+                    $(items).show();
+                    $(items).unmark();
+                    return;
+                }
+
+                // Loop trough all items
+                $.each(items, function(i, el){
+
+                    let content = $(el).find('.workshop-grid-item-title').text().toLowerCase();
+
+                    // Show or hide the item
+                    if(!content.includes(string)){
+                        $(el).hide();
+                    } else {
+                        $(el).show();
+                    }
+                });
+
+                // Mark the keyword
+                $(items).unmark();
+                $(items).mark(string);
+            }));
+
+        });
+    </script>
+{% endblock %}
