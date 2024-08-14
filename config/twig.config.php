@@ -55,6 +55,7 @@ return [
         \App\Twig\Extension\EmailTwigExtension::class,
         \App\Twig\Extension\DebugBarTwigExtension::class,
         \App\Twig\Extension\MoonPhaseExtension::class,
+        \App\Twig\Extension\StringShortenTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
     ],

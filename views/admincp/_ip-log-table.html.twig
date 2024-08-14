@@ -36,21 +36,21 @@
             {# IP #}
             <td>
                 <a href="/admin/ip-lookup/ip/{{ ip_log.ip|url_encode }}">
-                    {{ ip_log.ip }}
+                    {{ ip_log.ip|shorten(20) }}
                 </a>
             </td>
 
             {# Host Name #}
             <td style="word-wrap: break-word; max-width: 230px;">
                 <a href="/admin/ip-lookup/host_name/{{ ip_log.hostName|url_encode }}">
-                    {{ ip_log.hostName }}
+                    {{ ip_log.hostName|shorten(20) }}
                 </a>
             </td>
 
             {# ISP #}
             <td>
                 <a href="/admin/ip-lookup/isp/{{ ip_log.isp|url_encode }}">
-                    {{ ip_log.isp }}
+                    {{ ip_log.isp|shorten(35) }}
                 </a>
             </td>
 
