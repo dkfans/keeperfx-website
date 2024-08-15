@@ -53,6 +53,8 @@ body {
 
     --bs-table-bg: transparent;
     --bs-table-color: rgb(215, 197, 182);
+
+    --bd-color: #1c1c1c;
 }
 
 ul {
@@ -171,8 +173,8 @@ a.title-link {
 }
 
 .bd-keeper {
-    /* border: 3px solid rgb(50, 48, 47); */
-    border: 2px solid rgb(50, 48, 47);
+    /* border: 3px solid var(--bd-color); */
+    border: 2px solid var(--bd-color);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -227,7 +229,7 @@ nav {
 }
 
 .content-header {
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid var(--bd-color);
     margin: 0px 20px;
     padding: 20px 0px 5px 0px;
 }
@@ -270,7 +272,7 @@ nav {
 .content-body h5,
 .content-body h6 {
     color: #efefef;
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid var(--bd-color);
 }
 
 .content-body pre+h1,
@@ -306,7 +308,7 @@ nav {
 .news {
     padding: 20px;
     background-color: rgba(6, 6, 6, 0.666);
-    border: 2px solid #333;
+    border: 2px solid var(--bd-color);
 }
 
 .news+.news {
@@ -681,7 +683,7 @@ button.btn-medieval ion-icon {
 
 .workshop-info-box {
     background-color: rgba(6, 6, 6, 0.666);
-    border: 2px solid #333;
+    border: 2px solid var(--bd-color);
 }
 
 .workshop-info-box+.workshop-info-box,
@@ -692,7 +694,7 @@ button.btn-medieval ion-icon {
 .workshop-item-comment {
     display: flex;
     background-color: rgba(6, 6, 6, 0.666);
-    border: 1px solid #333;
+    border: 1px solid var(--bd-color);
     padding: 15px;
     padding-bottom: 7px;
     margin: 15px 0;
@@ -711,7 +713,7 @@ button.btn-medieval ion-icon {
 
 .workshop-item-comment .workshop-item-comment {
     background-color: transparent;
-    border-left: 2px solid #333;
+    border-left: 2px solid var(--bd-color);
     border-top: 0;
     border-bottom: 0;
     border-right: 0;
@@ -855,7 +857,7 @@ button.btn-medieval ion-icon {
     /* background-image: url(/img/bg-gray2.png); */
     /* background-color: #161616; */
     background-color: rgba(6, 6, 6, 0.666);
-    border: 2px solid #333;
+    border: 2px solid var(--bd-color);
     display: flex;
     flex-direction: row;
     position: relative;
@@ -867,7 +869,7 @@ button.btn-medieval ion-icon {
     flex-grow: 0;
     flex-shrink: 0;
     background-image: url(/img/bg-black.png);
-    border: 2px solid #333;
+    border: 2px solid var(--bd-color);
 }
 
 .workshop-grid-item-image-container img {
@@ -1016,7 +1018,7 @@ button.btn-medieval ion-icon {
     width: 256px;
     height: 256px;
     margin-right: 30px;
-    border: 1px solid rgb(50, 48, 47);
+    border: 1px solid var(--bd-color);
     border-radius: 50%;
 }
 
@@ -1032,7 +1034,7 @@ button.btn-medieval ion-icon {
     border-radius: 50%;
     width: 19px;
     height: 19px;
-    /* border: 1px solid rgb(50, 48, 47); */
+    /* border: 1px solid var(--bd-color); */
     padding: 0px;
     bottom: 1px;
     position: relative;
@@ -1043,7 +1045,7 @@ button.btn-medieval ion-icon {
     border-radius: 50%;
     width: 32px;
     height: 32px;
-    /* border: 1px solid rgb(50, 48, 47); */
+    /* border: 1px solid var(--bd-color); */
     padding: 0px;
     bottom: 1px;
     position: relative;
@@ -1055,7 +1057,7 @@ nav .user-avatar {
     margin-right: 6px;
     bottom: 2px;
     position: relative;
-    /* border: 1px solid rgb(50, 48, 47); */
+    /* border: 1px solid var(--bd-color); */
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -1391,7 +1393,7 @@ a.user-link:hover span {
     display: block;
     padding: 8px;
     background-color: rgba(6, 6, 6, 0.666);
-    border: 2px solid #333;
+    border: 2px solid var(--bd-color);
 }
 
 .notification-item-wide:hover {
@@ -1408,11 +1410,11 @@ a.user-link:hover span {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 .modal .bd-keeper .modal-footer {
-    border-top: 2px solid rgb(50, 48, 47);
+    border-top: 2px solid var(--bd-color);
 }
 
 .modal .bd-keeper .modal-header {
-    border-bottom: 2px solid rgb(50, 48, 47);
+    border-bottom: 2px solid var(--bd-color);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
