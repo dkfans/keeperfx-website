@@ -16,7 +16,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Artifact ID</th>
+                    {# <th>Artifact ID</th> #}
                     <th>Workflow Title</th>
                     <th>Workflow Run ID</th>
                     <th>Timestamp</th>
@@ -30,16 +30,16 @@
                             <td>{{ prototype.id }}</td>
                             <td>
                                 <a href="/download/prototype/{{ prototype.filename|url_encode }}" download>
-                                    {{ prototype.name }}
+                                    {{ prototype.title }}
                                 </a>
                             </td>
-                            <td>{{ prototype.artifactId }}</td>
-                            <td data-workflow-title>{{ prototype.workflowTitle|github_interact }}</td>
-                            <td>{{ prototype.workflowRunId }}</td>
+                            {# <td>{{ prototype.artifact_id }}</td> #}
+                            <td data-workflow-title>{{ prototype.workflow_title|github_interact }}</td>
+                            <td>{{ prototype.workflow_run_id }}</td>
                             <td>{{ prototype.timestamp|date('Y-m-d G:i:s') }}</td>
-                            <td>{{ prototype.sizeInBytes|format_bytes }}</td>
+                            <td>{{ prototype.size_in_bytes|format_bytes }}</td>
                             <td>
-                                <a href="#" data-copy-url="{{ get_env('APP_ROOT_URL') }}/download/prototype/{{ prototype.filename|url_encode }}">
+                                <a href="#" style="white-space: nowrap;" data-copy-url="{{ get_env('APP_ROOT_URL') }}/download/prototype/{{ prototype.filename|url_encode }}">
                                     Copy URL
                                 </a>
                             </td>
