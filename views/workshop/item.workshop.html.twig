@@ -414,6 +414,19 @@
 
 {% block body_javascript %}
 <script>
+    $.each($('.workshop-item-image img'), function(e){
+        if(this.complete){
+            return;
+        }
+        $(this).on('load', function(e){
+            $(this).parent().find('.lds-ring').remove();
+            $(this).fadeIn();
+        });
+        $(this).parent().prepend($('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>'));
+        $(this).hide();
+    });
+</script>
+<script>
     const workshop_item = {
         id: {{ item.id }},
         slug: '{{ item.name|slugify }}',

@@ -253,5 +253,18 @@
 {% endblock %}
 
 {% block body_javascript %}
+    <script>
+        $.each($('.workshop-grid-item-image-container img'), function(e){
+            if(this.complete){
+                return;
+            }
+            $(this).on('load', function(e){
+                $(this).parent().find('.lds-ring').remove();
+                $(this).fadeIn();
+            });
+            $(this).parent().prepend($('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>'));
+            $(this).hide();
+        });
+    </script>
     <script src="{{ asset('js/workshop.js') }}"></script>
 {% endblock %}
