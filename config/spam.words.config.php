@@ -97,6 +97,7 @@ return [
     'maestro',
     'marketing solution',
     'mass email',
+    'medication',
     'meet singles',
     'message contains',
     'million dollars',
