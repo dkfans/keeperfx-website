@@ -42,6 +42,7 @@ class WorkshopBrowseApiController {
                     'image'             => \count($entity->getImages()) > 0 ?
                         $_ENV['APP_ROOT_URL'] . '/workshop/image/' . $entity->getId() . '/' . $entity->getImages()[0]->getFilename() :
                         $_ENV['APP_ROOT_URL'] . '/img/no-image-256.png',
+                    'thumbnail'         => $entity->getThumbnail(),
                     'url'               => $_ENV['APP_ROOT_URL'] . '/workshop/item/' . $entity->getId() . '/' . URLify::slug($entity->getName()),
                     'submitter' => [
                         'username' => $username,
