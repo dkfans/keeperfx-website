@@ -29,7 +29,10 @@ class NewsApiController {
                     'excerpt'           => $article_entity->getExcerpt(),
                     'url'               => $_ENV['APP_ROOT_URL'] . '/news/' . $article_entity->getId() .
                                             '/' . $article_entity->getCreatedTimestamp()->format('Y-m-d') .
-                                            '/' . $article_entity->getTitleSlug()
+                                            '/' . $article_entity->getTitleSlug(),
+                    'image'             => $article_entity->getImage() ?
+                        $_ENV['APP_ROOT_URL'] . '/news/image/' . $article_entity->getImage() :
+                        $_ENV['APP_ROOT_URL'] . '/img/horny-face-256.png',
                 ];
             }
         }
