@@ -355,9 +355,11 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/v1/workshop/search', [Api\v1\Workshop\WorkshopItemApiController::class, 'search']);
     $group->get('/v1/workshop/map_number/{map_number:\d+}', [Api\v1\Workshop\WorkshopItemApiController::class, 'checkMapNumber']);
 
-    // API: Downloads
+    // API: Releases
     $group->get('/v1/stable/latest', [Api\v1\ReleaseApiController::class, 'latestStable']);
     $group->get('/v1/alpha/latest', [Api\v1\ReleaseApiController::class, 'latestAlpha']);
+    $group->get('/v1/stable/check/{version}', [Api\v1\ReleaseApiController::class, 'checkStableUpdate']);
+    $group->get('/v1/alpha/check/{version}', [Api\v1\ReleaseApiController::class, 'checkAlphaUpdate']);
 
     // API: Crash Report
     $group->post('/v1/crash-report', [Api\v1\CrashReportApiController::class, 'upload']);
