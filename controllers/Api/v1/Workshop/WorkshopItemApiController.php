@@ -154,11 +154,13 @@ class WorkshopItemApiController {
                         'filename' => $workshop_item->getImages()->first()->getFilename(),
                     ]
                 ],
-                'ratingScore'             => $workshop_item->getRatingScore(),
-                'difficultyRatingScore'   => $workshop_item->getDifficultyRatingScore(),
-                'comment_count'           => \count($workshop_item->getComments()),
-                'minGameBuild'            => $workshop_item->getMinGameBuild(),
-                'isLastFileBroken'        => $workshop_item->isLastFileBroken(),
+                'ratingScore'              => $workshop_item->getRatingScore(),
+                'difficultyRatingScore'    => $workshop_item->getDifficultyRatingScore(),
+                'comment_count'            => \count($workshop_item->getComments()),
+                'minGameBuild'             => $workshop_item->getMinGameBuild(),
+                'isLastFileBroken'         => $workshop_item->isLastFileBroken(),
+                'description'              => $workshop_item->getDescription(),
+                'installationInstructions' => $workshop_item->getInstallInstructions(),
             ];
         }
 
