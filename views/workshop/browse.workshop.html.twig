@@ -66,6 +66,8 @@
                                 Least Downloaded
                             {% elseif get_query_param('order_by') == 'name' %}
                                 Name
+                            {% elseif get_query_param('order_by') == 'last-updated' %}
+                                Last Updated
                             {% endif %}
                         </button>
                     {% else %}
@@ -87,6 +89,7 @@
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="least-difficult">Least Difficult</a></li>
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="most-downloaded">Most Downloaded</a></li>
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="least-downloaded">Least Downloaded</a></li>
+                        <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="last-updated">Last Updated</a></li>
                     </ul>
                 </div>
 

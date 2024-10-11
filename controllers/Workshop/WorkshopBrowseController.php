@@ -121,6 +121,11 @@ class WorkshopBrowseController {
                 $query = $query->orderBy('item.creation_orderby_timestamp', 'DESC');
                 $url_params['order_by'] = 'latest';
                 break;
+            case 'last-updated':
+                $query = $query->orderBy('item.creation_orderby_timestamp', 'DESC')
+                    ->addOrderBy('item.updated_timestamp', 'DESC');
+                $url_params['order_by'] = 'last-updated';
+                break;
         }
 
         // Add search criteria
