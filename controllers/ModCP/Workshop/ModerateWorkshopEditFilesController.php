@@ -8,6 +8,7 @@ use App\Entity\WorkshopFile;
 use App\Account;
 use App\FlashMessage;
 use App\UploadSizeHelper;
+use App\Workshop\WorkshopCache;
 use App\Workshop\WorkshopBrokenFileHandler;
 
 use Doctrine\ORM\EntityManager;
@@ -385,6 +386,7 @@ class ModerateWorkshopEditFilesController {
         EntityManager $em,
         CsrfGuard $csrf_guard,
         WorkshopBrokenFileHandler $broken_file_handler,
+        WorkshopCache $workshop_cache,
         $item_id,
         $file_id,
         $token_name,
@@ -416,6 +418,9 @@ class ModerateWorkshopEditFilesController {
         // Mark file as broken
         $broken_file_handler->markFileAsBroken($workshop_file, true);
 
+        // Refresh workshop cache
+        $workshop_cache->clearAllCachedBrowsePageData();
+
         // Redirect back to file list
         $flash->success('The file has been successfully marked as broken.');
         $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
@@ -429,6 +434,7 @@ class ModerateWorkshopEditFilesController {
         EntityManager $em,
         CsrfGuard $csrf_guard,
         WorkshopBrokenFileHandler $broken_file_handler,
+        WorkshopCache $workshop_cache,
         $item_id,
         $file_id,
         $token_name,
@@ -459,6 +465,9 @@ class ModerateWorkshopEditFilesController {
 
         // Mark file as broken
         $broken_file_handler->unmarkFileAsBroken($workshop_file, true);
+
+        // Refresh workshop cache
+        $workshop_cache->clearAllCachedBrowsePageData();
 
         // Redirect back to file list
         $flash->success('The file has been successfully unmarked as broken.');
