@@ -21,33 +21,67 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
+                    <th>Info</th>
                     <th>Submitted by</th>
                     <th>Org. Author</th>
                     <th>Date</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for workshop_item in workshop_items %}
                     <tr>
-                        <td style="vertical-align: middle;">{{ workshop_item.id }}</td>
+                        {# ID #}
+                        <td style="vertical-align: middle;">
+                            {{ workshop_item.id }}
+                        </td>
+
+                        {# Item Name #}
                         <td style="vertical-align: middle;">
                             {% if not workshop_item.is_published %}
                                 <s class="text-warning">
                             {% endif %}
-                            {{ workshop_item.name }}
+                            <a href="/moderate/workshop/{{ workshop_item.id }}">
+                                {{ workshop_item.name }}
+                            </a>
                             {% if not workshop_item.is_published %}
                                 </s>
                             {% endif %}
                         </td>
-                        <td style="vertical-align: middle;">{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, includeOriginalAuthor: false} %}</td>
-                        <td style="vertical-align: middle;">{{ workshop_item.originalAuthor }}</td>
-                        <td style="vertical-align: middle; width: ">{{ workshop_item.createdTimestamp|date('Y-m-d G:i') }}</td>
-                        <td style="vertical-align: middle; width: 215px;">
-                            <a class="btn btn-sm btn-medieval" href="/workshop/item/{{ workshop_item.id }}/{{ workshop_item.name|slugify }}" target="_blank">View</a>
-                            <a class="btn btn-sm btn-medieval btn-medieval-gray" href="/moderate/workshop/{{ workshop_item.id }}">Edit</a>
-                            <a class="btn btn-sm btn-medieval btn-medieval-gray" href="/moderate/workshop/{{ workshop_item.id }}/files">Edit Files</a>
+
+                        {# Info #}
+                        <td style="vertical-align: middle; white-space: nowrap;">
+
+                            {# Show a notice for broken items #}
+                            {% if workshop_item.isLastFileBroken %}
+                                <ion-icon
+                                    name="alert-circle-outline"
+                                    style="color: #f91b1b !important; font-size: 18px; position: relative; top: 3px;"
+                                    data-bs-toggle="popover" data-bs-placement="top"
+                                    data-bs-content="Broken"
+                                ></ion-icon>
+                            {% endif %}
+
+                            {# Show a notice for items requiring the latest alpha patch #}
+                            {% if workshop_item.minGameBuild is not null and workshop_item.minGameBuild == -1 %}
+                                <ion-icon
+                                    name="alert-circle-outline"
+                                    class="text-warning"
+                                    style="font-size: 18px; position: relative; top: 3px;"
+                                    data-bs-toggle="popover" data-bs-placement="top"
+                                    data-bs-content="Alpha"
+                                ></ion-icon>
+                            {% endif %}
                         </td>
+
+                        {# Submitted by #}
+                        <td style="vertical-align: middle;">{% include 'workshop/_user_small.widget.html.twig' with {workshop_item: workshop_item, includeOriginalAuthor: false} %}</td>
+
+                        {# Original Author #}
+                        <td style="vertical-align: middle;">{{ workshop_item.originalAuthor }}</td>
+
+                        {# Date #}
+                        <td style="vertical-align: middle; white-space: nowrap;">{{ workshop_item.createdTimestamp|date('Y-m-d, H:i') }}</td>
+
                     </tr>
                 {% endfor %}
             </tbody>
