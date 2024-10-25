@@ -135,6 +135,12 @@ class HistoryController {
                     'date_format' => 'Y-m-d',
                     'description' => "qqluqq implemented 3 new Keepers which can be played as and fought against. These Keepers use the colored icons that are made by Spatulade.",
                 ],
+                [
+                    'title'       => 'First Linux compilation possible',
+                    'date'        => new \DateTime('2024-09-24'),
+                    'date_format' => 'Y-m-d',
+                    'description' => "xtremeqg shared his PR that allows KeeperFX to be natively compiled on Linux. It still needs a lot of work, but a Linux release is getting very close!",
+                ],
             ]])
         );
 
