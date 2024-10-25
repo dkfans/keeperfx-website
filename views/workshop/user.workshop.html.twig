@@ -28,6 +28,12 @@
         </div>
     </div>
     <div class="content-body">
+
+        {# Banned notice #}
+        {% if user.role.value == roles.banned %}
+            <div class="alert alert-danger">This user has been banned</div>
+        {% endif %}
+
         <div class="row">
             <div class="col-md-6">
                 <div class="workshop-info-box" style="min-height: 100%; margin-bottom: 8px; padding-top: 28px;">

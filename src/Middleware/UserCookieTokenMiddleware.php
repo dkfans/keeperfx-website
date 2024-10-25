@@ -9,11 +9,13 @@ use App\Entity\UserCookieToken;
 
 use App\Account;
 use App\BanChecker;
+use App\Enum\UserRole;
 use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
 use App\OAuth\OAuthProviderService;
 
+use Slim\Psr7\Factory\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -30,6 +32,7 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
         private FlashMessage $flash,
         private BanChecker $ban_checker,
         private OAuthProviderService $provider_service,
+        private ResponseFactory $response_factory,
     ) {}
 
     /**
@@ -108,6 +111,21 @@ class UserCookieTokenMiddleware implements MiddlewareInterface {
                             $this->em->persist($oauth_token);
                             $this->em->flush();
                         }
+                    }
+
+                    // Check if banned
+                    if($cookie_token->getUser()->getRole() == UserRole::Banned){
+
+                        // Show message
+                        $this->flash->error("You have been banned.");
+
+                        // Invalidate cookie token
+                        $this->em->remove($cookie_token);
+                        $this->em->flush();
+
+                        // Continue request
+                        $response = $handler->handle($request);
+                        return $response;
                     }
 
                     // Login the user

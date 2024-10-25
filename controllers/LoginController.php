@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Enum\UserRole;
+
 use App\Entity\User;
 
 use App\Account;
 use App\BanChecker;
 use App\FlashMessage;
+
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
 use Twig\Environment as TwigEnvironment;
@@ -84,6 +87,23 @@ class LoginController {
 
                 if(\password_verify($password, $user->getPassword())){
 
+                    // Check if user is banned
+                    if($user->getRole() == UserRole::Banned){
+
+                        // Make them wait :)
+                        \sleep(1 + \random_int(0, 3));
+
+                        // Show a banned message
+                        $flash->error("You have been banned.");
+
+                        // Show login screen again
+                        $response->getBody()->write(
+                            $twig->render('login.html.twig')
+                        );
+
+                        return $response;
+                    }
+
                     // Check if this IP or hostname is banned
                     if($ban_checker->checkAll($ip, $hostname)){
 
@@ -97,6 +117,7 @@ class LoginController {
                         $response->getBody()->write(
                             $twig->render('login.html.twig')
                         );
+
                         return $response;
                     }
 

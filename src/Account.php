@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Enum\UserRole;
+
 use App\Entity\User;
 use App\Entity\UserIpLog;
 use App\Entity\UserOAuthToken;
@@ -26,6 +28,7 @@ class Account {
         private EntityManager $em,
         private Mailer $mailer,
         private Theme $theme,
+        private FlashMessage $flash,
     ) {
         // Check if current user is logged in
         if(isset($session['uid']) && !is_null($session['uid'])){
@@ -34,6 +37,17 @@ class Account {
             // In case a user has a session without a valid user account
             $user = $em->getRepository(User::class)->find($session['uid']);
             if($user){
+
+                    // Check if banned
+                    if($user->getRole() == UserRole::Banned){
+
+                        // Show message
+                        $this->flash->error("You have been banned.");
+
+                        // Don't login
+                        $session['uid'] = null;
+                        return;
+                    }
 
                 // Set the currently logged in user
                 $this->user = $user;

@@ -35,7 +35,9 @@
                     <tr>
                         <td>{{ user.id }}</td>
                         <td>
-                            <a href="/admin/user/{{ user.id }}">{{ user.username }}</a>
+                            <a href="/admin/user/{{ user.id }}" {% if user.role.value == roles.banned %}style="text-decoration: line-through;"{% endif %}>
+                                {{ user.username }}
+                            </a>
                         </td>
                         <td>{{ user.role.name }}</td>
                         <td>

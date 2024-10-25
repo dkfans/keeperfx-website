@@ -17,13 +17,14 @@ class RolesTwigExtension extends \Twig\Extension\AbstractExtension implements \T
 
     public function getGlobals(): array
     {
+        $roles = [];
+
+        foreach(UserRole::cases() as $case){
+            $roles[\strtolower($case->name)] = $case->value;
+        }
+
         return [
-            'roles' => [
-                'user'      => UserRole::User->value,
-                'moderator' => UserRole::Moderator->value,
-                'developer' => UserRole::Developer->value,
-                'admin'     => UserRole::Admin->value,
-            ]
+            'roles' => $roles
         ];
     }
 }

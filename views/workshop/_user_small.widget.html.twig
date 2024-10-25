@@ -38,7 +38,7 @@
             {% else %}
                 <img src="/avatar-generate/32/{{ workshop_item.submitter.username|url_encode }}.png" class="user-avatar" />
             {% endif %}
-            <span class="user-username">{{ workshop_item.submitter.username }}</span>
+            <span class="user-username" {% if workshop_item.submitter.role.value == roles.banned %}style="text-decoration: line-through;"{% endif %}>{{ workshop_item.submitter.username }}</span>
         </a>
     {% endif %}
 {% endif %}
