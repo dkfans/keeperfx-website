@@ -12,7 +12,7 @@ class GithubAlphaBuild {
     #[ORM\GeneratedValue]
     private int|null $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type:"bigint", nullable:true)]
     private int $artifact_id;
 
     #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
