@@ -15,6 +15,7 @@ return [
     'abortion',
     'act now',
     'additional income',
+    'amphetamine',
     'apply now',
     'as seen on',
     'bargain',
