@@ -162,6 +162,7 @@ return [
     'valium',
     'viagra',
     'vicodin',
+    'wallet',
     'warranty',
     'we hate spam',
     'web traffic',
