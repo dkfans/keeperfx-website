@@ -23,7 +23,7 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 
 class NotificationCenter {
 
-    private const CACHE_KEY_NOTIFICATIONS = "unread-notification:unread-UID:%s";
+    private const CACHE_KEY_NOTIFICATIONS = "unread-notif-uid-%s";
 
     private array|null $unread_notifications = null;
 
