@@ -32,7 +32,7 @@ class Locale {
         $config      = require $config_path;
 
         if(!\is_array($config)){
-            throw new LocaleException("Invalid locale config: '${$config_path}'. Must return an array.");
+            throw new LocaleException("Invalid locale config: '{$config_path}'. Must return an array.");
         }
 
         $this->code                 = $code;
