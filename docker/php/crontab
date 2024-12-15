@@ -1,0 +1,4 @@
+# Crontab
+# This crontab runs inside of the PHP container
+
+* * * * * cd /var/www && php ./vendor/bin/crunz schedule:run

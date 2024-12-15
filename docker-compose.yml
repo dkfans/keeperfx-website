@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+
+    redis:
+        image: redis:alpine
+        container_name: kfx-redis
+        networks:
+            - kfx_network
+
+    mariadb:
+        image: mariadb:latest
+        container_name: kfx-mariadb
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        volumes:
+            - mariadb_data:/var/lib/mysql
+        networks:
+            - kfx_network
+
+    clamav:
+        image: clamav/clamav:latest
+        container_name: kfx-clamav
+        networks:
+            - kfx_network
+
+    php:
+        build:
+            context: .
+            dockerfile: ./docker/php/Dockerfile
+        container_name: kfx-php
+        volumes:
+            - .:/var/www:rw
+            - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+        depends_on:
+            - redis
+            - mariadb
+            - clamav
+        environment:
+            APP_DB_HOST: kfx-mariadb
+            APP_DB_PORT: 3306
+            APP_CACHE_ADAPTER: redis
+            APP_CACHE_REDIS_DSN: redis://kfx-redis:6379
+            APP_CLAMAV_DSN: tcp://kfx-clamav:3310
+        networks:
+            - kfx_network
+
+    nginx:
+        image: nginx:latest
+        container_name: kfx-nginx
+        volumes:
+            - .:/var/www:ro
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+        ports:
+            - "5500:80"
+        depends_on:
+            - php
+        networks:
+            - kfx_network
+
+networks:
+    kfx_network:
+        name: kfx_network
+
+volumes:
+    mariadb_data:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: ./docker/data/mariadb

@@ -15,9 +15,8 @@ vendor/
 migrations/*
 !migrations/production
 
-# Laradock
-.laradock/
-laradock/
+# Docker
+docker/data/*
 
 # IDE
 .vscode/*
