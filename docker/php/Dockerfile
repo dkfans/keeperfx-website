@@ -6,21 +6,29 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     git \
     curl \
+    zip \
+    unzip \
+    p7zip-full \
+    cron \
+    libssl-dev \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
     libicu-dev \
-    zip \
-    unzip \
-    p7zip-full \
-    cron
+    libjpeg62-turbo-dev \
+    libwebp-dev \
+    libfreetype6-dev \
+    libsocket++-dev
 
 # Clean up to reduce image size
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Configure PHP GD extension
+RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype
+
 # Install PHP extensions
-RUN docker-php-ext-install \
+RUN docker-php-ext-install -j$(nproc) \
     pdo_mysql \
     mbstring \
     exif \
@@ -29,7 +37,8 @@ RUN docker-php-ext-install \
     gd \
     intl \
     zip \
-    opcache
+    opcache \
+    sockets
 
 # Redis for caching/sessions
 # RUN pecl install redis && docker-php-ext-enable redis
