@@ -437,7 +437,7 @@
             // Preload the full sizes screenshots
             $.each($('a'), function(e, el){
                 let url = $(el).attr('href');
-                if(url.startsWith('/screenshot/')){
+                if(typeof url != 'undefined' && url.startsWith('/screenshot/')){
                     const img = new Image();
                     img.src = url;
                 }
