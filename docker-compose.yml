@@ -37,8 +37,8 @@ services:
         container_name: kfx-php
         restart: always
         volumes:
-            - .:/var/www:rw
             - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+            - .:/var/www:rw
             - ./storage:/var/storage:rw
         depends_on:
             - redis
@@ -58,8 +58,9 @@ services:
         container_name: kfx-nginx
         restart: always
         volumes:
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
             - .:/var/www:ro
-            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./storage:/var/storage:ro
         ports:
             - "5500:80"
         depends_on:
