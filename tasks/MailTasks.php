@@ -7,6 +7,6 @@ $task
     ->everyMinute()
     ->description('Send all mails in the mail queue')
     ->preventOverlapping()
-    ->appendOutputTo(__DIR__ . '/../logs/tasks/' . basename(__FILE__, '.php') . '.log');
+    ->appendOutputTo(($_ENV['APP_LOG_STORAGE'] ?? APP_ROOT . '/logs') . '/' . basename(__FILE__, '.php') . '.log');
 
 return $schedule;

@@ -40,6 +40,7 @@ services:
             - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
             - .:/var/www:rw
             - ./storage:/var/storage:rw
+            - ./logs:/var/log/kfx-web:rw
         depends_on:
             - redis
             - mariadb
@@ -50,6 +51,7 @@ services:
             APP_CACHE_ADAPTER: redis
             APP_CACHE_REDIS_DSN: redis://kfx-redis:6379
             APP_CLAMAV_DSN: tcp://kfx-clamav:3310
+            APP_LOG_STORAGE: /var/log/kfx-web
         networks:
             - kfx_network
 
