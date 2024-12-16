@@ -19,8 +19,6 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 
 class CacheWebsiteChangelogCommand extends Command
 {
-    public const PROJECT_DIR = APP_ROOT . '/var/keeperfx';
-
     private CacheInterface $cache;
 
     public function __construct(CacheInterface $cache) {
@@ -37,7 +35,6 @@ class CacheWebsiteChangelogCommand extends Command
     protected function execute(Input $input, Output $output)
     {
         $commits = [];
-
         $output->writeln("[>] Grabbing commits from local website repo...");
 
         // Run 'git log'
