@@ -10,8 +10,6 @@ use Symfony\Component\Process\Process;
 
 class FetchWikiCommand extends Command
 {
-    public const GITHUB_WIKI_URL = 'https://github.com/dkfans/keeperfx.wiki.git';
-
     protected function configure()
     {
         $this->setName("kfx:fetch-wiki")
@@ -20,16 +18,24 @@ class FetchWikiCommand extends Command
 
     protected function execute(Input $input, Output $output)
     {
+        $output->writeln("[>] Fetching latest wiki revision...");
+
+        // Check for repo URL
+        $repo_url = $_ENV['APP_WIKI_REPO_URL'];
+        if(empty($repo_url)){
+            $output->writeln("[-] Repo URL not configured (APP_WIKI_REPO_URL)");
+            return Command::FAILURE;
+        }
+
         // Get wiki dir
         // TODO: make CLI chroot accessible
-        $wiki_dir = $_ENV['APP_WIKI_STORAGE'];
+        $wiki_dir = $_ENV['APP_WIKI_REPO_STORAGE'];
         if(empty($wiki_dir)){
             $output->writeln("[-] Wiki dir not configured");
             return Command::FAILURE;
         }
 
-        // Output some text
-        $output->writeln("[>] Fetching latest wiki revision...");
+        // Output dir
         $output->writeln("[>] Wiki file directory: <info>{$wiki_dir}</info>");
 
         // Check if directory is accessible
@@ -37,7 +43,7 @@ class FetchWikiCommand extends Command
 
             // Clone the wiki repo
             $output->writeln("[>] Cloning wiki repo...");
-            $process = new Process(['git',  'clone', self::GITHUB_WIKI_URL, $wiki_dir]);
+            $process = new Process(['git',  'clone', $repo_url, $wiki_dir]);
             $process->run();
             if(!$process->isSuccessful()){
                 $output->writeln("[-] Failed to clone wiki");
