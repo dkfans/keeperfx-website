@@ -31,7 +31,7 @@ class CacheWebsiteChangelogCommand extends Command
     protected function configure()
     {
         $this->setName("website:cache-git-commits")
-            ->setDescription("Handle the commit history of the KeeperFX project");
+            ->setDescription("Handle the commit history of the KeeperFX website");
     }
 
     protected function execute(Input $input, Output $output)
