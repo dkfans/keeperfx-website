@@ -18,18 +18,11 @@ migrations/*
 # Docker
 docker/data/*
 
-# IDE
-.vscode/*
-.settings
-nbproject/private/
-nbbuild/
-nbdist/
-nbactions.xml
-nb-configuration.xml
-.nb-gradle/
-
 # INCLUDE VSCode tasks.json (project specific)
 !.vscode/tasks.json
+
+# Storage
+/storage/
 
 # Logs
 *.log
@@ -48,3 +41,13 @@ pids
 bower_components/
 node_modules/
 jspm_packages/
+
+# IDE
+.vscode/*
+.settings
+nbproject/private/
+nbbuild/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+.nb-gradle/

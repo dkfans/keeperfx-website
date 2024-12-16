@@ -76,7 +76,7 @@ class ModerateCrashReportController {
         // Delete savefile
         $save_filename = $crash_report->getSaveFilename();
         if($save_filename){
-            $dir = $_ENV['APP_SAVEFILE_STORAGE'];
+            $dir = $_ENV['APP_CRASH_REPORT_SAVEFILE_STORAGE'];
             if(\file_exists($dir)){
                 $filepath = $dir . '/' . $save_filename;
                 if(\file_exists($filepath)){

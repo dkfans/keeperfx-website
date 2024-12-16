@@ -52,13 +52,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Add crontab
-COPY ./docker/php/crontab /etc/cron.d/crontab-php
-RUN chmod 0644 /etc/cron.d/crontab-php
-RUN crontab /etc/cron.d/crontab-php
-
-# Start cron and php-fpm
-CMD ["sh", "-c", "cron && php-fpm"]
+# Start php-fpm
+CMD ["php-fpm"]
 
 # Document that we use port 9000
 EXPOSE 9000

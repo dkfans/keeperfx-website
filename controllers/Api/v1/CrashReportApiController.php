@@ -109,7 +109,7 @@ class CrashReportApiController {
         ) {
 
             // Check if savefile storage dir is configured
-            $savefile_storage_dir = $_ENV['APP_SAVEFILE_STORAGE'] ?? null;
+            $savefile_storage_dir = $_ENV['APP_CRASH_REPORT_SAVEFILE_STORAGE'] ?? null;
             if($savefile_storage_dir == null || $savefile_storage_dir == ''){
                 $response->getBody()->write(
                     \json_encode([
@@ -139,7 +139,7 @@ class CrashReportApiController {
 
             // Make sure the savefile is not too big
             $file_size_in_bytes = \strlen($savefile_data);
-            if($file_size_in_bytes > (int)$_ENV['APP_SAVEFILE_MAX_UPLOAD_SIZE']){
+            if($file_size_in_bytes > (int)$_ENV['APP_CRASH_REPORT_SAVEFILE_MAX_UPLOAD_SIZE']){
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
