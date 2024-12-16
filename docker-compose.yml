@@ -44,7 +44,6 @@ services:
         depends_on:
             - redis
             - mariadb
-            - clamav
         environment:
             APP_DB_HOST: kfx-mariadb
             APP_DB_PORT: 3306
