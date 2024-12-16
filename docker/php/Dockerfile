@@ -40,6 +40,10 @@ RUN docker-php-ext-install -j$(nproc) \
     opcache \
     sockets
 
+# Fix dubious file ownership warnings in git
+RUN git config --global --add safe.directory /var/www
+RUN git config --global --add safe.directory /var/storage
+
 # Redis for caching/sessions
 # RUN pecl install redis && docker-php-ext-enable redis
 
