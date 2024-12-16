@@ -77,7 +77,7 @@ services:
         volumes:
             - "/var/run/docker.sock:/var/run/docker.sock"
         environment:
-            - "CRON_APP_TASKS=* * * * * docker exec kfx-php php ./vendor/bin/crunz schedule:run"
+            - "CRON_APP_TASKS=* * * * * docker exec -u www-data kfx-php php ./vendor/bin/crunz schedule:run &"
             #- "CRON_BACKUP=0 4 * * * rsync -a /opt /mnt/backup/opt"
 
 networks:
