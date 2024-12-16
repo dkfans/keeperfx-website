@@ -40,7 +40,7 @@ class WikiController {
         ?string $page = null,
     ){
         // Get wiki dir
-        $wiki_dir = $_ENV['APP_WIKI_STORAGE'];
+        $wiki_dir = $_ENV['APP_WIKI_REPO_STORAGE'];
         if(empty($wiki_dir) || !\is_dir($wiki_dir) || !\is_readable($wiki_dir)){
             throw new HttpInternalServerErrorException($request, "wiki dir is not accessible");
         }
