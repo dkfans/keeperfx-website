@@ -66,7 +66,7 @@ class FetchWikiCommand extends Command
 
                 // Clone the wiki repo
                 $output->writeln("[>] Cloning wiki repo...");
-                $process = new Process(['git',  'clone', self::GITHUB_WIKI_URL, $wiki_dir]);
+                $process = new Process(['git',  'clone', $repo_url, $wiki_dir]);
                 $process->run();
                 if(!$process->isSuccessful()){
                     $output->writeln("[-] Failed to clone wiki");
