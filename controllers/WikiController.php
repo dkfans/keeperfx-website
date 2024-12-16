@@ -2,15 +2,17 @@
 
 namespace App\Controller;
 
+use App\FlashMessage;
 use Twig\Environment as TwigEnvironment;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpNotFoundException;
+
 use Xenokore\Utility\Helper\StringHelper;
 
 class WikiController {
-
-    private const WIKI_ROOT = APP_ROOT . '/var/wiki';
 
     private function fixMarkdownHeaderTagsSEO(string $content): string
     {
@@ -34,8 +36,15 @@ class WikiController {
         Request $request,
         Response $response,
         TwigEnvironment $twig,
+        FlashMessage $flash,
         ?string $page = null,
     ){
+        // Get wiki dir
+        $wiki_dir = $_ENV['APP_WIKI_STORAGE'];
+        if(empty($wiki_dir) || !\is_dir($wiki_dir) || !\is_readable($wiki_dir)){
+            throw new HttpInternalServerErrorException($request, "wiki dir is not accessible");
+        }
+
         // Redirect to the "/wiki/home" if no page is given
         if($page === null){
             $response = $response->withHeader('Location', '/wiki/home')->withStatus(302);
@@ -51,7 +60,7 @@ class WikiController {
 
         // Get the markdown file
         $file = null;
-        foreach(\glob(self::WIKI_ROOT . '/*.md') as $file_path){
+        foreach(\glob($wiki_dir . '/*.md') as $file_path){
             if(strtolower(\basename($file_path)) === strtolower($page) . '.md'){
                 $file = $file_path;
                 break;
@@ -74,7 +83,7 @@ class WikiController {
         // TODO: markdown titles should be #hash-bang linkable
 
         // Get 'sidebar' contents
-        $sidebar_contents = \file_get_contents(self::WIKI_ROOT . '/_Sidebar.md');
+        $sidebar_contents = \file_get_contents($wiki_dir . '/_Sidebar.md');
         if($sidebar_contents === false){
             throw new \Exception("Sidebar markdown file not found");
         }
