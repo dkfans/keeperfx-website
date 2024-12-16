@@ -41,7 +41,23 @@ class FetchForumActivityCommand extends Command
             ['verify' => false] // Don't verify SSL connection
         );
 
-        $res = $client->request('GET', self::FORUM_URL);
+        try {
+
+            // Make GET request
+            $res = $client->request('GET', self::FORUM_URL);
+
+        } catch (\Exception $ex) {
+
+            if($ex->getCode() == 403){
+                $output->writeln("[-] 403 Forbidden");
+            } elseif($ex->getCode() == 404) {
+                $output->writeln("[-] 404 Not found");
+            } else {
+                $output->writeln("[-] Unknown problem");
+            }
+
+            return Command::FAILURE;
+        }
 
         $content = $res->getBody();
         if(!$content){
