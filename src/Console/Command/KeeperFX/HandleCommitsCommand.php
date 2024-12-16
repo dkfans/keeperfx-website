@@ -16,8 +16,6 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 
 class HandleCommitsCommand extends Command
 {
-    public const PROJECT_DIR = APP_ROOT . '/var/keeperfx';
-
     private EntityManager $em;
 
     public function __construct(EntityManager $em) {
@@ -34,12 +32,19 @@ class HandleCommitsCommand extends Command
     protected function execute(Input $input, Output $output)
     {
         $commits_handled = false;
-
         $output->writeln("[>] Handling project commits...");
 
+        // Get local keeperfx repo dir
+        // TODO: make CLI chroot accessible
+        $kfx_repo_dir = $_ENV['APP_KFX_REPO_STORAGE'];
+        if(empty($kfx_repo_dir)){
+            $output->writeln("[-] KeeperFX Repo dir not configured (APP_KFX_REPO_STORAGE)");
+            return Command::FAILURE;
+        }
+
         // Make sure project directory exists
-        if(!DirectoryHelper::isAccessible(self::PROJECT_DIR)){
-            $output->writeln("[-] Directory does not exist: " . self::PROJECT_DIR);
+        if(!DirectoryHelper::isAccessible($kfx_repo_dir)){
+            $output->writeln("[-] Directory does not exist: " . $kfx_repo_dir);
             $output->writeln("[>] Run the 'kfx:pull-repo' command first");
             return Command::FAILURE;
         }
@@ -75,7 +80,7 @@ class HandleCommitsCommand extends Command
                 $current_tag,
                 '--not',
                 $previous_tag,
-            ], self::PROJECT_DIR);
+            ], $kfx_repo_dir);
 
             // Run the process
             $process->run();
