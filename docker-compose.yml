@@ -5,14 +5,14 @@ services:
     redis:
         image: redis:alpine
         container_name: kfx-redis
-        restart: always
+        restart: unless-stopped
         networks:
             - kfx_network
 
     mariadb:
         image: mariadb:latest
         container_name: kfx-mariadb
-        restart: always
+        restart: unless-stopped
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -26,7 +26,7 @@ services:
     clamav:
         image: clamav/clamav:latest
         container_name: kfx-clamav
-        restart: always
+        restart: unless-stopped
         networks:
             - kfx_network
 
@@ -35,7 +35,7 @@ services:
             context: .
             dockerfile: ./docker/php/Dockerfile
         container_name: kfx-php
-        restart: always
+        restart: unless-stopped
         volumes:
             - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
             - .:/var/www:rw
@@ -57,7 +57,7 @@ services:
     nginx:
         image: nginx:latest
         container_name: kfx-nginx
-        restart: always
+        restart: unless-stopped
         volumes:
             - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
             - .:/var/www:ro
@@ -72,7 +72,7 @@ services:
     cron:
         image: whefter/cron
         container_name: kfx-cron
-        restart: always
+        restart: unless-stopped
         network_mode: none
         volumes:
             - "/var/run/docker.sock:/var/run/docker.sock"
