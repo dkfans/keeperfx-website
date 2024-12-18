@@ -23,7 +23,7 @@ php ./console cache:clear -i
 composer install --no-dev
 
 # Update the database structure
-php ./console migrations:migrate --no-interaction
+php ./console migrations:migrate --allow-no-migration --no-interaction
 
 # Warm the cache
 # This makes Twig templates compile, and generates Doctrine Proxies.
