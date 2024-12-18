@@ -37,7 +37,7 @@ class WorkshopItemApiController {
             $files[] = [
                 'id'        => $file->getId(),
                 'filename'  => $file->getFilename(),
-                'url'       => APP_ROOT_URL . '/workshop/download/' . $item->getid() . '/' . $file->getId() . '/' . \urlencode($file->getFilename()),
+                'url'       => $_ENV['APP_ROOT_URL'] . '/workshop/download/' . $item->getid() . '/' . $file->getId() . '/' . \urlencode($file->getFilename()),
                 'timestamp' => $file->getCreatedTimestamp()->format('Y-m-d'),
                 'size'      => $file->getSize(),
             ];

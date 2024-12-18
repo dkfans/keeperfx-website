@@ -91,7 +91,7 @@ class PasswordResetController {
                 $em->flush();
 
                 // Create URL
-                $reset_url = APP_ROOT_URL . '/password-reset/' . $token;
+                $reset_url = $_ENV['APP_ROOT_URL'] . '/password-reset/' . $token;
 
                 // Add mail to queue
                 $mailer->createMailInQueue($user->getEmail(), "Password Reset",

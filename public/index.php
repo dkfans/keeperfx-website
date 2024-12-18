@@ -22,17 +22,6 @@ if(\file_exists(__DIR__ . '/../__MAINTENANCE_MODE_ACTIVE')){
 // Bootstrap application
 require __DIR__ . '/../app/bootstrap/bootstrap.php';
 
-// Define application wide request variables
-if(!empty($_ENV['APP_ROOT_URL'])){
-    define('APP_HOST_NAME', \parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_HOST));
-    define('APP_HOST_SCHEME', \parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_SCHEME));
-    define('APP_ROOT_URL', $_ENV['APP_ROOT_URL']);
-} else {
-    define('APP_HOST_NAME', $_SERVER['HTTP_HOST'] ?? 'localhost');
-    define('APP_HOST_SCHEME', $_SERVER['REQUEST_SCHEME'] ?? 'http');
-    define('APP_ROOT_URL', APP_HOST_SCHEME . '://' . APP_HOST_NAME);
-}
-
 // Create Slim App (with PHP-DI bridge)
 $app = \DI\Bridge\Slim\Bridge::create($container);
 

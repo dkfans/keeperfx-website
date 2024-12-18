@@ -70,7 +70,7 @@ class NotificationCenter {
                 // Create and send mail
                 // TODO: add template functionality
                 $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
-                $email_body .= APP_ROOT_URL . '/account/notification/' . $notification->getId();
+                $email_body .= $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
                 $this->mailer->createMailForUser(
                     $user,
                     $notification_object->getNotificationTitle(),
@@ -98,7 +98,7 @@ class NotificationCenter {
 
             // Create and send mail
             $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
-            $email_body .= APP_ROOT_URL . $notification_object->getUri();
+            $email_body .= $_ENV['APP_ROOT_URL'] . $notification_object->getUri();
             $this->mailer->createMailForUser(
                 $user,
                 $notification_object->getNotificationTitle(),
@@ -224,7 +224,7 @@ class NotificationCenter {
                     // Create and send mail
                     // TODO: add template functionality
                     $email_body = $notification_definition->getNotificationTitle() . PHP_EOL . PHP_EOL;
-                    $email_body .= APP_ROOT_URL . '/account/notification/' . $notification->getId();
+                    $email_body .= $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
                     $this->mailer->createMailForUser(
                         $user,
                         $notification_definition->getNotificationTitle(),
@@ -246,7 +246,7 @@ class NotificationCenter {
 
                     // Create and send mail
                     $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
-                    $email_body .= APP_ROOT_URL . $notification_object->getUri();
+                    $email_body .= $_ENV['APP_ROOT_URL'] . $notification_object->getUri();
                     $this->mailer->createMailForUser(
                         $user,
                         $notification_object->getNotificationTitle(),

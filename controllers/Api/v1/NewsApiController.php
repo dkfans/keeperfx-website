@@ -27,12 +27,12 @@ class NewsApiController {
                     'title'             => $article_entity->getTitle(),
                     'created_timestamp' => $article_entity->getCreatedTimestamp()->format('Y-m-d'),
                     'excerpt'           => $article_entity->getExcerpt(),
-                    'url'               => APP_ROOT_URL . '/news/' . $article_entity->getId() .
+                    'url'               => $_ENV['APP_ROOT_URL'] . '/news/' . $article_entity->getId() .
                                             '/' . $article_entity->getCreatedTimestamp()->format('Y-m-d') .
                                             '/' . $article_entity->getTitleSlug(),
                     'image'             => $article_entity->getImage() ?
-                        APP_ROOT_URL . '/news/image/' . $article_entity->getImage() :
-                        APP_ROOT_URL . '/img/horny-face-256.png',
+                        $_ENV['APP_ROOT_URL'] . '/news/image/' . $article_entity->getImage() :
+                        $_ENV['APP_ROOT_URL'] . '/img/horny-face-256.png',
                 ];
             }
         }

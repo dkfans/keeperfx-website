@@ -41,8 +41,8 @@ class RSSController {
         $feed
             ->setTitle('KeeperFX')
             ->setDescription('The latest news for KeeperFX')
-            ->setLink(APP_ROOT_URL)
-            ->setSelfLink(APP_ROOT_URL . '/rss/news')
+            ->setLink($_ENV['APP_ROOT_URL'])
+            ->setSelfLink($_ENV['APP_ROOT_URL'] . '/rss/news')
             ->setChannelElement('language', 'en-US')
             ->setDate(\time())
             ->addGenerator();
@@ -56,7 +56,7 @@ class RSSController {
             }
 
             // Create URL to article
-            $url = APP_ROOT_URL . '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug();
+            $url = $_ENV['APP_ROOT_URL'] . '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug();
 
             // Create HTML content from markdown
             $converter = new CommonMarkConverter();
@@ -95,8 +95,8 @@ class RSSController {
         $feed
             ->setTitle('KeeperFX - Stable Releases')
             ->setDescription('The latest stable releases of KeeperFX')
-            ->setLink(APP_ROOT_URL)
-            ->setSelfLink(APP_ROOT_URL . '/rss/stable')
+            ->setLink($_ENV['APP_ROOT_URL'])
+            ->setSelfLink($_ENV['APP_ROOT_URL'] . '/rss/stable')
             ->setChannelElement('language', 'en-US')
             ->setDate(\time())
             ->addGenerator();
@@ -142,8 +142,8 @@ class RSSController {
         $feed
             ->setTitle('KeeperFX - Alpha Patches')
             ->setDescription('The latest alpha patches for KeeperFX')
-            ->setLink(APP_ROOT_URL)
-            ->setSelfLink(APP_ROOT_URL . '/rss/alpha')
+            ->setLink($_ENV['APP_ROOT_URL'])
+            ->setSelfLink($_ENV['APP_ROOT_URL'] . '/rss/alpha')
             ->setChannelElement('language', 'en-US')
             ->setDate(\time())
             ->addGenerator();
@@ -156,7 +156,7 @@ class RSSController {
                 $feed->setChannelElement('pubDate',  \date(\DATE_RSS, $patch->getTimestamp()->getTimestamp()));
             }
 
-            $url = APP_ROOT_URL . '/download/' . $patch->getFilename();
+            $url = $_ENV['APP_ROOT_URL'] . '/download/' . $patch->getFilename();
 
             // Create feed item
             $item = $feed->createNewItem();

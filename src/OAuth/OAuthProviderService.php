@@ -34,7 +34,7 @@ class OAuthProviderService {
         $class = new $class_name([
             'clientId'     => $_ENV['APP_OAUTH_' . \strtoupper($provider->value) . '_CLIENT_ID'],
             'clientSecret' => $_ENV['APP_OAUTH_' . \strtoupper($provider->value) . '_CLIENT_SECRET'],
-            'redirectUri'  => APP_ROOT_URL . '/oauth/connect/' . $provider->value,
+            'redirectUri'  => $_ENV['APP_ROOT_URL'] . '/oauth/connect/' . $provider->value,
         ]);
 
         // Set a HTTP client that does not verify SSL certs

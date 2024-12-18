@@ -93,7 +93,7 @@ class Account {
         $max_age      = (int) ($_ENV['APP_REMEMBER_ME_TIME'] ?? 31560000);
         $expires      = \gmdate('D, d M Y H:i:s T', time() + $max_age);
         return SetCookie::create('user_cookie_token', $cookie_token)
-            ->withDomain($_ENV['APP_COOKIE_DOMAIN'] ?? APP_HOST_NAME)
+            ->withDomain($_ENV['APP_COOKIE_DOMAIN'] ?? $_ENV['APP_ROOT_URL'] ?? null)
             ->withPath($_ENV['APP_COOKIE_PATH'] ?? "/")
             ->withExpires($expires)
             ->withMaxAge($max_age)
@@ -131,7 +131,7 @@ class Account {
         // Create a mail
         // TODO: add template functionality
         $email_body = "Please verify your email address for KeeperFX using the following link: " . PHP_EOL;
-        $email_body .= APP_ROOT_URL . '/verify-email/' . $this->user->getId() . '/' . $verification->getToken();
+        $email_body .= $_ENV['APP_ROOT_URL'] . '/verify-email/' . $this->user->getId() . '/' . $verification->getToken();
 
         // Create the mail in the mail queue and return the mail ID or FALSE on failure
         return $this->mailer->createMailForUser(

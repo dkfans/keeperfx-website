@@ -49,7 +49,7 @@ class MassVerifyEmailCommand extends Command
             // Create a mail
             // TODO: add template functionality
             $email_body = "Please verify your email address for KeeperFX using the following link: " . PHP_EOL;
-            $email_body .= APP_ROOT_URL . '/verify-email/' . $user->getId() . '/' . $verification->getToken();
+            $email_body .= $_ENV['APP_ROOT_URL'] . '/verify-email/' . $user->getId() . '/' . $verification->getToken();
 
             // Create the mail in the mail queue and return the mail ID or FALSE on failure
             $this->mailer->createMailForUser(
