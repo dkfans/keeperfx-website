@@ -37,7 +37,7 @@ services:
         container_name: kfx-php
         restart: unless-stopped
         volumes:
-            - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+            - ./docker/php/php.${APP_ENV}.ini:/usr/local/etc/php/conf.d/custom.ini:ro
             - .:/var/www:rw
             - ./storage:/var/storage:rw
             - ./logs:/var/log/kfx-web:rw
