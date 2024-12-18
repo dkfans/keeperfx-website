@@ -42,14 +42,14 @@ class WorkshopBrowseApiController {
                     'install_instructions' => $entity->getInstallInstructions(),
                     'description'          => $entity->getDescription(),
 
-                    'url'                  => $_ENV['APP_ROOT_URL'] . '/workshop/item/' . $entity->getId() . '/' . URLify::slug($entity->getName()),
+                    'url'                  => APP_ROOT_URL . '/workshop/item/' . $entity->getId() . '/' . URLify::slug($entity->getName()),
 
                     'image'                => \count($entity->getImages()) > 0 ?
-                        $_ENV['APP_ROOT_URL'] . '/workshop/image/' . $entity->getId() . '/' . $entity->getImages()[0]->getFilename() :
-                        $_ENV['APP_ROOT_URL'] . '/img/no-image-256.png',
+                        APP_ROOT_URL . '/workshop/image/' . $entity->getId() . '/' . $entity->getImages()[0]->getFilename() :
+                        APP_ROOT_URL . '/img/no-image-256.png',
 
                     'thumbnail'             => $entity->getThumbnail() ?
-                        $_ENV['APP_ROOT_URL'] . '/workshop/image/' . $entity->getId() . '/' . $entity->getThumbnail() :
+                        APP_ROOT_URL . '/workshop/image/' . $entity->getId() . '/' . $entity->getThumbnail() :
                         null,
 
                     'submitter' => [

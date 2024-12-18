@@ -13,7 +13,7 @@ class DebugBarTwigExtension extends \Twig\Extension\AbstractExtension
 
     public function __construct(StandardDebugBar $debug_bar)
     {
-        $this->js_renderer = $debug_bar->getJavascriptRenderer($_ENV['APP_ROOT_URL'] . '/assets/debugbar');
+        $this->js_renderer = $debug_bar->getJavascriptRenderer(APP_ROOT_URL . '/assets/debugbar');
     }
 
     public function getName(): string

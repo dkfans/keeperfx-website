@@ -58,7 +58,7 @@ class ReleaseApiController {
                 'filename'        => $alpha_build->getFilename(),
                 'timestamp'       => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
                 'size_in_bytes'   => $alpha_build->getSizeInBytes(),
-                'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename())
+                'download_url'    => APP_ROOT_URL . '/download/alpha/' . \urlencode($alpha_build->getFilename())
             ]])
         );
 
@@ -218,7 +218,7 @@ class ReleaseApiController {
         {
             $patches[] = [
                 'name'           => $patch->getName(),
-                'url'            => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($patch->getFilename()),
+                'url'            => APP_ROOT_URL . '/download/alpha/' . \urlencode($patch->getFilename()),
                 'timestamp'      => $patch->getTimestamp()->format('c'),
                 'workflow_title' => $patch->getWorkflowTitle(),
             ];
@@ -232,7 +232,7 @@ class ReleaseApiController {
                 'new_patches' => $patches,
                 'alpha_patch' => [
                     'name'      => $last_patch->getName(),
-                    'url'       => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($last_patch->getFilename()),
+                    'url'       => APP_ROOT_URL . '/download/alpha/' . \urlencode($last_patch->getFilename()),
                     'timestamp' => $last_patch->getTimestamp()->format('c'),
                 ],
             ])

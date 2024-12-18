@@ -114,7 +114,7 @@ class DiscordNotifier {
         $embed->title($item->getName());
         $embed->color(self::COLOR_NEW_WORKSHOP_ITEM);
         $embed->timestamp($item->getCreatedTimestamp()->format('Y-m-d H:i'));
-        $embed->url($_ENV['APP_ROOT_URL'] . "/workshop/item/" . $item->getId() . "/" . URLify::slug($item->getName()));
+        $embed->url(APP_ROOT_URL . "/workshop/item/" . $item->getId() . "/" . URLify::slug($item->getName()));
         $embed->field(
             EnumTwigExtension::enumBeautify($item->getCategory()->name), // Little hack
             ''
@@ -133,18 +133,18 @@ class DiscordNotifier {
         // For some reason we have to manually get the thumbnail from the DB if the WorkshopItem just got persisted
         $thumbnail = $this->em->getRepository(WorkshopImage::class)->findOneBy(['item' => $item, 'weight' => 0]);
         if($thumbnail){
-            $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/workshop/image/' . $item->getId() . '/' . $thumbnail->getFilename());
+            $embed->thumbnail(APP_ROOT_URL . '/workshop/image/' . $item->getId() . '/' . $thumbnail->getFilename());
         } else {
-            $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/no-image-256.png');
+            $embed->thumbnail(APP_ROOT_URL . '/img/no-image-256.png');
         }
 
         // Add user
         if($item->getSubmitter()){
             $user = $item->getSubmitter();
             if($user->getAvatar()){
-                $embed->footer($user->getUsername(), $_ENV['APP_ROOT_URL'] . '/avatar/' . $user->getAvatar());
+                $embed->footer($user->getUsername(), APP_ROOT_URL . '/avatar/' . $user->getAvatar());
             } else {
-                $embed->footer($user->getUsername(), $_ENV['APP_ROOT_URL'] . '/img/horny-face-256.png');
+                $embed->footer($user->getUsername(), APP_ROOT_URL . '/img/horny-face-256.png');
             }
         }
 
@@ -163,7 +163,7 @@ class DiscordNotifier {
         $embed->title($article->getTitle());
         $embed->color(self::COLOR_NEW_NEWS_ARTICLE);
         $embed->timestamp($article->getCreatedTimestamp()->format('Y-m-d H:i'));
-        $embed->url($_ENV['APP_ROOT_URL'] . '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug());
+        $embed->url(APP_ROOT_URL . '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug());
         $embed->footer("KeeperFX Team");
 
         // Add excerpt
@@ -195,7 +195,7 @@ class DiscordNotifier {
         $embed->title($alpha_build->getName());
         $embed->color(self::COLOR_NEW_ALPHA_PATCH);
         $embed->timestamp($alpha_build->getTimestamp()->format('Y-m-d H:i'));
-        $embed->url($_ENV['APP_ROOT_URL'] . '/download/alpha/' . $alpha_build->getFilename());
+        $embed->url(APP_ROOT_URL . '/download/alpha/' . $alpha_build->getFilename());
         $embed->description($description);
         $embed->footer(BinaryFormatter::bytes($alpha_build->getSizeInBytes())->format());
 
@@ -215,8 +215,8 @@ class DiscordNotifier {
         $embed->color(self::COLOR_NEW_STABLE_BUILD);
         $embed->timestamp($github_release->getTimestamp()->format('Y-m-d H:i'));
         $embed->url($github_release->getDownloadUrl());
-        // $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/horny-face-512.png');
-        $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/download.png');
+        // $embed->thumbnail(APP_ROOT_URL . '/img/horny-face-512.png');
+        $embed->thumbnail(APP_ROOT_URL . '/img/download.png');
         $embed->footer(BinaryFormatter::bytes($github_release->getSizeInBytes())->format());
         $embed->description("A new game update!");
 
