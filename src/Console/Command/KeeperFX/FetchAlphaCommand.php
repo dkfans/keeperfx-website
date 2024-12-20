@@ -234,7 +234,15 @@ class FetchAlphaCommand extends Command
 
                 // Move new archive
                 $output->writeln("[>] Moving new archive to: <info>{$output_path}</info>");
-                \rename($temp_archive_path_new, $output_path);
+                if(\rename($temp_archive_path_new, $output_path) === false){
+                    throw new \Exception("failed to move file");
+                }
+
+                // Change file permissions
+                /*$output->writeln("[>] Changing file permissions...");
+                if(\chmod($output_path, 0777) === false){
+                    throw new \Exception("failed to change file permissions");
+                }*/
 
                 // Get filesize
                 $output_filesize = \filesize($output_path);
