@@ -43,12 +43,6 @@ RUN docker-php-ext-install -j$(nproc) \
 # Fix dubious file ownership warnings in git
 RUN git config --system --add safe.directory '*'
 
-# Redis for caching/sessions
-# RUN pecl install redis && docker-php-ext-enable redis
-
-# Xdebug for debugging - REMOVE IN PRODUCTION!
-# RUN pecl install xdebug && docker-php-ext-enable xdebug
-
 # Get Composer (PHP package manager)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
