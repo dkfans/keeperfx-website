@@ -19,7 +19,7 @@ services:
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         volumes:
-            - mariadb_data:/var/lib/mysql
+            - kfx_database_storage:/var/lib/mysql
         networks:
             - kfx_network
 
@@ -88,9 +88,5 @@ networks:
 volumes:
     kfx_storage:
         external: true
-    mariadb_data:
-        driver: local
-        driver_opts:
-            type: none
-            o: bind
-            device: ./docker/data/mariadb
+    kfx_database_storage:
+        external: true
