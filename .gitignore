@@ -17,6 +17,7 @@ migrations/*
 
 # Docker
 docker/data/*
+docker-compose.yml
 
 # INCLUDE VSCode tasks.json (project specific)
 !.vscode/tasks.json
