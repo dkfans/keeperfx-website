@@ -19,7 +19,7 @@ services:
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         volumes:
-            - kfx_database_storage:/var/lib/mysql
+            - kfx_database:/var/lib/mysql
         networks:
             - kfx_network
 
@@ -88,5 +88,5 @@ networks:
 volumes:
     kfx_storage:
         external: true
-    kfx_database_storage:
+    kfx_database:
         external: true
