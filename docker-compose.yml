@@ -64,7 +64,7 @@ services:
             - .:/var/www:ro
             - kfx_storage:/var/storage:rw,z
         ports:
-            - "5500:80"
+            - "127.0.0.1:5500:80"
         depends_on:
             - php
         networks:
