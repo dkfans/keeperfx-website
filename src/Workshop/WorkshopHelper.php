@@ -45,7 +45,7 @@ class WorkshopHelper {
         $image_filepath = $item_images_dir . '/' . $image_filename;
 
         // Create a thumbnail
-        $thumbnail_filename = ThumbnailHelper::createThumbnail($image_filepath, 512, 512);
+        $thumbnail_filename = ThumbnailHelper::createThumbnail($image_filepath, 256, 256);
         if($thumbnail_filename){
             $item->setThumbnail($thumbnail_filename);
             $em->flush();
