@@ -8,8 +8,9 @@ __MAINTENANCE_MODE_ACTIVE
 # Environment vars
 .env
 
-# Composer vendor
+# Composer
 vendor/
+.composer/
 
 # Migrations
 migrations/*
