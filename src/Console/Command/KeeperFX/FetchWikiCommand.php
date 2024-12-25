@@ -2,11 +2,14 @@
 
 namespace App\Console\Command\KeeperFX;
 
+use App\Config\Config;
+
+use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
+
 use Xenokore\Utility\Helper\DirectoryHelper;
-use Symfony\Component\Process\Process;
 
 class FetchWikiCommand extends Command
 {
@@ -29,7 +32,7 @@ class FetchWikiCommand extends Command
 
         // Get wiki dir
         // TODO: make CLI chroot accessible
-        $wiki_dir = $_ENV['APP_WIKI_REPO_STORAGE'];
+        $wiki_dir = Config::get('storage.path.wiki-repo');
         if(empty($wiki_dir)){
             $output->writeln("[-] Wiki dir not configured");
             return Command::FAILURE;

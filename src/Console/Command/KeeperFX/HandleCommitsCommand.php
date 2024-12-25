@@ -4,6 +4,8 @@ namespace App\Console\Command\KeeperFX;
 
 use App\Entity\GitCommit;
 use App\Entity\GithubRelease;
+
+use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Process\Process;
 
@@ -36,7 +38,7 @@ class HandleCommitsCommand extends Command
 
         // Get local keeperfx repo dir
         // TODO: make CLI chroot accessible
-        $kfx_repo_dir = $_ENV['APP_KFX_REPO_STORAGE'];
+        $kfx_repo_dir = Config::get('storage.path.kfx-repo');
         if(empty($kfx_repo_dir)){
             $output->writeln("[-] KeeperFX Repo dir not configured (APP_KFX_REPO_STORAGE)");
             return Command::FAILURE;

@@ -6,6 +6,7 @@ use App\Entity\WorkshopBrokenFile;
 use App\Entity\WorkshopFile;
 use App\Entity\WorkshopItem;
 
+use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 
 use Psr\SimpleCache\CacheInterface;
@@ -177,7 +178,7 @@ class WorkshopBrokenFileHandler {
     private function getWorkshopFileHash(WorkshopFile $file): string|null
     {
         // Get file path
-        $workshop_item_dir       = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $file->getItem()->getId();
+        $workshop_item_dir       = Config::get('storage.path.workshop') . '/' . $file->getItem()->getId();
         $workshop_item_files_dir = $workshop_item_dir . '/files';
         $workshop_file_path      = $workshop_item_files_dir . '/' . $file->getStorageFilename();
 

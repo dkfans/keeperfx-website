@@ -5,11 +5,11 @@ namespace App\Console\Command\Workshop;
 use App\Entity\WorkshopItem;
 use App\Entity\WorkshopFile;
 
+use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface as Container;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
-
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -237,7 +237,7 @@ class FetchCreatureMakerCommand extends Command
         ////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
 
-        $workshop_files_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'] . '/' . $workshop_item->getId() . '/files';
+        $workshop_files_dir = Config::get('storage.path.workshop') . '/' . $workshop_item->getId() . '/files';
 
         // Remove already existing workshop files
         $workshop_file = null;

@@ -3,6 +3,7 @@
 namespace App\Console\Command\User;
 
 use App\Entity\User;
+use App\Config\Config;
 use App\Helper\ThumbnailHelper;
 use Doctrine\ORM\EntityManager;
 
@@ -33,16 +34,12 @@ class GenerateAllAvatarThumbnailsCommand extends Command
     protected function execute(Input $input, Output $output)
     {
         // Define workshop storage dir
-        if(!empty($_ENV['APP_AVATAR_STORAGE_CLI_PATH'])){
-            $storage_dir = $_ENV['APP_AVATAR_STORAGE_CLI_PATH'];
-        } elseif (!empty($_ENV['APP_AVATAR_STORAGE'])){
-            $storage_dir = $_ENV['APP_AVATAR_STORAGE'];
-        } else {
+        $storage_dir = Config::get('storage.path.avatar');
+        if($storage_dir == null){
             $output->writeln("[-] Avatar storage directory is not set");
             $output->writeln("[>] ENV VAR: 'APP_AVATAR_STORAGE_CLI_PATH' or 'APP_AVATAR_STORAGE'");
             return Command::FAILURE;
         }
-
 
         /** @var EntityManager $em */
         $em = $this->container->get(EntityManager::class);
