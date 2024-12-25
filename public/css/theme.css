@@ -7,7 +7,7 @@
 @font-face {
     font-family: 'Nunito';
     font-display: swap;
-    src: url(/font/nunito/Nunito-VariableFont_wght.ttf) format('truetype');
+    src: url(/font/nunito/static/Nunito-Regular.ttf) format('truetype');
 }
 
 body {
