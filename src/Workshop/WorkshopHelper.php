@@ -4,11 +4,9 @@ namespace App\Workshop;
 
 use App\Entity\WorkshopItem;
 
+use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 
-use Psr\SimpleCache\CacheInterface;
-
-use App\Helper\SystemHelper;
 use App\Helper\ThumbnailHelper;
 
 class WorkshopHelper {
@@ -23,11 +21,7 @@ class WorkshopHelper {
         // TODO: add env var for minimum filesize to start generating thumbnails (250kb?)
 
         // Get workshop item image dir
-        if(\php_sapi_name() === 'cli' || \defined('STDIN')){
-            $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'] . '/' . $item->getId() . '/images';
-        } else {
-            $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item->getId() . '/images';
-        }
+        $item_images_dir = Config::get('storage.path.workshop') . '/' . $item->getId() . '/images';
 
         // Make sure image dir exists
         if(!\file_exists($item_images_dir)){
@@ -57,11 +51,7 @@ class WorkshopHelper {
     public static function removeThumbnail(EntityManager $em, WorkshopItem $item)
     {
         // Get workshop item image dir
-        if(\php_sapi_name() === 'cli' || \defined('STDIN')){
-            $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'] . '/' . $item->getId() . '/images';
-        } else {
-            $item_images_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $item->getId() . '/images';
-        }
+        $item_images_dir = Config::get('storage.path.workshop') . $item->getId() . '/images';
 
         // Make sure image dir exists
         if(!\file_exists($item_images_dir)){
