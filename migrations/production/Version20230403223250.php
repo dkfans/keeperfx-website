@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Migrations\Production;
 
+use App\Config\Config;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -28,12 +29,9 @@ final class Version20230403223250 extends AbstractMigration
             foreach($items as $item){
 
                 // Define storage dir
-                if(!empty($_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'])){
-                    $storage_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'];
-                } elseif (!empty($_ENV['APP_WORKSHOP_STORAGE'])){
-                    $storage_dir = $_ENV['APP_WORKSHOP_STORAGE'];
-                } else {
-                    die('invalid storage dir');
+                $storage_dir = Config::get('storage.path.workshop');
+                if($storage_dir === null)
+                    die('Invalid workshop storage dir');
                 }
 
                 // Define files directories

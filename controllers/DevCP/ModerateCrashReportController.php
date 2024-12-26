@@ -5,6 +5,8 @@ namespace App\Controller\DevCP;
 use App\Entity\CrashReport;
 
 use App\FlashMessage;
+use App\Config\Config;
+
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
@@ -76,7 +78,7 @@ class ModerateCrashReportController {
         // Delete savefile
         $save_filename = $crash_report->getSaveFilename();
         if($save_filename){
-            $dir = $_ENV['APP_CRASH_REPORT_SAVEFILE_STORAGE'];
+            $dir = Config::get('storage.path.crash-report-savefile');
             if(\file_exists($dir)){
                 $filepath = $dir . '/' . $save_filename;
                 if(\file_exists($filepath)){

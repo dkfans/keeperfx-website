@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Config\Config;
+
 use \LasseRafn\InitialAvatarGenerator\InitialAvatar as AvatarGenerator;
 
 use Psr\Http\Message\ResponseInterface as Response;
@@ -22,7 +24,7 @@ class AvatarController {
         $filename,
     ){
         // Get avatar filepath
-        $filepath = $_ENV['APP_AVATAR_STORAGE'] . '/' . $filename;
+        $filepath = Config::get('storage.path.avatar') . '/' . $filename;
 
         // Check if file exists
         if(!\file_exists($filepath)){

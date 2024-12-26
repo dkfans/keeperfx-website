@@ -10,6 +10,7 @@ use App\Entity\UserEmailVerification;
 use App\Theme;
 use App\Account;
 use App\FlashMessage;
+use App\Config\Config;
 use App\UploadSizeHelper;
 use App\Helper\ThumbnailHelper;
 use App\Workshop\WorkshopCache;
@@ -385,7 +386,7 @@ class AccountController {
 
         // Check if avatar upload directory exists
         // Create it if it doesn't
-        $avatar_dir = $_ENV['APP_AVATAR_STORAGE'] ?? null;
+        $avatar_dir = Config::get('storage.path.avatar');
         if(empty($avatar_dir)){
             throw new \Exception('Avatar storage directory not set: \'APP_AVATAR_STORAGE\'');
         }
@@ -471,7 +472,7 @@ class AccountController {
         }
 
         // Get avatar dir
-        $avatar_dir = $_ENV['APP_AVATAR_STORAGE'] ?? null;
+        $avatar_dir = Config::get('storage.path.avatar');
         if(empty($avatar_dir)){
             throw new \Exception('Avatar storage directory not set: \'APP_AVATAR_STORAGE\'');
         }

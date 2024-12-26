@@ -3,6 +3,8 @@
 namespace App\Console\Command\KeeperFX;
 
 use App\Entity\GithubPrototype;
+
+use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 
 use Symfony\Component\Console\Command\Command;
@@ -27,11 +29,8 @@ class ClearOldPrototypesCommand extends Command
     protected function execute(Input $input, Output $output)
     {
         // Make sure an output directory is set
-        if(!empty($_ENV['APP_PROTOTYPE_STORAGE_CLI_PATH'])){
-            $storage_dir = $_ENV['APP_PROTOTYPE_STORAGE_CLI_PATH'];
-        } elseif (!empty($_ENV['APP_PROTOTYPE_STORAGE'])){
-            $storage_dir = $_ENV['APP_PROTOTYPE_STORAGE'];
-        } else {
+        $storage_dir = Config::get('storage.path.prototype');
+        if($storage_dir === null) {
             $output->writeln("[-] Prototype download directory is not set");
             $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_STORAGE_CLI_PATH' or 'APP_PROTOTYPE_STORAGE'");
             return Command::FAILURE;

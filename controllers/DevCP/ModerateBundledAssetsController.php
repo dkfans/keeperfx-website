@@ -5,7 +5,8 @@ namespace App\Controller\DevCP;
 use App\Entity\CrashReport;
 
 use App\FlashMessage;
-use Directory;
+use App\Config\Config;
+
 use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
@@ -13,9 +14,10 @@ use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+use Xenokore\Utility\Helper\DirectoryHelper;
+
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
-use Xenokore\Utility\Helper\DirectoryHelper;
 
 class ModerateBundledAssetsController {
 
@@ -28,8 +30,8 @@ class ModerateBundledAssetsController {
     ){
 
         // Get directories
-        $alpha_patch_bundle_dir = $_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE'];
-        $prototype_bundle_dir   = $_ENV['APP_PROTOTYPE_FILE_BUNDLE_STORAGE'];
+        $alpha_patch_bundle_dir = Config::get('storage.path.alpha-patch-file-bundle');
+        $prototype_bundle_dir   = Config::get('storage.path.prototype-file-bundle');
 
         // Make sure alpha patch directory exists and is a dir
         if(!\file_exists($alpha_patch_bundle_dir) || !\is_dir($alpha_patch_bundle_dir)){

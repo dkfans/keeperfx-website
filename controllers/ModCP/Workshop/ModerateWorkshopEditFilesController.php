@@ -7,6 +7,7 @@ use App\Entity\WorkshopFile;
 
 use App\Account;
 use App\FlashMessage;
+use App\Config\Config;
 use App\UploadSizeHelper;
 use App\Workshop\WorkshopCache;
 use App\Workshop\WorkshopBrokenFileHandler;
@@ -90,7 +91,7 @@ class ModerateWorkshopEditFilesController {
         }
 
         // Set directories for files
-        $workshop_item_dir       = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
+        $workshop_item_dir       = Config::get('storage.path.workshop') . '/' . $workshop_item->getId();
         $workshop_item_files_dir = $workshop_item_dir . '/files';
 
         // Make sure output directory exists
@@ -177,7 +178,7 @@ class ModerateWorkshopEditFilesController {
 
         // Get storage variables
         $original_filename       = $workshop_file->getFilename();
-        $workshop_item_dir       = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
+        $workshop_item_dir       = Config::get('storage.path.workshop') . '/' . $workshop_item->getId();
         $workshop_item_files_dir = $workshop_item_dir . '/files';
         $workshop_file_path      = $workshop_item_files_dir . '/' . $workshop_file->getStorageFilename();
 

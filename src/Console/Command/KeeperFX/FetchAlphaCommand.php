@@ -4,9 +4,11 @@ namespace App\Console\Command\KeeperFX;
 
 use App\Entity\GithubAlphaBuild;
 
-use DateTime;
+use App\Config\Config;
 use App\DiscordNotifier;
 use App\VirusTotalScanner;
+
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use ByteUnits\Binary as BinaryFormatter;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
@@ -55,11 +57,8 @@ class FetchAlphaCommand extends Command
         }
 
         // Make sure an output directory is set
-        if(!empty($_ENV['APP_ALPHA_PATCH_STORAGE_CLI_PATH'])){
-            $storage_dir = $_ENV['APP_ALPHA_PATCH_STORAGE_CLI_PATH'];
-        } elseif (!empty($_ENV['APP_ALPHA_PATCH_STORAGE'])){
-            $storage_dir = $_ENV['APP_ALPHA_PATCH_STORAGE'];
-        } else {
+        $storage_dir = Config::get('storage.path.alpha-patch');
+        if($storage_dir === null){
             $output->writeln("[-] Alpha build download directory is not set");
             $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_STORAGE_CLI_PATH' or 'APP_ALPHA_PATCH_STORAGE'");
             return Command::FAILURE;
@@ -185,26 +184,24 @@ class FetchAlphaCommand extends Command
                 $temp_archive->extract($temp_archive_dir);
 
                 // Add bundle files
-                if(!empty($_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'])){
-                    $bundle_path = $_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'];
-                    $output->writeln("[>] Adding file bundle...");
-                    if(!\is_dir($bundle_path)){
-                        $output->writeln("[-] File bundle path is not a dir");
-                        $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'");
-                        return Command::FAILURE;
-                    } else {
-                        $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);
-                        $iterator     = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
-                        foreach ($iterator as $item) {
-                            if ($item->isDir()) {
-                                $item_dir_path = $temp_archive_dir . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-                                if(!\file_exists($item_dir_path) && !\is_dir($item_dir_path)){
-                                    \mkdir($item_dir_path);
-                                }
-                            } else {
-                                $item_filepath = $temp_archive_dir . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-                                \copy($item, $item_filepath);
+                $bundle_path = Config::get('storage.path.alpha-path-file-bundle');
+                $output->writeln("[>] Adding file bundle...");
+                if($bundle_path === null || !\is_dir($bundle_path)){
+                    $output->writeln("[-] File bundle path is not a dir");
+                    $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'");
+                    return Command::FAILURE;
+                } else {
+                    $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);
+                    $iterator     = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+                    foreach ($iterator as $item) {
+                        if ($item->isDir()) {
+                            $item_dir_path = $temp_archive_dir . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                            if(!\file_exists($item_dir_path) && !\is_dir($item_dir_path)){
+                                \mkdir($item_dir_path);
                             }
+                        } else {
+                            $item_filepath = $temp_archive_dir . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                            \copy($item, $item_filepath);
                         }
                     }
                 }

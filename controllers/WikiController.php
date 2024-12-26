@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\FlashMessage;
+use App\Config\Config;
+
 use Twig\Environment as TwigEnvironment;
 
 use Psr\Http\Message\ResponseInterface as Response;
@@ -40,7 +42,7 @@ class WikiController {
         ?string $page = null,
     ){
         // Get wiki dir
-        $wiki_dir = $_ENV['APP_WIKI_REPO_STORAGE'];
+        $wiki_dir = Config::get('storage.path.wiki-repo');
         if(empty($wiki_dir) || !\is_dir($wiki_dir) || !\is_readable($wiki_dir)){
             throw new HttpInternalServerErrorException($request, "wiki dir is not accessible");
         }

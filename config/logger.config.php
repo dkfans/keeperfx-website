@@ -1,6 +1,7 @@
 <?php
 
 use Monolog\Level;
+use App\Config\Config;
 
 /**
  * Logger configuration
@@ -14,19 +15,19 @@ return [
         'default_log' => [
             'is_enabled' => true,
             'level'      => Level::Info, // info
-            'path'       => ($_ENV['APP_LOG_STORAGE'] ?? APP_ROOT . '/logs') . '/app.log',
+            'path'       => (Config::get('storage.path.logs') ?? APP_ROOT . '/logs') . '/app.log',
         ],
 
         'error_log' => [
             'is_enabled' => true,
             'level'      => Level::Warning, // warning
-            'path'       => ($_ENV['APP_LOG_STORAGE'] ?? APP_ROOT . '/logs') . '/app.error.log',
+            'path'       => (Config::get('storage.path.logs') ?? APP_ROOT . '/logs') . '/app.error.log',
         ],
 
         'debug_log' => [
             'is_enabled' => $_ENV['APP_ENV'] === 'dev',
             'level'      => Level::Debug, // debug
-            'path'       => ($_ENV['APP_LOG_STORAGE'] ?? APP_ROOT . '/logs') . '/app.debug.log',
+            'path'       => (Config::get('storage.path.logs') ?? APP_ROOT . '/logs') . '/app.debug.log',
         ],
     ],
 

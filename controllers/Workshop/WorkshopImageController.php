@@ -70,7 +70,7 @@ class WorkshopImageController {
         }
 
         // Get image dir
-        $image_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/images';
+        $image_dir = Config::get('storage.path.workshop') . '/' . $workshop_item->getId() . '/images';
         if(!\is_dir($image_dir)){
             throw new HttpNotFoundException($request, 'image dir does not exist');
         }

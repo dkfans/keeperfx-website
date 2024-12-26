@@ -2,23 +2,22 @@
 
 namespace App\Controller\AdminCP;
 
-use App\Account;
-use App\DiscordNotifier;
-use App\Entity\NewsArticle;
 use App\FlashMessage;
+use App\Config\Config;
 use App\UploadSizeHelper;
+
 use Doctrine\ORM\EntityManager;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
-use Directory;
-use Slim\Csrf\Guard as CsrfGuard;
+
+use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpForbiddenException;
-use Psr\Http\Message\UploadedFileInterface;
-use Slim\Exception\HttpBadRequestException;
+
 use Xenokore\Utility\Helper\DirectoryHelper;
 
 class AdminUploadController {
@@ -36,7 +35,7 @@ class AdminUploadController {
         }
 
         // Get directory
-        $dir = $_ENV['APP_ADMIN_UPLOAD_STORAGE'];
+        $dir = Config::get('storage.path.admin-upload');
 
         // Make sure directory exists and is a dir
         if(!\file_exists($dir) || !\is_dir($dir)){
@@ -87,7 +86,7 @@ class AdminUploadController {
         }
 
         // Get directory
-        $dir = $_ENV['APP_ADMIN_UPLOAD_STORAGE'];
+        $dir = Config::get('storage.path.admin-upload');
 
         // Get file
         $uploaded_files = $request->getUploadedFiles();
@@ -150,7 +149,7 @@ class AdminUploadController {
         }
 
         // Get directory
-        $dir = $_ENV['APP_ADMIN_UPLOAD_STORAGE'];
+        $dir = Config::get('storage.path.admin-upload');
 
         // Get avatar filepath
         $filepath = $dir . '/' . $filename;

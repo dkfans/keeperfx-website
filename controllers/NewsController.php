@@ -5,10 +5,14 @@ namespace App\Controller;
 use App\Entity\GitCommit;
 use App\Entity\GithubRelease;
 use App\Entity\NewsArticle;
+
+use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
 use Slim\Exception\HttpNotFoundException;
 
 class NewsController {
@@ -72,13 +76,8 @@ class NewsController {
         Response $response,
         $filename
     ){
-        // Make sure the news image storage is set
-        if(!isset($_ENV['APP_NEWS_IMAGE_STORAGE']) || empty($_ENV['APP_NEWS_IMAGE_STORAGE'])){
-            throw new HttpNotFoundException($request);
-        }
-
         // Get image filepath
-        $filepath = $_ENV['APP_NEWS_IMAGE_STORAGE'] . '/' . $filename;
+        $filepath = Config::get('storage.path.news-img') . '/' . $filename;
 
         // Check if file exists
         if(!\file_exists($filepath)){

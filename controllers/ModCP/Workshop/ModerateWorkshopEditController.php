@@ -11,10 +11,12 @@ use App\Entity\WorkshopImage;
 
 use App\Account;
 use App\FlashMessage;
+use App\Config\Config;
 use App\UploadSizeHelper;
-use Doctrine\ORM\EntityManager;
 use App\Workshop\WorkshopCache;
 use App\Workshop\WorkshopHelper;
+
+use Doctrine\ORM\EntityManager;
 use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
 
@@ -203,7 +205,7 @@ class ModerateWorkshopEditController {
         }
 
         // Set directories for files
-        $workshop_item_dir        = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
+        $workshop_item_dir        = Config::get('storage.path.workshop') . '/' . $workshop_item->getId();
         $workshop_item_images_dir = $workshop_item_dir . '/images';
 
         // Image variables
@@ -372,7 +374,7 @@ class ModerateWorkshopEditController {
         }
 
         // Get workshop item dir and check if it exists
-        $workshop_item_dir = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
+        $workshop_item_dir = Config::get('storage.path.workshop') . '/' . $workshop_item->getId();
         if(\is_dir($workshop_item_dir)){
 
             // Clear workshop item dir

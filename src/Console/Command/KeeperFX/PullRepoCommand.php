@@ -2,11 +2,14 @@
 
 namespace App\Console\Command\KeeperFX;
 
+use App\Config\Config;
+
+use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
+
 use Xenokore\Utility\Helper\DirectoryHelper;
-use Symfony\Component\Process\Process;
 
 class PullRepoCommand extends Command
 {
@@ -29,7 +32,7 @@ class PullRepoCommand extends Command
 
         // Get local keeperfx repo dir
         // TODO: make CLI chroot accessible
-        $kfx_repo_dir = $_ENV['APP_KFX_REPO_STORAGE'];
+        $kfx_repo_dir = Config::get('storage.path.kfx-repo');
         if(empty($kfx_repo_dir)){
             $output->writeln("[-] KeeperFX Repo dir not configured (APP_KFX_REPO_STORAGE)");
             return Command::FAILURE;

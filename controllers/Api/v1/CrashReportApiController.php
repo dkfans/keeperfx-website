@@ -6,8 +6,9 @@ use App\Enum\UserRole;
 
 use App\Entity\CrashReport;
 
-use App\FlashMessage;
 use App\Account;
+use App\FlashMessage;
+use App\Config\Config;
 use App\UploadSizeHelper;
 use App\Notifications\NotificationCenter;
 use App\Notifications\Notification\CrashReportNotification;
@@ -109,7 +110,7 @@ class CrashReportApiController {
         ) {
 
             // Check if savefile storage dir is configured
-            $savefile_storage_dir = $_ENV['APP_CRASH_REPORT_SAVEFILE_STORAGE'] ?? null;
+            $savefile_storage_dir = Config::get('storage.path.crash-report-savefile');
             if($savefile_storage_dir == null || $savefile_storage_dir == ''){
                 $response->getBody()->write(
                     \json_encode([

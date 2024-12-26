@@ -14,8 +14,9 @@ use App\Entity\WorkshopFile;
 
 use App\Account;
 use App\FlashMessage;
-use App\UploadSizeHelper;
+use App\Config\Config;
 use App\DiscordNotifier;
+use App\UploadSizeHelper;
 use App\Workshop\WorkshopCache;
 
 use App\Notifications\NotificationCenter;
@@ -265,7 +266,7 @@ class ModerateWorkshopUploadController {
 
 
         // Define directories for files
-        $workshop_item_dir        = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId();
+        $workshop_item_dir        = Config::get('storage.path.workshop') . '/' . $workshop_item->getId();
         $workshop_item_files_dir  = $workshop_item_dir . '/files';
         $workshop_item_images_dir = $workshop_item_dir . '/images';
 

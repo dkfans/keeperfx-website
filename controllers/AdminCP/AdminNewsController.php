@@ -6,6 +6,7 @@ use App\Entity\NewsArticle;
 
 use App\Account;
 use App\FlashMessage;
+use App\Config\Config;
 use App\DiscordNotifier;
 use App\UploadSizeHelper;
 use App\Helper\ThumbnailHelper;
@@ -97,7 +98,15 @@ class AdminNewsController {
         }
 
         // Check if we need to upload an image for this news article
-        if(\array_key_exists('APP_NEWS_IMAGE_STORAGE', $_ENV) && !empty($_ENV['APP_NEWS_IMAGE_STORAGE'])){
+        $news_image_dir = Config::get('storage.path.news-img');
+        if($news_image_dir !== null){
+
+            // Check if news image upload directory exists and create it if it doesn't
+            if(!is_dir($news_image_dir)){
+                if(!\mkdir($news_image_dir)){
+                    throw new \Exception('Failed to create news image storage directory: \'' . $news_image_dir . '\'');
+                }
+            }
 
             // Get image file
             $files = $request->getUploadedFiles();
@@ -126,18 +135,6 @@ class AdminNewsController {
                         $twig->render('admincp/news/news.add.admincp.html.twig')
                     );
                     return $response;
-                }
-
-                // Check if news image upload directory exists
-                // Create it if it doesn't
-                $news_image_dir = $_ENV['APP_NEWS_IMAGE_STORAGE'] ?? null;
-                if(empty($news_image_dir)){
-                    throw new \Exception('Image news storage directory not set: \'APP_NEWS_IMAGE_STORAGE\'');
-                }
-                if(!is_dir($news_image_dir)){
-                    if(!\mkdir($news_image_dir)){
-                        throw new \Exception('Failed to create news image storage directory: \'' . $news_image_dir . '\'');
-                    }
                 }
 
                 // Create variables for this image
@@ -254,7 +251,15 @@ class AdminNewsController {
         }
 
         // Check if we need to upload an image for this news article
-        if(\array_key_exists('APP_NEWS_IMAGE_STORAGE', $_ENV) && !empty($_ENV['APP_NEWS_IMAGE_STORAGE'])){
+        $news_image_dir = Config::get('storage.path.news-img');
+        if($news_image_dir !== null){
+
+            // Check if news image upload directory exists and create it if it doesn't
+            if(!is_dir($news_image_dir)){
+                if(!\mkdir($news_image_dir)){
+                    throw new \Exception('Failed to create news image storage directory: \'' . $news_image_dir . '\'');
+                }
+            }
 
             // Get image file
             $files = $request->getUploadedFiles();
@@ -281,24 +286,12 @@ class AdminNewsController {
                     return $response;
                 }
 
-                // Check if news image upload directory exists
-                // Create it if it doesn't
-                $news_image_dir = $_ENV['APP_NEWS_IMAGE_STORAGE'] ?? null;
-                if(empty($news_image_dir)){
-                    throw new \Exception('Image news storage directory not set: \'APP_NEWS_IMAGE_STORAGE\'');
-                }
-                if(!is_dir($news_image_dir)){
-                    if(!\mkdir($news_image_dir)){
-                        throw new \Exception('Failed to create news image storage directory: \'' . $news_image_dir . '\'');
-                    }
-                }
-
                 // Check if there is already an image added to this news article
                 $existing_image = $article->getImage();
                 if($existing_image){
 
                     // Check if image exists and remove it if it does
-                    $existing_image_path = $_ENV['APP_NEWS_IMAGE_STORAGE'] . '/' . $existing_image;
+                    $existing_image_path = Config::get('storage.path.news-img') . '/' . $existing_image;
                     if(\file_exists($existing_image_path)){
                         @\unlink($existing_image_path);
                     }
@@ -409,7 +402,7 @@ class AdminNewsController {
         }
 
         // Get the path
-        $image_path = $_ENV['APP_NEWS_IMAGE_STORAGE'] . '/' . $image;
+        $image_path = Config::get('storage.path.news-img') . '/' . $image;
 
         // Remove the image file if it exists
         if(\file_exists($image_path)){

@@ -10,6 +10,7 @@ use App\Entity\WorkshopFile;
 
 use App\Account;
 use App\FlashMessage;
+use App\Config\Config;
 
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Psr7\LazyOpenStream;
@@ -65,7 +66,7 @@ class WorkshopDownloadController {
             throw new HttpNotFoundException($request);
         }
 
-        $filepath = $_ENV['APP_WORKSHOP_STORAGE'] . '/' . $workshop_item->getId() . '/files/' . $file->getStorageFilename();
+        $filepath = Config::get('storage.path.workshop') . '/' . $workshop_item->getId() . '/files/' . $file->getStorageFilename();
 
         // Check if file exists
         if(!\file_exists($filepath)){

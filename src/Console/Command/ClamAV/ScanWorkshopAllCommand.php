@@ -6,6 +6,7 @@ use App\Enum\WorkshopScanStatus;
 
 use App\Entity\WorkshopFile;
 
+use App\Config\Config;
 use Appwrite\ClamAV\Pipe;
 use Appwrite\ClamAV\Network;
 use Doctrine\ORM\EntityManager;
@@ -34,11 +35,8 @@ class ScanWorkshopAllCommand extends Command
     protected function execute(Input $input, Output $output)
     {
         // Define workshop storage dir
-        if(!empty($_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'])){
-            $storage_dir = $_ENV['APP_WORKSHOP_STORAGE_CLI_PATH'];
-        } elseif (!empty($_ENV['APP_WORKSHOP_STORAGE'])){
-            $storage_dir = $_ENV['APP_WORKSHOP_STORAGE'];
-        } else {
+        $storage_dir = Config::get('storage.path.workshop');
+        if($storage_dir === null) {
             $output->writeln("[-] Workshop storage directory is not set");
             $output->writeln("[>] ENV VAR: 'APP_WORKSHOP_STORAGE_CLI_PATH' or 'APP_WORKSHOP_STORAGE'");
             return Command::FAILURE;

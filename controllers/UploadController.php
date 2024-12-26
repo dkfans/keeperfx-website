@@ -2,12 +2,16 @@
 
 namespace App\Controller;
 
+use App\Config\Config;
+
 use Twig\Environment as TwigEnvironment;
+
+use Slim\Psr7\Stream;
+use GuzzleHttp\Psr7\LazyOpenStream;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
 use Slim\Exception\HttpNotFoundException;
-use GuzzleHttp\Psr7\LazyOpenStream;
-use Slim\Psr7\Stream;
 
 class UploadController {
 
@@ -21,7 +25,7 @@ class UploadController {
         }
 
         // Get avatar filepath
-        $filepath = $_ENV['APP_ADMIN_UPLOAD_STORAGE'] . '/' . $filename;
+        $filepath = Config::get('storage.path.admin-upload') . '/' . $filename;
 
         // TODO: loop trough folder, compare filenames
         // This should protect against any possible LFI
