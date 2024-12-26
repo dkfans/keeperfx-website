@@ -38,7 +38,7 @@ services:
         restart: unless-stopped
         volumes:
             - ./docker/php/php.${APP_ENV}.ini:/usr/local/etc/php/conf.d/custom.ini:ro
-            - ./docker/php/php-fpm.conf:/usr/local/etc/php-fpm.d/php-fpm.conf:ro
+            - ./docker/php/php-fpm.conf:/usr/local/etc/php-fpm.d/zzz-php-fpm.conf:ro
             - .:/var/www:rw
             - kfx_storage:/var/storage:rw
             - ./logs:/var/log/kfx-web:rw
