@@ -51,7 +51,7 @@ class WorkshopHelper {
     public static function removeThumbnail(EntityManager $em, WorkshopItem $item)
     {
         // Get workshop item image dir
-        $item_images_dir = Config::get('storage.path.workshop') . $item->getId() . '/images';
+        $item_images_dir = Config::get('storage.path.workshop') . '/' . $item->getId() . '/images';
 
         // Make sure image dir exists
         if(!\file_exists($item_images_dir)){
