@@ -10,7 +10,7 @@ use Xenokore\Utility\Exception\ArrayKeyNotFoundException;
 
 class Config {
 
-    private const CONFIG_DIR       = APP_ROOT . '/config';
+    private const CONFIG_DIR = APP_ROOT . '/config';
 
     private static array $configs = [];
 
