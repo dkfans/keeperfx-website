@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libbz2-dev \
     libicu-dev \
     libjpeg62-turbo-dev \
     libwebp-dev \
@@ -38,7 +39,8 @@ RUN docker-php-ext-install -j$(nproc) \
     intl \
     zip \
     opcache \
-    sockets
+    sockets \
+    bz2
 
 # Fix dubious file ownership warnings in git
 RUN git config --system --add safe.directory '*'

@@ -20,6 +20,9 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
+use wapmorgan\UnifiedArchive\Exceptions\EmptyFileListException;
+
 class FetchAlphaCommand extends Command
 {
     public const IS_ENABLED = true;
@@ -178,13 +181,27 @@ class FetchAlphaCommand extends Command
                     $output->writeln("[+] Downloaded artifact!");
                 }
 
+                // Open the archive
+                $temp_archive = UnifiedArchive::open($temp_archive_path);
+                if($temp_archive === null){
+                    $output->writeln("[-] Failed to open the archive");
+                    return Command::FAILURE;
+                }
+
                 // Extract the files
                 $output->writeln("[>] Extracting...");
-                $temp_archive = UnifiedArchive::open($temp_archive_path);
-                $temp_archive->extract($temp_archive_dir);
+                try {
+                    $temp_archive->extract($temp_archive_dir);
+                } catch (EmptyFileListException $ex){
+                    $output->writeln("[-] No files in archive");
+                    return Command::FAILURE;
+                } catch (ArchiveExtractionException $ex){
+                    $output->writeln("[-] Archive Extraction Exception: " . $ex->getMessage());
+                    return Command::FAILURE;
+                }
 
                 // Add bundle files
-                $bundle_path = Config::get('storage.path.alpha-path-file-bundle');
+                $bundle_path = Config::get('storage.path.alpha-patch-file-bundle');
                 $output->writeln("[>] Adding file bundle...");
                 if($bundle_path === null || !\is_dir($bundle_path)){
                     $output->writeln("[-] File bundle path is not a dir");
@@ -246,7 +263,7 @@ class FetchAlphaCommand extends Command
 
             } catch (\Exception $ex){
 
-                $output->writeln("[-] <error>Something went wrong</error>...");
+                $output->writeln("[-] <error>Something went wrong</error>");
 
                 // Cleanup if something went wrong
                 $output->writeln("[>] Removing created files and directory...");
