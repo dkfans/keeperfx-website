@@ -61,6 +61,7 @@ class CacheWebsiteChangelogCommand extends Command
             // Add to commits list
             $commits[$date_str][] = [
                 'message' => $parsed_commit['message'],
+                'hash'    => $parsed_commit['hash'],
             ];
         }
 
