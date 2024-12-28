@@ -31,6 +31,7 @@ final class Version20230403223250 extends AbstractMigration
                 // Define storage dir
                 $storage_dir = Config::get('storage.path.workshop');
                 if($storage_dir === null)
+                {
                     die('Invalid workshop storage dir');
                 }
 
