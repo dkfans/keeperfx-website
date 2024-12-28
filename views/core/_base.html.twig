@@ -69,6 +69,7 @@
                     categories_without_difficulty: {{ workshop_globals.categories_without_difficulty|json_encode()|raw }}
                 },
                 polling: {% if get_env('APP_POLLING_NOTIFICATIONS') == '1' %}true{% else %}false{% endif %},
+                cf_slow_endpoint_check: {% if get_env('APP_CLOUDFLARE_NOTIFY_ON_SLOW_ENDPOINT') == '1' %}true{% else %}false{% endif %},
                 send_email: {{ get_email_id_to_send() }}
             };
         </script>
