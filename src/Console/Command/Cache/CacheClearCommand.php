@@ -125,7 +125,6 @@ class CacheClearCommand extends Command
 
                 $output->writeln("[+] <info>CACHE CLEARED</info>");
                 $output->writeln("[>] Sessions kept: <info>$session_kept_count</info>");
-                $output->writeln("[+] <info>CACHE CLEARED</info>");
 
             } else {
                 $output->writeln("[-] Ignoring sessions in non redis caches is not implemented yet");
