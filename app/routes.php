@@ -355,6 +355,9 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/v1/workshop/search', [Api\v1\Workshop\WorkshopItemApiController::class, 'search']);
     $group->get('/v1/workshop/map_number/{map_number:\d+}', [Api\v1\Workshop\WorkshopItemApiController::class, 'checkMapNumber']);
 
+    // API: User
+    $group->get('/v1/user/search', [Api\v1\UserApiController::class, 'search']);
+
     // API: Releases
     $group->get('/v1/stable/latest', [Api\v1\ReleaseApiController::class, 'latestStable']);
     $group->get('/v1/alpha/latest', [Api\v1\ReleaseApiController::class, 'latestAlpha']);
