@@ -73,6 +73,8 @@ class CacheClearCommand extends Command
                 // Use Predis to connect to it as we can loop trough keys with this adapter
                 $predis = new \Predis\Client($_ENV['APP_CACHE_REDIS_DSN']);
 
+                $session_kept_count = 0;
+
                 // Loop trough all the keys in the redis cache
                 foreach (new \Predis\Collection\Iterator\Keyspace($predis, $prefix . ':*') as $key) {
 
@@ -117,10 +119,12 @@ class CacheClearCommand extends Command
                         continue;
                     }
 
-                    $output->writeln("[>] Session kept: <info>$key_name</info>");
-
+                    // $output->writeln("[>] Session kept: <info>$key_name</info>");
+                    $session_kept_count++;
                 }
 
+                $output->writeln("[+] <info>CACHE CLEARED</info>");
+                $output->writeln("[>] Sessions kept: <info>$session_kept_count</info>");
                 $output->writeln("[+] <info>CACHE CLEARED</info>");
 
             } else {
@@ -159,7 +163,7 @@ class CacheClearCommand extends Command
                 $dir_count++;
                 if(@\rmdir($path)){
                     $dir_count_deleted++;
-                    $output->writeln("[+] DIR: <info>{$path}</info> DELETED");
+                    // $output->writeln("[+] DIR: <info>{$path}</info> DELETED");
                 } else {
                     $output->writeln("[-] DIR: <error>{$path}</error> FAILED");
                 }
@@ -167,16 +171,17 @@ class CacheClearCommand extends Command
                 $file_count++;
                 if(@\unlink($path)){
                     $file_count_deleted++;
-                    $output->writeln("[+] FILE: <info>{$path}</info> DELETED");
+                    // $output->writeln("[+] FILE: <info>{$path}</info> DELETED");
                 } else {
                     $output->writeln("[-] FILE: <error>{$path}</error> FAILED");
                 }
             }
         }
 
-        $output->writeln("[>] Done!");
         $output->writeln("[>] Files deleted: {$file_count_deleted}/{$file_count}");
         $output->writeln("[>] Directories removed: {$dir_count_deleted}/{$dir_count}");
+
+        $output->writeln("[>] Done!");
 
         return Command::SUCCESS;
     }
