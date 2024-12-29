@@ -22,8 +22,13 @@ class MinifyHtmlMiddleware implements MiddlewareInterface {
      */
     private function minifyHTML($html)
     {
-        $parser = \WyriHaximus\HtmlCompress\Factory::constructSmallest();
-        return $parser->compress($html);
+        // $parser = \WyriHaximus\HtmlCompress\Factory::constructSmallest();
+        // return $parser->compress($html);
+
+        // TODO: fix the minifying
+        // ISSUE: https://github.com/WyriHaximus/HtmlCompress/issues/168
+        // https://github.com/voku/HtmlMin/issues/93
+        return $html;
     }
 
     private function minifyResponse(ResponseInterface $response): ResponseInterface
