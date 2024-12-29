@@ -3,7 +3,7 @@
 # This script is meant for updating the whole website on a production server.
 # It will automatically update the application, the database structure and handle the cache.
 
-# Start maintaince mode
+# Start maintenance mode
 # This makes it so users are unable to interact with the website while we update.
 php ./console maintenance:start
 
