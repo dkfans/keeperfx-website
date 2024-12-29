@@ -201,6 +201,7 @@ class FetchAlphaCommand extends Command
                 }
 
                 // Add bundle files
+                $bundled_files_added = 0;
                 $bundle_path = Config::get('storage.path.alpha-patch-file-bundle');
                 $output->writeln("[>] Adding file bundle...");
                 if($bundle_path === null || !\is_dir($bundle_path)){
@@ -218,9 +219,15 @@ class FetchAlphaCommand extends Command
                             }
                         } else {
                             $item_filepath = $temp_archive_dir . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-                            \copy($item, $item_filepath);
+                            if(\copy($item, $item_filepath) === true){
+                                $bundled_files_added++;
+                            } else {
+                                throw new \Exception("failed to copy bundled alpha patch file");
+                            }
                         }
                     }
+
+                    $output->writeln("[+] Copied <info>{$bundled_files_added}</info> files from alpha patch bundle");
                 }
 
                 // Rename the default 'keeperfx.cfg' file
