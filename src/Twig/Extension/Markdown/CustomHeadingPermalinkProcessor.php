@@ -12,6 +12,8 @@ use League\CommonMark\Extension\HeadingPermalink\HeadingPermalink;
 
 class CustomHeadingPermalinkProcessor
 {
+    private $headingCounts = [];
+
     public function onDocumentParsed(DocumentParsedEvent $event): void
     {
         $walker = $event->getDocument()->walker();
@@ -20,6 +22,7 @@ class CustomHeadingPermalinkProcessor
             $node = $walkerEvent->getNode();
             if ($node instanceof Heading && $walkerEvent->isEntering()) {
                 $slug = $this->generateSlug($this->getHeadingText($node));
+                $slug = $this->getUniqueSlug($slug);
                 $node->data->set('attributes/id', $slug);
 
                 // Add permalink
@@ -46,6 +49,18 @@ class CustomHeadingPermalinkProcessor
             }
         }
         return $text;
+    }
+
+    private function getUniqueSlug(string $slug): string
+    {
+        if (!isset($this->headingCounts[$slug])) {
+            $this->headingCounts[$slug] = 0;
+        } else {
+            $this->headingCounts[$slug]++;
+            $slug .= '-' . $this->headingCounts[$slug];
+        }
+
+        return $slug;
     }
 
     private function addPermalink(Heading $heading, string $slug): void
