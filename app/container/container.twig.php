@@ -5,15 +5,6 @@ use App\Config\Config;
 use App\Twig\TwigGlobalProvider;
 use App\Twig\TwigExtensionLoader;
 
-use DebugBar\StandardDebugBar;
-use DebugBar\Bridge\NamespacedTwigProfileCollector;
-
-use Twig\RuntimeLoader\RuntimeLoaderInterface;
-
-use Twig\Extra\Markdown\MarkdownRuntime;
-use Twig\Extra\Markdown\MarkdownInterface;
-use League\CommonMark\GithubFlavoredMarkdownConverter;
-
 use Psr\Container\ContainerInterface;
 use App\Kernel\Exception\ContainerException;
 
@@ -69,23 +60,7 @@ return [
         }
 
         // Add markdown runtime loader
-        $twig->addRuntimeLoader(new class implements RuntimeLoaderInterface {
-            public function load($class) {
-                if (MarkdownRuntime::class === $class) {
-                    return new MarkdownRuntime(
-                        new class (new GithubFlavoredMarkdownConverter) implements MarkdownInterface {
-                            public function __construct(private $converter){}
-                            public function convert(string $string): string {
-                                // Handle a custom spoiler tag
-                                $string = \preg_replace('~\|\|(.+?)\|\|~', '<span class="spoiler spoiler-hover">$1</span>', $string);
-                                // Run the rest of the markdown converter stuff
-                                return $this->converter->convert($string);
-                            }
-                        }
-                    );
-                }
-            }
-        });
+        $twig->addRuntimeLoader(new \App\Twig\Extension\Markdown\CustomMarkdownRuntimeLoader());
 
         // Add debug bar collector
         // We do this here so the Twig session extension does not load the session before the request middleware loads it

@@ -1597,6 +1597,21 @@ div.emoji-drop-down div.emoji {
     margin-bottom: 10px;
 }
 
+.markdown-body a.header-link {
+    margin-left: 0.5rem;
+    display: none;
+    text-decoration: none;
+}
+
+.markdown-body h1:hover a.header-link,
+.markdown-body h2:hover a.header-link,
+.markdown-body h3:hover a.header-link,
+.markdown-body h4:hover a.header-link,
+.markdown-body h5:hover a.header-link,
+.markdown-body h6:hover a.header-link {
+    display: inline-block;
+}
+
 /* .workshop-item-comment-content .markdown-body  */
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
