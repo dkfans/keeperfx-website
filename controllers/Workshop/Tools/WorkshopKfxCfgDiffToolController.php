@@ -93,6 +93,10 @@ class WorkshopKfxCfgDiffToolController {
             // Add section
             $diff_output .= "[{$section}]" . PHP_EOL;
 
+            if(!empty($properties['Name'])){
+                $properties = ['Name' => $properties['Name']] + $properties;
+            }
+
             // Add all the properties
             foreach($properties as $property => $value)
             {
