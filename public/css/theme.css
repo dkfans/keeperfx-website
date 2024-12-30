@@ -1612,6 +1612,10 @@ div.emoji-drop-down div.emoji {
     display: inline-block;
 }
 
+.markdown-body :target {
+    scroll-margin-top: 25px;
+}
+
 /* .workshop-item-comment-content .markdown-body  */
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
