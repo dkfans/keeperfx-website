@@ -93,6 +93,7 @@ class WorkshopKfxCfgDiffToolController {
             // Add section
             $diff_output .= "[{$section}]" . PHP_EOL;
 
+            // Move 'Name' property to top if it exists
             if(!empty($properties['Name'])){
                 $properties = ['Name' => $properties['Name']] + $properties;
             }
