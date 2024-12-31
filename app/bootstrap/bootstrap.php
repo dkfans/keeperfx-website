@@ -46,7 +46,7 @@ if(!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int)$_ENV['APP_RAISE_EXCE
 // This should also work for docker volumes
 foreach(Config::get('storage.path') as $storage_name => $storage_path){
     if(!empty($storage_path)){
-        \Xenokore\Utility\Helper\DirectoryHelper::createIfNotExist($storage_path, 0777);
+        \Xenokore\Utility\Helper\DirectoryHelper::createIfNotExist($storage_path, 0777, true);
     }
 }
 
