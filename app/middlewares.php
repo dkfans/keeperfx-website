@@ -14,5 +14,4 @@ return [
 
     App\Middleware\UserIpChangeLoggerMiddleware::class,
 
-    new \RKA\Middleware\IpAddress(),
 ];
