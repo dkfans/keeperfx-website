@@ -13,8 +13,13 @@ function handleSpoilers()
 
         // Handle click
         $el.on('click', function(e){
+
             $(this).css('transition', '0.3s');
             $(this).removeClass('spoiler-clickable');
+
+            // We remove the spoiler class
+            // This makes the element impossible to be re-initialized
+            // If we ever do want to reinitialize them, the logic needs to be changed
             $(this).removeClass('spoiler');
         });
     });
