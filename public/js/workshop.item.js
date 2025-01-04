@@ -413,6 +413,8 @@ $(function(e){
                     $commentElement.data('comment-edit', false);
                     $isEditedElement.show();
 
+                    handleSpoilers();
+
                     toastr.success("Comment updated!");
                 }
             });

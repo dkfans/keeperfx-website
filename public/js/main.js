@@ -1,4 +1,25 @@
 
+function handleSpoilers()
+{
+    $.each($('.spoiler'), function(i, el){
+        let $el = $(el);
+
+        // Reset if it is already initialized
+        $el.off('click');
+
+        // Remove fallback spoiler CSS
+        $el.removeClass('spoiler-hover');
+        $el.addClass('spoiler-clickable');
+
+        // Handle click
+        $el.on('click', function(e){
+            $(this).css('transition', '0.3s');
+            $(this).removeClass('spoiler-clickable');
+            $(this).removeClass('spoiler');
+        });
+    });
+}
+
 // Document ready
 $(function(){
 
@@ -53,20 +74,7 @@ $(function(){
     }
 
     // Handle spoilers
-    $.each($('.spoiler'), function(i, el){
-        let $el = $(el);
-
-        // Remove fallback spoiler CSS
-        $el.removeClass('spoiler-hover');
-        $el.addClass('spoiler-clickable');
-
-        // Handle click
-        $el.on('click', function(e){
-            $(this).css('transition', '0.3s');
-            $(this).removeClass('spoiler-clickable');
-            $(this).removeClass('spoiler');
-        });
-    });
+    handleSpoilers();
 
     // Check for a possible slow CloudFlare endpoint on download (workshop and alphas).
     // Some providers don't work nicely with CloudFlare so this check will see what
