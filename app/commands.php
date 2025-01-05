@@ -22,6 +22,7 @@ return [
     \App\Console\Command\User\ClearOldNotificationsCommand::class,
     \App\Console\Command\User\GenerateAllAvatarThumbnailsCommand::class,
     \App\Console\Command\User\HandleNewIpLogsCommand::class,
+    \App\Console\Command\User\MergeUsersCommand::class,
 
     // Workshop
     \App\Console\Command\Workshop\AddWorkshopTagCommand::class,
