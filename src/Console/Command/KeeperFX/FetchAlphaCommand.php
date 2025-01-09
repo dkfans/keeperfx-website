@@ -134,9 +134,7 @@ class FetchAlphaCommand extends Command
             // Fallback to first artifact
             $artifact_index = (int) ($_ENV['APP_ALPHA_PATCH_GITHUB_WORKFLOW_ARTIFACT_INDEX'] ?? 0);
             $artifact = $json->artifacts[
-                !empty($json->artifacts[$artifact_index]) ?
-                $json->artifacts[$artifact_index] :
-                0
+                !empty($json->artifacts[$artifact_index]) ? $artifact_index : 0
             ];
 
             // Get artifact download URL
