@@ -130,8 +130,14 @@ class FetchAlphaCommand extends Command
                 continue;
             }
 
-            // Only handle first artifact in workflow run
-            $artifact = $json->artifacts[0];
+            // Handle specific artifact in workflow run
+            // Fallback to first artifact
+            $artifact_index = (int) ($_ENV['APP_ALPHA_PATCH_GITHUB_WORKFLOW_ARTIFACT_INDEX'] ?? 0);
+            $artifact = $json->artifacts[
+                !empty($json->artifacts[$artifact_index]) ?
+                $json->artifacts[$artifact_index] :
+                0
+            ];
 
             // Get artifact download URL
             $dl_url = $artifact->archive_download_url ?? null;
@@ -150,7 +156,7 @@ class FetchAlphaCommand extends Command
             // Create filename and output path
             $exp          = \explode('/', $artifact->archive_download_url);
             $filetype     = \end($exp);
-            $new_filename = $artifact->name . '.7z';
+            $new_filename = \preg_replace('/\-signed$/', '', $artifact->name) . '.7z';
             $output_path  = $storage_dir . '/' . $new_filename;
 
             // Create temp filename and paths for extraction and repackage process
@@ -298,7 +304,7 @@ class FetchAlphaCommand extends Command
 
             // Add to database
             $build = new GithubAlphaBuild();
-            $build->setName($artifact->name);
+            $build->setName(\preg_replace('/\-signed$/', '', $artifact->name));
             $build->setArtifactId($artifact->id);
             $build->setFilename($new_filename);
             $build->setSizeInBytes($output_filesize);
