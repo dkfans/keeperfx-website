@@ -77,6 +77,9 @@ class User {
     #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'user', cascade: ["remove"])]
     private Collection $workshop_comments;
 
+    #[ORM\OneToMany(targetEntity: WorkshopCommentReport::class, mappedBy: 'user', cascade: ["remove"])]
+    private Collection $workshop_comment_reports;
+
     #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'user', cascade: ["remove"])]
     private Collection $workshop_ratings;
 
@@ -96,6 +99,7 @@ class User {
         $this->notification_settings       = new ArrayCollection();
         $this->workshop_items              = new ArrayCollection();
         $this->workshop_comments           = new ArrayCollection();
+        $this->workshop_comment_reports    = new ArrayCollection();
         $this->workshop_ratings            = new ArrayCollection();
         $this->workshop_difficulty_ratings = new ArrayCollection();
         $this->ip_logs                     = new ArrayCollection();
@@ -437,5 +441,13 @@ class User {
         $this->theme = $theme;
 
         return $this;
+    }
+
+    /**
+     * Get the value of workshop_comment_reports
+     */
+    public function getWorkshopCommentReports(): Collection
+    {
+        return $this->workshop_comment_reports;
     }
 }
