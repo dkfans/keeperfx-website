@@ -44,19 +44,6 @@ foreach ((require APP_ROOT . '/app/middlewares.php') as $middleware_class) {
     $app->add($middleware_class);
 }
 
-// Add IP middleware
-// We add this one manually so we can set it up the way we want
-if(!empty($_ENV['APP_IP_MIDDLEWARE_USE_PROXY_HEADER']) && $_ENV['APP_IP_MIDDLEWARE_USE_PROXY_HEADER']){
-    $app->add(new \RKA\Middleware\IpAddress(
-        true,
-        \array_map('trim', \explode(',', $_ENV['APP_IP_MIDDLEWARE_TRUSTED_PROXIES'])),
-        null,
-        \array_map('trim', \explode(',', $_ENV['APP_IP_MIDDLEWARE_PROXY_HEADERS']))
-    ));
-} else {
-    $app->add(new \RKA\Middleware\IpAddress(false));
-}
-
 // Add default error handler (for end users)
 if(Config::get('app.whoops.is_enabled') === false){
     $app->add(ErrorMiddleware::class);
