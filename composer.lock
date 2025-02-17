@@ -1628,16 +1628,16 @@
         },
         {
             "name": "fgribreau/mailchecker",
-            "version": "v6.0.15",
+            "version": "v6.0.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FGRibreau/mailchecker.git",
-                "reference": "d4f9c26706f7a8859b9c66ff13cb13b6247e1180"
+                "reference": "be4c23fc18354fd665e283fa4b885a8dc6854eba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FGRibreau/mailchecker/zipball/d4f9c26706f7a8859b9c66ff13cb13b6247e1180",
-                "reference": "d4f9c26706f7a8859b9c66ff13cb13b6247e1180",
+                "url": "https://api.github.com/repos/FGRibreau/mailchecker/zipball/be4c23fc18354fd665e283fa4b885a8dc6854eba",
+                "reference": "be4c23fc18354fd665e283fa4b885a8dc6854eba",
                 "shasum": ""
             },
             "require": {
@@ -1665,7 +1665,7 @@
             ],
             "support": {
                 "issues": "https://github.com/FGRibreau/mailchecker/issues",
-                "source": "https://github.com/FGRibreau/mailchecker/tree/v6.0.15"
+                "source": "https://github.com/FGRibreau/mailchecker/tree/v6.0.16"
             },
             "funding": [
                 {
@@ -1673,7 +1673,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-01-03T22:24:36+00:00"
+            "time": "2025-02-17T07:50:56+00:00"
         },
         {
             "name": "fig/http-message-util",
