@@ -76,3 +76,7 @@ $ php ./console cache:clear
 $ php ./console cache:warm
 $ php ./console maintenance:stop
 ```
+
+## Security Issues
+
+If you have found a possible security issue with the KeeperFX website, please contact [security@keeperfx.net](mailto:security@keeperfx.net) privately. We do not have a bug bounty program but we can publish an acknowledgement on our [security acknowledgments page](https://keeperfx.net/security-acknowledgments).

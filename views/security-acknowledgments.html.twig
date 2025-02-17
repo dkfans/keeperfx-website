@@ -1,0 +1,37 @@
+{% extends "core/_layout.html.twig" %}
+
+{% set page_title = 'Security Acknowledgments' %}
+
+{% block content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>Security Acknowledgments</h2>
+        </div>
+        <div class="content-body">
+            {% if acknowledgments|length > 0 %}
+                <ul style="margin: 20px 25px 20px;">
+                    {% for name, issues in acknowledgments %}
+                        <li style="margin-bottom: 30px"><span class="text-white">{{ name }}</span><br/>
+                            <ul style="margin: 10px 10px;">
+                                {% for issue in issues %}
+                                    <li style="margin-top: 5px"><span class="">{{ issue }}</span></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">
+                    No acknowledgments yet.
+                </p>
+
+                <p class="text-muted">
+                    Please submit any security issues to <a href="mailto:security@keeperfx.net">security@keeperfx.net</a>.
+                </p>
+            {% endif %}
+
+        </div>
+    </div>
+
+{% endblock %}

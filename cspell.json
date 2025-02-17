@@ -37,6 +37,7 @@
         "donotstart",
         "dpkg",
         "emacs",
+        "endfor",
         "ENET",
         "epoll",
         "exif",

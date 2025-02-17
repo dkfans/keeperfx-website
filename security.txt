@@ -1,0 +1,6 @@
+Contact: mailto:security@keeperfx.net
+Preferred-Languages: en, nl
+Acknowledgments: https://keeperfx.net/security-acknowledgments
+Canonical: https://keeperfx.net/.well-known/security.txt
+Canonical: https://keeperfx.net/security.txt
+Expires: 2026-01-01T12:00:00z

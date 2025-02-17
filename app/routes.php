@@ -323,6 +323,11 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/terms-of-service', [InfoPageController::class, 'termsOfServiceIndex']);
     $group->get('/privacy-policy', [InfoPageController::class, 'privacyPolicyIndex']);
 
+    // Security Issues
+    $group->get('/security.txt', [SecurityIssuesController::class, 'securityTxt']);
+    $group->get('/.well-known/security.txt', [SecurityIssuesController::class, 'securityTxt']);
+    $group->get('/security-acknowledgments', [SecurityIssuesController::class, 'acknowledgments']);
+
     // RSS
     $group->get('/rss-info', [RSSController::class, 'rssInfoIndex']);
     $group->group('/rss', function (RouteCollectorProxy $group) use ($container) {
