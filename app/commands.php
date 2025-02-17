@@ -58,4 +58,6 @@ return [
 
     // Website
     \App\Console\Command\Website\CacheWebsiteChangelogCommand::class,
+    \App\Console\Command\Website\BenchmarkBcryptHashCost::class,
+
 ];

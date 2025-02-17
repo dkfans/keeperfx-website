@@ -129,6 +129,25 @@ class LoginController {
                         $account->logIp($ip);
                     }
 
+                    // Check if password hash needs updating
+                    // This is required when new algorithms are used or the options change
+                    if(\password_needs_rehash(
+                        $user->getPassword(),
+                        $_ENV['APP_PASSWORD_HASH'],
+                        [
+                            // BCRYPT
+                            'cost'        => $_ENV['APP_PASSWORD_HASH_BCRYPT_COST'],
+                            // Argon2
+                            'memory_cost' => $_ENV['APP_PASSWORD_HASH_ARGON2_MAX_MEMORY_COST'],
+                            'time_cost'   => $_ENV['APP_PASSWORD_HASH_ARGON2_MAX_TIME_COST'],
+                            'threads'     => $_ENV['APP_PASSWORD_HASH_ARGON2_THREADS'],
+                        ],
+                    )) {
+                        // Rehash password
+                        $user->setPassword($password);
+                        $em->flush();
+                    }
+
                     // Handle 'Remember me'
                     if(isset($post['remember_me'])){
 

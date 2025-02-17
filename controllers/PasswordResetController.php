@@ -203,6 +203,7 @@ class PasswordResetController {
         }
 
         // Get the user
+        /** @var User $user */
         $user = $reset_token->getUser();
         if(!$user){
             throw new \Exception('somehow we failed to get the user');

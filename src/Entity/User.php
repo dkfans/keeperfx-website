@@ -154,11 +154,26 @@ class User {
      */
     public function setPassword(string|null $password)
     {
-        if(\is_string($password)){
-            $password = \password_hash($password, PASSWORD_DEFAULT);
+        // NULL password
+        if(\is_null($password)){
+            $this->password = null;
+            return $this;
         }
 
-        $this->password = $password;
+        // Hash password
+        $this->password = \password_hash(
+            $password,
+            $_ENV['APP_PASSWORD_HASH'],
+            [
+                // BCRYPT
+                'cost'        => $_ENV['APP_PASSWORD_HASH_BCRYPT_COST'],
+                // Argon2
+                'memory_cost' => $_ENV['APP_PASSWORD_HASH_ARGON2_MAX_MEMORY_COST'],
+                'time_cost'   => $_ENV['APP_PASSWORD_HASH_ARGON2_MAX_TIME_COST'],
+                'threads'     => $_ENV['APP_PASSWORD_HASH_ARGON2_THREADS'],
+            ],
+        );
+
         return $this;
     }
 
