@@ -33,7 +33,7 @@
                 </div>
 
                 {% for date_str, date_commits in commits %}
-                    <h4>{{ date_str }}</h4>
+                    <h5>{{ date_str }}</h5>
                     <pre class="code">{% for commit in date_commits %}- {{ commit.message }} (<a href="https://github.com/dkfans/keeperfx-website/commit/{{ commit.hash }}" target="_blank">{{ commit.hash|slice(0, 7) }}</a>)&NewLine;{% endfor %}</pre>
                 {% endfor %}
 
