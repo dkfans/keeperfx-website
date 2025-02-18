@@ -18,10 +18,21 @@
         </div>
         <div class="content-body">
 
+            <div class="pt-3 pb-1 mb-3" style="background-color: rgba(0,0,0,0.3)">
+                <p>
+                    <strong>KeeperFX Config Diff Tool</strong> is a tool to get the differences between two KeeperFX configuration files.
+                    When working on creatures and other configuration files, you only need to use the changed values in your custom configuration file.
+                    This tool separates those changes for you to use.
+                </p>
+                <p>
+                    The <code>Name</code> property is always added to changed configuration blocks to make it easier to recognize.
+                </p>
+            </div>
+
+
             {% if diff_output is defined %}
                 <h5>Diff</h5>
-                <textarea class="form-control" name="right" rows=12>{{ diff_output }}</textarea>
-                <hr />
+                <pre class="form-control" style="font-size: 12px;">{{ diff_output }}</pre>
             {% endif %}
 
             <form method="POST">
@@ -29,12 +40,12 @@
                 <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
                 <div class="row">
                     <div class="col-md-6">
-                        <h5>Left</h5>
-                        <textarea class="form-control" name="left" rows=12>{{ get_post_var('left') }}</textarea>
+                        <h5>Original</h5>
+                        <textarea class="form-control" name="left" rows=12 style="font-size: 14px;">{{ get_post_var('left') }}</textarea>
                     </div>
                     <div class="col-md-6">
-                        <h5>Right</h5>
-                        <textarea class="form-control" name="right" rows=12>{{ get_post_var('right') }}</textarea>
+                        <h5>Custom</h5>
+                        <textarea class="form-control" name="right" rows=12 style="font-size: 14px;">{{ get_post_var('right') }}</textarea>
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 15px;">

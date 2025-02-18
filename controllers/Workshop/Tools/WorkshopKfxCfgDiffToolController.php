@@ -86,6 +86,11 @@ class WorkshopKfxCfgDiffToolController {
             }
         }
 
+        // Move 'attributes->Name' for creature configs
+        if(!empty($left_data['attributes']) && !empty($left_data['attributes']['Name'])){
+            $diff = ['attributes' => ['Name' => $left_data['attributes']['Name']]] + $diff;
+        }
+
         // Create diff string output
         $diff_output = "";
         foreach($diff as $section => $properties)
