@@ -33,6 +33,10 @@ class FetchAlphaCommand extends Command
 
     private DiscordNotifier $discord_notifier;
 
+    private array $version_regex = [
+        '/^keeperfx\-(\d+\_\d+\_\d+\_\d+)\_Alpha\-patch$/'
+    ];
+
     public function __construct(EntityManager $em, DiscordNotifier $discord_notifier) {
         $this->em = $em;
         $this->discord_notifier = $discord_notifier;
@@ -300,9 +304,12 @@ class FetchAlphaCommand extends Command
             $display_title = $run->display_title;
             $display_title = \preg_replace('~(\s\(\#\d)\…$~', '…', $display_title);
 
-            // Add to database
+            // Strip '-signed' from signed artifact names
+            $build_name = \preg_replace('/\-signed$/', '', $artifact->name);
+
+            // Create entity
             $build = new GithubAlphaBuild();
-            $build->setName(\preg_replace('/\-signed$/', '', $artifact->name));
+            $build->setName($build_name);
             $build->setArtifactId($artifact->id);
             $build->setFilename($new_filename);
             $build->setSizeInBytes($output_filesize);
@@ -310,6 +317,19 @@ class FetchAlphaCommand extends Command
             $build->setWorkflowTitle($display_title);
             $build->setWorkflowRunId($artifact->workflow_run?->id ?? null);
             $build->setIsAvailable(self::IS_ENABLED);
+
+            // Set version
+            foreach($this->version_regex as $regex){
+                if(\preg_match($regex, $build_name, $matches)){
+                    $build->setVersion(
+                        // Convert underscores to dots
+                        \str_replace('_', '.', $matches[1])
+                    );
+                    break;
+                }
+            }
+
+            // Save to DB
             $this->em->persist($build);
             $this->em->flush();
 

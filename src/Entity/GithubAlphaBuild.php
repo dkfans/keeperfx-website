@@ -18,6 +18,9 @@ class GithubAlphaBuild {
     #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string $name;
 
+    #[ORM\Column(nullable:true)]
+    private ?string $version = null;
+
     #[ORM\Column]
     private string $workflow_title;
 
@@ -198,6 +201,24 @@ class GithubAlphaBuild {
     public function setWorkflowRunId(null|string $workflow_run_id): self
     {
         $this->workflow_run_id = $workflow_run_id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of version
+     */
+    public function getVersion(): ?string
+    {
+        return $this->version;
+    }
+
+    /**
+     * Set the value of version
+     */
+    public function setVersion(?string $version): self
+    {
+        $this->version = $version;
 
         return $this;
     }

@@ -21,6 +21,10 @@ class FetchStableCommand extends Command
 
     private DiscordNotifier $discord_notifier;
 
+    private array $version_regex = [
+        '/^KeeperFX (\d+\.\d+\.\d+)$/'
+    ];
+
     public function __construct(EntityManager $em, DiscordNotifier $discord_notifier) {
         $this->em = $em;
         $this->discord_notifier = $discord_notifier;
@@ -72,13 +76,23 @@ class FetchStableCommand extends Command
 
             $output->writeln("[>] Adding {$tag}...");
 
-            // Add release to DB
+            // Create release
             $github_release = new GithubRelease();
             $github_release->setTag($tag);
             $github_release->setName($gh_release->name);
             $github_release->setTimestamp(new \DateTime($gh_release->published_at));
             $github_release->setDownloadUrl($gh_release->assets[0]->browser_download_url);
             $github_release->setSizeInBytes($gh_release->assets[0]->size);
+
+            // Set version
+            foreach($this->version_regex as $regex){
+                if(\preg_match($regex, $gh_release->name, $matches)){
+                    $github_release->setVersion($matches[1]);
+                    break;
+                }
+            }
+
+            // Save to DB
             $this->em->persist($github_release);
             $this->em->flush();
 

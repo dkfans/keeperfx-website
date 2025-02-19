@@ -19,6 +19,9 @@ class GithubRelease {
     #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
     private string $name;
 
+    #[ORM\Column(nullable:true)]
+    private ?string $version = null;
+
     #[ORM\Column]
     private int $size_in_bytes;
 
@@ -187,6 +190,24 @@ class GithubRelease {
     public function setLinkedNewsPost(?NewsArticle $linked_news_post): self
     {
         $this->linked_news_post = $linked_news_post;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of version
+     */
+    public function getVersion(): ?string
+    {
+        return $this->version;
+    }
+
+    /**
+     * Set the value of version
+     */
+    public function setVersion(?string $version): self
+    {
+        $this->version = $version;
 
         return $this;
     }
