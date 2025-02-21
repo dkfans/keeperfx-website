@@ -16,5 +16,6 @@ return [
         'wiki-repo'                     => PathHelper::getAppPathFromEnvVar('APP_WIKI_REPO_STORAGE'),
         'admin-upload'                  => PathHelper::getAppPathFromEnvVar('APP_ADMIN_UPLOAD_STORAGE'),
         'logs'                          => PathHelper::getAppPathFromEnvVar('APP_LOG_STORAGE'),
+        'game-files'                    => PathHelper::getAppPathFromEnvVar('APP_GAME_FILE_STORAGE'),
     ],
 ];

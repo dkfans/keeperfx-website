@@ -2,10 +2,13 @@
 
 namespace App\Console\Command\KeeperFX;
 
+use App\Enum\ReleaseType;
+
 use App\Entity\GithubAlphaBuild;
 
 use App\Config\Config;
 use App\DiscordNotifier;
+use App\GameFileHandler;
 use App\VirusTotalScanner;
 
 use DateTime;
@@ -173,7 +176,7 @@ class FetchAlphaCommand extends Command
                 || \file_exists($temp_archive_dir)
             ){
                 $output->writeln("[-] One or more temporary files for this build already exist.");
-                $output->writeln("[>] Skipping this build because the process it probably still busy...");
+                $output->writeln("[>] Skipping this build because the process is probably still busy...");
                 continue;
             }
 
@@ -295,17 +298,30 @@ class FetchAlphaCommand extends Command
                 return Command::FAILURE;
             }
 
-            // Remove temp files and dir
-            $output->writeln("[>] Removing temporary files and dir...");
-            DirectoryHelper::delete($temp_archive_dir);
-            \unlink($temp_archive_path);
-
             // Fix display title
             $display_title = $run->display_title;
             $display_title = \preg_replace('~(\s\(\#\d)\…$~', '…', $display_title);
 
             // Strip '-signed' from signed artifact names
             $build_name = \preg_replace('/\-signed$/', '', $artifact->name);
+
+            // Get version
+            $version = null;
+            foreach($this->version_regex as $regex){
+                if(\preg_match($regex, $build_name, $matches)){
+                    $version = \str_replace('_', '.', $matches[1]);
+                    break;
+                }
+            }
+
+            // Store game files
+            $output->writeln("[>] Storing game files for version {$version}");
+            $game_files_store_result = GameFileHandler::storeVersionFromPath(ReleaseType::ALPHA, $version, $temp_archive_dir);
+            if(!$game_files_store_result){
+                $output->writeln("[-] Failed to move game files");
+                return Command::FAILURE;
+            }
+            $output->writeln("[+] {$game_files_store_result} game files stored");
 
             // Create entity
             $build = new GithubAlphaBuild();
@@ -317,17 +333,7 @@ class FetchAlphaCommand extends Command
             $build->setWorkflowTitle($display_title);
             $build->setWorkflowRunId($artifact->workflow_run?->id ?? null);
             $build->setIsAvailable(self::IS_ENABLED);
-
-            // Set version
-            foreach($this->version_regex as $regex){
-                if(\preg_match($regex, $build_name, $matches)){
-                    $build->setVersion(
-                        // Convert underscores to dots
-                        \str_replace('_', '.', $matches[1])
-                    );
-                    break;
-                }
-            }
+            $build->setVersion($version);
 
             // Save to DB
             $this->em->persist($build);
@@ -354,6 +360,10 @@ class FetchAlphaCommand extends Command
                 $resp = VirusTotalScanner::scanFile($output_path);
             }
 
+            // Remove temp files and dir
+            $output->writeln("[>] Removing temporary files and dir...");
+            DirectoryHelper::delete($temp_archive_dir);
+            \unlink($temp_archive_path);
         }
 
         $output->writeln("[+] Done!");

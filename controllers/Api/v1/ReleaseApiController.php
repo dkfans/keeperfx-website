@@ -26,13 +26,17 @@ class ReleaseApiController {
         $release = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
 
         $response->getBody()->write(
-            \json_encode(['release' => [
-                'name'          => $release->getName(),
-                'tag'           => $release->getTag(),
-                'timestamp'     => $release->getTimestamp()->format('c'), // ISO 8601 date
-                'download_url'  => $release->getDownloadUrl(),
-                'size_in_bytes' => $release->getSizeInBytes(),
-            ]])
+            \json_encode([
+                'success' => true,
+                'release' => [
+                    'name'          => $release->getName(),
+                    'version'       => $release->getVersion(),
+                    'tag'           => $release->getTag(),
+                    'timestamp'     => $release->getTimestamp()->format('c'), // ISO 8601 date
+                    'download_url'  => $release->getDownloadUrl(),
+                    'size_in_bytes' => $release->getSizeInBytes(),
+                ]
+            ])
         );
 
         // Output JSON
@@ -50,16 +54,20 @@ class ReleaseApiController {
         $alpha_build = $em->getRepository(GithubAlphaBuild::class)->findOneBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC']);
 
         $response->getBody()->write(
-            \json_encode(['alpha_build' => [
-                'artifact_id'     => $alpha_build->getArtifactId(),
-                'name'            => $alpha_build->getName(),
-                'workflow_title'  => $alpha_build->getWorkflowTitle(),
-                'workflow_run_id' => $alpha_build->getWorkflowRunId(),
-                'filename'        => $alpha_build->getFilename(),
-                'timestamp'       => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
-                'size_in_bytes'   => $alpha_build->getSizeInBytes(),
-                'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename())
-            ]])
+            \json_encode([
+                'success' => true,
+                'alpha_build' => [
+                    'artifact_id'     => $alpha_build->getArtifactId(),
+                    'name'            => $alpha_build->getName(),
+                    'version'         => $alpha_build->getVersion(),
+                    'workflow_title'  => $alpha_build->getWorkflowTitle(),
+                    'workflow_run_id' => $alpha_build->getWorkflowRunId(),
+                    'filename'        => $alpha_build->getFilename(),
+                    'timestamp'       => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
+                    'size_in_bytes'   => $alpha_build->getSizeInBytes(),
+                    'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename())
+                ]
+            ])
         );
 
         // Output JSON
@@ -75,14 +83,12 @@ class ReleaseApiController {
     ){
         $response = $response->withHeader('Content-Type', 'application/json');
 
-        // Clean up version, only keep numbers and dots
-        // Tags in the DB are in format: 'v1.2.3'
+        // Only keep numbers and dots for the version
         $version = \preg_replace('/[^0-9.]/', '', $version);
-        $version = 'v' . $version;
 
         // Get the release the user has
         /** @var GithubRelease $release */
-        $release = $em->getRepository(GithubRelease::class)->findOneBy(['tag' => $version]);
+        $release = $em->getRepository(GithubRelease::class)->findOneBy(['version' => $version]);
         if(!$release){
             $response->getBody()->write(
                 \json_encode([
@@ -132,6 +138,7 @@ class ReleaseApiController {
                 'release'     => [
                     'name'          => $latest_release->getName(),
                     'tag'           => $latest_release->getTag(),
+                    'version'       => $latest_release->getVersion(),
                     'timestamp'     => $latest_release->getTimestamp()->format('c'), // ISO 8601 date
                     'download_url'  => $latest_release->getDownloadUrl(),
                     'size_in_bytes' => $latest_release->getSizeInBytes(),
@@ -151,10 +158,11 @@ class ReleaseApiController {
     ) {
         $response = $response->withHeader('Content-Type', 'application/json');
 
-        // Clean up version, only keep numbers and dots
+        // Only keep numbers and dots for the version
         $version = \preg_replace('/[^0-9.]/', '', $version);
 
         // Get version parts
+        // Alpha patches must be 'x.y.z.build'
         $version_parts = \explode('.', $version);
         if(\count($version_parts) != 4){
             $response->getBody()->write(
@@ -166,18 +174,9 @@ class ReleaseApiController {
             return $response;
         }
 
-        // Get patch name
-        $patch_name = \sprintf(
-            "keeperfx-%d_%d_%d_%d_Alpha-patch",
-            $version_parts[0],
-            $version_parts[1],
-            $version_parts[2],
-            $version_parts[3],
-        );
-
         // Get the alpha patch the user has
         /** @var GithubAlphaBuild $release */
-        $alpha_patch = $em->getRepository(GithubAlphaBuild::class)->findOneBy(['name' => $patch_name, 'is_available' => true]);
+        $alpha_patch = $em->getRepository(GithubAlphaBuild::class)->findOneBy(['version' => $version]);
         if(!$alpha_patch){
             $response->getBody()->write(
                 \json_encode([
@@ -218,6 +217,7 @@ class ReleaseApiController {
         {
             $patches[] = [
                 'name'           => $patch->getName(),
+                'version'        => $patch->getVersion(),
                 'url'            => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($patch->getFilename()),
                 'timestamp'      => $patch->getTimestamp()->format('c'),
                 'workflow_title' => $patch->getWorkflowTitle(),
@@ -232,6 +232,7 @@ class ReleaseApiController {
                 'new_patches' => $patches,
                 'alpha_patch' => [
                     'name'      => $last_patch->getName(),
+                    'version'   => $patch->getVersion(),
                     'url'       => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($last_patch->getFilename()),
                     'timestamp' => $last_patch->getTimestamp()->format('c'),
                 ],

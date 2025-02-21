@@ -364,10 +364,11 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/v1/user/search', [Api\v1\UserApiController::class, 'search']);
 
     // API: Releases
-    $group->get('/v1/stable/latest', [Api\v1\ReleaseApiController::class, 'latestStable']);
-    $group->get('/v1/alpha/latest', [Api\v1\ReleaseApiController::class, 'latestAlpha']);
-    $group->get('/v1/stable/check/{version}', [Api\v1\ReleaseApiController::class, 'checkStableUpdate']);
-    $group->get('/v1/alpha/check/{version}', [Api\v1\ReleaseApiController::class, 'checkAlphaUpdate']);
+    $group->get('/v1/release/stable/latest', [Api\v1\ReleaseApiController::class, 'latestStable']);
+    $group->get('/v1/release/alpha/latest', [Api\v1\ReleaseApiController::class, 'latestAlpha']);
+    $group->get('/v1/release/stable/check/{version}', [Api\v1\ReleaseApiController::class, 'checkStableUpdate']);
+    $group->get('/v1/release/alpha/check/{version}', [Api\v1\ReleaseApiController::class, 'checkAlphaUpdate']);
+    $group->get('/v1/release/{type}/{version:[a-zA-Z0-9\.\-]+}/files', [Api\v1\GameFileController::class, 'listFiles']);
 
     // API: Crash Report
     $group->post('/v1/crash-report', [Api\v1\CrashReportApiController::class, 'upload']);
@@ -383,11 +384,19 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////// Redirects
+/////// - 301 -> Permanently moved
+/////// - 302 -> Temporary redirect
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // April fools 2024
-$app->redirect('/giveaways/dk3-beta-key', 'https://youtu.be/ceWFU2pBOPo', 301);
+$app->redirect('/giveaways/dk3-beta-key', 'https://youtu.be/ceWFU2pBOPo', 302);
 
 // Tools moved to workshop
 $app->redirect('/tools/kfx-cfg-diff', '/workshop/tools/kfx-cfg-diff', 301);
 $app->redirect('/tools/kfx-host-checker', '/workshop/tools/kfx-host-checker', 301);
+
+// Add '/release/' to stable/alpha API endpoints
+$app->redirect('/v1/stable/latest', '/v1/release/stable/latest', 301);
+$app->redirect('/v1/alpha/latest', '/v1/release/alpha/latest', 301);
+$app->redirect('/v1/stable/check/{version}', '/v1/release/stable/check/{version}', 301);
+$app->redirect('/v1/alpha/check/{version}', '/v1/release/alpha/check/{version}', 301);
