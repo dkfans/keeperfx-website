@@ -14,8 +14,9 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Tag</th>
+                    <th>Version</th>
                     <th>Name</th>
+                    <th>Tag</th>
                     <th>Size</th>
                     <th>Timestamp</th>
                     <th>Linked news Post</th>
@@ -26,10 +27,11 @@
                 {% for release in releases %}
                         <tr>
                             <td>{{ release.id }}</td>
-                            <td>{{ release.tag }}</td>
+                            <td><code>{{ release.version }}</code></td>
                             <td>
                                 <a href="{{ release.downloadUrl }}" download>{{ release.name }}</a>
                             </td>
+                            <td class="text-muted">{{ release.tag }}</td>
                             <td>{{ release.sizeInBytes|format_bytes }}</td>
                             <td>{{ release.timestamp|date('Y-m-d') }}</td>
                             <td>

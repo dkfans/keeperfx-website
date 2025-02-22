@@ -16,11 +16,9 @@
         <table class="table" style="font-size: 11px;">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Artifact ID</th>
+                    <th>Version</th>
                     <th>Workflow Title</th>
-                    <th>Workflow Run ID</th>
+                    <th>Artifact / Workflow</th>
                     <th>Timestamp</th>
                     <th>Size</th>
                     <th><!-- Available --></th>
@@ -30,15 +28,11 @@
             <tbody>
                 {% for alpha_build in alpha_builds %}
                         <tr data-build-id="{{ alpha_build.id }}">
-                            <td>{{ alpha_build.id }}</td>
                             <td>
-                                <a href="/download/alpha/{{ alpha_build.filename|url_encode }}" download>
-                                    {{ alpha_build.name }}
-                                </a>
+                                <code><a href="/download/alpha/{{ alpha_build.filename|url_encode }}" download>{{ alpha_build.version }}</a></code>
                             </td>
-                            <td>{{ alpha_build.artifactId }}</td>
                             <td data-workflow-title>{{ alpha_build.workflowTitle|github_interact }}</td>
-                            <td>{{ alpha_build.workflowRunId }}</td>
+                            <td class="text-muted">{{ alpha_build.artifactId }}<br/>{{ alpha_build.workflowRunId }}</td>
                             <td>{{ alpha_build.timestamp|date('Y-m-d G:i:s') }}</td>
                             <td>{{ alpha_build.sizeInBytes|format_bytes }}</td>
                             <td>
@@ -48,14 +42,14 @@
                                     <ion-icon name="close-outline" style="color: red;"></ion-icon>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td class="text-nowrap">
                                 {% if alpha_build.isAvailable %}
                                     <a href="/dev/alpha-patches/{{ alpha_build.id }}/disable/{{ csrf.name }}/{{ csrf.value|url_encode }}">Disable</a>
                                 {% else %}
                                     <a href="/dev/alpha-patches/{{ alpha_build.id }}/enable/{{ csrf.name }}/{{ csrf.value|url_encode }}">Enable</a>
                                 {% endif %}
-                                &bullet;
-                                <a href="#" data-edit-title="{{ alpha_build.workflowTitle|escape('html_attr') }}">Edit Title</a>
+                                -
+                                <a href="#" data-edit-title="{{ alpha_build.workflowTitle|escape('html_attr') }}" class="text-nowrap">Edit Title</a>
                             </td>
                         </tr>
                 {% endfor %}
