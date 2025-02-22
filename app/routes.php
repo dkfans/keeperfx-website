@@ -396,7 +396,7 @@ $app->redirect('/tools/kfx-cfg-diff', '/workshop/tools/kfx-cfg-diff', 301);
 $app->redirect('/tools/kfx-host-checker', '/workshop/tools/kfx-host-checker', 301);
 
 // Add '/release/' to stable/alpha API endpoints
-$app->redirect('/v1/stable/latest', '/v1/release/stable/latest', 301);
-$app->redirect('/v1/alpha/latest', '/v1/release/alpha/latest', 301);
-$app->redirect('/v1/stable/check/{version}', '/v1/release/stable/check/{version}', 301);
-$app->redirect('/v1/alpha/check/{version}', '/v1/release/alpha/check/{version}', 301);
+$app->redirect('/api/v1/stable/latest', '/api/v1/release/stable/latest', 301);
+$app->redirect('/api/v1/alpha/latest', '/api/v1/release/alpha/latest', 301);
+$app->redirect('/api/v1/stable/check/{version}', '/api/v1/release/stable/check/{version}', 301);
+$app->redirect('/api/v1/alpha/check/{version}', '/api/v1/release/alpha/check/{version}', 301);
