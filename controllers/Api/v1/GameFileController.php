@@ -41,6 +41,12 @@ class GameFileController
             return $response->withStatus(500);
         }
 
+        // Get path and make sure it is accessible
+        $path = Config::get('storage.path.game-files') . '/' . $release_type->value . '/' . $version;
+        if(DirectoryHelper::isAccessible($path) === false){
+            throw new HttpNotFoundException($request, "'{$path}' not accessible");
+        }
+
         // Check if this file list is in the cache
         $cache_key = GameFileHandler::generateCacheKey($release_type, $version);
         $list = $cache->get($cache_key);
@@ -59,12 +65,6 @@ class GameFileController
             return $response
                 ->withStatus(200)
                 ->withHeader('X-Cache', 'HIT');
-        }
-
-        // Get path and make sure it is accessible
-        $path = Config::get('storage.path.game-files') . '/' . $release_type->value . '/' . $version;
-        if(DirectoryHelper::isAccessible($path) === false){
-            throw new HttpNotFoundException($request, "'{$path}' not accessible");
         }
 
         // Generate an index of the game files for this type and version
