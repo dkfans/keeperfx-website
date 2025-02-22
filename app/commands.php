@@ -15,6 +15,8 @@ return [
     \App\Console\Command\KeeperFX\HandleTwitchStreamsCommand::class,
     \App\Console\Command\KeeperFX\ClearOldPrototypesCommand::class,
     \App\Console\Command\KeeperFX\FetchDiscordInfoCommand::class,
+    \App\Console\Command\KeeperFX\ClearOldGameFilesCommand::class,
+    \App\Console\Command\KeeperFX\FetchStableGameFilesCommand::class,
 
     // User
     \App\Console\Command\User\CreateUserCommand::class,

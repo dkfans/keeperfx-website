@@ -79,4 +79,33 @@ class GameFileHandler
 
         return $file_count;
     }
+
+    public static function removeAllExcept(ReleaseType $release_type, array $versions_to_keep): bool
+    {
+        // Get main dir
+        $dir = Config::get('storage.path.game-files') . '/' . $release_type->value;
+        if (!DirectoryHelper::isAccessible($dir)) {
+            throw new \RuntimeException("Directory is not accessible: $dir");
+        }
+
+        // Loop trough main dir
+        foreach (new \FilesystemIterator($dir, \FilesystemIterator::SKIP_DOTS) as $item) {
+
+            // Check if current item is a dir
+            if ($item->isDir()) {
+
+                // Check if we can remove this version dir
+                if(!\in_array($item->getFilename(), $versions_to_keep, true)) {
+
+                    // Remove it
+                    $result = DirectoryHelper::delete($item->getPathname());
+                    if(!$result){
+                        throw new \Exception("Failed to remove dir: {$item->getPathname()}");
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
 }
