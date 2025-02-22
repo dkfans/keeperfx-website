@@ -42,8 +42,7 @@ class GameFileController
         }
 
         // Check if this file list is in the cache
-        // $cache_key = GameFileHandler::generateCacheKey($release_type, $version);
-        $cache_key = GameFileHandler::generateCacheKey($release_type, $version . time());
+        $cache_key = GameFileHandler::generateCacheKey($release_type, $version);
         $list = $cache->get($cache_key);
 
         // Return files from cache if hit
