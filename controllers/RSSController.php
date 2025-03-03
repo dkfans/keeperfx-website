@@ -37,7 +37,9 @@ class RSSController {
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 5);
 
         // Create feed
+        $errorLevel = error_reporting(error_reporting() & ~E_DEPRECATED); // TODO: remove this after new miba/FeedWriter version (current = 1.1.2)
         $feed = new RSS2();
+        error_reporting($errorLevel);
         $feed
             ->setTitle('KeeperFX')
             ->setDescription('The latest news for KeeperFX')
@@ -91,7 +93,9 @@ class RSSController {
         $stable_builds = $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']);
 
         // Create feed
+        $errorLevel = error_reporting(error_reporting() & ~E_DEPRECATED); // TODO: remove this after new miba/FeedWriter version (current = 1.1.2)
         $feed = new RSS2();
+        error_reporting($errorLevel);
         $feed
             ->setTitle('KeeperFX - Stable Releases')
             ->setDescription('The latest stable releases of KeeperFX')
@@ -138,7 +142,9 @@ class RSSController {
         $alpha_patches = $em->getRepository(GithubAlphaBuild::class)->findBy(['is_available' => true], ['timestamp' => 'DESC']);
 
         // Create feed
+        $errorLevel = error_reporting(error_reporting() & ~E_DEPRECATED); // TODO: remove this after new miba/FeedWriter version (current = 1.1.2)
         $feed = new RSS2();
+        error_reporting($errorLevel);
         $feed
             ->setTitle('KeeperFX - Alpha Patches')
             ->setDescription('The latest alpha patches for KeeperFX')
