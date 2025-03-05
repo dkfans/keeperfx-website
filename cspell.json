@@ -15,6 +15,7 @@
         "autowiring",
         "bcmath",
         "Biervampir",
+        "callgraph",
         "chrooted",
         "clamav",
         "CLAMAV",
