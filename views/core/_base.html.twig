@@ -28,6 +28,11 @@
         <link rel="preload" as="image" href="/img/bg-gray.png" />
         <link rel="preload" as="image" href="/img/bg-black.png" />
 
+        {# Debug Bar #}
+        {% if get_env('APP_ENV') == 'dev' %}
+            {{ debug_bar_render_head() }}
+        {% endif %}
+
         {# Bootstrap core CSS #}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap-utilities.min.css" integrity="sha512-4ocAKAxnrkSm7MvkkF1D435kko3/HWWvoi/U9+7+ln94B/U01Mggca05Pm3W59BIv3abl0U3MPdygAPLo5aeqg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -105,12 +110,6 @@
                 background: url("{{ get_env('APP_THEME_BACKGROUND') }}") !important;
                 }
             </style>
-        {% endif %}
-
-        {# Debug Bar #}
-        {% if get_env('APP_ENV') == 'dev' %}
-            {{ debug_bar_render_head() }}
-            <link rel="stylesheet" href="{{ asset('/css/debugbar.css') }}" />
         {% endif %}
 
     </head>

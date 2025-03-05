@@ -82,7 +82,7 @@ a.phpdebugbar-tab span.phpdebugbar-badge {
     border: 0 !important;
 }
 
-a.phpdebugbar-restore-btn {
+a.phpdebugbar-restore-btn::after {
     background-color: #151515;
     background-size: 18px 18px;
     background-position: 7px 3px;

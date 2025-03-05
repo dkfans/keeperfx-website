@@ -1627,3 +1627,17 @@ mark {
     color: black;
     padding: 1px 0px;
 }
+
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+a.phpdebugbar-restore-btn::after {
+    background: none;
+    background-size: 18px 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("data:image/webp;base64,UklGRr4AAABXRUJQVlA4TLIAAAAvC8ACEK/AJgCANLi7v3SmJjdMgiiJJMlZfDl4OHpiX+B7ePpEUSNJyiwd88k4sSd4P/MfADAXvwZPhhgcOGlG/Yw884+TZlxnyoyzQkJ5M92HYUO3Idu177POB4cB2KaNFFZgSgr/H9sdEdH/BOC9vSY+X/fZaw0A9n2f7TUE2+dse/UUxFKWPUohyeflHHwaKb6kxJcMUiaLSMYAaczfiDVFAOpjzpQTPmUyJPxLKgAA");
+    filter: contrast(1.1) saturate(1.1);
+}
