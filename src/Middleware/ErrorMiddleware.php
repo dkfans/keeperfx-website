@@ -13,6 +13,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use Slim\Exception\HttpSpecializedException;
 
+use Doctrine\DBAL\Driver\PDO\Exception as DbalPdoException;
+use Doctrine\DBAL\Exception\ConnectionException as DbalConnectionException;
+
 class ErrorMiddleware implements MiddlewareInterface
 {
     public function __construct(
@@ -36,6 +39,22 @@ class ErrorMiddleware implements MiddlewareInterface
             return $handler->handle($request);
 
         } catch (\Throwable $ex) {
+
+            // Get database connection exception
+            if($ex instanceof DbalConnectionException ||
+                ($ex instanceof DbalPdoException && $ex->getCode() == 2002) // Connection not found
+            ){
+                $response = $this->response_factory->createResponse(500); // Server error
+                // Write hardcoded HTML response
+                // Reason is that our templates make use of database functionality (which is wrong...)
+                $response->getBody()->write('
+                    <div style="margin: 30px">
+                        <h2>Database Connection Error</h2>
+                        <p>KeeperFX is currently experiencing issues with its database connection. Please try again in a few seconds.</p>
+                    </div>
+                ');
+                return $response;
+            }
 
             // Log error if not a normal HTTP exception
             if($this->logger && !($ex instanceof HttpSpecializedException)){
