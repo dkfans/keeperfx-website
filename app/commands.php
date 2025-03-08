@@ -17,6 +17,7 @@ return [
     \App\Console\Command\KeeperFX\FetchDiscordInfoCommand::class,
     \App\Console\Command\KeeperFX\ClearOldGameFilesCommand::class,
     \App\Console\Command\KeeperFX\FetchStableGameFilesCommand::class,
+    \App\Console\Command\KeeperFX\ExtractAlphaGameFilesCommand::class,
 
     // User
     \App\Console\Command\User\CreateUserCommand::class,
