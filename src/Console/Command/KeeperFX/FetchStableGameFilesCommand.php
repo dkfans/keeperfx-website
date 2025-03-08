@@ -26,7 +26,8 @@ use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 class FetchStableGameFilesCommand extends Command
 {
     public function __construct(
-        private EntityManager $em
+        private EntityManager $em,
+        private GameFileHandler $game_file_handler,
     ) {
         parent::__construct();
     }
@@ -115,7 +116,7 @@ class FetchStableGameFilesCommand extends Command
             }
 
             // Move files with game file handler
-            $game_files_store_result = GameFileHandler::storeVersionFromPath(ReleaseType::STABLE, $version, $temp_archive_dir);
+            $game_files_store_result = $this->game_file_handler->storeVersionFromPath(ReleaseType::STABLE, $version, $temp_archive_dir);
             if(!$game_files_store_result){
                 $output->writeln("[-] Failed to move game files");
                 return Command::FAILURE;

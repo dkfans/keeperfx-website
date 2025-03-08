@@ -22,6 +22,7 @@ class GameFileController
         Request $request,
         Response $response,
         CacheInterface $cache,
+        GameFileHandler $game_file_handler,
         string $type,
         string $version,
     ){
@@ -47,42 +48,11 @@ class GameFileController
             throw new HttpNotFoundException($request, "'{$path}' not accessible");
         }
 
-        // Check if this file list is in the cache
-        $cache_key = GameFileHandler::generateCacheKey($release_type, $version);
-        $list = $cache->get($cache_key);
-
-        // Return files from cache if hit
-        if($list !== null && \is_array($list) && !empty($list)){
-            $response->getBody()->write(
-                \json_encode([
-                    'success'      => true,
-                    'release_type' => $release_type->value,
-                    'version'      => $version,
-                    'cache_status' => 'HIT',
-                    'files'        => $list,
-                ])
-            );
-            return $response
-                ->withStatus(200)
-                ->withHeader('X-Cache', 'HIT');
+        // Get game file index
+        $index = $game_file_handler->getIndex($release_type, $version);
+        if($index === false){
+            throw new HttpNotFoundException($request, "game file index not found: {$release_type->value} {$version}");
         }
-
-        // Generate an index of the game files for this type and version
-        $list = GameFileHandler::generateIndexFromPath($path);
-
-        // Check if the list was made
-        if(!$list){
-            $response->getBody()->write(
-                \json_encode([
-                    'success' => false,
-                    'error'   => 'FAILED_TO_GENERATE_FILE_LIST',
-                ])
-            );
-            return $response->withStatus(500);
-        }
-
-        // Store valid file list in cache
-        $cache->set($cache_key, $list, (int)$_ENV['APP_GAME_FILE_CACHE_TTL']);
 
         // Return response
         $response->getBody()->write(
@@ -90,12 +60,10 @@ class GameFileController
                 'success'      => true,
                 'release_type' => $release_type->value,
                 'version'      => $version,
-                'cache_status' => 'MISS',
-                'files'        => $list,
+                'files'        => $index,
             ])
         );
         return $response
-            ->withStatus(200)
-            ->withHeader('X-Cache', 'MISS');
+            ->withStatus(200);
     }
 }

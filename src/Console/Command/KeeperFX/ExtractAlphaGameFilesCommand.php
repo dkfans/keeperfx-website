@@ -28,7 +28,8 @@ use Xenokore\Utility\Helper\FileHelper;
 class ExtractAlphaGameFilesCommand extends Command
 {
     public function __construct(
-        private EntityManager $em
+        private EntityManager $em,
+        private GameFileHandler $game_file_handler
     ) {
         parent::__construct();
     }
@@ -44,12 +45,12 @@ class ExtractAlphaGameFilesCommand extends Command
     protected function execute(Input $input, Output $output)
     {
         // Make sure the game files directory is set
-        // $game_file_dir = Config::get('storage.path.game-files');
-        // if($game_file_dir === null) {
-        //     $output->writeln("[-] Game files directory is not set");
-        //     $output->writeln("[>] ENV VAR: 'APP_GAME_FILE_STORAGE'");
-        //     return Command::FAILURE;
-        // }
+        $game_file_dir = Config::get('storage.path.game-files');
+        if($game_file_dir === null) {
+            $output->writeln("[-] Game files directory is not set");
+            $output->writeln("[>] ENV VAR: 'APP_GAME_FILE_STORAGE'");
+            return Command::FAILURE;
+        }
 
         // Make sure the alpha patch archive directory is set
         $archive_dir = Config::get('storage.path.alpha-patch');
@@ -114,7 +115,7 @@ class ExtractAlphaGameFilesCommand extends Command
             }
 
             // Move files with game file handler
-            $game_files_store_result = GameFileHandler::storeVersionFromPath(ReleaseType::ALPHA, $version, $temp_archive_dir);
+            $game_files_store_result = $this->game_file_handler->storeVersionFromPath(ReleaseType::ALPHA, $version, $temp_archive_dir);
             if(!$game_files_store_result){
                 $output->writeln("[-] Failed to move game files");
                 return Command::FAILURE;

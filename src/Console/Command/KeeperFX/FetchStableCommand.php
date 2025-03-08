@@ -25,10 +25,6 @@ class FetchStableCommand extends Command
 {
     public const GITHUB_RELEASE_URL = 'https://api.github.com/repos/dkfans/keeperfx/releases';
 
-    private EntityManager $em;
-
-    private DiscordNotifier $discord_notifier;
-
     private array $version_regex = [
         '/^KeeperFX (\d+\.\d+\.\d+)$/'
     ];
@@ -40,9 +36,11 @@ class FetchStableCommand extends Command
         'KeeperFX 0.4.8 Build 2154'  => '0.4.8.2154',
     ];
 
-    public function __construct(EntityManager $em, DiscordNotifier $discord_notifier) {
-        $this->em = $em;
-        $this->discord_notifier = $discord_notifier;
+    public function __construct(
+        private EntityManager $em,
+        private DiscordNotifier $discord_notifier,
+        private GameFileHandler $game_file_handler,
+    ) {
         parent::__construct();
     }
 
@@ -167,7 +165,7 @@ class FetchStableCommand extends Command
                 }
 
                 // Move files with game file handler
-                $game_files_store_result = GameFileHandler::storeVersionFromPath(ReleaseType::STABLE, $version, $temp_archive_dir);
+                $game_files_store_result = $this->game_file_handler->storeVersionFromPath(ReleaseType::STABLE, $version, $temp_archive_dir);
                 if(!$game_files_store_result){
                     $output->writeln("[-] Failed to move game files");
                     return Command::FAILURE;

@@ -18,7 +18,8 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 class ClearOldGameFilesCommand extends Command
 {
     public function __construct(
-        private EntityManager $em
+        private EntityManager $em,
+        private GameFileHandler $game_file_handler,
     ) {
         parent::__construct();
     }
@@ -63,44 +64,16 @@ class ClearOldGameFilesCommand extends Command
             $alpha_versions[] = $alpha_patch->getVersion();
         }
 
-        // Get game files directories
-        $stable_versions_dir = Config::get('storage.path.game-files') . '/' . ReleaseType::STABLE->value;
-        $alpha_versions_dir  = Config::get('storage.path.game-files') . '/' . ReleaseType::ALPHA->value;
-        if (!DirectoryHelper::isAccessible($stable_versions_dir)) {
-            throw new \RuntimeException("Directory is not accessible: $stable_versions_dir");
-        }
-        if (!DirectoryHelper::isAccessible($alpha_versions_dir)) {
-            throw new \RuntimeException("Directory is not accessible: $alpha_versions_dir");
+        // Remove all stable versions
+        $removed_stable_versions = $this->game_file_handler->removeAllExcept(ReleaseType::STABLE, $stable_versions);
+        foreach($removed_stable_versions as $stable_version){
+            $output->writeln("[+] Removed: {$stable_version}");
         }
 
-        // Handle stable versions
-        foreach (new \FilesystemIterator($stable_versions_dir, \FilesystemIterator::SKIP_DOTS) as $item) {
-            if ($item->isDir()) {
-                // Check if we can remove this version dir
-                if(!\in_array($item->getFilename(), $stable_versions, true)) {
-                    // Remove it
-                    if(!DirectoryHelper::delete($item->getPathname())){
-                        $output->writeln("[-] Failed to remove stable version dir: {$item->getPathname()}");
-                    } else {
-                        $output->writeln("[+] Directory removed: {$item->getPathname()}");
-                    }
-                }
-            }
-        }
-
-        // Handle alpha versions
-        foreach (new \FilesystemIterator($alpha_versions_dir, \FilesystemIterator::SKIP_DOTS) as $item) {
-            if ($item->isDir()) {
-                // Check if we can remove this version dir
-                if(!\in_array($item->getFilename(), $alpha_versions, true)) {
-                    // Remove it
-                    if(!DirectoryHelper::delete($item->getPathname())){
-                        $output->writeln("[-] Failed to remove alpha version dir: {$item->getPathname()}");
-                    } else {
-                        $output->writeln("[+] Directory removed: {$item->getPathname()}");
-                    }
-                }
-            }
+        // Remove all alpha versions
+        $removed_alpha_versions  = $this->game_file_handler->removeAllExcept(ReleaseType::ALPHA, $alpha_versions);
+        foreach($removed_alpha_versions as $alpha_version){
+            $output->writeln("[+] Removed: {$alpha_version}");
         }
 
         // Return

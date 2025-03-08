@@ -32,17 +32,15 @@ class FetchAlphaCommand extends Command
 
     public const GITHUB_WORKFLOW_RUNS_URL = 'https://api.github.com/repos/dkfans/keeperfx/actions/runs';
 
-    private EntityManager $em;
-
-    private DiscordNotifier $discord_notifier;
-
     private array $version_regex = [
         '/^keeperfx\-(\d+\_\d+\_\d+\_\d+)\_Alpha\-patch$/'
     ];
 
-    public function __construct(EntityManager $em, DiscordNotifier $discord_notifier) {
-        $this->em = $em;
-        $this->discord_notifier = $discord_notifier;
+    public function __construct(
+        private EntityManager $em,
+        private DiscordNotifier $discord_notifier,
+        private GameFileHandler $game_file_handler,
+    ) {
         parent::__construct();
     }
 
@@ -316,7 +314,7 @@ class FetchAlphaCommand extends Command
 
             // Store game files
             $output->writeln("[>] Storing game files for version {$version}");
-            $game_files_store_result = GameFileHandler::storeVersionFromPath(ReleaseType::ALPHA, $version, $temp_archive_dir);
+            $game_files_store_result = $this->game_file_handler->storeVersionFromPath(ReleaseType::ALPHA, $version, $temp_archive_dir);
             if(!$game_files_store_result){
                 $output->writeln("[-] Failed to move game files");
                 return Command::FAILURE;
