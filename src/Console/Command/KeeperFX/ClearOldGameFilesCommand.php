@@ -60,7 +60,7 @@ class ClearOldGameFilesCommand extends Command
         // Get all alpha versions
         $alpha_versions = [];
         foreach($alpha_patches as $alpha_patch){
-            $alpha_versions[] = $stable_build->getVersion();
+            $alpha_versions[] = $alpha_patch->getVersion();
         }
 
         // Get game files directories
