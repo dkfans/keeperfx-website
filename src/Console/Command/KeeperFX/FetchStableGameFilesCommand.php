@@ -34,7 +34,7 @@ class FetchStableGameFilesCommand extends Command
     protected function configure()
     {
         $this->setName("kfx:fetch-stable-game-files")
-            ->setDescription("Fetch the latest stable game files")
+            ->setDescription("Fetch the game files for a stable release")
             ->addArgument('version', InputArgument::REQUIRED, 'Stable version');
     }
 
@@ -63,7 +63,6 @@ class FetchStableGameFilesCommand extends Command
         $client = new \GuzzleHttp\Client(
             ['verify' => false] // Don't verify SSL connection
         );
-
 
         try {
 
