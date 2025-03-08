@@ -40,19 +40,40 @@ class ErrorMiddleware implements MiddlewareInterface
 
         } catch (\Throwable $ex) {
 
+            $json_response = false;
+
+            // Check if we should return a JSON response
+            if(
+                \str_contains($request->getHeaderLine('Accept') ?? '', 'application/json') ||
+                \str_contains($request->getHeaderLine('Content-Type') ?? '', 'application/json') ||
+                \str_starts_with($request->getUri()->getPath(), '/api/')
+            ){
+                $json_response = true;
+            }
+
             // Get database connection exception
             if($ex instanceof DbalConnectionException ||
                 ($ex instanceof DbalPdoException && $ex->getCode() == 2002) // Connection not found
             ){
                 $response = $this->response_factory->createResponse(500); // Server error
-                // Write hardcoded HTML response
-                // Reason is that our templates make use of database functionality (which is wrong...)
-                $response->getBody()->write('
-                    <div style="margin: 30px">
-                        <h2>Database Connection Error</h2>
-                        <p>KeeperFX is currently experiencing issues with its database connection. Please try again in a few seconds.</p>
-                    </div>
-                ');
+
+                if($json_response == true){
+                    $response->getBody()->write(\json_encode([
+                        'success'    => false,
+                        'error_code' => 500,
+                        'error'      => 'DATABASE_CONNECTION_ERROR'
+                    ]));
+                } else {
+                    // Write hardcoded HTML response
+                    // Reason is that our templates make use of database functionality (which is wrong...)
+                    $response->getBody()->write('
+                        <div style="margin: 30px">
+                            <h2>Database Connection Error</h2>
+                            <p>KeeperFX is currently experiencing issues with its database connection. Please try again in a few seconds.</p>
+                        </div>
+                    ');
+                }
+
                 return $response;
             }
 
@@ -61,20 +82,46 @@ class ErrorMiddleware implements MiddlewareInterface
                 $this->logger->error($ex->getMessage());
             }
 
-            // Check if HTTP code has a unique error page
-            $template_file = \sprintf('error/%d.html.twig', $ex->getCode());
-            if(\file_exists(APP_ROOT . '/views/' . $template_file)){
-                // Show template
-                $response = $this->response_factory->createResponse($ex->getCode());
-                $response->getBody()->write(
-                    $this->twig->render($template_file)
-                );
+            if($json_response == true){
+
+                if(\in_array($ex->getCode(), [403, 404, 405])){
+                    $response = $this->response_factory->createResponse($ex->getCode());
+                    $response->getBody()->write(\json_encode([
+                        'success'    => false,
+                        'error_code' => $ex->getCode(),
+                        'error'      => match ($ex->getCode()) {
+                            403 => 'FORBIDDEN',
+                            404 => 'NOT_FOUND',
+                            405 => 'METHOD_NOT_ALLOWED',
+                            default => 'UNKNOWN_ERROR',
+                        }
+                    ]));
+                } else {
+                    $response = $this->response_factory->createResponse(500);
+                    $response->getBody()->write(\json_encode([
+                        'success'    => false,
+                        'error_code' => 500,
+                        'error'      => 'INTERNAL_SERVER_ERROR'
+                    ]));
+                }
+
             } else {
-                // Show default template (500 - Server error)
-                $response = $this->response_factory->createResponse(500);
-                $response->getBody()->write(
-                    $this->twig->render('error/500.html.twig')
-                );
+
+                // Check if HTTP code has a unique error page
+                $template_file = \sprintf('error/%d.html.twig', $ex->getCode());
+                if(\file_exists(APP_ROOT . '/views/' . $template_file)){
+                    // Show template
+                    $response = $this->response_factory->createResponse($ex->getCode());
+                    $response->getBody()->write(
+                        $this->twig->render($template_file)
+                    );
+                } else {
+                    // Show default template (500 - Server error)
+                    $response = $this->response_factory->createResponse(500);
+                    $response->getBody()->write(
+                        $this->twig->render('error/500.html.twig')
+                    );
+                }
             }
 
             return $response;
