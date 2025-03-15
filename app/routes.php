@@ -316,6 +316,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->get('/kfx-host-checker', [Workshop\Tools\WorkshopKfxHostCheckerToolController::class, 'index']);
             $group->get('/kfx-host-checker/ping/{ip:.+}', [Workshop\Tools\WorkshopKfxHostCheckerToolController::class, 'ping']);
 
+            // Tool: Free map number checker
+            $group->get('/find-available-map-number', [Workshop\Tools\WorkshopFreeMapnumberToolController::class, 'index']);
+
         });
     });
 

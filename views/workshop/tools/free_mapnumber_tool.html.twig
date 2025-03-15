@@ -1,0 +1,60 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = 'Available map number finder tool' %}
+
+{% set meta = {
+    title: page_title,
+    description: 'A tool to find an available map number for standalone maps for upload on the KeeperFX workshop.',
+} %}
+
+{% block workshop_content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <div class="d-flex justify-content-between">
+                <h2>Available map number finder tool</h2>
+                <a href="/workshop/tools">Go back to tools</a>
+            </div>
+        </div>
+        <div class="content-body">
+
+            <p class="py-3 bd-keeper" style="background-color: rgba(0,0,0,0.3)">
+                All standalone maps should have a unique map number. This is required so there are no conflicts with other maps.
+                This is done because of the old game engine working with numbers and it allows players to track their completion of maps in-game.
+                <br /><br />
+                You can use this tool to find an available map number for you to use so it can be uploaded to the KeeperFX workshop without any conflicts.
+            </p>
+
+            <div class="row">
+                <div class="col-md-6">
+
+                    <p>
+                        <div class="form-group">
+                            <label for="map_number">
+                                Map number
+                                <span class="text-muted">
+                                    (between 202 and 32767)
+                                </span>
+                            </label>
+
+                            <div id="map-number-loader" class="spinner-border text-muted" role="status"
+                                style="height: 16px; width: 16px; font-size: 8px; position: relative; float: right; top: 46px; right: 15px; display: none;"
+                            ></div>
+
+                            <input type="text" class="form-control" id="map_number" name="map_number" value="{{ get_post_var('map_number') }}"
+                                min="202" max="32767" step="1" pattern="\d+"
+                                oninput="this.value= ['','-'].includes(this.value) ? this.value : this.value|0"
+                                />
+                        </div>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block body_javascript %}
+    <script src="{{ asset('js/workshop.js') }}"></script>
+{% endblock %}
