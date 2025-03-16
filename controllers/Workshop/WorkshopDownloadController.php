@@ -50,7 +50,7 @@ class WorkshopDownloadController {
         // Users with a role of moderator or higher can always download workshop items
         if(
             $workshop_item->isPublished() !== true
-            && $account->getUser()->getRole()->value < UserRole::Moderator->value
+            && ($account->getUser() === null || $account->getUser()->getRole()->value < UserRole::Moderator->value)
         ){
             throw new HttpNotFoundException($request);
         }
