@@ -404,10 +404,9 @@ class ModerateWorkshopUploadController {
                 [
                     'item_id'    => $workshop_item->getId(),
                     'item_name'  => $workshop_item->getName(),
-                    'username'   => $workshop_item->getSubmitter()->getUsername(),
+                    'username'   => $workshop_item->getSubmitter()?->getUsername(),
                 ]
             );
-
         }
 
         // Clear the workshop browse page cache so it reflects the new data

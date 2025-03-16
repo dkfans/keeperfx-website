@@ -11,7 +11,12 @@ class WorkshopItemNotification extends Notification implements NotificationInter
 
     public function getText(): string
     {
-        return "@{$this->data['username']} uploaded a new workshop item: **{$this->data['item_name']}**";
+        if($this->data['username'] !== null){
+            $user_string = "@" . $this->data['username'];
+        } else {
+            $user_string = "The KeeperFX Team";
+        }
+        return "{$user_string} uploaded a new workshop item: **{$this->data['item_name']}**";
     }
 
     public function getUri(): string
