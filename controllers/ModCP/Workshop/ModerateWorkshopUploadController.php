@@ -219,6 +219,7 @@ class ModerateWorkshopUploadController {
         $workshop_item->setMapNumber($map_number);
         $workshop_item->setDifficultyRatingEnabled(\array_key_exists('enable_difficulty_rating', $post));
         $workshop_item->setIsBundledWithGame(\array_key_exists('is_bundled_with_game', $post));
+        $workshop_item->setIsPublished(\array_key_exists('publish', $post));
 
         if(!empty($description)){
             $workshop_item->setDescription($description);
@@ -254,11 +255,6 @@ class ModerateWorkshopUploadController {
                     $workshop_item->setMinGameBuild($min_build);
                 }
             }
-        }
-
-        // Automatically publish item for accounts with a role of 'Moderator' or higher
-        if($account->getUser()->getRole()->value >= UserRole::Moderator->value){
-            $workshop_item->setIsPublished(true);
         }
 
         $em->persist($workshop_item);
@@ -396,18 +392,23 @@ class ModerateWorkshopUploadController {
         WorkshopHelper::removeThumbnail($em, $workshop_item);
         WorkshopHelper::generateThumbnail($em, $workshop_item);
 
-        // Send a notification on Discord
-        $discord_notifier->notifyNewWorkshopItem($workshop_item);
+        // If we should publish this
+        if(\array_key_exists('publish', $post)) {
 
-        // Notify everybody who wants to receive this notification
-        $nc->sendNotificationToAllExceptSelf(
-            WorkshopItemNotification::class,
-            [
-                'item_id'    => $workshop_item->getId(),
-                'item_name'  => $workshop_item->getName(),
-                'username'   => $workshop_item->getSubmitter()->getUsername(),
-            ]
-        );
+            // Send a notification on Discord
+            $discord_notifier->notifyNewWorkshopItem($workshop_item);
+
+            // Notify everybody who wants to receive this notification
+            $nc->sendNotificationToAllExceptSelf(
+                WorkshopItemNotification::class,
+                [
+                    'item_id'    => $workshop_item->getId(),
+                    'item_name'  => $workshop_item->getName(),
+                    'username'   => $workshop_item->getSubmitter()->getUsername(),
+                ]
+            );
+
+        }
 
         // Clear the workshop browse page cache so it reflects the new data
         $workshop_cache->clearAllCachedBrowsePageData();
