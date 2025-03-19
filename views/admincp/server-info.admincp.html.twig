@@ -11,7 +11,7 @@
     </div>
     <div class="content-body">
 
-        {# Users #}
+        <h5>Users</h5>
         <table class="table">
             <tr>
                 <td style="width: 50%">
@@ -43,11 +43,11 @@
             </tr>
         </table>
 
-        {# Emails #}
+        <h5>Emails</h5>
         <table class="table">
             <tr>
                 <td style="width: 50%">
-                    Mails
+                    Total Mails
                 </td>
                 <td style="width: 50%" class="text-info">
                     {{ mails_count }}
@@ -63,8 +63,28 @@
             </tr>
         </table>
 
-        {# Workshop info #}
+        <h5>Workshop</h5>
         <table class="table">
+            <tr>
+                <td style="width: 50%">
+                    Workshop items
+                </td>
+                <td style="width: 50%" class="text-info">
+                    {{ workshop_item_count }}
+                </td>
+            </tr>
+            {% if last_workshop_item is not null %}
+                <tr>
+                    <td style="width: 50%">
+                        Last workshop item
+                    </td>
+                    <td style="width: 50%" class="text-info">
+                        <a href="/moderate/workshop/{{ last_workshop_item.id }}">
+                            {{ last_workshop_item.name }}
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
                 <td style="width: 50%">
                     Workshop files
@@ -91,7 +111,7 @@
             </tr>
         </table>
 
-        {# Alpha build info #}
+        <h5>Alpha Builds</h5>
         <table class="table">
             <tr>
                 <td style="width: 50%">
