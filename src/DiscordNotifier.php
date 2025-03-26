@@ -111,7 +111,7 @@ class DiscordNotifier {
 
         // Create the Embed
         $embed = new Embed();
-        $embed->title($item->getName());
+        $embed->title(\htmlentities($item->getName()));
         $embed->color(self::COLOR_NEW_WORKSHOP_ITEM);
         $embed->timestamp($item->getCreatedTimestamp()->format('Y-m-d H:i'));
         $embed->url($_ENV['APP_ROOT_URL'] . "/workshop/item/" . $item->getId() . "/" . URLify::slug($item->getName()));
@@ -126,7 +126,7 @@ class DiscordNotifier {
             if(\strlen($description) > 350) {
                 $description = substr($description, 0, 347) . '...';
             }
-            $embed->description($description);
+            $embed->description(\htmlentities($description));
         }
 
         // Add thumbnail
@@ -160,7 +160,7 @@ class DiscordNotifier {
 
         // Create the Embed
         $embed = new Embed();
-        $embed->title($article->getTitle());
+        $embed->title(\htmlentities($article->getTitle()));
         $embed->color(self::COLOR_NEW_NEWS_ARTICLE);
         $embed->timestamp($article->getCreatedTimestamp()->format('Y-m-d H:i'));
         $embed->url($_ENV['APP_ROOT_URL'] . '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug());
@@ -168,9 +168,9 @@ class DiscordNotifier {
 
         // Add excerpt
         if($article->getExcerpt()){
-            $embed->description($article->getExcerpt());
+            $embed->description(\htmlentities($article->getExcerpt()));
         } else {
-            $embed->description($article->getContents());
+            $embed->description(\htmlentities($article->getContents()));
         }
 
         // Send the embed
