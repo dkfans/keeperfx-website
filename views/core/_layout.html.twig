@@ -115,12 +115,13 @@
                             </span>
                         </a>
 
-                        <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper" aria-labelledby="navbarNotificationDropdown">
+                        <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper"
+                            style="max-width: calc(100% - 20px); min-width: 350px;" aria-labelledby="navbarNotificationDropdown">
 
                             {% if unread_notifications|length > 0 %}
                                 {% for notification_id, notification in unread_notifications %}
                                     <li>
-                                        <a class="dropdown-item" href="/account/notification/{{ notification_id }}">
+                                        <a class="dropdown-item" href="/account/notification/{{ notification_id }}" style="max-width: 100%; white-space: normal;">
                                             {{ notification.text|notification_render }}
                                             <br/>
                                             <time class="text-muted" datetime="{{ notification.timestamp|date('c') }}">
