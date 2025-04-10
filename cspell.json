@@ -33,6 +33,7 @@
         "csrf",
         "dbal",
         "debugbar",
+        "devcp",
         "Dflydev",
         "dkfans",
         "donotstart",
