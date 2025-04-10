@@ -17,5 +17,6 @@ return [
         'admin-upload'                  => PathHelper::getAppPathFromEnvVar('APP_ADMIN_UPLOAD_STORAGE'),
         'logs'                          => PathHelper::getAppPathFromEnvVar('APP_LOG_STORAGE'),
         'game-files'                    => PathHelper::getAppPathFromEnvVar('APP_GAME_FILE_STORAGE'),
+        'launcher'                      => PathHelper::getAppPathFromEnvVar('APP_LAUNCHER_STORAGE'),
     ],
 ];

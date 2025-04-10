@@ -3,9 +3,11 @@
 namespace App;
 
 use App\Enum\ReleaseType;
-use App\Entity\GithubAlphaBuild;
+
 use App\Entity\GithubRelease;
 use App\Entity\GameFileIndex;
+use App\Entity\LauncherRelease;
+use App\Entity\GithubAlphaBuild;
 
 use App\Config\Config;
 use Doctrine\ORM\EntityManager;
@@ -96,6 +98,28 @@ class GameFileHandler
                     $file_count++;
                 } else {
                     throw new \Exception("failed to copy file");
+                }
+            }
+        }
+
+        // Add latest launcher
+        $latest_launcher = $this->em->getRepository(LauncherRelease::class)->findOneBy(['is_available' => true], ['timestamp' => 'DESC']);
+        if($latest_launcher) {
+            $launcher_files_dir = Config::get('storage.path.launcher') . '/' . $latest_launcher->getName() . '/files';
+            if(DirectoryHelper::isAccessible($launcher_files_dir)){
+                // Add launcher files
+                foreach (scandir($launcher_files_dir) as $file){
+                    if ($file != '.' && $file != '..'){
+                        $source_file = $launcher_files_dir . '/' . $file;
+
+                        // Copy the file
+                        if(\copy($source_file, $dest_path . '/' . $file)){
+
+                            // Add launcher file to file map
+                            $relative_path = \DIRECTORY_SEPARATOR . $file;
+                            $file_index[$relative_path] = \hash_file('crc32b', $source_file);
+                        }
+                    }
                 }
             }
         }

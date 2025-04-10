@@ -216,6 +216,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             // Moderate (dev) Prototypes
             $group->get('/prototypes/list', [DevCP\ModeratePrototypeController::class, 'listIndex']);
 
+            // Moderate (dev) Launcher
+            $group->get('/launcher/list', [DevCP\ModerateLauncherController::class, 'listIndex']);
+
             // Moderate (dev) Crash Reports
             $group->get('/crash-report/list', [DevCP\ModerateCrashReportController::class, 'listIndex']);
             $group->get('/crash-report/{id:\d+}', [DevCP\ModerateCrashReportController::class, 'view']);

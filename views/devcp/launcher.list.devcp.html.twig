@@ -1,0 +1,70 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Launcher Releases - DevCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Launcher Releases ({{ launcher_releases|length }})</h2>
+    </div>
+    <div class="content-body">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Tag</th>
+                    <th>Timestamp</th>
+                    <th>Size</th>
+                    <th>In use</th>
+                    <th>Available</th>
+                    {# <th>Action</th> #}
+                </tr>
+            </thead>
+            <tbody>
+
+                {# First launcher release that is available is the one in use #}
+                {% set used_launcher_id = (launcher_releases|filter(r => r.isAvailable)|first).id ?? null %}
+
+                {# Loop trough all launcher releases #}
+                {% for launcher_release in launcher_releases %}
+
+                    <tr{% if launcher_release.id == used_launcher_id %} class="bg-dark"{% endif %}>
+                        <td>{{ launcher_release.id }}</td>
+                        <td>{{ launcher_release.name }}</td>
+                        <td><code>{{ launcher_release.tag }}</code></td>
+                        <td>{{ launcher_release.timestamp|date('Y-m-d G:i:s') }}</td>
+                        <td>{{ launcher_release.sizeInBytes|format_bytes }}</td>
+                        <td>
+                            {% if launcher_release.id == used_launcher_id %}
+                                <ion-icon name="checkmark-outline" style="color: lime"></ion-icon>
+                            {% else %}
+                                <ion-icon name="close-outline" style="color: red;"></ion-icon>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if launcher_release.isAvailable %}
+                                <ion-icon name="checkmark-outline" style="color: lime"></ion-icon>
+                            {% else %}
+                                <ion-icon name="close-outline" style="color: red;"></ion-icon>
+                            {% endif %}
+                        </td>
+                        {# <td>Action</td> #}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block body_javascript %}
+<script>
+    $(function(e){
+    });
+</script>
+{% endblock %}

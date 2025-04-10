@@ -18,6 +18,7 @@ return [
     \App\Console\Command\KeeperFX\ClearOldGameFilesCommand::class,
     \App\Console\Command\KeeperFX\FetchStableGameFilesCommand::class,
     \App\Console\Command\KeeperFX\ExtractAlphaGameFilesCommand::class,
+    \App\Console\Command\KeeperFX\FetchLauncherCommand::class,
 
     // User
     \App\Console\Command\User\CreateUserCommand::class,
