@@ -46,6 +46,15 @@ class CrashReportApiController {
         // Create crash report entity
         $crash_report = new CrashReport();
         $crash_report->setDescription((string) ($post['description'] ?? ''));
+        $crash_report->setGameConfig((string) ($post['game_config'] ?? ''));
+        $crash_report->setGameLog((string) ($post['game_log'] ?? ''));
+        $crash_report->setGameOutput((string) ($post['game_output'] ?? ''));
+        $crash_report->setSource((string) ($post['source'] ?? 'N/A'));
+
+        // Add contact details
+        if(isset($post['contact_details']) && \is_string($post['contact_details'])){
+            $crash_report->setContactDetails($post['contact_details']);
+        }
 
         // Make sure a game version is defined
         if(!\array_key_exists('game_version', $post) || !\is_string($post['game_version']) || \strlen($post['game_version']) == 0){
@@ -56,51 +65,8 @@ class CrashReportApiController {
                 ])
             );
             return $response;
-        }
-
-        // Set game version
-        $game_version = (string) ($post['game_version'] ?? '');
-        $crash_report->setGameVersion($game_version);
-
-        // Make sure a game log is defined
-        if(!\array_key_exists('game_log', $post) || !\is_string($post['game_log']) || \strlen($post['game_log']) == 0){
-            $response->getBody()->write(
-                \json_encode([
-                    'success' => false,
-                    'error'   => 'NO_GAME_LOG_SUPPLIED'
-                ])
-            );
-            return $response;
-        }
-
-        // Set game log
-        $game_log = (string) ($post['game_log'] ?? '');
-        $crash_report->setGameLog($game_log);
-
-        // Make sure a game output is defined
-        if(!\array_key_exists('game_output', $post) || !\is_string($post['game_output']) || \strlen($post['game_output']) == 0){
-            $response->getBody()->write(
-                \json_encode([
-                    'success' => false,
-                    'error'   => 'NO_GAME_OUTPUT_SUPPLIED'
-                ])
-            );
-            return $response;
         } else {
-            $crash_report->setGameOutput((string) ($post['game_output'] ?? ''));
-        }
-
-        // Make sure a source for the crash report is defined
-        if(!\array_key_exists('source', $post) || !\is_string($post['source']) || \strlen($post['source']) == 0){
-            $response->getBody()->write(
-                \json_encode([
-                    'success' => false,
-                    'error'   => 'NO_SOURCE_DEFINED'
-                ])
-            );
-            return $response;
-        } else {
-            $crash_report->setSource((string) ($post['source'] ?? ''));
+            $crash_report->setGameVersion($post['game_version']);
         }
 
         // Check if savefile is included in request
@@ -186,7 +152,14 @@ class CrashReportApiController {
         $em->flush();
 
         // Notify the developers
-        $nc->sendNotificationToAllWithRole(UserRole::Developer, CrashReportNotification::class, ['id' => $crash_report->getId(), 'game_version' => $game_version]);
+        $nc->sendNotificationToAllWithRole(
+            UserRole::Developer,
+            CrashReportNotification::class,
+            [
+                'id' => $crash_report->getId(),
+                'game_version' => $crash_report->getGameVersion(),
+            ]
+        );
 
         // Return success and include new ID
         $response->getBody()->write(

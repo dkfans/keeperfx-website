@@ -20,10 +20,16 @@ class CrashReport {
     private string $game_version;
 
     #[ORM\Column(type: 'text')]
+    private string $game_config;
+
+    #[ORM\Column(type: 'text')]
     private string $game_log;
 
     #[ORM\Column(type: 'text')]
     private string $game_output;
+
+    #[ORM\Column(nullable: true)]
+    private string|null $contact_details = null;
 
     #[ORM\Column(nullable: true)]
     private string|null $save_filename = null;
@@ -39,7 +45,6 @@ class CrashReport {
     {
         $this->created_timestamp = new \DateTime("now");
     }
-
 
     /**
      * Get the value of id
@@ -86,6 +91,24 @@ class CrashReport {
     }
 
     /**
+     * Get the value of game_config
+     */
+    public function getGameConfig(): string
+    {
+        return $this->game_config;
+    }
+
+    /**
+     * Set the value of game_config
+     */
+    public function setGameConfig(string $game_config): self
+    {
+        $this->game_config = $game_config;
+
+        return $this;
+    }
+
+    /**
      * Get the value of game_log
      */
     public function getGameLog(): string
@@ -117,6 +140,24 @@ class CrashReport {
     public function setGameOutput(string $game_output): self
     {
         $this->game_output = $game_output;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of contact_details
+     */
+    public function getContactDetails(): ?string
+    {
+        return $this->contact_details;
+    }
+
+    /**
+     * Set the value of contact_details
+     */
+    public function setContactDetails(?string $contact_details): self
+    {
+        $this->contact_details = $contact_details;
 
         return $this;
     }
