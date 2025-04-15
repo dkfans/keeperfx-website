@@ -1,0 +1,92 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Game File Index for ' ~ game_file_index.version ~ ' - ModCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Game File Index for {{ game_file_index.version }}</h2>
+        <span>
+            <a href="/dev/game-files/list" style="right: 0;">
+                Back
+            </a>
+        </span>
+    </div>
+    <div class="content-body">
+
+        <input class="form-control form-form-control-sm" id="search" placeholder="Search" style="margin-bottom: 15px;" />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Filepath</th>
+                    <th>CRC32</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for filepath, checksum in game_file_index.data %}
+                        <tr>
+                            <td>
+                                <span class="font-monospace">{{ filepath }}</span>
+                            </td>
+                            <td>
+                                <span class="font-monospace">{{ checksum }}</span>
+                            </td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block body_javascript %}
+
+{# jQuery Debounce #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js" integrity="sha512-JZSo0h5TONFYmyLMqp8k4oPhuo6yNk9mHM+FY50aBjpypfofqtEWsAgRDQm94ImLCzSaHeqNvYuD9382CEn2zw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+{# mark.js (keyword highlighting) #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha512-mhbv5DqBMgrWL+32MmsDOt/OAvqr/cHimk6B8y/bx/xS88MVkYGPiVv2ixKVrkywF2qHplNRUvFsAHUdxZ3Krg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+
+    // Handle search
+    var $searchTable = $('#search').parent().find('table');
+    var searchRows   = $searchTable.find('tbody tr');
+    $('#search').on('keyup', $.debounce(1000, function(e){
+
+        // Get search string
+        var string = $(this).val().toLowerCase();
+
+        // Handle clearing of search
+        if(string == ""){
+            $(searchRows).show();
+            $(searchRows).unmark();
+            return;
+        }
+
+        // Loop trough all rows
+        $.each(searchRows, function(i, el){
+
+            // Show or hide the row
+            let content = $(el).text().toLowerCase();
+            if(!content.includes(string)){
+                $(el).hide();
+            } else {
+                $(el).show();
+            }
+        });
+
+        // Mark the keyword
+        $(searchRows).unmark();
+        $(searchRows).mark(string);
+    }));
+</script>
+
+{% endblock %}
+

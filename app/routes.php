@@ -227,6 +227,10 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             // Bundled Assets
             $group->get('/bundled-assets', [DevCP\ModerateBundledAssetsController::class, 'index']);
 
+            // Game Files Maps
+            $group->get('/game-files/list', [DevCP\ModerateGameFilesController::class, 'listIndex']);
+            $group->get('/game-files/{type}/{version}', [DevCP\ModerateGameFilesController::class, 'view']);
+
         })->add(AuthDevCPMiddleware::class);
 
     })->add(LoggedInMiddleware::class);

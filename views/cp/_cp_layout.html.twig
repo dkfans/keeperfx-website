@@ -59,6 +59,10 @@
                             <ion-icon name="document-attach-outline"></ion-icon>
                             Bundled Assets
                         </a>
+                        <a class="nav-link {% if path_equals('/dev/game-files/*') %}active{% endif %}" href="/dev/game-files/list">
+                            <ion-icon name="map-outline"></ion-icon>
+                            Game File Indexes
+                        </a>
                         <a class="nav-link {% if path_equals('/dev/crash-report/*') %}active{% endif %}" href="/dev/crash-report/list">
                             <ion-icon name="bug-outline"></ion-icon>
                             Crash Reports

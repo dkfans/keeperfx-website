@@ -1,0 +1,79 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Game File Indexes - DevCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Stable Release Game File Indexes ({{ stable_game_file_indexes|length }})</h2>
+    </div>
+    <div class="content-body">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    {# <th>ID</th> #}
+                    <th>Version</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game_file_index in stable_game_file_indexes %}
+                        <tr>
+                            {# <td style="width: 50px">{{ game_file_index.id }}</td> #}
+                            <td>
+                                <a href="/dev/game-files/{{ game_file_index.releaseType.name|lower }}/{{ game_file_index.version }}">
+                                    {{ game_file_index.version }}
+                                </a>
+                            </td>
+                            <td>
+                                <span style="color: {% if game_file_index.releaseType.name == "ALPHA" %}cyan{% else %}magenta{% endif %};">
+                                    {{ game_file_index.releaseType.name|enum_beautify }}
+                                </span>
+                            </td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Alpha Patch Game File Indexes ({{ alpha_game_file_indexes|length }})</h2>
+    </div>
+    <div class="content-body">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    {# <th>ID</th> #}
+                    <th>Version</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game_file_index in alpha_game_file_indexes %}
+                        <tr>
+                            {# <td>{{ game_file_index.id }}</td> #}
+                            <td>
+                                <a href="/dev/game-files/{{ game_file_index.releaseType.name|lower }}/{{ game_file_index.version }}">
+                                    {{ game_file_index.version }}
+                                </a>
+                            </td>
+                            <td>
+                                <span style="color: {% if game_file_index.releaseType.name == "ALPHA" %}cyan{% else %}magenta{% endif %};">
+                                    {{ game_file_index.releaseType.name|enum_beautify }}
+                                </span>
+                            </td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
