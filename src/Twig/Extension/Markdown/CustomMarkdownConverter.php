@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig\Extension\Markdown;
 
+use AMoschou\CommonMark\Alert\AlertExtension;
 use Twig\Extra\Markdown\MarkdownInterface;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 
@@ -27,6 +28,7 @@ class CustomMarkdownConverter implements MarkdownInterface
 
         $environment = $this->converter->getEnvironment();
         $environment->addExtension(new CustomHeadingPermalinkExtension());
+        $environment->addExtension(new AlertExtension());
     }
 
     public function convert(string $string): string
