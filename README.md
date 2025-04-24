@@ -1,13 +1,11 @@
+![KeeperFX Website Homepage](/public/img/banner/top-banner.png)
+
 KeeperFX Official Website
 =========================
 
 The KeeperFX website is a modern webapp written in PHP.
 
 The official website is hosted at https://keeperfx.net
-
-## Screenshot
-
-![KeeperFX Website Homepage](https://v0id.us/uploads/libmN0koKnaDK3ee.png)
 
 ## Requirements
 
