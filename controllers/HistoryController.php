@@ -141,10 +141,15 @@ class HistoryController {
                     'date_format' => 'Y-m-d',
                     'description' => "xtremeqg shared his PR that allows KeeperFX to be natively compiled on Linux. It still needs a lot of work, but a Linux release is getting very close!",
                 ],
+                [
+                    'title'       => 'LUA support has been added',
+                    'date'        => new \DateTime('2025-05-03'),
+                    'date_format' => 'Y-m-d',
+                    'description' => "qqluqq has added support for the LUA scripting language to KeeperFX, opening the door to powerful new gameplay features, custom logic, and modding capabilities.",
+                ],
             ]])
         );
 
         return $response;
     }
-
 }
