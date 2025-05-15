@@ -6,13 +6,14 @@ use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class HistoryController {
+class HistoryController
+{
 
     public function index(
         Request $request,
         Response $response,
         TwigEnvironment $twig
-    ){
+    ) {
         $response->getBody()->write(
             $twig->render('history.html.twig', ['history_entries' => [
                 [
@@ -32,11 +33,11 @@ class HistoryController {
                     'date'        => new \DateTime('2008-04'),
                     'date_format' => 'Y-m',
                     'description' => "Tomasz Lis, also known as Mefistotelis or Mefisto, started working on rewriting Dungeon Keeper because of his interest in rewriting Syndicate Wars. \n\n" .
-                                     "He was looking for _debug info_ in the Syndicate Wars files, but didn\'t find any. " .
-                                     "So he started asking around forums, and the Keeper Klan community pointed him towards Dungeon Keeper because they both used the same code base. " .
-                                     "He then found the _debug info_ he was after and started working on the project. " .
-                                     "\n\nThe goal was to rewrite the code that was used in Syndicate Wars, but the Keeper Klan community got Mefisto into Dungeon Keeper. " .
-                                     "Mefisto\'s idea was to convert the original Dungeon Keeper executable into a DLL file, so other programs can execute its code.",
+                        "He was looking for _debug info_ in the Syndicate Wars files, but didn\'t find any. " .
+                        "So he started asking around forums, and the Keeper Klan community pointed him towards Dungeon Keeper because they both used the same code base. " .
+                        "He then found the _debug info_ he was after and started working on the project. " .
+                        "\n\nThe goal was to rewrite the code that was used in Syndicate Wars, but the Keeper Klan community got Mefisto into Dungeon Keeper. " .
+                        "Mefisto\'s idea was to convert the original Dungeon Keeper executable into a DLL file, so other programs can execute its code.",
                 ],
                 [
                     'title'       => 'Mefisto shares the first of his work',
@@ -55,7 +56,7 @@ class HistoryController {
                     'date'        => new \DateTime('2009-09-04'),
                     'date_format' => 'Y-m-d',
                     'description' => "Dotted created the new Keeper Klan forum and the community moved from the old InvisionFree forum to the new home. " .
-                                     "During this move he created a KeeperFX subforum and made Mefisto its moderator.",
+                        "During this move he created a KeeperFX subforum and made Mefisto its moderator.",
                 ],
                 [
                     'title'       => 'Loobinex releases an unofficial version of KeeperFX',
@@ -127,7 +128,7 @@ class HistoryController {
                     'title'       => 'AncientWay won the first KeeperFX tournament',
                     'date'        => new \DateTime('2023-12-29'),
                     'date_format' => 'Y-m-d',
-                    'description' => "AncientWay won in the finals against Spatulade during the first official KeeperFX tournament. **Congratulations!  \nThird and fourth place go to Biervampir and Loobinex.",
+                    'description' => "AncientWay won in the finals against Spatulade during the first official KeeperFX tournament. **Congratulations!**  \nThird and fourth place go to Biervampir and Loobinex.",
                 ],
                 [
                     'title'       => 'New Keeper colors! Orange, Pink and Black',
