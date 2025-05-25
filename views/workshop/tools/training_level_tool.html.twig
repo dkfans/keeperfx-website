@@ -1,0 +1,232 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = 'Training Level Curve Tool' %}
+
+{% set meta = {
+    title: page_title,
+    description: 'A tool to generate a training level curve.',
+} %}
+
+{% block workshop_content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <div class="d-flex justify-content-between">
+                <h2>Training Level Curve Tool</h2>
+                <a href="/workshop/tools">Go back to tools</a>
+            </div>
+        </div>
+        <div class="content-body">
+
+            <p class="py-3 bd-keeper" style="background-color: rgba(0,0,0,0.3)">
+                This tool can be used to generate a nice training level value curve for Dungeon Keeper creatures.
+                <br /><br />
+                Enter the wanted minimum and maximum training level value, and a value that you want to round to. You can then tweak the curve to your liking.
+            </p>
+
+            <div class="row" style="margin-bottom: 25px; margin-top: 25px;">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="lvl2">
+                            Level 2 training value
+                        </label>
+                        <input type="number" pattern="[0-9]" id="lvl2" value="1000" class="form-control" onkeypress="return /[0-9]/i.test(event.key)" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 25px; margin-top: 25px;">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="lvl10">
+                            Level 10 training value
+                        </label>
+                        <input type="number" pattern="[0-9]" id="lvl10" value="30000" class="form-control" onkeypress="return /[0-9]/i.test(event.key)" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 25px;">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="max">
+                            Rounding
+                        </label>
+                        <input type="number" pattern="[0-9]" id="rounding" value="250" class="form-control" onkeypress="return /[0-9]/i.test(event.key)" value="1" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 25px;">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="curve">
+                            Curve amount
+                            <span id="curve-value" class="badge bg-primary">1.5</span>
+                        </label>
+                        <input type="range" id="curve" class="form-range" min="0.01" max="5" step="0.01" value="1.5" />
+                        <a href="#" id="make-linear">Make linear</a>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
+                    <th>10</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="width: 10%" id="level-value-1">0</td>
+                        <td style="width: 10%" id="level-value-2"></td>
+                        <td style="width: 10%" id="level-value-3"></td>
+                        <td style="width: 10%" id="level-value-4"></td>
+                        <td style="width: 10%" id="level-value-5"></td>
+                        <td style="width: 10%" id="level-value-6"></td>
+                        <td style="width: 10%" id="level-value-7"></td>
+                        <td style="width: 10%" id="level-value-8"></td>
+                        <td style="width: 10%" id="level-value-9"></td>
+                        <td style="width: 10%" id="level-value-10"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="border: 2px solid rgba(0, 0, 0, 0.8); margin-bottom: 50px;">
+                <canvas id="chart"></canvas>
+            </div>
+
+            <div class="row" style="margin-bottom: 25px;">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="output">
+                            Output
+                        </label>
+                        <input type="text" id="output" class="form-control" readonly />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block body_javascript %}
+
+{# jQuery Debounce #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js" integrity="sha512-JZSo0h5TONFYmyLMqp8k4oPhuo6yNk9mHM+FY50aBjpypfofqtEWsAgRDQm94ImLCzSaHeqNvYuD9382CEn2zw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+{# Chart.js #}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+$(function(){
+
+    const ctx = document.getElementById('chart');
+
+    const backgroundPlugin = {
+        id: 'customCanvasBackgroundColor',
+        beforeDraw: (chart, args, options) => {
+            const {ctx} = chart;
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = options.color || '#99ffff';
+            ctx.fillRect(0, 0, chart.width, chart.height);
+            ctx.restore();
+        }
+    };
+
+    const trainingChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+            datasets: [{
+                label: 'Training Values',
+                data: [],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                customCanvasBackgroundColor: {
+                    color: 'rgba(0, 0, 0, 0.4)',
+                }
+            },
+        },
+        plugins: [backgroundPlugin]
+    });
+
+    $('#lvl2, #lvl10, #rounding, #curve').on('input change keyup', $.throttle(100, function(e) {
+
+        // Values
+        var min = 0;
+        var lvl2 = parseInt($('#lvl2').val()) || 1000;
+        var max = parseInt($('#lvl10').val()) || 30000;
+        var rounding = parseInt($('#rounding').val()) || 1;
+        var curve = parseFloat($('#curve').val()) || 1;
+
+        // Update curve value text
+        $('#curve-value').text(curve.toFixed(2));
+
+        // Always add level 1 and 2
+        var values = [min, lvl2];
+
+        // Calculate levels 3 to 9
+        for (var i = 1; i <= 7; i++) {
+
+            // Calculate value based on position and curve
+            var t = i / 8; // 8 evenly spaced steps between 0 and 1
+            var interpolated = lvl2 + (max - lvl2) * Math.pow(t, curve);
+
+            // Round based on rounding value
+            interpolated = Math.round(interpolated / rounding) * rounding;
+
+            // Make sure level isn't rounded down and always goes up
+            if(interpolated < (lvl2 + (rounding * i))){
+                interpolated = lvl2 + (rounding * i);
+            }
+
+            // Add to values
+            values.push(Math.round(interpolated));
+        }
+
+        // Add level 10 too
+        values.push(max);
+
+        // Update DOM
+        for (var i = 0; i < values.length; i++) {
+            $('#level-value-' + (i + 1)).text(values[i]);
+        }
+
+        // Update chart
+        trainingChart.data.datasets[0].data = values;
+        trainingChart.update();
+
+        // Create CFG output
+        $('#output').val(
+            "LevelsTrainValues = " + values.slice(1).join(' ')
+        );
+    }));
+
+    // Make linear handler
+    $('#make-linear').on('click', function(e){
+        e.preventDefault();
+        $('#curve').val(1);
+        $('#curve').trigger('change');
+    });
+
+    // Start tool instantly
+    $('#lvl10').trigger('input');
+});
+
+
+</script>
+{% endblock %}

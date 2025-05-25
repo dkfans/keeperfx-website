@@ -10,14 +10,15 @@ use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class WorkshopToolsController {
+class WorkshopToolsController
+{
 
     public function index(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ){
+    ) {
         $yani = $em->getRepository(User::class)->findOneBy(['username' => 'Yani']);
 
         $response->getBody()->write(
@@ -38,6 +39,12 @@ class WorkshopToolsController {
                     'title'       => 'Available map number finder tool',
                     'url'         => '/workshop/tools/find-available-map-number',
                     'description' => 'A tool to find an available map number for standalone maps for upload on the KeeperFX workshop.',
+                    'user'        => $yani
+                ],
+                [
+                    'title'       => 'Training Level Curve tool',
+                    'url'         => '/workshop/tools/training-level-curve-tool',
+                    'description' => 'A tool to generate a training level curve for creatures.',
                     'user'        => $yani
                 ],
             ]])

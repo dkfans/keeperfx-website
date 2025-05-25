@@ -326,6 +326,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             // Tool: Free map number checker
             $group->get('/find-available-map-number', [Workshop\Tools\WorkshopFreeMapnumberToolController::class, 'index']);
 
+            // Tool: Training Level tool
+            $group->get('/training-level-curve-tool', [Workshop\Tools\WorkshopTrainingLevelToolController::class, 'index']);
         });
     });
 
