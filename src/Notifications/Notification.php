@@ -4,8 +4,8 @@ namespace App\Notifications;
 
 use App\Enum\UserRole;
 
-class Notification {
-
+class Notification
+{
     protected \DateTime|null $timestamp;
 
     protected array|null $data;
@@ -42,4 +42,8 @@ class Notification {
         ];
     }
 
+    public function getData(): array|null
+    {
+        return $this->data;
+    }
 }

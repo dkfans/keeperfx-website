@@ -21,7 +21,8 @@ use App\Notifications\Exception\NotificationException;
 use Xenokore\Utility\Helper\ClassHelper;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
-class NotificationCenter {
+class NotificationCenter
+{
 
     private const CACHE_KEY_NOTIFICATIONS = "unread-notif-uid-%s";
 
@@ -35,14 +36,13 @@ class NotificationCenter {
         private Mailer $mailer,
     ) {
 
-        if($this->account->isLoggedIn()){
+        if ($this->account->isLoggedIn()) {
 
             // Get cached unread notifications
             $count = $cache->get($this->getUserCacheKey());
-            if($count !== null){
+            if ($count !== null) {
                 $this->unread_notifications = $count;
             }
-
         }
     }
 
@@ -52,7 +52,7 @@ class NotificationCenter {
         $setting = $this->notification_settings->getUserSetting($user, $class);
 
         // Check if we are creating a notification on the website
-        if($setting['website'] === true){
+        if ($setting['website'] === true) {
 
             $notification = $this->createUserNotification($user, $class, $data);
             $this->em->persist($notification);
@@ -65,7 +65,7 @@ class NotificationCenter {
             $notification_object = $this->createNotificationObject($notification);
 
             // Check if we need to send an email
-            if($setting['email'] && $user->isEmailVerified()){
+            if ($setting['email'] && $user->isEmailVerified()) {
 
                 // Create and send mail
                 // TODO: add template functionality
@@ -83,9 +83,9 @@ class NotificationCenter {
 
         // Check if we did not create a website notification and just need to send an email.
         // This is important because the URL in the email will not point to a notification itself.
-        if($setting['website'] === false && $setting['email'] === true && $user->isEmailVerified()){
+        if ($setting['website'] === false && $setting['email'] === true && $user->isEmailVerified()) {
 
-            if(!\class_exists($class)){
+            if (!\class_exists($class)) {
                 throw new NotificationClassNotFoundException("notification class '{$class}' not found");
             }
 
@@ -115,15 +115,15 @@ class NotificationCenter {
     {
         $users = [];
         $all_users = $this->em->getRepository(User::class)->findAll();
-        if($all_users){
-            foreach($all_users as $user){
-                if($user->getRole()->value >= $role->value){
+        if ($all_users) {
+            foreach ($all_users as $user) {
+                if ($user->getRole()->value >= $role->value) {
                     $users[] = $user;
                 }
             }
         }
 
-        if(\count($users) > 0){
+        if (\count($users) > 0) {
             $this->sendNotificationToMany($users, $class, $data);
         }
     }
@@ -132,34 +132,34 @@ class NotificationCenter {
     {
         $users = [];
         $all_users = $this->em->getRepository(User::class)->findAll();
-        if($all_users){
-            foreach($all_users as $user){
+        if ($all_users) {
+            foreach ($all_users as $user) {
                 $users[] = $user;
             }
         }
 
-        if(\count($users) > 0){
+        if (\count($users) > 0) {
             $this->sendNotificationToMany($users, $class, $data);
         }
     }
 
     public function sendNotificationToAllExceptSelf(string $class, array|null $data = null): void
     {
-        if(!$this->account->isLoggedIn()){
+        if (!$this->account->isLoggedIn()) {
             throw new \Exception("user needs to be logged in");
         }
 
         $users = [];
         $all_users = $this->em->getRepository(User::class)->findAll();
-        if($all_users){
-            foreach($all_users as $user){
-                if($user !== $this->account->getUser()){
+        if ($all_users) {
+            foreach ($all_users as $user) {
+                if ($user !== $this->account->getUser()) {
                     $users[] = $user;
                 }
             }
         }
 
-        if(\count($users) > 0){
+        if (\count($users) > 0) {
             $this->sendNotificationToMany($users, $class, $data);
         }
     }
@@ -171,7 +171,7 @@ class NotificationCenter {
         $users_with_email_notifications = [];
 
         /** @var User $user */
-        foreach($users as $user){
+        foreach ($users as $user) {
 
             $notification = null;
 
@@ -179,7 +179,7 @@ class NotificationCenter {
             $setting = $this->notification_settings->getUserSetting($user, $class);
 
             // Check if we are creating a notification on the website
-            if($setting['website'] === true){
+            if ($setting['website'] === true) {
 
                 $notification = $this->createUserNotification($user, $class, $data);
                 $this->em->persist($notification);
@@ -187,7 +187,7 @@ class NotificationCenter {
             }
 
             // Check if we need to send an email
-            if($setting['email'] === true && $user->isEmailVerified()){
+            if ($setting['email'] === true && $user->isEmailVerified()) {
                 $users_with_email_notifications[] = [
                     'user'         => $user,
                     'notification' => $notification,
@@ -196,27 +196,27 @@ class NotificationCenter {
         }
 
         // Handle new website notifications
-        if(\count($notifications) > 0){
+        if (\count($notifications) > 0) {
 
             // Save notifications to the DB
             $this->em->flush();
 
             // Clear user caches for users with a new notification
-            foreach($notifications as $notification){
+            foreach ($notifications as $notification) {
                 $this->clearUserCache($notification->getUser());
             }
         }
 
         // Send out emails
-        if(\count($users_with_email_notifications) > 0){
+        if (\count($users_with_email_notifications) > 0) {
 
-            foreach($users_with_email_notifications as $user_email_notification){
+            foreach ($users_with_email_notifications as $user_email_notification) {
 
                 $user         = $user_email_notification['user'];
                 $notification = $user_email_notification['notification'];
 
                 // Check if we need to send an email that is linked to a notification on the website
-                if($notification !== null){
+                if ($notification !== null) {
 
                     // Map the notification entity to a notification definition
                     $notification_definition = $this->createNotificationObject($notification);
@@ -232,7 +232,6 @@ class NotificationCenter {
                         null,
                         false,
                     );
-
                 } else {
 
                     // Create an email WITHOUT a link to a notification on the website
@@ -255,7 +254,6 @@ class NotificationCenter {
                         false
                     );
                 }
-
             }
 
             // Save changes to DB
@@ -265,11 +263,11 @@ class NotificationCenter {
 
     public function getUnreadNotifications()
     {
-        if(!$this->account->isLoggedIn()){
+        if (!$this->account->isLoggedIn()) {
             throw new NotificationException("can't get unread notifications if not logged in");
         }
 
-        if($this->unread_notifications !== null){
+        if ($this->unread_notifications !== null) {
             return $this->unread_notifications;
         }
 
@@ -283,8 +281,8 @@ class NotificationCenter {
             ['created_timestamp' => 'DESC'],
         );
 
-        if($user_notifications){
-            foreach($user_notifications as $user_notification){
+        if ($user_notifications) {
+            foreach ($user_notifications as $user_notification) {
                 $this->unread_notifications[$user_notification->getId()] = $this->createNotificationObject($user_notification);
             }
         }
@@ -294,9 +292,29 @@ class NotificationCenter {
         return $this->unread_notifications;
     }
 
+    public function removeUnreadNotificationById(int $id): bool
+    {
+        if (!$this->account->isLoggedIn()) {
+            throw new NotificationException("can't remove an unread notification if not logged in");
+        }
+
+        if ($this->unread_notifications === null) {
+            throw new NotificationException("unread notifications have not been checked yet");
+        }
+
+        // Remove the unread notification if it exists
+        if (isset($this->unread_notifications[$id])) {
+            unset($this->unread_notifications[$id]);
+            // Return whether or not is has been removed
+            return isset($this->unread_notifications[$id]);
+        }
+
+        return false;
+    }
+
     public function getAllNotifications()
     {
-        if(!$this->account->isLoggedIn()){
+        if (!$this->account->isLoggedIn()) {
             throw new NotificationException("can't get notifications if not logged in");
         }
 
@@ -309,8 +327,8 @@ class NotificationCenter {
             ['created_timestamp' => 'DESC'],
         );
 
-        if($user_notifications){
-            foreach($user_notifications as $user_notification){
+        if ($user_notifications) {
+            foreach ($user_notifications as $user_notification) {
                 $notifications[$user_notification->getId()] = $this->createNotificationObject($user_notification);
             }
         }
@@ -322,7 +340,7 @@ class NotificationCenter {
     {
         $class = $user_notification->getClass();
 
-        if(!\class_exists($class)){
+        if (!\class_exists($class)) {
             throw new NotificationClassNotFoundException("notification class '{$class}' does not exist");
         }
 
@@ -338,7 +356,7 @@ class NotificationCenter {
 
     private function createUserNotification(User $user, string $class, array|null $data = null): UserNotification
     {
-        if(!\class_exists($class)){
+        if (!\class_exists($class)) {
             throw new NotificationClassNotFoundException("notification class '{$class}' does not exist");
         }
 
@@ -351,7 +369,7 @@ class NotificationCenter {
 
     private function getUserCacheKey(): string
     {
-        if(!$this->account->isLoggedIn()){
+        if (!$this->account->isLoggedIn()) {
             throw new NotificationException("can't get user cache key if not logged in");
         }
 
@@ -360,7 +378,7 @@ class NotificationCenter {
 
     public function clearUserCache(User|null $user = null)
     {
-        if($user === null){
+        if ($user === null) {
             $this->cache->delete($this->getUserCacheKey());
         } else {
             $this->cache->delete(
@@ -371,7 +389,7 @@ class NotificationCenter {
 
     public function getNotificationSettings(): array
     {
-        if(!$this->account->isLoggedIn()){
+        if (!$this->account->isLoggedIn()) {
             throw new \Exception("user needs to be logged in");
         }
 
@@ -405,28 +423,27 @@ class NotificationCenter {
         $clear_cache_for_users = [];
 
         $notifications = $this->em->getRepository(UserNotification::class)->findBy(['class' => $class]);
-        foreach($notifications as $notification){
+        foreach ($notifications as $notification) {
             $notification_data = $notification->getData();
 
             // We'll remember if the stuff we have already checked still matches.
             // We haven't checked anything yet, so this should be true for now.
             $data_matches = true;
 
-            foreach($data_to_match as $key => $value)
-            {
+            foreach ($data_to_match as $key => $value) {
                 // We reset the 'data_matches' because we are checking data.
                 // If the checked data matches this will be set to true again.
                 $data_matches = false;
 
                 // Make sure the key of the data exists in the notification data
-                if(!\array_key_exists($key, $notification_data)){
+                if (!\array_key_exists($key, $notification_data)) {
                     break;
                 }
 
                 // If we are checking multiple data values, we need to compare each value separately
-                if($check_multiple && \is_array($value)){
-                    foreach($value as $check_value){
-                        if(gettype($notification_data[$key]) === \gettype($check_value) && $notification_data[$key] === $check_value){
+                if ($check_multiple && \is_array($value)) {
+                    foreach ($value as $check_value) {
+                        if (gettype($notification_data[$key]) === \gettype($check_value) && $notification_data[$key] === $check_value) {
                             $data_matches = true;
                             break;
                         }
@@ -436,13 +453,13 @@ class NotificationCenter {
 
                 // Just compare the value
                 // This makes it so an array need to match an array completely.
-                if(gettype($notification_data[$key]) === \gettype($value) && $notification_data[$key] === $value){
+                if (gettype($notification_data[$key]) === \gettype($value) && $notification_data[$key] === $value) {
                     $data_matches = true;
                 }
             }
 
             // If ALL data matches, we'll remove this notification and clear the cache of the user
-            if($data_matches){
+            if ($data_matches) {
                 $need_database_flush     = true;
                 $clear_cache_for_users[] = $notification->getUser();
                 $this->em->remove($notification);
@@ -450,11 +467,11 @@ class NotificationCenter {
         }
 
         // If we need to flush the database at least one notification has been removed
-        if($need_database_flush){
+        if ($need_database_flush) {
             $this->em->flush();
 
             // Clear the caches for all affected users
-            foreach($clear_cache_for_users as $user){
+            foreach ($clear_cache_for_users as $user) {
                 $this->clearUserCache($user);
             }
 

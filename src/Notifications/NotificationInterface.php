@@ -4,7 +4,8 @@ namespace App\Notifications;
 
 use App\Enum\UserRole;
 
-interface NotificationInterface {
+interface NotificationInterface
+{
 
     public function __construct(\DateTime|null $timestamp = null, array|null $data = null, bool $is_read = false);
 
@@ -19,6 +20,8 @@ interface NotificationInterface {
     public function getRequiredUserRole(): UserRole;
 
     public function getDefaultSettings(): array;
+
+    public function getData(): array|null;
 
     public function isRead(): bool;
 }
