@@ -427,7 +427,7 @@
     });
 </script>
 <script>
-    const workshop_item = {
+    var workshop_item = {
         id: {{ item.id }},
         slug: '{{ item.name|slugify }}',
         submitter_id: {{ item.submitter.id ?? 'null' }}

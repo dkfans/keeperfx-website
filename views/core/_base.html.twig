@@ -65,7 +65,7 @@
 
         {# App store - used for passing application variables to javascript #}
         <script>
-            const app_store = {
+            var app_store = {
                 account: {{ account|json_encode()|raw }},
                 csrf: {{ csrf|json_encode()|raw }},
                 upload_limit: {{ globals.upload_limit|json_encode()|raw }},
