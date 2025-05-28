@@ -355,7 +355,7 @@
             {# Comment area #}
             {% if account is null %}
                 <p>
-                    <a href="/login?redirect={{ get_path() }}">Login</a> or <a href="/register">register</a> to comment on this workshop item.
+                    <a href="/login?redirect={{ get_path() }}" data-instant>Login</a> or <a href="/register" data-instant>register</a> to comment on this workshop item.
                 </p>
             {% else %}
                 <form class="mb-3" action="/workshop/item/{{ item.id }}/comment" method="POST">
