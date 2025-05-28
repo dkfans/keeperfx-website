@@ -437,10 +437,10 @@
             lightbox.init();
 
             // Preload the full sizes screenshots
-            $.each($('a'), function(e, el){
-                let url = $(el).attr('href');
-                if(typeof url != 'undefined' && url.startsWith('/screenshot/')){
-                    const img = new Image();
+            $('a[href^="/screenshot/"]').each(function(){
+                let url = $(this).attr('href');
+                if (url) {
+                    var img = new Image();
                     img.src = url;
                 }
             });
