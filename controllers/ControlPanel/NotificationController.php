@@ -21,7 +21,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpForbiddenException;
 
-class NotificationController {
+class NotificationController
+{
 
     public function read(
         Request $request,
@@ -30,18 +31,18 @@ class NotificationController {
         Account $account,
         NotificationCenter $nc,
         $id,
-    ){
-        if(!\is_numeric($id)){
+    ) {
+        if (!\is_numeric($id)) {
             throw new HttpNotFoundException($request);
         }
 
         /** @var UserNotification $notification */
         $notification = $em->getRepository(UserNotification::class)->find($id);
-        if(!$notification){
+        if (!$notification) {
             throw new HttpNotFoundException($request);
         }
 
-        if($account->getUser() !== $notification->getUser()){
+        if ($account->getUser() !== $notification->getUser()) {
             throw new HttpNotFoundException($request);
         }
 
@@ -53,7 +54,7 @@ class NotificationController {
 
         $nc->clearUserCache();
 
-        $response = $response->withHeader('Location', $object->getUri())->withStatus(302);
+        $response = $response->withHeader('Location', $object->getUri() . '#nav-top')->withStatus(302);
         return $response;
     }
 
@@ -64,7 +65,7 @@ class NotificationController {
         Account $account,
         NotificationCenter $nc,
         TwigEnvironment $twig,
-    ){
+    ) {
 
         $response->getBody()->write(
             $twig->render('cp/notifications.cp.html.twig', [
@@ -85,17 +86,15 @@ class NotificationController {
         NotificationSettings $ns,
         FlashMessage $flash,
         TwigEnvironment $twig,
-    )
-    {
+    ) {
         // Get user notification settings
         $user_settings = [];
         $notification_settings = $nc->getNotificationSettings();
-        foreach($notification_settings as $class_name => $settings)
-        {
+        foreach ($notification_settings as $class_name => $settings) {
             /** @var NotificationInterface $class */
             $class = new $class_name();
 
-            if($class->getRequiredUserRole()->value > $account->getUser()->getRole()->value){
+            if ($class->getRequiredUserRole()->value > $account->getUser()->getRole()->value) {
                 continue;
             }
 
@@ -109,7 +108,7 @@ class NotificationController {
         }
 
         // Check if email is verified
-        if($account->getUser()->getEmail() !== null && $account->getUser()->isEmailVerified() === false){
+        if ($account->getUser()->getEmail() !== null && $account->getUser()->isEmailVerified() === false) {
             $flash->info('You have not verified your email address yet. Please verify it to enable additional functionality. You can re-send the activation email on the <a href="/account">Account Settings page</a>.');
         }
 
@@ -134,13 +133,12 @@ class NotificationController {
         NotificationSettings $ns,
         TwigEnvironment $twig,
         FlashMessage $flash,
-    )
-    {
+    ) {
         // Get the posted data
         $post = $request->getParsedBody();
 
         // Loop trough all notification settings
-        foreach($nc->getNotificationSettings() as $class => $settings) {
+        foreach ($nc->getNotificationSettings() as $class => $settings) {
 
             // Check if the setting already exists in the DB
             /** @var UserNotificationSetting $notification_setting */
@@ -150,7 +148,7 @@ class NotificationController {
             ]);
 
             // Create the setting in the DB if it doesn't exist yet
-            if(!$notification_setting){
+            if (!$notification_setting) {
                 $notification_setting = new UserNotificationSetting();
                 $notification_setting->setClass($class);
                 $notification_setting->setUser($account->getUser());
@@ -181,15 +179,15 @@ class NotificationController {
         CsrfGuard $csrf_guard,
         $token_name,
         $token_value,
-    ){
+    ) {
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Update read status of all notifications
         $notifications = $em->getRepository(UserNotification::class)->findBy(['user' => $account->getUser(), 'is_read' => false]);
-        foreach($notifications as $notification){
+        foreach ($notifications as $notification) {
             $notification->setRead(true);
         }
 
@@ -204,5 +202,4 @@ class NotificationController {
         $response = $response->withHeader('Location', '/account/notifications')->withStatus(302);
         return $response;
     }
-
 }

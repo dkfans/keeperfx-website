@@ -117,4 +117,18 @@ $(function(){
             });
         });
     }
+
+    // Check if URL has #nav-top and scroll instantly to it using an offset
+    if (window.location.hash === '#nav-top') {
+
+        // Scroll
+        const $navTop = $('#nav-top');
+        if ($navTop.length) {
+            window.scrollTo({top:$navTop[0].offsetTop - 15, behavior: 'auto'});
+        }
+
+        // Remove hashbang including "#"
+        history.replaceState(null, null, window.location.pathname + window.location.search);
+    }
 });
+
