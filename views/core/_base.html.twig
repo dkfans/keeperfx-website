@@ -126,7 +126,16 @@
 
         {# InstantClick JS #}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/instantclick/3.1.0/instantclick.min.js" integrity="sha512-K0LA7hRSqNt0GOikeLRmpKEecaOy7uizFEA/b3SMMyGycCy1qRLoezkVbuXQUFVq6pwEjCszMCn3TT4dRRie+g==" crossorigin="anonymous" referrerpolicy="no-referrer" data-no-instant></script>
-        <script data-no-instant>InstantClick.init(50);</script>
+        <script data-no-instant>
+            InstantClick.init(50);
+            {# Make page scroll below top banner during navigation for easier website navigation #}
+            {# Note: change event should go AFTER init so initial page load does not trigger it yet #}
+            InstantClick.on('change', function(){
+                $('html, body').animate({
+                    scrollTop: $('#nav-top').offset().top - 15
+                }, 100); // duration
+            });
+        </script>
 
         {# TwigJS #}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twig.js/1.17.1/twig.min.js" integrity="sha512-5x+00SW0j963Y8dAzoxCe3bASSzb1O7FmPqbOssRkpHTxFfs5bTnWxMPQwep2mBtQSU9Q12gaTROevcpmhmN7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
