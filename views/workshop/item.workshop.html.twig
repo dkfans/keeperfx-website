@@ -32,7 +32,7 @@
                     {# User #}
                     {% if item.originalAuthor is not null %}
                         Created by
-                        <a href="/workshop/browse?original_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author">{{ item.originalAuthor }}</a>
+                        <a href="/workshop/browse?original_author={{ item.originalAuthor|url_encode }}" class="username-link-org-author" data-instant>{{ item.originalAuthor }}</a>
                     {% else %}
                         <span style="margin-right: 3px;">
                             Submitted by

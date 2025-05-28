@@ -8,7 +8,7 @@
     and not (workshop_item.submitter != null and workshop_item.originalAuthor|lower == workshop_item.submitter.username|lower)
 %}
     {# <strong>{{ workshop_item.originalAuthor }}</strong> #}
-    <a href="/workshop/browse?original_author={{ workshop_item.originalAuthor|url_encode }}" class="username-link-org-author">
+    <a href="/workshop/browse?original_author={{ workshop_item.originalAuthor|url_encode }}" class="username-link-org-author" data-instant>
         {{ workshop_item.originalAuthor }}
     </a>
 {% else %}
@@ -19,7 +19,7 @@
         <a
         href="/workshop/browse?user=keeperfx-team"
         title="Browse the KeeperFX Team Workshop Items"
-        class="user-link d-inline-block">
+        class="user-link d-inline-block" data-instant>
             <span class="user-username">KeeperFX Team</span>
         </a>
 
@@ -30,7 +30,7 @@
         href="/workshop/user/{{ workshop_item.submitter.username|url_encode }}"
         {# href="/workshop/browse?user={{ workshop_item.submitter.username }}" #}
         {# title="Browse {{ workshop_item.submitter.username }}'s Workshop Items" #}
-        class="user-link d-inline-block">
+        class="user-link d-inline-block" data-instant>
             {% if workshop_item.submitter.avatarSmall %}
                 <img src="/avatar/{{ workshop_item.submitter.avatarSmall }}" class="user-avatar" />
             {% elseif workshop_item.submitter.avatar %}
