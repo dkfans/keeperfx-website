@@ -162,7 +162,7 @@
 
                             {# Thumbnail #}
                             <div class="workshop-grid-item-image-container">
-                                <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" data-instant>
                                     {% if item.thumbnail is not null %}
                                         <img src="/workshop/image/{{ item.id }}/{{ item.thumbnail }}" />
                                     {% elseif item.images|length > 0 %}
@@ -206,7 +206,7 @@
                                     {% if (item.minGameBuild is null or item.minGameBuild != -1) and item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
                                     {% if item.minGameBuild is not null and item.minGameBuild == -1 and item.isLastFileBroken %}style="padding-right: 20px;"{% endif %}
                                 >
-                                    <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" title="{{ item.name }}">
+                                    <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" title="{{ item.name }}" data-instant>
                                         {{ item.name }}
                                     </a>
                                 </div>

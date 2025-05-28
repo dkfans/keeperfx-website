@@ -27,7 +27,7 @@
                     <div class="workshop-grid-item-info">
 
                         <div class="workshop-grid-item-title mt-2">
-                            <a href="{{ tool.url }}" title="{{ tool.title }}">
+                            <a href="{{ tool.url }}" title="{{ tool.title }}" data-instant>
                                 {{ tool.title }}
                             </a>
                         </div>
@@ -41,7 +41,7 @@
                             href="/workshop/user/{{ tool.user.username|url_encode }}"
                             {# href="/workshop/browse?user={{ tool.user.username }}" #}
                             {# title="Browse {{ tool.user.username }}'s Workshop Items" #}
-                            class="user-link d-inline-block">
+                            class="user-link d-inline-block" data-instant>
                                 {% if tool.user.avatarSmall %}
                                     <img src="/avatar/{{ tool.user.avatarSmall }}" class="user-avatar" />
                                 {% elseif tool.user.avatar %}
