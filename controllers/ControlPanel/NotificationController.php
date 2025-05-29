@@ -32,29 +32,42 @@ class NotificationController
         NotificationCenter $nc,
         $id,
     ) {
+        // Make sure ID is numeric
         if (!\is_numeric($id)) {
             throw new HttpNotFoundException($request);
         }
 
+        // Get notification
         /** @var UserNotification $notification */
         $notification = $em->getRepository(UserNotification::class)->find($id);
         if (!$notification) {
             throw new HttpNotFoundException($request);
         }
 
+        // Make sure this notification belongs to this user
         if ($account->getUser() !== $notification->getUser()) {
             throw new HttpNotFoundException($request);
         }
 
+        // Mark notification as read
         $notification->setRead(true);
         $em->flush();
 
+        // Get URL
         /** @var NotificationInterface $object */
         $object = $nc->createNotificationObject($notification);
+        $url = $object->getUri();
 
+        // Add hashbang to scroll into view if the URL does not have a hashbang yet
+        if (\stripos('#', $url) === false) {
+            $url = $url . '#nav-top';
+        }
+
+        // Clear user cache because this notification is read
         $nc->clearUserCache();
 
-        $response = $response->withHeader('Location', $object->getUri() . '#nav-top')->withStatus(302);
+        // Redirect user to URL
+        $response = $response->withHeader('Location', $url)->withStatus(302);
         return $response;
     }
 
