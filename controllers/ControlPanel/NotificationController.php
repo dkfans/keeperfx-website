@@ -59,7 +59,7 @@ class NotificationController
         $url = $object->getUri();
 
         // Add hashbang to scroll into view if the URL does not have a hashbang yet
-        if (\stripos('#', $url) === false) {
+        if (\stripos($url, '#') === false) {
             $url = $url . '#nav-top';
         }
 
