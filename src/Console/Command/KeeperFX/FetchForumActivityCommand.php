@@ -14,12 +14,6 @@ use Xenokore\Utility\Helper\StringHelper;
 
 class FetchForumActivityCommand extends Command
 {
-    public const MAX_THREAD_COUNT = 5;
-
-    public const FORUM_URL = 'https://keeperklan.com/forums/52-KeeperFX';
-
-    public const THREAD_URL_BASE = 'https://keeperklan.com/';
-
     public function __construct(
         private CacheInterface $cache,
         private SpamDetector $spam_detector,
@@ -35,22 +29,58 @@ class FetchForumActivityCommand extends Command
 
     protected function execute(Input $input, Output $output)
     {
-        $output->writeln("[>] Fetching threads: " . self::FORUM_URL);
 
-        $client = new \GuzzleHttp\Client(
-            ['verify' => false] // Don't verify SSL connection
-        );
+        // Check if enabled
+        if ($_ENV['APP_FORUM_ACTIVITY_ENABLED'] != 1) {
+            $output->writeln("[?] Fetching forum threads is disabled");
+            return Command::SUCCESS;
+        }
+
+        // Make sure URL is set
+        if (empty($_ENV['APP_FORUM_ACTIVITY_URL'])) {
+            $output->writeln("[-] No forum activity URL set");
+            return Command::FAILURE;
+        }
+
+        // Get variables
+        $parts = \parse_url($_ENV['APP_FORUM_ACTIVITY_URL']);
+        $host = $parts['host']; // keeperklan.com
+        $base_url = $parts['scheme'] . '://' . $parts['host']; // https://keeperklan.com
+        $port = '443';
+        if (isset($parts['port'])) {
+            $port = $parts['port'];
+            $base_url .= ':' . $port; // base + ":<port>"
+        }
+        $thread_count = (int)$_ENV['APP_FORUM_ACTIVITY_THREAD_COUNT'];
+
+        // Show info
+        $output->writeln("[>] Fetching threads: {$_ENV['APP_FORUM_ACTIVITY_URL']}");
+        $output->writeln("[>] Grabbing thread count: {$thread_count}");
+
+        // Create Guzzle HTTP client config
+        $guzzle_config = [
+            'verify' => false // Don't verify SSL connection
+        ];
+
+        // Check if we need to connect to IP instead (and pass the host)
+        $ip = $_ENV['APP_FORUM_ACTIVITY_IP'] ?? null;
+        if ($ip) {
+            $guzzle_config['curl'][CURLOPT_RESOLVE] = [$host . ':' . $port . ':' . $ip];
+            $output->writeln("[>] Forcing custom IP for host: {$ip} => {$host}");
+        }
+
+        // Create HTTP client
+        $client = new \GuzzleHttp\Client($guzzle_config);
 
         try {
 
             // Make GET request
-            $res = $client->request('GET', self::FORUM_URL);
-
+            $res = $client->request('GET', $_ENV['APP_FORUM_ACTIVITY_URL']);
         } catch (\Exception $ex) {
 
-            if($ex->getCode() == 403){
+            if ($ex->getCode() == 403) {
                 $output->writeln("[-] 403 Forbidden");
-            } elseif($ex->getCode() == 404) {
+            } elseif ($ex->getCode() == 404) {
                 $output->writeln("[-] 404 Not found");
             } else {
                 $output->writeln("[-] Unknown problem");
@@ -60,22 +90,22 @@ class FetchForumActivityCommand extends Command
         }
 
         $content = $res->getBody();
-        if(!$content){
+        if (!$content) {
             $output->writeln("[-] Failed to grab content");
             return Command::FAILURE;
         }
 
         $crawler = new Crawler((string)$content);
 
-        $found_threads = $crawler->filter('#threads .threadbit:not(.moved)')->each(function (Crawler $node, $i) {
+        $found_threads = $crawler->filter('#threads .threadbit:not(.moved)')->each(function (Crawler $node, $i) use ($base_url) {
 
             // Get amount of replies
             $replies_str = $node->filter('.threadstats li')->first()->text();
             $replies     = \preg_replace('/[^0-9]/', '', $replies_str ?? '');
 
             // Get URL but remove any query parameters
-            $url = self::THREAD_URL_BASE . $node->filter('h3 a')->first()->attr('href');
-            if(StringHelper::contains($url, '?')){
+            $url = $base_url . '/' . $node->filter('h3 a')->first()->attr('href');
+            if (StringHelper::contains($url, '?')) {
                 $url = \explode('?', $url)[0];
             }
 
@@ -89,7 +119,7 @@ class FetchForumActivityCommand extends Command
         });
 
         $found_thread_count = \count($found_threads);
-        if($found_thread_count === 0){
+        if ($found_thread_count === 0) {
             $output->writeln("[-] No threads found");
             $this->cache->delete('keeperfx_forum_threads');
             return Command::FAILURE;
@@ -99,16 +129,16 @@ class FetchForumActivityCommand extends Command
 
         // Make sure threads are not spam
         $threads = [];
-        foreach($found_threads as $thread){
+        foreach ($found_threads as $thread) {
 
             // Don't cache more than 5 threads
-            if(\count($threads) == self::MAX_THREAD_COUNT){
+            if (\count($threads) == $thread_count) {
                 break;
             }
 
             // Check title for spam or emojis
             $title = $thread['title'];
-            if(empty($title) || $this->spam_detector->detectSpam($title) || $this->spam_detector->detectEmojis($title)){
+            if (empty($title) || $this->spam_detector->detectSpam($title) || $this->spam_detector->detectEmojis($title)) {
                 continue;
             }
 
