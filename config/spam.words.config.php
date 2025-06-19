@@ -38,6 +38,7 @@ return [
     'check or money order',
     'clearance',
     'compare rates',
+    'company',
     'confidentiality',
     'congratulations',
     'consolidate debt',
