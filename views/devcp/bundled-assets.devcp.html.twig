@@ -6,12 +6,36 @@
 
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2>Bundled Game Files (filemap) Assets</h2>
+    </div>
+    <div class="content-body">
+
+        <div class="alert bg-dark">
+            These files are automatically bundled with the game files that are served using the filemap.
+            <br />
+            <span class="text-muted">In case of alpha patches the alpha patch assets are bundled before these ones.</span>
+        </div>
+
+        {% if game_files_tree|length == 0 %}
+            <p>
+                No files being bundled
+            </p>
+        {% else %}
+            <div id="game_files_tree"></div>
+            <noscript>Javascript is required to render the directory view</noscript>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
         <h2>Bundled Alpha Patch Assets</h2>
     </div>
     <div class="content-body">
 
         <div class="alert bg-dark">
-            These files are automatically bundled with alpha patches that are served on this website.
+            These files are automatically bundled with alpha patch archives that are served on this website.
         </div>
 
         {% if alpha_patch_tree|length == 0 %}
@@ -33,7 +57,7 @@
     <div class="content-body">
 
         <div class="alert bg-dark">
-            These files are automatically bundled with mirrored prototypes.
+            These files are automatically bundled with mirrored prototype archives.
         </div>
 
         {% if prototype_tree|length == 0 %}
@@ -60,6 +84,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.js"></script>
 
     <script>
+
+        var game_files_tree = $('#game_files_tree').treeview({
+            data          : {{ game_files_tree|json_encode()|raw }},
+            levels        : 1,
+            showBorder    : false,
+            showIcon      : true,
+            backColor     : "#222",
+            color         : "#f0f0f0",
+            onhoverColor  : "#2a2a2a",
+            expandIcon    : "ti ti-folder",
+            collapseIcon  : "ti ti-folder-open",
+            emptyIcon     : "ti ti-file-filled",
+            onNodeSelected: function(event, data) {
+
+                // Deselect again
+                $('#game_files_tree').treeview('toggleNodeSelected', [ data.nodeId, { silent: true } ]);
+
+                // Open or close directories
+                if(typeof data.nodes != 'undefined'){
+                    $('#game_files_tree').treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
+                }
+
+            }
+        });
 
         var alpha_patch_tree = $('#alpha_patch_tree').treeview({
             data          : {{ alpha_patch_tree|json_encode()|raw }},

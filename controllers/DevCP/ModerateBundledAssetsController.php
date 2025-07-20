@@ -19,7 +19,8 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
 
-class ModerateBundledAssetsController {
+class ModerateBundledAssetsController
+{
 
     public function index(
         Request $request,
@@ -27,14 +28,24 @@ class ModerateBundledAssetsController {
         TwigEnvironment $twig,
         FlashMessage $flash,
         EntityManager $em
-    ){
+    ) {
 
         // Get directories
+        $game_files_bundle_dir  = Config::get('storage.path.game-files-file-bundle');
         $alpha_patch_bundle_dir = Config::get('storage.path.alpha-patch-file-bundle');
         $prototype_bundle_dir   = Config::get('storage.path.prototype-file-bundle');
 
+        // Make sure game files directory exists and is a dir
+        if (!\file_exists($game_files_bundle_dir) || !\is_dir($game_files_bundle_dir)) {
+            $flash->error("Configured game files bundle directory does not exist or is not a directory: {$game_files_bundle_dir}");
+            $response->getBody()->write(
+                $twig->render('cp/_cp_layout.html.twig')
+            );
+            return $response;
+        }
+
         // Make sure alpha patch directory exists and is a dir
-        if(!\file_exists($alpha_patch_bundle_dir) || !\is_dir($alpha_patch_bundle_dir)){
+        if (!\file_exists($alpha_patch_bundle_dir) || !\is_dir($alpha_patch_bundle_dir)) {
             $flash->error("Configured alpha patch bundle directory does not exist or is not a directory: {$alpha_patch_bundle_dir}");
             $response->getBody()->write(
                 $twig->render('cp/_cp_layout.html.twig')
@@ -43,7 +54,7 @@ class ModerateBundledAssetsController {
         }
 
         // Make sure prototype directory exists and is a dir
-        if(!\file_exists($prototype_bundle_dir) || !\is_dir($prototype_bundle_dir)){
+        if (!\file_exists($prototype_bundle_dir) || !\is_dir($prototype_bundle_dir)) {
             $flash->error("Configured prototype bundle directory does not exist or is not a directory: {$prototype_bundle_dir}");
             $response->getBody()->write(
                 $twig->render('cp/_cp_layout.html.twig')
@@ -52,12 +63,14 @@ class ModerateBundledAssetsController {
         }
 
         // Build file tree data structure for the widget on the output view
+        $game_files_tree  = $this->buildWidgetFileTree($game_files_bundle_dir);
         $alpha_patch_tree = $this->buildWidgetFileTree($alpha_patch_bundle_dir);
         $prototype_tree   = $this->buildWidgetFileTree($prototype_bundle_dir);
 
         // Response
         $response->getBody()->write(
             $twig->render('devcp/bundled-assets.devcp.html.twig', [
+                'game_files_tree'  => $game_files_tree,
                 'alpha_patch_tree' => $alpha_patch_tree,
                 'prototype_tree'   => $prototype_tree,
             ])
@@ -71,11 +84,12 @@ class ModerateBundledAssetsController {
      * @param string $dir
      * @return void
      */
-    private function buildWidgetFileTree(string $dir) {
+    private function buildWidgetFileTree(string $dir)
+    {
 
         $return = [];
 
-        $i=0;
+        $i = 0;
 
         // Create nodelist
         foreach (new \DirectoryIterator($dir) as $entry) {
@@ -84,7 +98,7 @@ class ModerateBundledAssetsController {
                 'text' => $entry->getBasename(),
             ];
 
-            if($entry->isDot()){
+            if ($entry->isDot()) {
                 continue;
             }
 
@@ -96,24 +110,21 @@ class ModerateBundledAssetsController {
         }
 
         // Sort alphabetically
-        usort($return, function($a, $b){
+        usort($return, function ($a, $b) {
             return
                 \strtolower($a['text'])
                 <=>
-                \strtolower($b['text'])
-            ;
+                \strtolower($b['text']);
         });
 
         // Move directories up front
-        usort($return, function($a, $b){
+        usort($return, function ($a, $b) {
             return
                 (int) !isset($a['nodes'])
                 <=>
-                (int) !isset($b['nodes'])
-            ;
+                (int) !isset($b['nodes']);
         });
 
         return $return;
     }
-
 }

@@ -18,11 +18,11 @@ class GameFileHandler
 {
     public function __construct(
         private EntityManager $em
-    ){}
+    ) {}
 
     public static function generateIndexFromPath(string $path): array|false
     {
-        if(DirectoryHelper::isAccessible($path) === false){
+        if (DirectoryHelper::isAccessible($path) === false) {
             return false;
         }
 
@@ -46,7 +46,7 @@ class GameFileHandler
     {
         // Get release
         $index = $this->em->getRepository(GameFileIndex::class)->findOneBy(['release_type' => $release_type, 'version' => $version]);
-        if(!$index){
+        if (!$index) {
             return false;
         }
 
@@ -56,7 +56,7 @@ class GameFileHandler
     public function storeVersionFromPath(ReleaseType $release_type, string $version, string $source_path): false|int
     {
         // Make sure source directory is accessible
-        if(DirectoryHelper::isAccessible($source_path) === false){
+        if (DirectoryHelper::isAccessible($source_path) === false) {
             return false;
         }
 
@@ -67,7 +67,7 @@ class GameFileHandler
 
         // Make sure an index is created
         // We need an index to serve these files so it's required
-        if($file_index === false || \count($file_index) === 0){
+        if ($file_index === false || \count($file_index) === 0) {
             return false;
         }
 
@@ -75,7 +75,7 @@ class GameFileHandler
         $dest_path = Config::get('storage.path.game-files') . '/' . $release_type->value . '/' . $version;
 
         // Remove dir if it already exists
-        if(DirectoryHelper::isAccessible($dest_path)){
+        if (DirectoryHelper::isAccessible($dest_path)) {
             DirectoryHelper::delete($dest_path);
         }
 
@@ -89,12 +89,12 @@ class GameFileHandler
         foreach ($iterator as $item) {
             if ($item->isDir()) {
                 $item_dir_path = $dest_path . \DIRECTORY_SEPARATOR . \ltrim(\substr($item->getPathname(), \strlen($source_path)), \DIRECTORY_SEPARATOR);
-                if(!\file_exists($item_dir_path) && !\is_dir($item_dir_path)){
+                if (!\file_exists($item_dir_path) && !\is_dir($item_dir_path)) {
                     \mkdir($item_dir_path);
                 }
             } else {
                 $item_filepath = $dest_path . \DIRECTORY_SEPARATOR . \ltrim(\substr($item->getPathname(), \strlen($source_path)), \DIRECTORY_SEPARATOR);
-                if(\copy($item, $item_filepath) === true){
+                if (\copy($item, $item_filepath) === true) {
                     $file_count++;
                 } else {
                     throw new \Exception("failed to copy file");
@@ -104,21 +104,41 @@ class GameFileHandler
 
         // Add latest launcher
         $latest_launcher = $this->em->getRepository(LauncherRelease::class)->findOneBy(['is_available' => true], ['timestamp' => 'DESC']);
-        if($latest_launcher) {
+        if ($latest_launcher) {
             $launcher_files_dir = Config::get('storage.path.launcher') . '/' . $latest_launcher->getName() . '/files';
-            if(DirectoryHelper::isAccessible($launcher_files_dir)){
+            if (DirectoryHelper::isAccessible($launcher_files_dir)) {
                 // Add launcher files
-                foreach (scandir($launcher_files_dir) as $file){
-                    if ($file != '.' && $file != '..'){
+                foreach (scandir($launcher_files_dir) as $file) {
+                    if ($file != '.' && $file != '..') {
                         $source_file = $launcher_files_dir . '/' . $file;
 
                         // Copy the file
-                        if(\copy($source_file, $dest_path . '/' . $file)){
+                        if (\copy($source_file, $dest_path . '/' . $file)) {
 
                             // Add launcher file to file map
                             $relative_path = \DIRECTORY_SEPARATOR . $file;
                             $file_index[$relative_path] = \hash_file('crc32b', $source_file);
                         }
+                    }
+                }
+            }
+        }
+
+        // Add bundled files
+        $bundle_path = Config::get('storage.path.game-files-file-bundle');
+        if ($bundle_path !== null && \is_dir($bundle_path)) {
+            $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);
+            $iterator     = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+            foreach ($iterator as $item) {
+                if ($item->isDir()) {
+                    $item_dir_path = $dest_path . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                    if (!\file_exists($item_dir_path) && !\is_dir($item_dir_path)) {
+                        \mkdir($item_dir_path);
+                    }
+                } else {
+                    $item_filepath = $dest_path . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                    if (\copy($item, $item_filepath) === false) {
+                        throw new \Exception("failed to copy bundled file");
                     }
                 }
             }
@@ -154,11 +174,11 @@ class GameFileHandler
 
                 // Check if we can remove this version dir
                 $version = $item->getFilename();
-                if(!\in_array($version, $versions_to_keep, true)) {
+                if (!\in_array($version, $versions_to_keep, true)) {
 
                     // Remove it
                     $result = DirectoryHelper::delete($item->getPathname());
-                    if(!$result){
+                    if (!$result) {
                         throw new \Exception("Failed to remove dir: {$item->getPathname()}");
                     } else {
 
@@ -171,29 +191,29 @@ class GameFileHandler
 
         // Get all release entities
         $releases = null;
-        if($release_type == ReleaseType::STABLE){
+        if ($release_type == ReleaseType::STABLE) {
             $releases = $this->em->getRepository(GithubRelease::class)->findAll();
         }
-        if($release_type == ReleaseType::STABLE){
+        if ($release_type == ReleaseType::STABLE) {
             $releases = $this->em->getRepository(GithubAlphaBuild::class)->findAll();
         }
 
         // If there are entities found
-        if($releases !== null && \count($releases) === 0){
+        if ($releases !== null && \count($releases) === 0) {
 
             $entities_removed = false;
 
             // Loop trough the entities and remove versions we do not keep
             /** @var GithubRelease|GithubAlphaBuild $release */
-            foreach($releases as $release){
-                if(\in_array($release->getVersion(), $versions_to_keep) === false){
+            foreach ($releases as $release) {
+                if (\in_array($release->getVersion(), $versions_to_keep) === false) {
                     $this->em->remove($release);
                     $entities_removed = true;
                 }
             }
 
             // Flush database if entities are removed
-            if($entities_removed){
+            if ($entities_removed) {
                 $this->em->flush();
             }
         }
