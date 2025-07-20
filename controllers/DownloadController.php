@@ -4,26 +4,32 @@ namespace App\Controller;
 
 use App\Entity\GithubAlphaBuild;
 use App\Entity\GithubRelease;
+use App\Entity\LauncherRelease;
+
 use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class DownloadController {
+class DownloadController
+{
 
     public function downloadsIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em
-    ){
+    ) {
         $stable_releases = $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC'], 3);
         $alpha_builds    = $em->getRepository(GithubAlphaBuild::class)->findBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC'], 5);
+        $launcher        = $em->getRepository(LauncherRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
 
         $response->getBody()->write(
             $twig->render('downloads.html.twig', [
                 'stable_releases' => $stable_releases,
                 'alpha_builds'    => $alpha_builds,
+                'launcher'        => $launcher,
             ])
         );
 
@@ -35,7 +41,7 @@ class DownloadController {
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em
-    ){
+    ) {
         $stable_releases = $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']);
 
         $response->getBody()->write(
@@ -52,7 +58,7 @@ class DownloadController {
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em
-    ){
+    ) {
         $alpha_builds    = $em->getRepository(GithubAlphaBuild::class)->findBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC']);
 
         $response->getBody()->write(
@@ -63,5 +69,4 @@ class DownloadController {
 
         return $response;
     }
-
 }

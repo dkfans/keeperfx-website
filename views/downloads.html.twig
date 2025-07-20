@@ -24,6 +24,30 @@
             <span>{{ alpha_builds[0].name }}</span>
         </a>
     {% endif %}
+
+    <br /><br />
+
+    {% if launcher %}
+        <a href="/download/web-installer/{{ launcher.tag }}/keeperfx-web-installer.exe"
+            class="btn bg-dark text-white border border-secondary rounded-0 p-3 hover-bright text-decoration-none"
+            style="text-align: left;"
+            role="button" download>
+
+            <div class="row align-items-center g-3">
+                <div class="col-auto">
+                <img src="/img/os/windows.svg"
+                    style="filter: invert(45%) sepia(80%) saturate(3929%) hue-rotate(188deg) brightness(99%) contrast(111%);
+                            width: 32px; height: 32px;" />
+                </div>
+                <div class="col">
+                    <span>Download Web Installer</span>
+                    <br />
+                    <span class="text-secondary" style="font-size: 0.85em;">Windows 10+ (64bit)</span>
+                </div>
+            </div>
+        </a>
+    {% endif %}
+
 </div>
 
 {# Stable Releases #}
