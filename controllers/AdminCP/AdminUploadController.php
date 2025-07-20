@@ -20,7 +20,8 @@ use Slim\Exception\HttpForbiddenException;
 
 use Xenokore\Utility\Helper\DirectoryHelper;
 
-class AdminUploadController {
+class AdminUploadController
+{
 
     public function uploadIndex(
         Request $request,
@@ -28,9 +29,9 @@ class AdminUploadController {
         TwigEnvironment $twig,
         FlashMessage $flash,
         EntityManager $em
-    ){
+    ) {
         // Check if uploads are enabled
-        if(!isset($_ENV['APP_ADMIN_UPLOAD_ENABLED']) || !$_ENV['APP_ADMIN_UPLOAD_ENABLED']){
+        if (!isset($_ENV['APP_ADMIN_UPLOAD_ENABLED']) || !$_ENV['APP_ADMIN_UPLOAD_ENABLED']) {
             throw new HttpNotFoundException($request);
         }
 
@@ -38,7 +39,7 @@ class AdminUploadController {
         $dir = Config::get('storage.path.admin-upload');
 
         // Make sure directory exists and is a dir
-        if(!\file_exists($dir) || !\is_dir($dir)){
+        if (!\file_exists($dir) || !\is_dir($dir)) {
             $flash->error("Configured upload directory does not exist or is not a directory: {$dir}");
             $response->getBody()->write(
                 $twig->render('cp/_cp_layout.html.twig')
@@ -47,7 +48,7 @@ class AdminUploadController {
         }
 
         // Make sure directory is writable
-        if(!\is_writable($dir)){
+        if (!\is_writable($dir)) {
             $flash->error("Configured upload directory is not writable: {$dir}");
             $response->getBody()->write(
                 $twig->render('cp/_cp_layout.html.twig')
@@ -57,13 +58,16 @@ class AdminUploadController {
 
         // Get files
         $files = [];
-        foreach(DirectoryHelper::tree($dir, false) as $file){
+        foreach (DirectoryHelper::tree($dir, false) as $file) {
             $files[] = [
                 'filename' => \basename($file),
                 'size'     => \filesize($file),
                 'date'     => \filemtime($file),
             ];
         }
+
+        // Order by date from newest to oldest
+        \usort($files, fn($a, $b) => $b['date'] <=> $a['date']);
 
         // Response
         $response->getBody()->write(
@@ -81,7 +85,7 @@ class AdminUploadController {
         UploadSizeHelper $upload_size_helper,
     ) {
         // Check if uploads are enabled
-        if(!isset($_ENV['APP_ADMIN_UPLOAD_ENABLED']) || !$_ENV['APP_ADMIN_UPLOAD_ENABLED']){
+        if (!isset($_ENV['APP_ADMIN_UPLOAD_ENABLED']) || !$_ENV['APP_ADMIN_UPLOAD_ENABLED']) {
             throw new HttpNotFoundException($request);
         }
 
@@ -92,18 +96,18 @@ class AdminUploadController {
         $uploaded_files = $request->getUploadedFiles();
 
         // Check if a file was uploaded
-        if(empty($uploaded_files['file']) || !($uploaded_files['file'] instanceof UploadedFileInterface) || $uploaded_files['file']->getError() === UPLOAD_ERR_NO_FILE){
+        if (empty($uploaded_files['file']) || !($uploaded_files['file'] instanceof UploadedFileInterface) || $uploaded_files['file']->getError() === UPLOAD_ERR_NO_FILE) {
             $flash->warning('You did not submit a file');
             $response = $response->withHeader('Location', '/admin/uploads')->withStatus(302);
             return $response;
         } else {
 
             // Check workshop file filesize
-            if($uploaded_files['file']->getSize() > $upload_size_helper->getMaxCalculatedFileUpload()){
+            if ($uploaded_files['file']->getSize() > $upload_size_helper->getMaxCalculatedFileUpload()) {
                 $flash->warning(
                     'Maximum upload size exceeded. (' .
-                    BinaryFormatter::bytes($upload_size_helper->getMaxCalculatedFileUpload())->format() .
-                    ')'
+                        BinaryFormatter::bytes($upload_size_helper->getMaxCalculatedFileUpload())->format() .
+                        ')'
                 );
                 $response = $response->withHeader('Location', '/admin/uploads')->withStatus(302);
                 return $response;
@@ -117,7 +121,7 @@ class AdminUploadController {
 
         // Store the uploaded file
         $file->moveTo($file_path);
-        if(!\file_exists($file_path)){
+        if (!\file_exists($file_path)) {
             $flash->error('Failed to move uploaded file to configured directory');
             $response = $response->withHeader('Location', '/admin/uploads')->withStatus(302);
             return $response;
@@ -139,12 +143,12 @@ class AdminUploadController {
         $token_value,
     ) {
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Check if uploads are enabled
-        if(!isset($_ENV['APP_ADMIN_UPLOAD_ENABLED']) || !$_ENV['APP_ADMIN_UPLOAD_ENABLED']){
+        if (!isset($_ENV['APP_ADMIN_UPLOAD_ENABLED']) || !$_ENV['APP_ADMIN_UPLOAD_ENABLED']) {
             throw new HttpNotFoundException($request);
         }
 
@@ -155,14 +159,14 @@ class AdminUploadController {
         $filepath = $dir . '/' . $filename;
 
         // Check if file exists
-        if(!\file_exists($filepath)){
+        if (!\file_exists($filepath)) {
             $flash->error("File '{$filename}' can not be deleted because it is not found");
             $response = $response->withHeader('Location', '/admin/uploads')->withStatus(302);
             return $response;
         }
 
         // Delete file
-        if(!@\unlink($filepath)){
+        if (!@\unlink($filepath)) {
             $flash->error("Failed to delete file '{$filename}'");
             $response = $response->withHeader('Location', '/admin/uploads')->withStatus(302);
             return $response;
@@ -173,5 +177,4 @@ class AdminUploadController {
         $response = $response->withHeader('Location', '/admin/uploads')->withStatus(302);
         return $response;
     }
-
 }
