@@ -11,9 +11,13 @@
     <div class="content-body">
 
         <div class="alert bg-dark">
-            These files are automatically bundled with the game files that are served using the filemap.
+            These files are automatically bundled with the game files that are served using the filemap <span class="text-secondary">(which is used by the launcher)</span>.
             <br />
-            <span class="text-muted">In case of alpha patches the alpha patch assets are bundled before these ones.</span>
+            The current release(s) these assets are bundled with: <span class="text-bold text-special">{{ (get_env('APP_GAME_FILE_BUNDLE_WITH_RELEASE') ?? 'none')|capitalize }} </span>
+            {% if get_env('APP_GAME_FILE_BUNDLE_WITH_RELEASE') is not empty and get_env('APP_GAME_FILE_BUNDLE_WITH_RELEASE')|lower == 'alpha' %}
+            <br />
+            <span class="text-secondary">The alpha patch assets below are bundled before these ones.</span>
+            {% endif %}
         </div>
 
         {% if game_files_tree|length == 0 %}

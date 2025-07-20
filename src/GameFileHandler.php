@@ -124,21 +124,24 @@ class GameFileHandler
             }
         }
 
-        // Add bundled files
-        $bundle_path = Config::get('storage.path.game-files-file-bundle');
-        if ($bundle_path !== null && \is_dir($bundle_path)) {
-            $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);
-            $iterator     = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
-            foreach ($iterator as $item) {
-                if ($item->isDir()) {
-                    $item_dir_path = $dest_path . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-                    if (!\file_exists($item_dir_path) && !\is_dir($item_dir_path)) {
-                        \mkdir($item_dir_path);
-                    }
-                } else {
-                    $item_filepath = $dest_path . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-                    if (\copy($item, $item_filepath) === false) {
-                        throw new \Exception("failed to copy bundled file");
+        // Add bundled files to alphas
+        $bundle_with_releases = $_ENV['APP_GAME_FILE_BUNDLE_WITH_RELEASE'] ?? null;
+        if ($bundle_with_releases !== null && ($bundle_with_releases == 'all' || $release_type == ReleaseType::tryFrom($bundle_with_releases))) {
+            $bundle_path = Config::get('storage.path.game-files-file-bundle');
+            if ($bundle_path !== null && \is_dir($bundle_path)) {
+                $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);
+                $iterator     = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+                foreach ($iterator as $item) {
+                    if ($item->isDir()) {
+                        $item_dir_path = $dest_path . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                        if (!\file_exists($item_dir_path) && !\is_dir($item_dir_path)) {
+                            \mkdir($item_dir_path);
+                        }
+                    } else {
+                        $item_filepath = $dest_path . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                        if (\copy($item, $item_filepath) === false) {
+                            throw new \Exception("failed to copy bundled file");
+                        }
                     }
                 }
             }
