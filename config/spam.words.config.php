@@ -15,6 +15,7 @@ return [
     'abortion',
     'act now',
     'additional income',
+    'airlines',
     'airplanes',
     'amphetamine',
     'apply now',
