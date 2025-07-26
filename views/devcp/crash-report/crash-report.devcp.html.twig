@@ -66,7 +66,7 @@
 
         {% if error is not empty %}
             <h5 style="margin-top: 30px; border-bottom: 0;">Error</h5>
-            <pre style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0;">{{ error.identifier }} ({{ error.exception_code }})
+            <pre style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0; font-size: 12px;">{{ error.identifier }} ({{ error.exception_code }})
 {{ error.error_message }}
 
 {% for num, text in error.trace %}[#{{ num }}] {{ text }}
