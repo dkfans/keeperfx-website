@@ -586,6 +586,12 @@ footer {
     background: url(../img/bg-button.png) repeat;
 }
 
+.btn-medieval-blue,
+.form-group .btn-medieval-blue {
+    box-shadow: inset 0 0 3px rgba(255, 241, 241, 0.2);
+    background: url(../img/bg-button-blue.png) repeat;
+}
+
 .btn-medieval-black,
 .form-group .btn-medieval-gray {
     box-shadow: inset 0 0 3px rgba(255, 241, 241, 0.2);
