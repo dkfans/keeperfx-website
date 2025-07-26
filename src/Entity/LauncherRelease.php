@@ -126,4 +126,9 @@ class LauncherRelease
 
         return $this;
     }
+
+    public function getNameHash(): string
+    {
+        return \substr(\md5($this->name), 0, 8);
+    }
 }

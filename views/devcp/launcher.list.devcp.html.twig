@@ -16,6 +16,7 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Tag</th>
+                    <th>Download ID</th>
                     <th>Timestamp</th>
                     <th>Size</th>
                     <th>In use</th>
@@ -35,6 +36,7 @@
                         <td>{{ launcher_release.id }}</td>
                         <td>{{ launcher_release.name }}</td>
                         <td><code>{{ launcher_release.tag }}</code></td>
+                        <td><code>{{ launcher_release.nameHash }}</code></td>
                         <td>{{ launcher_release.timestamp|date('Y-m-d G:i:s') }}</td>
                         <td>{{ launcher_release.sizeInBytes|format_bytes }}</td>
                         <td>

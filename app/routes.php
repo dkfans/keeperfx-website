@@ -67,6 +67,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     // Public download route for admin uploads
     $group->get('/uploads/{filename:[\w\d\(\)\_\-\.]+}', [UploadController::class, 'outputFile']);
 
+    // Web installer download route
+    $group->get('/download/web-installer/{name_hash}/{filename:[\w\d\(\)\_\-\.]+}', [WebInstallerController::class, 'outputFile']);
+
     // Verify email address
     $group->get('/verify-email/{user_id:\d+}/{token}', [EmailVerificationController::class, 'verify']);
 
