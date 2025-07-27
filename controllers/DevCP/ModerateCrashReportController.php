@@ -58,27 +58,36 @@ class ModerateCrashReportController
         $game_log = $crash_report->getGameLog();
         if ($game_log) {
 
-            // Check for error pattern
-            $error_pattern = '/Exception ([0-9xa-fA-F]+) thrown\: ([0-9_A-Za-f]+)\nError\: (.+)/';
+            // === Crash ===
+            // Error: Attempt to read from inaccessible memory address.
+
+            // Check for exception pattern
+            $error_pattern = '/^Exception\s(0x[0-9a-fA-F]+)\sthrown\:\s([0-9_A-Za-f]+)[$\n]Error\:\s(.+?)[$\n]/sm';
             if (\preg_match($error_pattern, $game_log, $error_matches)) {
+                $error['exception_code'] = $error_matches[1];
+                $error['identifier']     = $error_matches[2];
+                $error['error_message']  = $error_matches[3];
+            } else {
 
-                $error = [
-                    'exception_code' => $error_matches[1],
-                    'identifier'     => $error_matches[2],
-                    'error_message'  => $error_matches[3],
-                ];
-
-                // Check for trace
-                $trace_pattern = '/\[\#(\d+)\s?\]\s(.+)$/m';
-                if (\preg_match_all($trace_pattern, $game_log, $trace_matches, PREG_PATTERN_ORDER)) {
-
-                    $trace = [];
-                    for ($i = 0; $i < \count($trace_matches[0]); $i++) {
-                        $trace[(int)$trace_matches[1][$i]] = (string)$trace_matches[2][$i];
-                    }
-
-                    $error['trace'] = $trace;
+                // Check for crash pattern
+                $error_pattern = '/^\=\=\= Crash \=\=\=[$\n]Error\:\s(.+?)[$\n]/sm';
+                if (\preg_match($error_pattern, $game_log, $error_matches)) {
+                    $error['exception_code'] = null;
+                    $error['identifier']     = null;
+                    $error['error_message']  = $error_matches[1];
                 }
+            }
+
+            // Check for trace
+            $trace_pattern = '/^\[\#(\d+)\s?\]\s(.+)$/m';
+            if (\preg_match_all($trace_pattern, $game_log, $trace_matches, PREG_PATTERN_ORDER)) {
+
+                $trace = [];
+                for ($i = 0; $i < \count($trace_matches[0]); $i++) {
+                    $trace[(int)$trace_matches[1][$i]] = (string)$trace_matches[2][$i];
+                }
+
+                $error['trace'] = $trace;
             }
         }
 
