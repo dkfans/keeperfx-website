@@ -148,6 +148,12 @@ class HistoryController
                     'date_format' => 'Y-m-d',
                     'description' => "qqluqq has added support for the LUA scripting language to KeeperFX, opening the door to powerful new gameplay features, custom logic, and modding capabilities.",
                 ],
+                [
+                    'title'       => 'New Launcher and Web Installer',
+                    'date'        => new \DateTime('2025-07-20'),
+                    'date_format' => 'Y-m-d',
+                    'description' => "The new KeeperFX launcher made by Yani has come out of beta testing and has been made available on the website. It comes with a web installer that downloads and installs KeeperFX which should streamline the process for the less tech-savvy users. It also has a lot of new exiting features such as automatic updating, crash reports, an online port checker, and much more.",
+                ],
             ]])
         );
 
