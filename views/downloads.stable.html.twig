@@ -28,6 +28,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Size</th>
+                    <th>Mirrors</th>
                     <th>Date</th>
                     <th>News Post</th>
                     <th>Commits</th>
@@ -43,6 +44,13 @@
                             {% if loop.first %}(latest){% endif %}
                         </td>
                         <td>{{ release.sizeInBytes|format_bytes }}</td>
+                        <td>
+                            {% if release.mirrors is not empty %}
+                                {% for mirror in release.mirrors %}{% if loop.index > 1 %}, {% endif %}<a href="{{ mirror.url }}" download>{{ loop.index }}</a>{% endfor %}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
                         <td>{{ release.timestamp|date('Y-m-d') }}</td>
                         <td>
                             {% if release.linkedNewsPost is not null %}

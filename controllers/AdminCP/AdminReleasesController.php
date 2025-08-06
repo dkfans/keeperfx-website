@@ -3,11 +3,12 @@
 namespace App\Controller\AdminCP;
 
 use App\Entity\NewsArticle;
+use App\Entity\GithubRelease;
+use App\Entity\ReleaseMirror;
 
 use App\Account;
 use App\FlashMessage;
 use App\DiscordNotifier;
-use App\Entity\GithubRelease;
 use App\UploadSizeHelper;
 use App\Helper\ThumbnailHelper;
 
@@ -24,14 +25,15 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpInternalServerErrorException;
 
-class AdminReleasesController {
+class AdminReleasesController
+{
 
     public function releasesIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em
-    ){
+    ) {
         $releases = $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']);
 
         $response->getBody()->write(
@@ -49,21 +51,18 @@ class AdminReleasesController {
         TwigEnvironment $twig,
         EntityManager $em,
         $id
-    ){
+    ) {
         // Get the release
         $release = $em->getRepository(GithubRelease::class)->find($id);
-        if(!$release){
+        if (!$release) {
             throw new HttpNotFoundException($request);
         }
-
-        // Get news articles
-        $news_articles = $em->getRepository(NewsArticle::class)->findBy([], ['id'=>'DESC']);
 
         // Render
         $response->getBody()->write(
             $twig->render('admincp/releases/releases.edit.admincp.html.twig', [
                 'release'       => $release,
-                'news_articles' => $news_articles,
+                'news_articles' => $em->getRepository(NewsArticle::class)->findBy([], ['id' => 'DESC']),
             ])
         );
         return $response;
@@ -75,10 +74,10 @@ class AdminReleasesController {
         FlashMessage $flash,
         EntityManager $em,
         $id
-    ){
+    ) {
         // Get the release
         $github_release = $em->getRepository(GithubRelease::class)->find($id);
-        if(!$github_release){
+        if (!$github_release) {
             throw new HttpNotFoundException($request);
         }
 
@@ -86,14 +85,45 @@ class AdminReleasesController {
         $post = $request->getParsedBody();
 
         // Check if we need to update the linked news post
-        if(!empty($post['news']) && \is_numeric($post['news'])){
+        if (!empty($post['news']) && \is_numeric($post['news'])) {
             $article_id = (int)$post['news'];
-            if($article_id === 0){
+            if ($article_id === 0) {
                 $github_release->setLinkedNewsPost(null);
             }
             $article = $em->getRepository(NewsArticle::class)->find($article_id);
-            if($article){
+            if ($article) {
                 $github_release->setLinkedNewsPost($article);
+            }
+        }
+
+        // Remove all existing mirrors
+        $mirrors = $github_release->getMirrors();
+        if ($mirrors !== null) {
+            foreach ($github_release->getMirrors() as $mirror) {
+                $em->remove($mirror);
+            }
+        }
+
+        // Get mirrors and add them again
+        if (!empty($post['mirrors']) && is_array($post['mirrors'])) {
+
+            // Loop trough all given mirror strings
+            foreach ($post['mirrors'] as $mirror_string) {
+
+                if (!\is_string($mirror_string)) {
+                    throw new HttpBadRequestException($request);
+                }
+
+                if (\filter_var($mirror_string, FILTER_VALIDATE_URL) === FALSE) {
+                    $flash->success("Invalid mirror URL: {$mirror_string}");
+                    continue;
+                }
+
+                // Create release mirror
+                $release_mirror = new ReleaseMirror();
+                $release_mirror->setUrl($mirror_string);
+                $release_mirror->setRelease($github_release);
+                $em->persist($release_mirror);
             }
         }
 

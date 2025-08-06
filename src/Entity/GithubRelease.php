@@ -6,7 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class GithubRelease {
+class GithubRelease
+{
 
     #[ORM\Id]
     #[ORM\Column]
@@ -16,10 +17,10 @@ class GithubRelease {
     #[ORM\Column]
     private string $tag;
 
-    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column(options: ['charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci'])]
     private string $name;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private ?string $version = null;
 
     #[ORM\Column]
@@ -39,6 +40,9 @@ class GithubRelease {
 
     #[ORM\OneToMany(targetEntity: GitCommit::class, mappedBy: "release")]
     private $commits;
+
+    #[ORM\OneToMany(targetEntity: ReleaseMirror::class, mappedBy: "release")]
+    private $mirrors;
 
     /**
      * Get the value of id
@@ -210,5 +214,13 @@ class GithubRelease {
         $this->version = $version;
 
         return $this;
+    }
+
+    /**
+     * Get the value of mirrors
+     */
+    public function getMirrors()
+    {
+        return $this->mirrors;
     }
 }

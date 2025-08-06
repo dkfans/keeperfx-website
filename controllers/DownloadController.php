@@ -47,6 +47,16 @@ class DownloadController
                         ];
                     }
 
+                    $mirrors = [];
+                    $mirror_entities = $entity->getMirrors();
+                    if ($mirror_entities) {
+                        foreach ($mirror_entities as $mirror_entity) {
+                            $mirrors[] = [
+                                'url' => $mirror_entity->getUrl(),
+                            ];
+                        }
+                    }
+
                     $stable_releases[$major][$minor][$patch] = [
                         'name'           => $entity->getName(),
                         'downloadUrl'    => $entity->getDownloadUrl(),
@@ -54,6 +64,7 @@ class DownloadController
                         'timestamp'      => $entity->getTimestamp(),
                         'tag'            => $entity->getTag(),
                         'linkedNewsPost' => $news_post,
+                        'mirrors'        => $mirrors,
                         'commits'        => ['count' => \count($entity->getCommits())],
                     ];
                 }
