@@ -16,7 +16,7 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
     protected const STAR_DIFFICULTY_UNRATED = '/img/rating/star-difficulty-unrated.png';
 
     protected const IMG_STYLE  = 'width: 18px; height: 18px;';
-    protected const SPAN_STYLE = 'width: 90px; height: 18px; display: inline-block';
+    protected const SPAN_STYLE = 'width: 91px; height: 18px; display: inline-block';
 
     public function getName(): string
     {
