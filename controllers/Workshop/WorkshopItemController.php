@@ -126,7 +126,7 @@ class WorkshopItemController
                 $workshop_items_array = [];
                 /** @var WorkshopItem $workshop_item2 */
                 foreach ($workshop_items as $workshop_item2) {
-                    if ($workshop_item2->isLastFileBroken() === false) {
+                    if ($workshop_item2 !== $workshop_item && $workshop_item2->isLastFileBroken() === false) {
                         $more_items_by_user[] = $workshop_item2;
                     }
                 }
