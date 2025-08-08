@@ -349,7 +349,7 @@
                                 <span class="user-username" {% if item.submitter.role.value == roles.banned %}style="text-decoration: line-through;"{% endif %}>{{ item.submitter.username }}</span>
                             </a>
                         </h5>
-                        <div class="workshop-grid" style="gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="workshop-grid" style="gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(200px, 0.35fr));">
                             {% for more_workshop_item in more_items_by_user %}
 
                                 <div class="workshop-grid-item" style="zoom: 85%;">
