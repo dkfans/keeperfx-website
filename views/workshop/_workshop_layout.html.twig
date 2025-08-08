@@ -24,7 +24,7 @@
                         <ion-icon name="list-outline"></ion-icon>
                         Browse
                     </a>
-                    <div class="nav-sidebar-sub-container" id="browseMenu">
+                    <div class="nav-sidebar-sub-container mb-3" id="browseMenu">
                         <nav class="nav nav-sidebar-sub">
                             <a class="nav-link {% if path_equals('/workshop/browse*') and not get_query_param('category') %}active{% endif %}" href="/workshop/browse" data-browse-filter-type="category" data-browse-filter-value="">All</a>
                             {% for category in workshop_globals.categories %}
@@ -43,7 +43,14 @@
                         </nav>
                     </div>
 
-                    <a class="nav-link" href="/workshop/random/map" data-instant style="margin-top: 20px;">
+                    {% if account != null %}
+                        <a class="nav-link {% if path_equals('/workshop/activity') %}active{% endif %}" href="/workshop/activity" data-instant>
+                            <ion-icon name="time-outline"></ion-icon>
+                            Activity
+                        </a>
+                    {% endif %}
+
+                    <a class="nav-link" href="/workshop/random/map" data-instant>
                         <ion-icon name="dice-outline"></ion-icon>
                         Random Map
                     </a>
@@ -51,6 +58,7 @@
                         <ion-icon name="dice-outline"></ion-icon>
                         Random Campaign
                     </a>
+
                     <a class="nav-link {% if path_equals('/workshop/tools*') %}active{% endif %}" href="/workshop/tools" data-instant>
                         <ion-icon name="build-outline"></ion-icon>
                         Website Tools

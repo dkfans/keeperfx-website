@@ -175,7 +175,6 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
             // Server info
             $group->get('/server-info', [AdminCP\AdminServerInfoController::class, 'serverInfoIndex']);
-
         })->add(AuthAdminCPMiddleware::class);
 
         // AUTH: MODERATOR
@@ -204,7 +203,6 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
             // Moderate WORKSHOP comments
             $group->get('/workshop-comments/list', [ModCP\Workshop\ModerateWorkshopCommentController::class, 'listIndex']);
-
         })->add(AuthModCPMiddleware::class);
 
         // AUTH: DEVELOPER
@@ -233,9 +231,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             // Game Files Maps
             $group->get('/game-files/list', [DevCP\ModerateGameFilesController::class, 'listIndex']);
             $group->get('/game-files/{type}/{version}', [DevCP\ModerateGameFilesController::class, 'view']);
-
         })->add(AuthDevCPMiddleware::class);
-
     })->add(LoggedInMiddleware::class);
 
     // Workshop
@@ -269,7 +265,6 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->get('/{item_id:\d+}/files/{file_id:\d+}/delete/{token_name}/{token_value:.+}', [Workshop\WorkshopEditFilesController::class, 'delete']);
             $group->get('/{item_id:\d+}/files/{file_id:\d+}/move/{direction}/{token_name}/{token_value:.+}', [Workshop\WorkshopEditFilesController::class, 'move']);
             $group->post('/{item_id:\d+}/files/{file_id:\d+}/rename', [Workshop\WorkshopEditFilesController::class, 'rename']);
-
         })->add(LoggedInMiddleware::class);
 
         // Workshop item rate (Ajax)
@@ -312,6 +307,8 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
         })->add(LoggedInMiddleware::class);
 
+        // Workshop activity
+        $group->get('/activity', [Workshop\WorkshopActivityController::class, 'listIndex']);
 
         // Workshop Tools
         $group->group('/tools', function (RouteCollectorProxy $group) use ($container) {
@@ -356,7 +353,6 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
     // Website Changelog
     $group->get('/website-changelog', [WebsiteChangelogController::class, 'index']);
-
 })->add(\Slim\Csrf\Guard::class);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -393,7 +389,6 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
 
     // API: Moon Phase
     $group->get('/v1/moonphase', [Api\v1\MoonPhaseApiController::class, 'outputInfo']);
-
 });
 
 

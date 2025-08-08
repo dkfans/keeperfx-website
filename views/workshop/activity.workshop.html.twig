@@ -1,0 +1,212 @@
+{% extends "workshop/_workshop_layout.html.twig" %}
+
+{% set page_title = 'Activity' %}
+
+{% block workshop_content %}
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>
+                Activity
+            </h2>
+        </div>
+        <div class="content-body">
+
+                {% for timestamp, variable in data %}
+
+                    {% if variable is instanceof('\\App\\Entity\\WorkshopItem') %}
+
+                        {% set item = variable %}
+
+                        <div class="workshop-grid-item px-2 d-flex justify-content-between" style="border-bottom: 0">
+                            <span class="text-muted">Workshop Item</span>
+                            <time class="text-muted" datetime="{{ timestamp|date('c') }}">
+                                {{ timestamp|date('Y/m/d - H:i') }}
+                            </time>
+                        </div>
+                        <div class="workshop-grid-item mb-3">
+
+                            {# Thumbnail #}
+                            <div class="workshop-grid-item-image-container">
+                                <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" data-instant>
+                                    {% if item.thumbnail is not null %}
+                                        <img src="/workshop/image/{{ item.id }}/{{ item.thumbnail }}" />
+                                    {% elseif item.images|length > 0 %}
+                                        <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}" />
+                                    {% else %}
+                                        <img src="/img/no-image-256.png" />
+                                    {% endif %}
+                                </a>
+                            </div>
+
+                            <div class="workshop-grid-item-info">
+
+                                <div class="workshop-grid-item-header display-flex justify-content-between">
+
+                                    {# Title #}
+                                    <div class="workshop-grid-item-title">
+                                        <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" title="{{ item.name }}" data-instant>
+                                            {{ item.name }}
+                                        </a>
+                                    </div>
+
+                                    {# Notices #}
+                                    <div  style="display: flex; align-items: center; gap: 5px;">
+
+                                        {# Show a notice for broken items #}
+                                        {% if item.isLastFileBroken %}
+                                            <span class="badge bg-danger text-white"  data-bs-toggle="popover" data-bs-placement="top"
+                                                    data-bs-content="This workshop item is considered broken by the KeeperFX team.">
+                                                Broken
+                                            </span>
+                                        {% endif %}
+
+                                        {# Show a notice for items requiring the latest alpha patch #}
+                                        {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
+                                            <span class="badge bg-warning text-black"  data-bs-toggle="popover" data-bs-placement="top"
+                                                    data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly.">
+                                                Alpha patch
+                                            </span>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+
+                                {# Info #}
+                                <div class="row" style="margin-top: 6px;">
+
+                                    <div class="col-7">
+
+                                        {# Type #}
+                                        {# <span class="text-warning"> #}
+                                        <span style="margin-top: 2px; display: block; margin-bottom: 5px">
+                                            {{ item.category.name|enum_beautify }}
+                                        </span>
+
+                                        {# User or Original Author #}
+                                        <div class="workshop-grid-item-user">
+                                            {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: true} %}
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-5" style="text-align: right;">
+
+                                        {# Quality Rating #}
+                                        {% if item.ratingScore is not null %}
+                                            {{ render_workshop_quality_rating(item.id, item.ratingScore) }}
+                                        {% endif %}
+
+                                        {% if item.ratingScore is not null and item.difficultyRatingEnabled and item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
+                                            <br />
+                                        {% endif %}
+
+                                        {# Difficulty Rating #}
+                                        {% if item.difficultyRatingEnabled and item.difficultyRatingScore is not null and item.category not in workshop_globals.categories_without_difficulty %}
+                                            {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% elseif variable is iterable and variable.is_comment is defined and variable.is_comment == true %}
+
+                        {% set comment = variable %}
+
+
+                        <div class="workshop-grid-item px-2 d-flex justify-content-between" style="border-bottom: 0; border-width: 1px">
+                            <span class="text-muted">Comment</span>
+                            <a href="/workshop/item/{{ comment.item.id }}/{{ comment.item.name|slugify }}#comment-{{ comment.id }}" class="text-muted">
+                                <time class="text-muted" datetime="{{ timestamp|date('c') }}">
+                                    {{ timestamp|date('Y/m/d - H:i') }}
+                                </time>
+                            </a>
+                        </div>
+
+                        <div class="workshop-item-comment" style="margin-top: 0;"
+                            data-comment-id="{{ comment.id }}" id="comment-{{ comment.id }}" data-comment-user-id="{{ comment.user.id }}" data-workshop-item-id="{{ comment.item.id }}">
+
+                            <div class="" style="height: 100%;">
+                                {% if comment.user.avatarSmall %}
+                                    <img src="/avatar/{{ comment.user.avatarSmall }}" class="user-avatar user-avatar-big" />
+                                {% elseif comment.user.avatar %}
+                                    <img src="/avatar/{{ comment.user.avatar }}" class="user-avatar user-avatar-big" />
+                                {% else %}
+                                    <img src="/avatar-generate/128/{{ comment.user.username|url_encode }}.png" class="user-avatar user-avatar-big" />
+                                {% endif %}
+                            </div>
+
+                            <div class="" style="width: 100%; margin-left: 10px; padding: 0; padding-top: 2px;">
+                                <div class="d-flex justify-content-between" style="width: 100%;">
+
+                                    {# Left side #}
+                                    <span>
+
+                                        {# Username #}
+                                        <a
+                                        href="/workshop/user/{{ comment.user.username|url_encode }}"
+                                        {# href="/workshop/browse?user={{ comment.user.username }}" #}
+                                        {# title="Browse {{ comment.user.username }}'s Workshop Items" #}
+                                        class="user-link d-inline-block me-2">
+                                            <span class="user-username">{{ comment.user.username }}</span>
+                                        </a>
+
+                                        {# Badge: If user is submitter #}
+                                        {% if comment.item.submitter is not null and comment.user == comment.item.submitter %}
+                                            <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Submitter</span>
+                                        {% endif %}
+
+                                        {# Badge: If user is admin #}
+                                        {% if comment.user.role.value == roles.admin  %}
+                                            <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Admin</span>
+                                        {% endif %}
+
+                                        {# Date #}
+                                        {# <a href="/workshop/item/{{ comment.item.id }}/{{ comment.item.name|slugify }}#comment-{{ comment.id }}" class="text-muted">
+                                            <time class="text-muted" datetime="{{ comment.created_timestamp|date('c') }}">
+                                                {{ comment.created_timestamp|date('Y/m/d - H:i') }}
+                                            </time>
+                                        </a> #}
+
+                                        {# Edited #}
+                                        <span class="text-muted workshop-comment-is-edited" {% if comment.created_timestamp == comment.updated_timestamp %}style="display:none;"{% endif %}>
+                                            &bullet; Edited
+                                        </span>
+
+                                        <span>
+                                            <span class="text-muted">&bullet;</span>
+                                            Item:
+                                            <a href="/workshop/item/{{ comment.item.id }}/{{ comment.item.name|slugify }}" target="_blank">
+                                                {{ comment.item.name }}
+                                            </a>
+                                        </span>
+
+                                    </span>
+
+                                </div>
+
+                                {# Comment #}
+                                <div class="force-wordwrap workshop-item-comment-content">
+                                    {{ comment.content|markdown_to_html }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        Error: Unknown thing
+
+                    {% endif %}
+
+                {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
