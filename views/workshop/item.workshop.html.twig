@@ -340,6 +340,94 @@
                         </div>
                     {% endif %}
 
+                    {% if item.submitter is not null and item.originalAuthor is empty and more_items_by_user is not empty %}
+                        <h5 style="margin-top: 30px; padding: 5px; border-bottom: 0;">
+                            More items by
+                            <a
+                            href="/workshop/user/{{ item.submitter.username|url_encode }}"
+                            class="user-link d-inline-block" data-instant>
+                                <span class="user-username" {% if item.submitter.role.value == roles.banned %}style="text-decoration: line-through;"{% endif %}>{{ item.submitter.username }}</span>
+                            </a>
+                        </h5>
+                        <div class="workshop-grid" style="gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                            {% for more_workshop_item in more_items_by_user %}
+
+                                <div class="workshop-grid-item" style="zoom: 85%;">
+
+                                    {# Thumbnail #}
+                                    <div class="workshop-grid-item-image-container">
+                                        <a href="/workshop/item/{{ more_workshop_item.id }}/{{ more_workshop_item.name|slugify }}" data-instant>
+                                            {% if more_workshop_item.thumbnail is not null %}
+                                                <img src="/workshop/image/{{ more_workshop_item.id }}/{{ more_workshop_item.thumbnail }}" />
+                                            {% elseif more_workshop_item.images|length > 0 %}
+                                                <img src="/workshop/image/{{ more_workshop_item.id }}/{{ more_workshop_item.images|first.filename }}" />
+                                            {% else %}
+                                                <img src="/img/no-image-256.png" />
+                                            {% endif %}
+                                        </a>
+                                    </div>
+
+                                    <div class="workshop-grid-item-info">
+
+                                        {# Show a notice for items requiring the latest alpha patch #}
+                                        {% if more_workshop_item.minGameBuild is not null and more_workshop_item.minGameBuild == -1 %}
+                                                <ion-icon
+                                                    name="alert-circle-outline"
+                                                    class="text-warning workshop-grid-notice-icon"
+                                                    style="right: 8px;";
+                                                    data-bs-toggle="popover" data-bs-placement="top"
+                                                    data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly."
+                                                ></ion-icon>
+                                        {% endif %}
+
+                                        {# Title #}
+                                        <div class="workshop-grid-item-title"
+                                            {# Optionally add some padding to the right to make place for the notice icons #}
+                                            {% if more_workshop_item.minGameBuild is not null and more_workshop_item.minGameBuild == -1 and not more_workshop_item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
+                                            {% if (more_workshop_item.minGameBuild is null or more_workshop_item.minGameBuild != -1) and more_workshop_item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
+                                            {% if more_workshop_item.minGameBuild is not null and more_workshop_item.minGameBuild == -1 and more_workshop_item.isLastFileBroken %}style="padding-right: 20px;"{% endif %}
+                                        >
+                                            <a href="/workshop/item/{{ more_workshop_item.id }}/{{ more_workshop_item.name|slugify }}" title="{{ more_workshop_item.name }}" data-instant>
+                                                {{ more_workshop_item.name }}
+                                            </a>
+                                        </div>
+
+                                        {# Info #}
+                                        <div class="row" style="margin-top: 10px;">
+
+                                            <div class="col-6">
+
+                                                {# Type #}
+                                                {# <span class="text-warning"> #}
+                                                <span style="margin-top: 2px; display: block; margin-bottom: 5px">
+                                                    {{ more_workshop_item.category.name|enum_beautify }}
+                                                </span>
+
+                                            </div>
+
+                                            <div class="col-6" style="text-align: right;">
+
+                                                {# Quality Rating #}
+                                                {% if more_workshop_item.ratingScore is not null %}
+                                                    {{ render_workshop_quality_rating(more_workshop_item.id, more_workshop_item.ratingScore) }}
+                                                {% endif %}
+
+                                                {# Difficulty Rating #}
+                                                {% if more_workshop_item.difficultyRatingEnabled and more_workshop_item.difficultyRatingScore is not null and more_workshop_item.category not in workshop_globals.categories_without_difficulty %}
+                                                    {{ render_workshop_difficulty_rating(more_workshop_item.id, more_workshop_item.difficultyRatingScore) }}
+                                                {% endif %}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                 </div>
             </div>
         </div>

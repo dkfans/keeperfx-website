@@ -2,45 +2,43 @@
 
 namespace App\Controller\Workshop;
 
-
-use URLify;
-use App\Account;
-
-use App\FlashMessage;
-use App\Config\Config;
 use App\Enum\UserRole;
-use App\UploadSizeHelper;
-use App\Entity\WorkshopTag;
-use Slim\Psr7\UploadedFile;
+use App\Enum\WorkshopCategory;
 
+use App\Entity\WorkshopTag;
 use App\Entity\WorkshopFile;
 use App\Entity\WorkshopItem;
 use App\Entity\GithubRelease;
+use App\Entity\User;
 use App\Entity\WorkshopRating;
-use App\Enum\WorkshopCategory;
 use App\Entity\WorkshopComment;
-
-use Doctrine\ORM\EntityManager;
 use App\Entity\UserNotification;
-use Slim\Csrf\Guard as CsrfGuard;
-use GuzzleHttp\Psr7\LazyOpenStream;
-use Psr\SimpleCache\CacheInterface;
-use geertw\IpAnonymizer\IpAnonymizer;
 use App\Entity\WorkshopDifficultyRating;
-use ByteUnits\Binary as BinaryFormatter;
 
-use Twig\Environment as TwigEnvironment;
+use App\Account;
+use App\FlashMessage;
+use App\Config\Config;
+use App\UploadSizeHelper;
 use App\Notifications\NotificationCenter;
-use Slim\Exception\HttpNotFoundException;
-use Psr\Http\Message\UploadedFileInterface;
-
-use Xenokore\Utility\Helper\DirectoryHelper;
-
-use Psr\Http\Message\ResponseInterface as Response;
-
-use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Notifications\Notification\WorkshopItemNotification;
 use App\Notifications\Notification\WorkshopItemCommentNotification;
+
+use URLify;
+use Doctrine\ORM\EntityManager;
+use Slim\Csrf\Guard as CsrfGuard;
+use geertw\IpAnonymizer\IpAnonymizer;
+use Twig\Environment as TwigEnvironment;
+use ByteUnits\Binary as BinaryFormatter;
+
+use Slim\Psr7\UploadedFile;
+use Psr\SimpleCache\CacheInterface;
+use GuzzleHttp\Psr7\LazyOpenStream;
+use Slim\Exception\HttpNotFoundException;
+use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
+use Xenokore\Utility\Helper\DirectoryHelper;
 
 class WorkshopItemController
 {
@@ -57,6 +55,7 @@ class WorkshopItemController
         $slug = null
     ) {
         // Check if workshop item exists
+        /** @var ?WorkshopItem $workshop_item */
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
         if (!$workshop_item) {
             throw new HttpNotFoundException($request);
@@ -117,6 +116,27 @@ class WorkshopItemController
             'user' => $account?->getUser()
         ])?->getScore();
 
+        // Get other workshop items for "more items by this user"
+        $more_items_by_user = [];
+        /** @var User $submitter */
+        $submitter = $workshop_item->getSubmitter();
+        if ($submitter && empty($workshop_item->getOriginalAuthor())) {
+            $workshop_items = $submitter->getWorkshopItems();
+            if ($workshop_items) {
+                $workshop_items_array = [];
+                /** @var WorkshopItem $workshop_item2 */
+                foreach ($workshop_items as $workshop_item2) {
+                    if ($workshop_item2->isLastFileBroken() === false) {
+                        $more_items_by_user[] = $workshop_item2;
+                    }
+                }
+            }
+        }
+
+        // Only keep 3 random workshop items for "more by this user"
+        \shuffle($more_items_by_user);
+        $more_items_by_user = \array_slice($more_items_by_user, 0, 3);
+
         // Render view
         $response->getBody()->write(
             $twig->render('workshop/item.workshop.html.twig', [
@@ -125,6 +145,7 @@ class WorkshopItemController
                 'user_rating'              => $user_rating,
                 'difficulty_rating_amount' => $difficulty_rating_count,
                 'user_difficulty_rating'   => $user_difficulty_rating,
+                'more_items_by_user'       => $more_items_by_user,
             ])
         );
 
