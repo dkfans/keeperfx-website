@@ -46,7 +46,7 @@
                         <td>{{ release.sizeInBytes|format_bytes }}</td>
                         <td>
                             {% if release.mirrors is not empty %}
-                                {% for mirror in release.mirrors %}{% if loop.index > 1 %}, {% endif %}<a href="{{ mirror.url }}" download>{{ loop.index }}</a>{% endfor %}
+                                {% for mirror in release.mirrors %}{% if loop.index > 1 %}, {% endif %}<a href="{{ mirror.url }}" target="_blank">{{ loop.index }}</a>{% endfor %}
                             {% else %}
                                 <span class="text-muted">-</span>
                             {% endif %}
