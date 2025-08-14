@@ -42,34 +42,30 @@
                 </div>
 
                 {# Edit #}
-                <div class="">
-                    {% if account != null %}
-                        <div style="margin-bottom: -16px; top: -8px; position: relative; right: -5px;">
-                            {% if account.role >= roles.moderator %}
+                {% if account != null %}
+                    {% if (account.role >= roles.moderator) or (item.submitter != null and item.submitter.id == account.id) %}
+                        <div class="">
+                            <div style="margin-bottom: -16px; top: -8px; position: relative; right: -5px;">
+
                                 <div class="btn-group" role="group">
-                                    <button id="dropdown-mod-edit" type="button" class="btn btn-medieval btn-medieval-black dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Mod Edit
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper" aria-labelledby="dropdown-mod-edit">
-                                        <li><a class="dropdown-item" href="/moderate/workshop/{{ item.id }}">Workshop Item</a></li>
-                                        <li><a class="dropdown-item" href="/moderate/workshop/{{ item.id }}/files">Files</a></li>
-                                    </ul>
-                                </div>
-                            {% endif %}
-                            {% if item.submitter != null and item.submitter.id == account.id %}
-                                <div class="btn-group" role="group">
-                                    <button id="dropdown-edit" type="button" class="btn btn-medieval btn-medieval dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Edit Workshop Item
+                                    <button id="dropdown-mod-edit" type="button" class="btn btn-medieval btn-medieval-red dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Edit
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper" aria-labelledby="dropdown-edit">
-                                        <li><a class="dropdown-item" href="/workshop/edit/{{ item.id }}">Workshop Item</a></li>
-                                        <li><a class="dropdown-item" href="/workshop/edit/{{ item.id }}/files">Files</a></li>
+                                        {% if item.submitter != null and item.submitter.id == account.id %}
+                                            <li><a class="dropdown-item" href="/workshop/edit/{{ item.id }}">Workshop item</a></li>
+                                            <li><a class="dropdown-item" href="/workshop/edit/{{ item.id }}/files">Files</a></li>
+                                        {% endif %}
+                                        {% if account.role >= roles.moderator %}
+                                            <li><a class="dropdown-item" href="/moderate/workshop/{{ item.id }}"><span class="text-primary">Mod</span>: Workshop item</a></li>
+                                            <li><a class="dropdown-item" href="/moderate/workshop/{{ item.id }}/files"><span class="text-primary">Mod</span>: Files</a></li>
+                                        {% endif %}
                                     </ul>
                                 </div>
-                            {% endif %}
+                            </div>
                         </div>
                     {% endif %}
-                </div>
+                {% endif %}
             </div>
 
             <div class="row">
