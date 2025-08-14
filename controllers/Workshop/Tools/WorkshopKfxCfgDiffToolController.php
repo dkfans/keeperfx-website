@@ -19,6 +19,13 @@ use Xenokore\Utility\Helper\StringHelper;
 class WorkshopKfxCfgDiffToolController
 {
 
+    /**
+     * Sections that need to be hard copied.
+     *
+     * Some sections overwrite the original section completely and should not just show differences.
+     */
+    private const HARD_COPY_SECTIONS = ['research', 'sacrifices'];
+
     public function index(
         Request $request,
         Response $response,
@@ -58,7 +65,21 @@ class WorkshopKfxCfgDiffToolController
         // Create differences
         $diff = [];
         foreach ($right_data as $section => $properties) {
+
+            // Hard copy specific sections
+            if (\in_array($section, self::HARD_COPY_SECTIONS)) {
+                $diff[$section] = $properties;
+                continue;
+            }
+
             foreach ($properties as $property => $value) {
+
+                if (is_array($value)) {
+                    $flash->warning("Duplicate property: <code>[$section] $property</code><br />Please double check your input.");
+                    $diff[$section][$property] = $value;
+                    continue;
+                }
+
                 // Add difference to diff if:
                 // - the left side does not have the right side line
                 // - or the right side has a different line
@@ -103,7 +124,14 @@ class WorkshopKfxCfgDiffToolController
 
             // Add all the properties
             foreach ($properties as $property => $value) {
-                $diff_output .= "{$property} = {$value}" . PHP_EOL;
+
+                if (is_array($value)) {
+                    foreach ($value as $value2) {
+                        $diff_output .= "{$property} = {$value2}" . PHP_EOL;
+                    }
+                } else {
+                    $diff_output .= "{$property} = {$value}" . PHP_EOL;
+                }
             }
 
             $diff_output .= PHP_EOL;
@@ -157,9 +185,27 @@ class WorkshopKfxCfgDiffToolController
                 continue;
             }
 
-            // Get the data and put it into the array
+            // Get the data
             if (\preg_match("/(\w+?)\s*\=\s*(.*)/", $line, $matches)) {
-                $array[$current_section][$matches[1]] = $matches[2];
+
+                $property = $matches[1];
+                $value    = $matches[2];
+
+                // Add the property and its value if it does not exist yet
+                // If it already exists we need to make it into an array
+                if (!isset($array[$current_section][$property])) {
+                    $array[$current_section][$property] = $value;
+                } else {
+
+                    // Convert duplicate property into an array
+                    if (!is_array($array[$current_section][$property])) {
+                        $existing_value = $array[$current_section][$property];
+                        $array[$current_section][$property] = [$existing_value];
+                    }
+
+                    // Add current property to array
+                    $array[$current_section][$property][] = $value;
+                }
             }
         }
 
