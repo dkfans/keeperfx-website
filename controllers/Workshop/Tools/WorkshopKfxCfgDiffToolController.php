@@ -63,6 +63,7 @@ class WorkshopKfxCfgDiffToolController
         $right_data = $this->getCustomCfgTree($right);
 
         // Create differences
+        $duplicate_properties = [];
         $diff = [];
         foreach ($right_data as $section => $properties) {
 
@@ -75,8 +76,10 @@ class WorkshopKfxCfgDiffToolController
             foreach ($properties as $property => $value) {
 
                 if (is_array($value)) {
-                    $flash->warning("Duplicate property: <code>[$section] $property</code><br />Please double check your input.");
-                    $diff[$section][$property] = $value;
+                    $string = "[$section] $property";
+                    if (!in_array($string, $duplicate_properties)) {
+                        $duplicate_properties[] = $string;
+                    }
                     continue;
                 }
 
@@ -90,6 +93,25 @@ class WorkshopKfxCfgDiffToolController
                     $diff[$section][$property] = $value;
                 }
             }
+        }
+
+        if (!empty($duplicate_properties)) {
+
+            // Create error string
+            $error_string = "Your custom configuration has one or more duplicate properties:<br />\n";
+            foreach ($duplicate_properties as $duplicate_property) {
+                $error_string .= "- <code>$duplicate_property</code><br />\n";
+            }
+            $error_string .= "<br />" . "Please remove these duplicate properties and try again.";
+
+            // Show error
+            $flash->error($error_string);
+
+            // Return
+            $response->getBody()->write(
+                $twig->render('workshop/tools/kfx_cfg_diff_tool.html.twig')
+            );
+            return $response;
         }
 
         // Add 'Name' to updated sections
