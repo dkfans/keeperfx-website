@@ -3,6 +3,8 @@
 namespace App\Controller\DevCP;
 
 use App\Entity\CrashReport;
+use App\Entity\GithubRelease;
+use App\Entity\GithubAlphaBuild;
 
 use App\FlashMessage;
 use App\Config\Config;
@@ -17,17 +19,20 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
 
-class ModerateCrashReportController {
+class ModerateCrashReportController
+{
 
     public function listIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em
-    ){
+    ) {
         $response->getBody()->write(
             $twig->render('devcp/crash-report/crash-report.list.devcp.html.twig', [
-                'crash_reports'   => $em->getRepository(CrashReport::class)->findBy([],['id' => 'DESC'])
+                'crash_reports' => $em->getRepository(CrashReport::class)->findBy([], ['id' => 'DESC']),
+                'latest_alpha'  => $em->getRepository(GithubAlphaBuild::class)->findOneBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC']),
+                'latest_stable' => $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']),
             ])
         );
 
@@ -41,10 +46,10 @@ class ModerateCrashReportController {
         EntityManager $em,
         FlashMessage $flash,
         $id
-    ){
+    ) {
         // Find crash report
         $crash_report = $em->getRepository(CrashReport::class)->find($id);
-        if(!$crash_report){
+        if (!$crash_report) {
             $flash->warning('Crash report not found.');
             $response = $response->withHeader('Location', '/dev/crash-report/list')->withStatus(302);
             return $response;
@@ -66,10 +71,10 @@ class ModerateCrashReportController {
         EntityManager $em,
         FlashMessage $flash,
         $id
-    ){
+    ) {
         // Find crash report
         $crash_report = $em->getRepository(CrashReport::class)->find($id);
-        if(!$crash_report){
+        if (!$crash_report) {
             $flash->warning('Crash report not found.');
             $response = $response->withHeader('Location', '/dev/crash-report/list')->withStatus(302);
             return $response;
@@ -77,12 +82,12 @@ class ModerateCrashReportController {
 
         // Delete savefile
         $save_filename = $crash_report->getSaveFilename();
-        if($save_filename){
+        if ($save_filename) {
             $dir = Config::get('storage.path.crash-report-savefile');
-            if(\file_exists($dir)){
+            if (\file_exists($dir)) {
                 $filepath = $dir . '/' . $save_filename;
-                if(\file_exists($filepath)){
-                    if(\unlink($filepath) === false){
+                if (\file_exists($filepath)) {
+                    if (\unlink($filepath) === false) {
                         throw new \Exception("failed to delete savefile: {$filepath}");
                     }
                 }

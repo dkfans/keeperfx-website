@@ -23,9 +23,32 @@
             </thead>
             <tbody>
                 {% for crash_report in crash_reports %}
+
+                        {# Check if this release is either the latest alpha or stable #}
+                        {% set is_latest = false %}
+                        {% if crash_report.gameVersion is not empty and latest_alpha is not empty %}
+                            {% if crash_report.gameVersion == (latest_alpha.version ~ ' Alpha') %}
+                                {% set is_latest = true %}
+                            {% endif %}
+                        {% endif %}
+                        {% if crash_report.gameVersion is not empty and latest_stable is not empty %}
+                            {% if crash_report.gameVersion == latest_stable.version %}
+                                {% set is_latest = true %}
+                            {% endif %}
+                        {% endif %}
+
                         <tr>
                             <td>{{ crash_report.id }}</td>
-                            <td>{{ crash_report.gameVersion|unique_color }}</td>
+                            <td>
+                                {% if is_latest %}
+                                    <ion-icon name="bookmark-outline" class="text-success" style="position: relative; top: 3px;"></ion-icon>
+                                    <strong>
+                                {% endif %}
+                                {{ crash_report.gameVersion|unique_color }}
+                                {% if is_latest %}
+                                    </strong>
+                                {% endif %}
+                            </td>
                             <td>{{ crash_report.source }}</td>
                             <td>{{ crash_report.createdTimestamp|date('Y-m-d G:i') }}</td>
                             <td>
