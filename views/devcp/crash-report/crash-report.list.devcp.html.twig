@@ -37,7 +37,7 @@
                             {% endif %}
                         {% endif %}
 
-                        <tr>
+                        <tr{% if is_latest %} class="bg-dark"{% endif %}>
                             <td>{{ crash_report.id }}</td>
                             <td>
                                 {% if is_latest %}
