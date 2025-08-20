@@ -40,14 +40,9 @@
                         <tr{% if is_latest %} class="bg-dark"{% endif %}>
                             <td>{{ crash_report.id }}</td>
                             <td>
-                                {% if is_latest %}
-                                    <ion-icon name="bookmark-outline" class="text-success" style="position: relative; top: 3px;"></ion-icon>
-                                    <strong>
-                                {% endif %}
+                                {% if is_latest %}<strong>{% endif %}
                                 {{ crash_report.gameVersion|unique_color }}
-                                {% if is_latest %}
-                                    </strong>
-                                {% endif %}
+                                {% if is_latest %}</strong>{% endif %}
                             </td>
                             <td>{{ crash_report.source }}</td>
                             <td>{{ crash_report.createdTimestamp|date('Y-m-d G:i') }}</td>
