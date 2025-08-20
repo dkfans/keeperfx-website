@@ -125,6 +125,7 @@
                                 <a href="/workshop/item/{{ comment.item.id }}/{{ comment.item.name|slugify }}" target="_blank">
                                     {{ comment.item.name }}
                                 </a>
+                                ({{ comment.item.category.name|enum_beautify }})
                             </span>
                             <a href="/workshop/item/{{ comment.item.id }}/{{ comment.item.name|slugify }}#comment-{{ comment.id }}" class="text-muted">
                                 <time class="text-muted" datetime="{{ timestamp|date('c') }}">
