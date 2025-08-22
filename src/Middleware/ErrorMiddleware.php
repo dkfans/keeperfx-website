@@ -22,8 +22,7 @@ class ErrorMiddleware implements MiddlewareInterface
         private ResponseFactory $response_factory,
         private TwigEnvironment $twig,
         private LoggerInterface $logger,
-    )
-    {}
+    ) {}
 
     /**
      * Process a server request and return a response.
@@ -37,54 +36,53 @@ class ErrorMiddleware implements MiddlewareInterface
         try {
 
             return $handler->handle($request);
-
         } catch (\Throwable $ex) {
 
             $json_response = false;
 
             // Check if we should return a JSON response
-            if(
+            if (
                 \str_contains($request->getHeaderLine('Accept') ?? '', 'application/json') ||
                 \str_contains($request->getHeaderLine('Content-Type') ?? '', 'application/json') ||
                 \str_starts_with($request->getUri()->getPath(), '/api/')
-            ){
+            ) {
                 $json_response = true;
             }
 
             // Get database connection exception
-            if($ex instanceof DbalConnectionException ||
+            if (
+                $ex instanceof DbalConnectionException ||
                 ($ex instanceof DbalPdoException && $ex->getCode() == 2002) // Connection not found
-            ){
+            ) {
                 $response = $this->response_factory->createResponse(500); // Server error
 
-                if($json_response == true){
+                if ($json_response == true) {
+                    // Write JSON response
                     $response->getBody()->write(\json_encode([
                         'success'    => false,
                         'error_code' => 500,
                         'error'      => 'DATABASE_CONNECTION_ERROR'
                     ]));
+                    $response = $response->withHeader('Content-Type', 'application/json');
                 } else {
                     // Write hardcoded HTML response
-                    // Reason is that our templates make use of database functionality (which is wrong...)
-                    $response->getBody()->write('
-                        <div style="margin: 30px">
-                            <h2>Database Connection Error</h2>
-                            <p>KeeperFX is currently experiencing issues with its database connection. Please try again in a few seconds.</p>
-                        </div>
-                    ');
+                    // We can not use Twig here because it uses a database connection (which is probably kind of wrong)
+                    $response->getBody()->write(
+                        \file_get_contents(APP_ROOT . '/public/database-connection-error.html')
+                    );
                 }
 
                 return $response;
             }
 
             // Log error if not a normal HTTP exception
-            if($this->logger && !($ex instanceof HttpSpecializedException)){
+            if ($this->logger && !($ex instanceof HttpSpecializedException)) {
                 $this->logger->error($ex->getMessage());
             }
 
-            if($json_response == true){
+            if ($json_response == true) {
 
-                if(\in_array($ex->getCode(), [403, 404, 405])){
+                if (\in_array($ex->getCode(), [403, 404, 405])) {
                     $response = $this->response_factory->createResponse($ex->getCode());
                     $response->getBody()->write(\json_encode([
                         'success'    => false,
@@ -104,12 +102,11 @@ class ErrorMiddleware implements MiddlewareInterface
                         'error'      => 'INTERNAL_SERVER_ERROR'
                     ]));
                 }
-
             } else {
 
                 // Check if HTTP code has a unique error page
                 $template_file = \sprintf('error/%d.html.twig', $ex->getCode());
-                if(\file_exists(APP_ROOT . '/views/' . $template_file)){
+                if (\file_exists(APP_ROOT . '/views/' . $template_file)) {
                     // Show template
                     $response = $this->response_factory->createResponse($ex->getCode());
                     $response->getBody()->write(

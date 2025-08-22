@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>KeeperFX - Database Connection Error</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: #0d0d0d;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 12px;
+            background: #1a1a1a;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #ff4444;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            color: gray;
+            font-size: 0.92rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img
+            src="data:image/png;base64,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" />
+        <h1>Database Connection Error</h1>
+        <p>The KeeperFX website failed to connect to its database.<br>Please check back later. Thank you for your
+            patience.</p>
+        <footer>KeeperFX</footer>
+    </div>
+</body>
+
+</html>
