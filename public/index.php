@@ -6,16 +6,27 @@ use App\Middleware\ErrorMiddleware;
 // Check for maintenance mode and show notice
 // This should be the very first check that is ran.
 // That way every part of the application can update without an end user executing any code.
-if(\file_exists(__DIR__ . '/../__MAINTENANCE_MODE_ACTIVE')){
+if (\file_exists(__DIR__ . '/../__MAINTENANCE_MODE_ACTIVE')) {
+
+    // 503 Service Unavailable: HTTP status for temporary downtime
+    \http_response_code(503);
+
+    // Tell search engines s to retry after 60 seconds
+    \header('Retry-After: 60');
+
+    // Disable caching
     \header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
     \header('Pragma: no-cache');
+
+    // Serve correct maintenance page
     $content_type = $_SERVER["CONTENT_TYPE"] ?? '';
-    if($content_type == 'application/json') {
+    if ($content_type == 'application/json') {
         \header('Content-Type: application/json');
         require 'maintenance.json';
     } else {
         require 'maintenance.html';
     }
+
     exit;
 }
 
@@ -26,7 +37,7 @@ require __DIR__ . '/../app/bootstrap/bootstrap.php';
 $app = \DI\Bridge\Slim\Bridge::create($container);
 
 // Add Global Whoops handler
-if(Config::get('app.whoops.is_enabled') === true){
+if (Config::get('app.whoops.is_enabled') === true) {
     $whoops = new \Whoops\Run;
     $pretty_page_handler = new \Whoops\Handler\PrettyPageHandler();
     $pretty_page_handler->setEditor(Config::get('app.whoops.editor'));
@@ -45,12 +56,12 @@ foreach ((require APP_ROOT . '/app/middlewares.php') as $middleware_class) {
 }
 
 // Add default error handler (for end users)
-if(Config::get('app.whoops.is_enabled') === false){
+if (Config::get('app.whoops.is_enabled') === false) {
     $app->add(ErrorMiddleware::class);
 }
 
 // Add Whoops Middleware
-if(Config::get('app.whoops.is_enabled') === true){
+if (Config::get('app.whoops.is_enabled') === true) {
     $app->add(new Zeuxisoo\Whoops\Slim\WhoopsMiddleware([
         // Set IDE to open the source file from the error page
         'editor' => Config::get('app.whoops.editor')
@@ -59,7 +70,7 @@ if(Config::get('app.whoops.is_enabled') === true){
 
 // Add debug bar collectors
 // The Twig collector is found in the container definition (otherwise it will try to load the session before the request middlewares)
-if($_ENV['APP_ENV'] === 'dev'){
+if ($_ENV['APP_ENV'] === 'dev') {
 
     // Get the debugbar
     $debugbar = $container->get(\DebugBar\StandardDebugBar::class);
@@ -86,7 +97,7 @@ $app->add(\Compwright\PhpSession\Middleware\SessionBeforeMiddleware::class);
 require APP_ROOT . '/app/routes.php';
 
 // Enable Slim route caching
-if($_ENV['APP_ENV'] === 'prod'){
+if ($_ENV['APP_ENV'] === 'prod') {
     $routeCollector = $app->getRouteCollector();
     $routeCollector->setCacheFile(APP_ROOT . '/cache/router.cache');
 }
