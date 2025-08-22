@@ -20,7 +20,8 @@ use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class WorkshopBrowseController {
+class WorkshopBrowseController
+{
 
     public function browseIndex(
         Request $request,
@@ -31,14 +32,14 @@ class WorkshopBrowseController {
         Account $account,
         FlashMessage $flash,
         StandardDebugBar $debugbar,
-    ){
+    ) {
 
         // Get queries
         $q = $request->getQueryParams();
 
         // Check if this page is already cached
         $cached_view_data = $workshop_cache->getCachedBrowsePageData($q);
-        if($cached_view_data){
+        if ($cached_view_data) {
             $response->getBody()->write(
                 $twig->render('workshop/browse.workshop.html.twig', $cached_view_data)
             );
@@ -53,7 +54,7 @@ class WorkshopBrowseController {
 
         // Get current page
         $page = $q['page'] ?? 1;
-        if(!\is_numeric($page)){
+        if (!\is_numeric($page)) {
             $page = 1;
         }
         $page = (int) $page;
@@ -72,12 +73,12 @@ class WorkshopBrowseController {
 
         // Get order by param
         $order_by_param = $q['order_by'] ?? '';
-        if(!\is_string($order_by_param)){
+        if (!\is_string($order_by_param)) {
             $order_by_param = 'latest';
         }
 
         // Decide 'ORDER BY'
-        switch(\strtolower($order_by_param)){
+        switch (\strtolower($order_by_param)) {
             case 'name':
                 $query = $query->orderBy('item.name', 'ASC');
                 $url_params['order_by'] = 'name';
@@ -129,42 +130,65 @@ class WorkshopBrowseController {
                 );
                 $url_params['order_by'] = 'last-updated';
                 break;
+            case 'highest-rated-wilson':
+                // Wilson score ordering
+                // Aggregate AVG and COUNT of ratings, then apply Wilson formula.
+                // z_score = 1.96 (≈95% confidence)
+                $z_score = 1.96;
+                $query = $query
+                    ->leftJoin('item.ratings', 'r')
+                    ->addSelect('AVG(r.score) AS HIDDEN avg_score')
+                    ->addSelect('COUNT(r.id) AS HIDDEN rating_count')
+                    ->groupBy('item.id')
+                    ->orderBy(
+                        "(
+                        (
+                            ((AVG(r.score) / 5) + ($z_score * $z_score) / (2 * COUNT(r.id)))
+                            - $z_score * SQRT(
+                                ((AVG(r.score) / 5) * (1 - (AVG(r.score) / 5)) + ($z_score * $z_score) / (4 * COUNT(r.id) * COUNT(r.id)))
+                                / COUNT(r.id)
+                            )
+                        ) / (1 + ($z_score * $z_score) / COUNT(r.id))
+                        ) * 5",
+                        'DESC'
+                    );
+                $url_params['order_by'] = 'wilson-rated';
+                break;
         }
 
         // Add search criteria
-        if(isset($q['search']) && \is_string($q['search'])){
+        if (isset($q['search']) && \is_string($q['search'])) {
             $url_params['search'] = $q['search'];
             $query = $query->leftJoin('item.submitter', 'submitter');
             $search_params = \explode(" ", $q['search']);
-            foreach($search_params as $i => $search_param){
+            foreach ($search_params as $i => $search_param) {
                 $query = $query->andWhere($query->expr()->orX(
-                    $query->expr()->like('item.name', ':search'.$i),
-                    $query->expr()->like('item.original_author', ':search'.$i),
-                    $query->expr()->like('item.map_number', ':search'.$i),
-                    $query->expr()->like('submitter.username', ':search'.$i)
-                ))->setParameter('search'.$i, '%' . $search_param . '%');
+                    $query->expr()->like('item.name', ':search' . $i),
+                    $query->expr()->like('item.original_author', ':search' . $i),
+                    $query->expr()->like('item.map_number', ':search' . $i),
+                    $query->expr()->like('submitter.username', ':search' . $i)
+                ))->setParameter('search' . $i, '%' . $search_param . '%');
             }
         }
 
         // Add category criteria
-        if(isset($q['category']) && \is_numeric($q['category'])){
+        if (isset($q['category']) && \is_numeric($q['category'])) {
             $url_params['category'] = $q['category'];
             $query                  = $query->andWhere('item.category = :category')->setParameter('category', $q['category']);
         }
 
         // Add user criteria
-        if(isset($q['user']) && \is_string($q['user'])){
+        if (isset($q['user']) && \is_string($q['user'])) {
             $username = $q['user'];
 
-            if($username === 'keeperfx-team'){
+            if ($username === 'keeperfx-team') {
                 $query                 = $query->andWhere('item.submitter IS NULL');
                 $submitter             = 'KeeperFX Team';
                 $url_params['user']    = 'keeperfx-team';
-
             } else {
 
                 $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
-                if(!$user){
+                if (!$user) {
                     $flash->warning('User not found.');
                     $response->getBody()->write(
                         $twig->render('workshop/alert.workshop.html.twig', [
@@ -196,14 +220,15 @@ class WorkshopBrowseController {
         }
 
         // Add original author criteria
-        if(!isset($q['user']) && isset($q['original_author']) && \is_string($q['original_author'])){
+        if (!isset($q['user']) && isset($q['original_author']) && \is_string($q['original_author'])) {
             $url_params['original_author'] = $q['original_author'];
             $query                         = $query->andWhere('item.original_author = :original_author')->setParameter('original_author', $q['original_author']);
             $original_author               = $q['original_author'];
         }
 
         // Get total workshop item count
-        $workshop_item_count = (clone $query)->select('count(item.id)')->getQuery()->getSingleScalarResult();
+        // Reset groupBy DQL part for the wilson rating (which uses groups)
+        $workshop_item_count = (clone $query)->select('count(DISTINCT item.id)')->resetDQLPart('groupBy')->getQuery()->getSingleScalarResult();
 
         // Get total pages
         $total_pages = \intval(\ceil($workshop_item_count / $limit));
@@ -212,8 +237,9 @@ class WorkshopBrowseController {
         $offset = $limit * ($page - 1);
 
         // Make sure offset (page) is valid
-        if($page <= 0 || $offset > $workshop_item_count){
-            $response = $response->withHeader('Location',
+        if ($page <= 0 || $offset > $workshop_item_count) {
+            $response = $response->withHeader(
+                'Location',
                 '/workshop/browse?' . \http_build_query($url_params + ['page' => 1]),
             )->withStatus(302);
             return $response;
@@ -221,8 +247,8 @@ class WorkshopBrowseController {
 
         // Create pagination
         $pagination = [];
-        if($total_pages <= 5){
-            for($i = 1; $i <= $total_pages; $i++){
+        if ($total_pages <= 5) {
+            for ($i = 1; $i <= $total_pages; $i++) {
                 $pagination[] = [
                     'label' => (string) $i,
                     'active' => $page === $i,
@@ -232,7 +258,7 @@ class WorkshopBrowseController {
             }
         } else {
 
-            if($page >= 3){
+            if ($page >= 3) {
 
                 $pagination[] = [
                     'label' => '1',
@@ -241,7 +267,7 @@ class WorkshopBrowseController {
                     'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => 1]),
                 ];
 
-                if($page > 3){
+                if ($page > 3) {
                     $pagination[] = [
                         'label' => '...',
                         'active' => false,
@@ -251,7 +277,7 @@ class WorkshopBrowseController {
                 }
             }
 
-            if($page !== 1){
+            if ($page !== 1) {
                 $pagination[] = [
                     'label' => (string) ($page - 1),
                     'active' => false,
@@ -260,7 +286,7 @@ class WorkshopBrowseController {
                 ];
             }
 
-            if($page !== $total_pages){
+            if ($page !== $total_pages) {
                 $pagination[] = [
                     'label' => (string) $page,
                     'active' => true,
@@ -269,7 +295,7 @@ class WorkshopBrowseController {
                 ];
             }
 
-            if($page < $total_pages - 1){
+            if ($page < $total_pages - 1) {
                 $pagination[] = [
                     'label' => (string) ($page + 1),
                     'active' => false,
@@ -278,7 +304,7 @@ class WorkshopBrowseController {
                 ];
             }
 
-            if($page === 1){
+            if ($page === 1) {
                 $pagination[] = [
                     'label' => (string) ($page + 2),
                     'active' => false,
@@ -287,8 +313,7 @@ class WorkshopBrowseController {
                 ];
             }
 
-            if($page < $total_pages - 2)
-            {
+            if ($page < $total_pages - 2) {
                 $pagination[] = [
                     'label' => '...',
                     'active' => false,
@@ -303,7 +328,6 @@ class WorkshopBrowseController {
                 'disabled' => false,
                 'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $total_pages]),
             ];
-
         }
 
         // Add offset and limit
@@ -312,7 +336,7 @@ class WorkshopBrowseController {
         // Get workshop items
         $workshop_items = [];
         $result = $query->getQuery()->getResult();
-        foreach($result as $workshop_item){
+        foreach ($result as $workshop_item) {
             $workshop_items[] = [
                 'id' => $workshop_item->getId(),
                 'name' => $workshop_item->getName(),

@@ -52,6 +52,8 @@
                                 Latest
                             {% elseif get_query_param('order_by') == 'oldest' %}
                                 Oldest
+                            {% elseif get_query_param('order_by') == 'highest-rated-wilson' %}
+                                Highest Rated (Wilson)
                             {% elseif get_query_param('order_by') == 'highest-rated' %}
                                 Highest Rated
                             {% elseif get_query_param('order_by') == 'lowest-rated' %}
@@ -83,6 +85,7 @@
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="latest">Latest</a></li>
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="oldest">Oldest</a></li>
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="name">Name</a></li>
+                        <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="highest-rated-wilson">Highest Rated (Wilson)</a></li>
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="highest-rated">Highest Rated</a></li>
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="lowest-rated">Lowest Rated</a></li>
                         <li><a class="dropdown-item" href="#" data-browse-filter-type="order_by" data-browse-filter-value="most-difficult">Most Difficult</a></li>
