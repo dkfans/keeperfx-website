@@ -22,8 +22,10 @@ use Compwright\PhpSession\Session;
 use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
 use Crunz\HttpClient\HttpClientException;
-use Dflydev\FigCookies\FigResponseCookies;
+
 use Dflydev\FigCookies\SetCookie;
+use Dflydev\FigCookies\Modifier\SameSite;
+use Dflydev\FigCookies\FigResponseCookies;
 
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -544,7 +546,16 @@ class AccountController {
         }
 
         // Remove possible 'remember me' cookie
-        $response = FigResponseCookies::remove($response, 'user_cookie_token');
+        $response = FigResponseCookies::set(
+            $response,
+            SetCookie::create('user_cookie_token', '')
+                ->withDomain($_ENV['APP_COOKIE_DOMAIN'] ?? null)
+                ->withPath($_ENV['APP_COOKIE_PATH'] ?? "/")
+                ->withSecure((bool)$_ENV['APP_COOKIE_TLS_ONLY'])
+                ->withHttpOnly((bool)$_ENV['APP_COOKIE_HTTP_ONLY'])
+                ->withSameSite(SameSite::fromString($_ENV['APP_COOKIE_SAMESITE']))
+                ->expire()
+        );
 
         // Redirect back to homepage
         $response = $response->withHeader('Location', '/')->withStatus(302);
