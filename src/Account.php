@@ -93,7 +93,7 @@ class Account {
         $max_age      = (int) ($_ENV['APP_REMEMBER_ME_TIME'] ?? 31560000);
         $expires      = \gmdate('D, d M Y H:i:s T', time() + $max_age);
         return SetCookie::create('user_cookie_token', $cookie_token)
-            ->withDomain($_ENV['APP_COOKIE_DOMAIN'] ?? $_ENV['APP_ROOT_URL'] ?? null)
+            ->withDomain($_ENV['APP_COOKIE_DOMAIN'] ?? null)
             ->withPath($_ENV['APP_COOKIE_PATH'] ?? "/")
             ->withExpires($expires)
             ->withMaxAge($max_age)
