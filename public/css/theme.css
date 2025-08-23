@@ -858,7 +858,7 @@ button.btn-medieval ion-icon {
     flex-wrap: wrap; */
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 }
 
 .workshop-grid-item {
