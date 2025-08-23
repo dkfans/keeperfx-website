@@ -130,5 +130,30 @@ $(function(){
         // Remove hashbang including "#"
         history.replaceState(null, null, window.location.pathname + window.location.search);
     }
+
+    // Fix broken avatars
+    $('img.user-avatar, .account-settings-avatar img').each(function() {
+
+        // Fallback image URL
+        let fallbackImage = "/img/horny-face-256.png";
+
+        // Function to run on broken images
+        function fixBrokenImage(img) {
+            if (img.src !== fallbackImage) {
+                img.src = fallbackImage;
+            }
+        }
+
+        // Handle avatars that are not loaded yet
+        $(this).on("error", function() {
+            fixBrokenImage(this);
+        });
+
+        // Handle avatars that have already been loaded
+        if (this.complete && this.naturalWidth === 0) {
+            fixBrokenImage(this);
+        }
+    });
+
 });
 
