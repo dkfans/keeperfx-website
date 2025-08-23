@@ -1,5 +1,5 @@
-# Start with PHP 8.3 FPM (FastCGI Process Manager)
-FROM php:8.3-fpm
+# Start with PHP 8.4 FPM (FastCGI Process Manager)
+FROM php:8.4-fpm
 
 # Update package list and install dependencies
 RUN apt-get update && apt-get install -y \
