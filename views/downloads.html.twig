@@ -91,7 +91,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for release in stable_releases %}
+                {% for release in workshop_globals.latest_stable_minor_releases|slice(0, 3) %}
                     <tr class="{% if loop.first %}latest-release{% endif %}">
                         <td>
                             <a href="{{ release.downloadUrl }}" data-stable-build-download="true" download>

@@ -9,7 +9,8 @@ use Doctrine\ORM\EntityManager;
 
 use App\Helper\ThumbnailHelper;
 
-class WorkshopHelper {
+class WorkshopHelper
+{
 
     public const int RATING_QUALITY = 1;
     public const int RATING_DIFFICULTY = 2;
@@ -24,13 +25,13 @@ class WorkshopHelper {
         $item_images_dir = Config::get('storage.path.workshop') . '/' . $item->getId() . '/images';
 
         // Make sure image dir exists
-        if(!\file_exists($item_images_dir)){
+        if (!\file_exists($item_images_dir)) {
             return false;
         }
 
         // Make sure this workshop item has images
         $images = $item->getImages();
-        if(!$images || !isset($images[0])){
+        if (!$images || !isset($images[0])) {
             return false;
         }
 
@@ -40,7 +41,7 @@ class WorkshopHelper {
 
         // Create a thumbnail
         $thumbnail_filename = ThumbnailHelper::createThumbnail($image_filepath, 256, 256);
-        if($thumbnail_filename){
+        if ($thumbnail_filename) {
             $item->setThumbnail($thumbnail_filename);
             $em->flush();
         }
@@ -54,13 +55,13 @@ class WorkshopHelper {
         $item_images_dir = Config::get('storage.path.workshop') . '/' . $item->getId() . '/images';
 
         // Make sure image dir exists
-        if(!\file_exists($item_images_dir)){
+        if (!\file_exists($item_images_dir)) {
             return false;
         }
 
         // Get thumbnail filename
         $thumbnail_filename = $item->getThumbnail();
-        if(!$thumbnail_filename){
+        if (!$thumbnail_filename) {
             return false;
         }
 
@@ -70,7 +71,7 @@ class WorkshopHelper {
 
         // Get thumbnail filepath
         $thumbnail_filepath = $item_images_dir . '/' . $thumbnail_filename;
-        if(file_exists($thumbnail_filepath)){
+        if (file_exists($thumbnail_filepath)) {
             @\unlink($thumbnail_filepath);
         }
 
@@ -92,20 +93,20 @@ class WorkshopHelper {
         $rating_score = null;
 
         // Check what kind of rating we are handling
-        if($type === self::RATING_QUALITY){
+        if ($type === self::RATING_QUALITY) {
             $ratings = $workshop_item->getRatings();
-        } else if ($type === self::RATING_DIFFICULTY){
+        } else if ($type === self::RATING_DIFFICULTY) {
             $ratings = $workshop_item->getDifficultyRatings();
         } else {
             throw new \InvalidArgumentException("'type' parameter should be either 'quality' or 'difficulty'");
         }
 
         // Handle item ratings
-        if($ratings && \count($ratings) > 0){
+        if ($ratings && \count($ratings) > 0) {
 
             // Get all scores
             $rating_scores = [];
-            foreach($ratings as $rating){
+            foreach ($ratings as $rating) {
                 $rating_scores[] = $rating->getScore();
             }
 
@@ -120,5 +121,34 @@ class WorkshopHelper {
             'score' => $rating_score,
             'count' => \count($ratings),
         ];
+    }
+
+    /**
+     * Sorts the nested [major][minor][patch] array.
+     *
+     * @param array $releases The input array: $releases[$major][$minor][$patch] = $entity
+     * @param bool  $descending If true, sorts newest-first (e.g., 3.2.1 before 1.0.0)
+     * @return array Sorted array with the same nesting.
+     */
+    public static function sortStableReleases(array $releases, bool $descending = false): array
+    {
+        $func = $descending ? 'krsort' : 'ksort';
+
+        $func($releases, SORT_NUMERIC);
+
+        foreach ($releases as &$minors) {
+
+            $func($minors, SORT_NUMERIC);
+
+            foreach ($minors as &$patches) {
+                $func($patches, SORT_NUMERIC);
+            }
+
+            unset($patches);
+        }
+
+        unset($minors);
+
+        return $releases;
     }
 }
