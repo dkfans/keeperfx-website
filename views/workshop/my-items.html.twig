@@ -23,7 +23,7 @@
 
                 {% for item in workshop_items %}
 
-                    <div class="workshop-grid-item mb-3">
+                    <div class="workshop-grid-item mb-3" {% if item.isLastFileBroken %}style="border: 2px solid red !important;"{% endif %}>
 
                         {# Thumbnail #}
                         <div class="workshop-grid-item-image-container">
