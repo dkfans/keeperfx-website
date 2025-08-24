@@ -223,4 +223,30 @@ class GithubRelease
     {
         return $this->mirrors;
     }
+
+    public function getVersionParts(): ?array
+    {
+        $version = $this->getVersion();
+
+        if (\is_string($version) && \preg_match('/([0-9]+)\.([0-9]+)\.([0-9]+)/', $version, $matches)) {
+            return [
+                'major' => (int)$matches[1],
+                'minor' => (int)$matches[2],
+                'patch' => (int)$matches[3],
+            ];
+        }
+
+        return null;
+    }
+
+    public function getVersionMajorMinor(): ?string
+    {
+        $version_parts = $this->getVersionParts();
+
+        if ($version_parts) {
+            return "{$version_parts['major']}.{$version_parts['minor']}";
+        }
+
+        return null;
+    }
 }

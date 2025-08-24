@@ -66,7 +66,7 @@
                                     {% for build in workshop_globals.latest_stable_minor_releases %}
                                         {% if not (build.version starts with '0.') %}
                                             <option value="{{ build.id }}">
-                                                {{ build.name }}
+                                                {{ build.nameMajorMinor }}
                                             </option>
                                         {% endif %}
                                     {% endfor %}

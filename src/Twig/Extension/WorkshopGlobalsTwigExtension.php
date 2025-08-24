@@ -43,17 +43,21 @@ class WorkshopGlobalsTwigExtension extends \Twig\Extension\AbstractExtension imp
             $stable_builds_map[$stable_build->getId()] = $stable_build;
         }
 
-        // Get the shown stable releases
+        // Get the latest minors of the stable releases
+        // Example: 1.2.2, 1.1.5, 1.0.1
         $latest_minor_releases = $this->cache->get('latest-stable-minor-releases', null);
         if (is_null($latest_minor_releases)) {
 
             /** @var GithubRelease $entity */
             foreach ($stable_builds as $entity) {
 
-                if (\preg_match('/([0-9]+)\.([0-9]+)\.([0-9]+)/', $entity->getVersion(), $matches)) {
-                    $major = (int)$matches[1];
-                    $minor = (int)$matches[2];
-                    $patch = (int)$matches[3];
+                $version_parts = $entity->getVersionParts();
+
+                if ($version_parts) {
+
+                    $major = $version_parts['major'];
+                    $minor = $version_parts['minor'];
+                    $patch = $version_parts['patch'];
 
                     $news_post = null;
                     $news_post_entity = $entity->getLinkedNewsPost();
@@ -76,16 +80,18 @@ class WorkshopGlobalsTwigExtension extends \Twig\Extension\AbstractExtension imp
                     }
 
                     $stable_releases[$major][$minor][$patch] = [
-                        'id'             => $entity->getId(),
-                        'name'           => $entity->getName(),
-                        'downloadUrl'    => $entity->getDownloadUrl(),
-                        'sizeInBytes'    => $entity->getSizeInBytes(),
-                        'timestamp'      => $entity->getTimestamp(),
-                        'tag'            => $entity->getTag(),
-                        'version'        => $entity->getVersion(),
-                        'linkedNewsPost' => $news_post,
-                        'mirrors'        => $mirrors,
-                        'commits'        => ['count' => \count($entity->getCommits())],
+                        'id'                => $entity->getId(),
+                        'name'              => $entity->getName(),
+                        'downloadUrl'       => $entity->getDownloadUrl(),
+                        'sizeInBytes'       => $entity->getSizeInBytes(),
+                        'timestamp'         => $entity->getTimestamp(),
+                        'tag'               => $entity->getTag(),
+                        'version'           => $entity->getVersion(),
+                        'linkedNewsPost'    => $news_post,
+                        'mirrors'           => $mirrors,
+                        'commits'           => ['count' => \count($entity->getCommits())],
+                        'versionMajorMinor' => "{$major}.{$minor}",
+                        'nameMajorMinor'    => "KeeperFX {$major}.{$minor}",
                     ];
                 }
             }

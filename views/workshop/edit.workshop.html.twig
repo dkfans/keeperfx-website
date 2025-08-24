@@ -72,10 +72,14 @@
                             </label>
                             <select class="form-control form-select" id="min_game_build" name="min_game_build">
                                 <option {% if workshop_item.minGameBuild == null %}selected=selected{% endif %} value="0"></option>
-                                <option {% if workshop_item.minGameBuild == -1 %}selected=selected{% endif %} value="-1">Lastest alpha patch</option>
+                                <option {% if workshop_item.minGameBuild == -1 %}selected=selected{% endif %} value="-1">Latest KeeperFX alpha patch</option>
                                 {% if workshop_globals.stable_builds|length > 0 %}
-                                    {% for build in workshop_globals.stable_builds %}
-                                        <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild == build.id %}selected=selected{% endif %}>{{ build.name }}</option>
+                                    {% for build in workshop_globals.latest_stable_minor_releases %}
+                                        {% if not (build.version starts with '0.') %}
+                                            <option value="{{ build.id }}" {% if workshop_item.minGameBuild != null and workshop_item.minGameBuild == build.id %}selected=selected{% endif %}>
+                                                {{ build.nameMajorMinor }}
+                                            </option>
+                                        {% endif %}
                                     {% endfor %}
                                 {% endif %}
                             </select>
