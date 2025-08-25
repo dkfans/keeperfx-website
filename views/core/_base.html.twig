@@ -134,9 +134,13 @@
                 if(isInitialLoad){
                     return false;
                 }
-                $('html, body').animate({
-                    scrollTop: $('#nav-top').offset().top - 15
-                }, 100); // duration
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function(){
+                        $('html, body').animate({
+                            scrollTop: $('#nav-top').offset().top - 15
+                        }, 100); // duration
+                    });
+                });
             });
         </script>
 
