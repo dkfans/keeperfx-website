@@ -12,10 +12,10 @@
 
 {# Download buttons #}
 <div class="content-box" style="padding: 10px; text-align: center;">
-    {% if stable_releases|length > 0 %}
-        <a href="{{ stable_releases[0].downloadUrl }}" class="btn btn-medieval" style="margin: 15px; min-height: 100px; padding: 20px" data-stable-build-download="true" download>
+    {% if workshop_globals.stable_builds|length > 0 %}
+        <a href="{{ (workshop_globals.stable_builds|first).downloadUrl }}" class="btn btn-medieval" style="margin: 15px; min-height: 100px; padding: 20px" data-stable-build-download="true" download>
             <h3>Download latest release</h3>
-            <span>{{ stable_releases[0].name }}</span>
+            <span>{{ (workshop_globals.stable_builds|first).name }}</span>
         </a>
     {% endif %}
     {% if alpha_builds|length > 0 %}
