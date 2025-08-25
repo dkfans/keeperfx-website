@@ -22,9 +22,12 @@ if (\file_exists(__DIR__ . '/../__MAINTENANCE_MODE_ACTIVE')) {
     $content_type = $_SERVER["CONTENT_TYPE"] ?? '';
     if ($content_type == 'application/json') {
         \header('Content-Type: application/json');
-        require 'maintenance.json';
+        echo \json_encode([
+            'error' => 'MAINTENANCE_MODE',
+            'message' => 'Website maintenance mode is active. Try again later.',
+        ]);
     } else {
-        require 'maintenance.html';
+        echo \file_get_contents(__DIR__ . '/../views/maintenance.html');
     }
 
     exit;

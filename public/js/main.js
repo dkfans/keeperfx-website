@@ -60,6 +60,12 @@ $(function(){
             return false;
         }
 
+        // Website unavailable
+        if(xhr.status === 503){
+            toastr.warning('The website is currently unavailable.');
+            return false;
+        }
+
         toastr.error('Something went wrong.');
     });
 

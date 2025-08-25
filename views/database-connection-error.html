@@ -53,6 +53,15 @@
             patience.</p>
         <footer>KeeperFX</footer>
     </div>
+
+    <script>
+        // Make sure page was not loaded by InstantClick
+        // InstantClick bugs out the layout of the page
+        if (typeof InstantClick != "undefined") {
+            window.location.reload();
+        }
+    </script>
+
 </body>
 
 </html>

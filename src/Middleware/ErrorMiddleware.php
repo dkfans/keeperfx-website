@@ -68,7 +68,7 @@ class ErrorMiddleware implements MiddlewareInterface
                     // Write hardcoded HTML response
                     // We can not use Twig here because it uses a database connection (which is probably kind of wrong)
                     $response->getBody()->write(
-                        \file_get_contents(APP_ROOT . '/public/database-connection-error.html')
+                        \file_get_contents(APP_ROOT . '/views/database-connection-error.html')
                     );
                 }
 
