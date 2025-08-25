@@ -142,6 +142,10 @@ class GameFileHandler
                         if (\copy($item, $item_filepath) === false) {
                             throw new \Exception("failed to copy bundled file");
                         }
+
+                        // Add copied file to filemap
+                        $relative_path = \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                        $file_index[$relative_path] = \hash_file('crc32b', $item_filepath);
                     }
                 }
             }
