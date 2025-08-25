@@ -61,6 +61,7 @@ class AdminServerInfoController {
                 'mails_count'                   => $em->getRepository(Mail::class)->count([]),
                 'mails_in_queue_count'          => $em->getRepository(Mail::class)->count(['status' => 0]),
                 'workshop_comment_count'        => $em->getRepository(WorkshopComment::class)->count([]),
+                'php_version'                   => \phpversion(),
                 'php_max_upload'                => $php_max_upload,
                 'php_max_post'                  => $php_max_post,
                 'php_memory_limit'              => $php_memory_limit,
