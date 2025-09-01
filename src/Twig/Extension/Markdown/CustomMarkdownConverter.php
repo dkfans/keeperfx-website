@@ -33,8 +33,15 @@ class CustomMarkdownConverter implements MarkdownInterface
 
     public function convert(string $string): string
     {
-        $string = $this->processSpoilerTags($string);
-        return $this->converter->convert($string)->getContent();
+        // Do the normal conversion
+        $html = $this->converter->convert($string)->getContent();
+
+        // Do our custom conversions
+        $html = $this->processSpoilerTags($html);
+        $html = $this->processYouTubeTags($html);
+
+        // Return the html directly
+        return $html;
     }
 
     private function processSpoilerTags(string $content): string
@@ -42,6 +49,30 @@ class CustomMarkdownConverter implements MarkdownInterface
         return \preg_replace(
             '~\|\|(.+?)\|\|~',
             '<span class="spoiler spoiler-hover">$1</span>',
+            $content
+        );
+    }
+
+    private function processYouTubeTags(string $content): string
+    {
+        return \preg_replace_callback(
+            '/\[\[youtube:(.+?)\]\]/',
+            function (array $matches): string {
+                $url = trim($matches[1]);
+                if (\preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|v/|shorts/))([\w\-]{11})~', $url, $ytMatch)) {
+                    $id = htmlspecialchars($ytMatch[1], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                    return sprintf(
+                        '<div class="youtube-wrapper">
+                        <iframe src="https://www.youtube.com/embed/%s"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                     </div>',
+                        $id
+                    );
+                }
+                return '';
+            },
             $content
         );
     }
