@@ -1733,6 +1733,8 @@ div.phpdebugbar-widgets-callgraph pre span {
 
 .news-post .youtube-wrapper {
     margin: 0 auto;
+    margin-top: 60px;
+    margin-bottom: 60px;
     text-align: center;
 }
 
