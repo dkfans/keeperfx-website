@@ -18,7 +18,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Psr\SimpleCache\CacheInterface;
 
-class IndexController {
+class IndexController
+{
 
     public function index(
         Request $request,
@@ -28,16 +29,16 @@ class IndexController {
         CacheInterface $cache,
         FlashMessage $flash,
         Account $account
-    ){
+    ) {
         // Grab some stuff from DB to show on main page
         $articles              = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 3);
         $release               = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
-        $latest_workshop_items = $em->getRepository(WorkshopItem::class)->findBy([], ['created_timestamp' => 'DESC'], 3);
+        $latest_workshop_items = $em->getRepository(WorkshopItem::class)->findBy(['is_published' => true, 'is_last_file_broken' => false], ['created_timestamp' => 'DESC'], 3);
 
         // Get featured Twitch stream
         $twitch_channel = null;
         $streams = $cache->get('twitch_streams', []);
-        if(!empty($streams)){
+        if (!empty($streams)) {
             $twitch_channel = $streams[\array_rand($streams)];
         }
 
@@ -55,5 +56,4 @@ class IndexController {
 
         return $response;
     }
-
 }
