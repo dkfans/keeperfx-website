@@ -305,7 +305,9 @@
                                 <tbody>
                                     {% for file in item.files %}
                                         <tr>
-                                            <td><a href="/workshop/download/{{ item.id }}/{{ file.id }}/{{ file.filename|url_encode }}">{{ file.filename }}</td>
+                                            <td>
+                                                {% if file.isBroken %}<s>{% endif %}<a href="/workshop/download/{{ item.id }}/{{ file.id }}/{{ file.filename|url_encode }}">{{ file.filename }}</a>{% if file.isBroken %}</s> (Broken){% endif %}
+                                            </td>
                                             <td>{{ file.size|format_bytes }}</td>
                                             <td>{{ file.downloadCount }}</td>
                                             <td>{{ file.createdTimestamp|date('Y-m-d') }}</td>
