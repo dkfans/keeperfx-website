@@ -17,7 +17,7 @@ class GithubRelease
     #[ORM\Column]
     private string $tag;
 
-    #[ORM\Column(options: ['charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci'])]
+    #[ORM\Column]
     private string $name;
 
     #[ORM\Column(nullable: true)]

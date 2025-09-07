@@ -10,14 +10,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class User {
+class User
+{
 
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column]
     private string $username;
 
     #[ORM\Column(nullable: true)]
@@ -90,7 +91,8 @@ class User {
     #[ORM\OrderBy(["last_seen_timestamp" => "DESC"])]
     private Collection $ip_logs;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->news_articles               = new ArrayCollection();
         $this->connection_tokens           = new ArrayCollection();
         $this->cookie_tokens               = new ArrayCollection();
@@ -155,7 +157,7 @@ class User {
     public function setPassword(string|null $password)
     {
         // NULL password
-        if(\is_null($password)){
+        if (\is_null($password)) {
             $this->password = null;
             return $this;
         }
@@ -193,7 +195,7 @@ class User {
     public function setEmail(string|null $email): self
     {
         // Empty email addresses should become NULL
-        if(empty($email)){
+        if (empty($email)) {
             $email = null;
         }
 
@@ -223,7 +225,7 @@ class User {
     /**
      * Get the value of avatar
      */
-    public function getAvatar():  string|null
+    public function getAvatar(): string|null
     {
         return $this->avatar;
     }

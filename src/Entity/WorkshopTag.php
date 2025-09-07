@@ -5,14 +5,15 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class WorkshopTag {
+class WorkshopTag
+{
 
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column]
     private string $name;
 
     /**
@@ -42,5 +43,4 @@ class WorkshopTag {
 
         return $this;
     }
-
 }

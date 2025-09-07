@@ -10,14 +10,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class WorkshopItem {
+class WorkshopItem
+{
 
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column]
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -38,10 +39,10 @@ class WorkshopItem {
     #[ORM\Column(nullable: true)]
     private \DateTime|null $updated_timestamp = null;
 
-    #[ORM\Column(type: 'text', nullable: true, options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: 'text', nullable: true)]
     private string|null $description = null;
 
-    #[ORM\Column(type: 'text', nullable: true, options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: 'text', nullable: true)]
     private string|null $install_instructions = null;
 
     #[ORM\Column]
@@ -98,7 +99,8 @@ class WorkshopItem {
     #[ORM\Column]
     private ?\DateTime $creation_orderby_timestamp = null;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->files              = new ArrayCollection();
         $this->images             = new ArrayCollection();
         $this->ratings            = new ArrayCollection();
@@ -110,7 +112,7 @@ class WorkshopItem {
     public function onPrePersist()
     {
         $this->created_timestamp = new \DateTime("now");
-        if($this->creation_orderby_timestamp === null){
+        if ($this->creation_orderby_timestamp === null) {
             $this->creation_orderby_timestamp = new \DateTime("now");
         }
     }
@@ -362,7 +364,7 @@ class WorkshopItem {
     {
         $this->original_creation_date = $original_creation_date;
 
-        if($original_creation_date === null){
+        if ($original_creation_date === null) {
             $this->creation_orderby_timestamp = $this->created_timestamp;
         } else {
             $this->creation_orderby_timestamp = $original_creation_date;

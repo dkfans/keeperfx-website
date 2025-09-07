@@ -5,23 +5,24 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class GithubPrototype {
+class GithubPrototype
+{
 
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
     private int|null $id = null;
 
-    #[ORM\Column(type:"bigint", nullable:true)]
+    #[ORM\Column(type: "bigint", nullable: true)]
     private int $artifact_id;
 
-    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column]
     private string $name;
 
     #[ORM\Column]
     private string $workflow_title;
 
-    #[ORM\Column(type:"bigint", nullable:true)]
+    #[ORM\Column(type: "bigint", nullable: true)]
     private null|string $workflow_run_id;
 
     #[ORM\Column]

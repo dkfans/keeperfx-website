@@ -10,7 +10,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class WorkshopBrokenFile {
+class WorkshopBrokenFile
+{
 
     #[ORM\Id]
     #[ORM\Column]
@@ -21,7 +22,7 @@ class WorkshopBrokenFile {
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private WorkshopItem|null $original_item = null;
 
-    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column]
     private string $original_filename;
 
     #[ORM\Column()]

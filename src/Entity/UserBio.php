@@ -6,7 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class UserBio {
+class UserBio
+{
 
     #[ORM\Id]
     #[ORM\Column]
@@ -16,7 +17,7 @@ class UserBio {
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'bio')]
     private User $user;
 
-    #[ORM\Column(type: 'text', options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: 'text')]
     private string $bio;
 
     #[ORM\Column]

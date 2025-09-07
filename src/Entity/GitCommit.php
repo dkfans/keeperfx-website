@@ -8,7 +8,8 @@ use App\Entity\GithubRelease;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class GitCommit {
+class GitCommit
+{
 
     #[ORM\Id]
     #[ORM\Column]
@@ -24,7 +25,7 @@ class GitCommit {
     #[ORM\Column]
     private \DateTime $timestamp;
 
-    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column]
     private string $message;
 
     /**

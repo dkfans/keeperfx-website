@@ -8,14 +8,15 @@ use URLify;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class NewsArticle {
+class NewsArticle
+{
 
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
     private int|null $id = null;
 
-    #[ORM\Column(options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column]
     private string $title;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
@@ -27,10 +28,10 @@ class NewsArticle {
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
-    #[ORM\Column(type: 'text', options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: 'text')]
     private string $contents;
 
-    #[ORM\Column(type: 'text', options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: 'text')]
     private string $excerpt;
 
     #[ORM\PrePersist]
@@ -107,7 +108,8 @@ class NewsArticle {
         return $this;
     }
 
-    public function getTitleSlug(): string {
+    public function getTitleSlug(): string
+    {
         return URLify::slug($this->title);
     }
 

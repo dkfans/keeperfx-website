@@ -6,14 +6,15 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class CrashReport {
+class CrashReport
+{
 
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
     private int|null $id = null;
 
-    #[ORM\Column(type: 'text', options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: 'text')]
     private string $description;
 
     #[ORM\Column(type: 'text')]

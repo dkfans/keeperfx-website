@@ -10,7 +10,8 @@ use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class WorkshopComment {
+class WorkshopComment
+{
 
     #[ORM\Id]
     #[ORM\Column]
@@ -23,7 +24,7 @@ class WorkshopComment {
     #[ORM\ManyToOne(targetEntity: 'User')]
     private User $user;
 
-    #[ORM\Column(type: 'text', options:['charset'=>'utf8mb4', 'collation'=>'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: 'text')]
     private string $content;
 
     #[ORM\Column]
@@ -43,7 +44,8 @@ class WorkshopComment {
     #[ORM\OrderBy(["created_timestamp" => "DESC"])]
     private Collection $reports;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->replies = new ArrayCollection();
         $this->reports = new ArrayCollection();
     }
