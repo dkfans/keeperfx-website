@@ -245,6 +245,20 @@
                             </div>
                         {% endif %}
 
+                        {# Show "for modders only" notice #}
+                        {% if item.category.name == "Creature" %}
+                            <div class="alert bg-dark m-3" style="font-size: 13px;">
+                                <div class="d-flex">
+                                    <div style="flex-grow: 1; display:flex; align-items:center; margin-right: 15px; max-width: 20px;">
+                                        <ion-icon name="alert-circle-outline" class="text-info" style="font-size: 20px; padding-bottom: 2px;"></ion-icon>
+                                    </div>
+                                    <div>
+                                        This workshop item is meant for mapmakers and will not change anything in the game without additional changes.
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
                         {# Show extra alpha patch notice #}
                         {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
                             <div class="alert bg-dark m-3" style="font-size: 13px;">
