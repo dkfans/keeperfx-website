@@ -2055,16 +2055,16 @@
         },
         {
             "name": "gumlet/php-image-resize",
-            "version": "2.1.1",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gumlet/php-image-resize.git",
-                "reference": "1f1c0c76918dcb1a62f6e0d6a27f55d731a9aad7"
+                "reference": "4ab5e080f9c9d432c1a8cb6e158d9fd99950a6d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gumlet/php-image-resize/zipball/1f1c0c76918dcb1a62f6e0d6a27f55d731a9aad7",
-                "reference": "1f1c0c76918dcb1a62f6e0d6a27f55d731a9aad7",
+                "url": "https://api.github.com/repos/gumlet/php-image-resize/zipball/4ab5e080f9c9d432c1a8cb6e158d9fd99950a6d1",
+                "reference": "4ab5e080f9c9d432c1a8cb6e158d9fd99950a6d1",
                 "shasum": ""
             },
             "require": {
@@ -2107,9 +2107,9 @@
             ],
             "support": {
                 "issues": "https://github.com/gumlet/php-image-resize/issues",
-                "source": "https://github.com/gumlet/php-image-resize/tree/2.1.1"
+                "source": "https://github.com/gumlet/php-image-resize/tree/2.1.2"
             },
-            "time": "2025-09-02T07:55:24+00:00"
+            "time": "2025-09-12T08:04:59+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -9859,16 +9859,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.6.25",
+            "version": "9.6.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "049c011e01be805202d8eebedef49f769a8ec7b7"
+                "reference": "a0139ea157533454f611038326f3020b3051f129"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/049c011e01be805202d8eebedef49f769a8ec7b7",
-                "reference": "049c011e01be805202d8eebedef49f769a8ec7b7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a0139ea157533454f611038326f3020b3051f129",
+                "reference": "a0139ea157533454f611038326f3020b3051f129",
                 "shasum": ""
             },
             "require": {
@@ -9942,7 +9942,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.25"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.26"
             },
             "funding": [
                 {
@@ -9966,7 +9966,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-20T14:38:31+00:00"
+            "time": "2025-09-11T06:17:45+00:00"
         },
         {
             "name": "psy/psysh",
