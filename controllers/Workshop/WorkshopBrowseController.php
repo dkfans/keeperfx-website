@@ -91,15 +91,15 @@ class WorkshopBrowseController
                 $query = $query->orderBy('item.download_count', 'ASC');
                 $url_params['order_by'] = 'least-downloaded';
                 break;
-            case 'highest-rated':
+            case 'highest-rated-simple':
                 $query = $query->orderBy('item.rating_score', 'DESC');
                 $query = $query->andWhere($query->expr()->isNotNull('item.rating_score'));
-                $url_params['order_by'] = 'highest-rated';
+                $url_params['order_by'] = 'highest-rated-simple';
                 break;
-            case 'lowest-rated':
+            case 'lowest-rated-simple':
                 $query = $query->orderBy('item.rating_score', 'ASC');
                 $query = $query->andWhere($query->expr()->isNotNull('item.rating_score'));
-                $url_params['order_by'] = 'lowest-rated';
+                $url_params['order_by'] = 'lowest-rated-simple';
                 break;
             case 'most-difficult':
                 $query = $query->orderBy('item.difficulty_rating_score', 'DESC');
@@ -130,7 +130,7 @@ class WorkshopBrowseController
                 );
                 $url_params['order_by'] = 'last-updated';
                 break;
-            case 'highest-rated-wilson':
+            case 'highest-rated':
                 // Wilson score ordering
                 // Aggregate AVG and COUNT of ratings, then apply Wilson formula.
                 // z_score = 1.96 (≈95% confidence)
@@ -152,7 +152,7 @@ class WorkshopBrowseController
                         ) * 5",
                         'DESC'
                     );
-                $url_params['order_by'] = 'wilson-rated';
+                $url_params['order_by'] = 'highest-rated';
                 break;
         }
 
