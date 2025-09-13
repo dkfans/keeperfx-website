@@ -1,3 +1,7 @@
+{%- if get_env('APP_ENV') is not empty and get_env('APP_ENV') != 'prod' -%}
+    [{{ get_env('APP_ENV') }}]
+    {{ ' ' }} {# Forced space character #}
+{%- endif -%}
 {%- if full_page_title is defined -%}
     {{- full_page_title -}}
 {%- else -%}
