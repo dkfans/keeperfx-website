@@ -261,13 +261,35 @@
 {% block body_javascript %}
     <script>
         $.each($('.workshop-grid-item-image-container img'), function(e){
+
+            let fallbackImage = "/img/broken-image-256.png";
+
+            // Function to run on broken images
+            function fixBrokenImage(img) {
+                if (img.src !== fallbackImage) {
+                    img.src = fallbackImage;
+                }
+            }
+
+            // Handle avatars that have already been loaded
+            if (this.complete && this.naturalWidth === 0) {
+                fixBrokenImage(this);
+            }
+
             if(this.complete){
                 return;
             }
+
+            // Handle avatars that are not loaded yet
+            $(this).on("error", function() {
+                fixBrokenImage(this);
+            });
+
             $(this).on('load', function(e){
                 $(this).parent().find('.lds-ring').remove();
                 $(this).fadeIn();
             });
+
             $(this).parent().prepend($('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>'));
             $(this).hide();
         });
