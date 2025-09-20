@@ -157,6 +157,7 @@ return [
     'social security',
     'south african',
     'special promotion',
+    'tap air',
     'take action',
     'terms and conditions',
     'thc',
