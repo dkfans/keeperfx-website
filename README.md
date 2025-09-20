@@ -18,28 +18,43 @@ You can [set up your environment natively](/docs/native-dev-setup.md) but it's h
 
 Download the repository:
 ```
-$ git clone https://github.com/dkfans/keeperfx-website.git
-$ cd keeperfx-website
+git clone https://github.com/dkfans/keeperfx-website.git
+cd keeperfx-website
 ```
 
 Start the containers:
 ```
-$ docker compose up -d
+docker compose up -d
 ```
 
 Install composer libraries:
 ```
-$ docker compose exec -it -u www-data php composer install
+docker compose exec -it -u www-data php composer install
 ```
 
 Do the database migrations (this sets up the database structure):
 ```
-$ docker compose exec -it -u www-data php ./console migrations:migrate
+docker compose exec -it -u www-data php ./console migrations:migrate
 ```
 
-Optional: Make an admin user:
+Optional: Create an admin user:
 ```
-$ docker compose exec -it -u www-data php ./console user:create <username> <password> admin
+docker compose exec -it -u www-data php ./console user:create <username> <password> admin
+```
+
+Optional: Generate mock data for development
+```
+docker compose exec -it -u www-data php ./console dev:generate-mock-data
+```
+
+Optional: Retrieve all kinds of data for different website functionality
+```
+docker compose exec -it -u www-data php ./console kfx:pull-repo
+docker compose exec -it -u www-data php ./console kfx:handle-commits
+docker compose exec -it -u www-data php ./console kfx:fetch-discord-info
+docker compose exec -it -u www-data php ./console kfx:fetch-forum-activity
+docker compose exec -it -u www-data php ./console kfx:fetch-wiki
+docker compose exec -it -u www-data php ./console website:cache-git-commits
 ```
 
 Visit the website at: http://127.0.0.1:5500
