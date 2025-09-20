@@ -56,6 +56,7 @@ return [
     'dubai',
     'earn extra cash',
     'earn money',
+    'easyjet',
     'eliminate bad credit',
     'encrypter',
     'exclusive deal',
