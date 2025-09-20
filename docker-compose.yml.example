@@ -22,13 +22,6 @@ services:
         networks:
             - kfx_network
 
-    clamav:
-        image: clamav/clamav:latest
-        container_name: kfx-clamav
-        restart: unless-stopped
-        networks:
-            - kfx_network
-
     php:
         build:
             context: .
@@ -80,6 +73,17 @@ services:
         environment:
             - "CRON_APP_TASKS=* * * * * docker exec -u www-data kfx-php php ./vendor/bin/crunz schedule:run &"
             #- "CRON_BACKUP=0 4 * * * rsync -a /opt /mnt/backup/opt"
+        profiles:
+            #- donotstart
+
+    clamav:
+        image: clamav/clamav:latest
+        container_name: kfx-clamav
+        restart: unless-stopped
+        networks:
+            - kfx_network
+        profiles:
+            #- donotstart
 
 networks:
     kfx_network:
