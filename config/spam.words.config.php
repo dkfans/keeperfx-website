@@ -93,6 +93,7 @@ return [
     'information you requested',
     'internet marketing',
     'investment',
+    'jetblue',
     'join millions',
     'lose weight',
     'lower rates',
