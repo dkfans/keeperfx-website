@@ -64,4 +64,6 @@ return [
     \App\Console\Command\Website\CacheWebsiteChangelogCommand::class,
     \App\Console\Command\Website\BenchmarkBcryptHashCost::class,
 
+    // Dev
+    \App\Console\Command\Dev\CreateMockDataCommand::class,
 ];
