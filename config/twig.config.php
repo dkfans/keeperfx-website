@@ -20,7 +20,7 @@ return [
         'auto_reload'      => $_ENV['APP_ENV'] === 'dev',
         'strict_variables' => true,
         'autoescape'       => 'html',
-        'optimizations'    => -1,
+        'optimizations'    => ($_ENV['APP_ENV'] === 'dev') ? 0 : -1,
     ],
 
     /**
