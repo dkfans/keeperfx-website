@@ -59,6 +59,7 @@ return [
     'easyjet',
     'eliminate bad credit',
     'encrypter',
+    'ethereum',
     'exclusive deal',
     'expect to earn',
     'extra cash',
