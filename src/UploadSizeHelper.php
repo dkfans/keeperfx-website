@@ -38,7 +38,7 @@ class UploadSizeHelper
 
         // Determine max news image upload size
         $val = $_ENV['APP_NEWS_IMAGE_MAX_UPLOAD_SIZE'] ?? null;
-        if($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false){
+        if ($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false) {
             $this->news_image_max_upload_size = $this->max_calculated_file_upload;
         } else {
             $this->news_image_max_upload_size = \min($val, $this->max_calculated_file_upload);;
@@ -46,7 +46,7 @@ class UploadSizeHelper
 
         // Determine max Avatar upload size
         $val = $_ENV['APP_AVATAR_MAX_UPLOAD_SIZE'] ?? null;
-        if($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false){
+        if ($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false) {
             $this->avatar_max_upload_size = $this->max_calculated_file_upload;
         } else {
             $this->avatar_max_upload_size = \min($val, $this->max_calculated_file_upload);;
@@ -54,7 +54,7 @@ class UploadSizeHelper
 
         // Determine max Workshop upload size
         $val = $_ENV['APP_WORKSHOP_ITEM_MAX_UPLOAD_SIZE'] ?? null;
-        if($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false){
+        if ($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false) {
             $this->workshop_item_max_upload_size = $this->max_calculated_file_upload;
         } else {
             $this->workshop_item_max_upload_size = \min($val, $this->max_calculated_file_upload);;
@@ -62,12 +62,11 @@ class UploadSizeHelper
 
         // Determine max image (thumbnail & screenshot) size
         $val = $_ENV['APP_WORKSHOP_IMAGE_MAX_UPLOAD_SIZE'] ?? null;
-        if($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false){
+        if ($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false) {
             $this->workshop_image_max_upload_size = $this->max_calculated_file_upload;
         } else {
             $this->workshop_image_max_upload_size = \min($val, $this->max_calculated_file_upload);;
         }
-
     }
 
     /**

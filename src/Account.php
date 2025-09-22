@@ -19,7 +19,8 @@ use Dflydev\FigCookies\Modifier\SameSite;
 use App\Helper\IpHelper;
 use Xenokore\Utility\Helper\StringHelper;
 
-class Account {
+class Account
+{
 
     private User|null $user = null;
 
@@ -31,23 +32,23 @@ class Account {
         private FlashMessage $flash,
     ) {
         // Check if current user is logged in
-        if(isset($session['uid']) && !is_null($session['uid'])){
+        if (isset($session['uid']) && !is_null($session['uid'])) {
 
             // Search this user in the DB
             // In case a user has a session without a valid user account
             $user = $em->getRepository(User::class)->find($session['uid']);
-            if($user){
+            if ($user) {
 
-                    // Check if banned
-                    if($user->getRole() == UserRole::Banned){
+                // Check if banned
+                if ($user->getRole() == UserRole::Banned) {
 
-                        // Show message
-                        $this->flash->error("You have been banned.");
+                    // Show message
+                    $this->flash->error("You have been banned.");
 
-                        // Don't login
-                        $session['uid'] = null;
-                        return;
-                    }
+                    // Don't login
+                    $session['uid'] = null;
+                    return;
+                }
 
                 // Set the currently logged in user
                 $this->user = $user;
@@ -61,16 +62,16 @@ class Account {
     public function createRememberMeSetCookie(?UserOAuthToken $oauth_token = null): SetCookie
     {
         // Make sure user is logged in
-        if(!$this->user){
+        if (!$this->user) {
             throw new \Exception('user not set');
         }
 
         // Find unused cookie token
         $cookie_token = null;
-        while($cookie_token === null){
+        while ($cookie_token === null) {
             $cookie_token_new = StringHelper::generate(64);
             $existing_token = $this->em->getRepository(UserCookieToken::class)->findOneBy(['token' => $cookie_token_new]);
-            if($existing_token === null){
+            if ($existing_token === null) {
                 $cookie_token = $cookie_token_new;
             }
         }
@@ -81,7 +82,7 @@ class Account {
         $token->setToken($cookie_token);
 
         // Add possible OAuth token to cookie token
-        if($oauth_token){
+        if ($oauth_token) {
             $token->setOAuthToken($oauth_token);
         }
 
@@ -99,8 +100,9 @@ class Account {
             ->withMaxAge($max_age)
             ->withSecure((bool)$_ENV['APP_COOKIE_TLS_ONLY'])
             ->withHttpOnly((bool)$_ENV['APP_COOKIE_HTTP_ONLY'])
-            ->withSameSite(SameSite::fromString($_ENV['APP_COOKIE_SAMESITE'])
-        );
+            ->withSameSite(
+                SameSite::fromString($_ENV['APP_COOKIE_SAMESITE'])
+            );
     }
 
     /**
@@ -113,7 +115,7 @@ class Account {
     public function createEmailVerification(): int|false
     {
         // Make sure user is logged in
-        if(!$this->isLoggedIn()){
+        if (!$this->isLoggedIn()) {
             throw new \Exception("need to be logged in to check if we need email verification");
         }
 
@@ -145,7 +147,7 @@ class Account {
 
     public function hasPendingEmailVerification(): bool
     {
-        if(!$this->isLoggedIn()){
+        if (!$this->isLoggedIn()) {
             throw new \Exception("need to be logged in to check if we need email verification");
         }
 
@@ -156,13 +158,13 @@ class Account {
     public function removeExistingEmailVerification(): void
     {
         // User needs to be logged in
-        if(!$this->isLoggedIn()){
+        if (!$this->isLoggedIn()) {
             throw new \Exception("need to be logged in to check if we need to remove email verification");
         }
 
         // Check if there is a verification pending
         $verification = $this->user->getEmailVerification();
-        if(!$verification){
+        if (!$verification) {
             return;
         }
 
@@ -213,18 +215,18 @@ class Account {
     public function logIp(string $ip): void
     {
         // Check if user is logged in
-        if($this->isLoggedIn() === false){
+        if ($this->isLoggedIn() === false) {
             return;
         }
 
         // Make sure IP is valid
-        if(IpHelper::isValidIp($ip) === false){
+        if (IpHelper::isValidIp($ip) === false) {
             return;
         }
 
         // Check if this IP is already logged
         $existing_ip_log = $this->em->getRepository(UserIpLog::class)->findOneBy(['user' => $this->user, 'ip' => $ip]);
-        if($existing_ip_log){
+        if ($existing_ip_log) {
 
             // Update the last seen timestamp
             $existing_ip_log->setLastSeenTimestamp(new \DateTime("now"));
@@ -247,23 +249,23 @@ class Account {
         $theme_id = \strtolower($theme_id);
 
         // Make sure we are logged in
-        if($this->isLoggedIn() === false){
+        if ($this->isLoggedIn() === false) {
             throw new \Exception('user needs to be logged in before we can set their theme');
         }
 
         // Try and update the theme
-        if($this->theme->setTheme($theme_id) === false){
+        if ($this->theme->setTheme($theme_id) === false) {
             return false;
         }
 
         // Check if user needs updating
-        if($this->user->getTheme() !== $theme_id){
+        if ($this->user->getTheme() !== $theme_id) {
             // Update user
             $this->user->setTheme($theme_id);
             $this->em->flush();
         }
 
-         return true;
+        return true;
     }
 
     public function getTheme(): array

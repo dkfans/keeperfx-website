@@ -11,7 +11,8 @@ use Doctrine\ORM\EntityManager;
 use PHPMailer\PHPMailer\PHPMailer;
 use Twig\Environment as TwigEnvironment;
 
-class Mailer {
+class Mailer
+{
 
     public function __construct(
         private EntityManager $em,
@@ -37,10 +38,9 @@ class Mailer {
 
             $this->em->persist($mail);
 
-            if($flush_db){
+            if ($flush_db) {
                 $this->em->flush();
             }
-
         } catch (\Exception $ex) {
             return false;
         }
@@ -50,7 +50,7 @@ class Mailer {
 
     public function createMailForUser(User $user, string $subject, string $body, ?string $html_body = null, bool $flush_db = true): int|false
     {
-        if($user->getEmail() === null){
+        if ($user->getEmail() === null) {
             return false;
         }
 
@@ -93,14 +93,13 @@ class Mailer {
         $php_mailer->Password = $_ENV['APP_SMTP_PASSWORD'];
         $php_mailer->Port     = (int) $_ENV['APP_SMTP_PORT'];
 
-        if((bool)$_ENV['APP_SMTP_TLS']){
+        if ((bool)$_ENV['APP_SMTP_TLS']) {
             $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         } else {
             $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         }
 
-        if((bool)$_ENV['APP_SMTP_VERIFY_CERT'] === false)
-        {
+        if ((bool)$_ENV['APP_SMTP_VERIFY_CERT'] === false) {
             $php_mailer->SMTPOptions = [
                 'ssl' => [
                     'verify_peer' => false,
@@ -108,8 +107,7 @@ class Mailer {
                     'allow_self_signed' => true,
                 ]
             ];
-        }
-        else {
+        } else {
             $php_mailer->SMTPOptions = [
                 'ssl' => [
                     'verify_peer' => true,
@@ -133,7 +131,7 @@ class Mailer {
         $mail->addAddress($receiver);
 
         // Handle HTML mail
-        if($html_body !== null){
+        if ($html_body !== null) {
             $mail->isHTML(true);
             $mail->Body    = $html_body;
             $mail->AltBody = $body;

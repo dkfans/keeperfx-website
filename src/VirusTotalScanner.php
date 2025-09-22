@@ -5,7 +5,8 @@ namespace App;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Client;
 
-class VirusTotalScanner {
+class VirusTotalScanner
+{
 
     public const API_SCAN_FILES_ENDPOINT = 'https://www.virustotal.com/api/v3/files';
 
@@ -17,21 +18,29 @@ class VirusTotalScanner {
         ]);
     }
 
+    /**
+     * Send a file for scanning to VirusTotal.
+     *
+     * This function will not wait for the result as that would take too long.
+     *
+     * @param string $file_path     The local filepath of the file for sending.
+     * @return false|array          Returns false if we failed to submit, or the JSON response of the VirusTotal endpoint on success.
+     */
     public static function scanFile(string $file_path): false|array
     {
         // Make sure VirusTotal API key is set
-        if(empty($_ENV['APP_VIRUSTOTAL_API_KEY'])){
+        if (empty($_ENV['APP_VIRUSTOTAL_API_KEY'])) {
             throw new \Exception("APP_VIRUSTOTAL_API_KEY needs to be set");
         }
 
         // Make sure file exists
-        if(!\file_exists($file_path)){
+        if (!\file_exists($file_path)) {
             throw new \Exception("unable to read file: {$file_path}");
         }
 
         // Get filesize
         $file_size = \filesize($file_path);
-        if(!$file_size){
+        if (!$file_size) {
             throw new \Exception("failed to get filesize of file: {$file_path}");
         }
 
@@ -47,7 +56,7 @@ class VirusTotalScanner {
             ]);
 
             // Make sure requests was successful
-            if(!$response || $response->getStatusCode() !== 200){
+            if (!$response || $response->getStatusCode() !== 200) {
                 return false;
             }
 
@@ -58,10 +67,8 @@ class VirusTotalScanner {
             $data = \json_decode($body, true);
 
             return $data;
-
         } catch (\Exception $e) {
             return false;
         }
     }
-
 }

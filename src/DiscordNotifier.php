@@ -19,51 +19,61 @@ use Xenokore\Utility\Helper\StringHelper;
 
 // When APP_ROOT_URL points to a URL that is not publicly available and is not accessible
 // by Discord's servers, the images will not be shown. (which is a good thing)
-class DiscordNotifier {
+class DiscordNotifier
+{
 
     private const COLOR_NEW_WORKSHOP_ITEM = '212121';
     private const COLOR_NEW_NEWS_ARTICLE  = '02f4ec';
     private const COLOR_NEW_ALPHA_PATCH   = 'b402f4';
     private const COLOR_NEW_STABLE_BUILD  = '06f402';
 
-    private EntityManager $em;
-
     private ?Client $webhook = null;
 
     public function __construct(
-        EntityManager $em,
+        private EntityManager $em,
     ) {
-        $this->em = $em;
 
-        if(!empty($_ENV['APP_DISCORD_NOTIFY_WEBHOOK_URL'])){
+        // Check if a webhook is set
+        if (!empty($_ENV['APP_DISCORD_NOTIFY_WEBHOOK_URL'])) {
+
+            // Get the URL
             $url = (string) $_ENV['APP_DISCORD_NOTIFY_WEBHOOK_URL'];
 
             // Make sure URL is a valid Discord webhook URL
-            if(
+            if (
                 \filter_var($url, FILTER_VALIDATE_URL) === false
                 || !StringHelper::startsWith($url, 'https://discord.com/api/webhooks/')
             ) {
                 throw new \Exception('invalid discord webhook URL');
             }
 
+            // Load client for webhook communication
             $this->webhook = new Client($url);
 
             // Set username
-            if(!empty($_ENV['APP_DISCORD_NOTIFY_WEBHOOK_USERNAME'])){
+            if (!empty($_ENV['APP_DISCORD_NOTIFY_WEBHOOK_USERNAME'])) {
                 $this->webhook->username((string) $_ENV['APP_DISCORD_NOTIFY_WEBHOOK_USERNAME']);
             }
 
             // Set avatar
-            if(!empty($_ENV['APP_DISCORD_NOTIFY_WEBHOOK_AVATAR'])){
+            if (!empty($_ENV['APP_DISCORD_NOTIFY_WEBHOOK_AVATAR'])) {
                 $this->webhook->avatar((string) $_ENV['APP_DISCORD_NOTIFY_WEBHOOK_AVATAR']);
             }
         }
     }
 
+    /**
+     * Send a message to the webhook.
+     *
+     * A webhook is always linked to a specific Discord channel.
+     *
+     * @param string $message
+     * @return boolean
+     */
     public function sendMessage(string $message): bool
     {
         try {
-            if($this->webhook === null){
+            if ($this->webhook === null) {
                 return false;
             }
 
@@ -77,17 +87,26 @@ class DiscordNotifier {
         }
     }
 
+    /**
+     * Send an Embed to the webhook.
+     *
+     * A webhook is always linked to a specific Discord channel.
+     *
+     * @param Embed $embed
+     * @param string|null $message   An optional message to add to the Embed.
+     * @return boolean
+     */
     public function sendEmbed(Embed $embed, ?string $message = null): bool
     {
         try {
-            if($this->webhook === null){
+            if ($this->webhook === null) {
                 return false;
             }
 
             $hook = clone $this->webhook;
             $hook->embed($embed);
 
-            if(!is_null($message)){
+            if (!is_null($message)) {
                 $hook->message($message);
             }
 
@@ -101,11 +120,11 @@ class DiscordNotifier {
 
     public function notifyNewWorkshopItem(WorkshopItem $item): bool
     {
-        if($this->webhook === null){
+        if ($this->webhook === null) {
             return false;
         }
 
-        if($item->getId() === null){
+        if ($item->getId() === null) {
             throw new \Exception("workshop item does not have an ID yet");
         }
 
@@ -121,9 +140,9 @@ class DiscordNotifier {
         );
 
         // Add description
-        if($item->getDescription()){
+        if ($item->getDescription()) {
             $description = $item->getDescription();
-            if(\strlen($description) > 350) {
+            if (\strlen($description) > 350) {
                 $description = substr($description, 0, 347) . '...';
             }
             $embed->description(\htmlentities($description));
@@ -132,16 +151,16 @@ class DiscordNotifier {
         // Add thumbnail
         // For some reason we have to manually get the thumbnail from the DB if the WorkshopItem just got persisted
         $thumbnail = $this->em->getRepository(WorkshopImage::class)->findOneBy(['item' => $item, 'weight' => 0]);
-        if($thumbnail){
+        if ($thumbnail) {
             $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/workshop/image/' . $item->getId() . '/' . $thumbnail->getFilename());
         } else {
             $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/no-image-256.png');
         }
 
         // Add user
-        if($item->getSubmitter()){
+        if ($item->getSubmitter()) {
             $user = $item->getSubmitter();
-            if($user->getAvatar()){
+            if ($user->getAvatar()) {
                 $embed->footer($user->getUsername(), $_ENV['APP_ROOT_URL'] . '/avatar/' . $user->getAvatar());
             } else {
                 $embed->footer($user->getUsername(), $_ENV['APP_ROOT_URL'] . '/img/horny-face-256.png');
@@ -154,7 +173,7 @@ class DiscordNotifier {
 
     public function notifyNewNewsItem(NewsArticle $article): bool
     {
-        if($this->webhook === null){
+        if ($this->webhook === null) {
             return false;
         }
 
@@ -167,7 +186,7 @@ class DiscordNotifier {
         $embed->footer("KeeperFX Team");
 
         // Add excerpt
-        if($article->getExcerpt()){
+        if ($article->getExcerpt()) {
             $embed->description(\htmlentities($article->getExcerpt()));
         } else {
             $embed->description(\htmlentities($article->getContents()));
@@ -179,7 +198,7 @@ class DiscordNotifier {
 
     public function notifyNewAlphaPatch(GithubAlphaBuild $alpha_build): bool
     {
-        if($this->webhook === null){
+        if ($this->webhook === null) {
             return false;
         }
 
@@ -205,7 +224,7 @@ class DiscordNotifier {
 
     public function notifyNewStableBuild(GithubRelease $github_release): bool
     {
-        if($this->webhook === null){
+        if ($this->webhook === null) {
             return false;
         }
 
@@ -215,7 +234,6 @@ class DiscordNotifier {
         $embed->color(self::COLOR_NEW_STABLE_BUILD);
         $embed->timestamp($github_release->getTimestamp()->format('Y-m-d H:i'));
         $embed->url($github_release->getDownloadUrl());
-        // $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/horny-face-512.png');
         $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/download.png');
         $embed->footer(BinaryFormatter::bytes($github_release->getSizeInBytes())->format());
         $embed->description("A new game update!");

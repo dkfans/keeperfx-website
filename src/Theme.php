@@ -10,13 +10,13 @@ class Theme
 
     private array $themes;
 
-    public function __construct(){
+    public function __construct()
+    {
         // Load the theme config
         $this->theme_config = include APP_ROOT . '/config/theme.config.php';
 
         // Load the themes
-        foreach($this->theme_config['themes'] as $theme_id => $theme_file)
-        {
+        foreach ($this->theme_config['themes'] as $theme_id => $theme_file) {
             // Make sure it is lowercase
             $theme_id = \strtolower($theme_id);
 
@@ -40,7 +40,7 @@ class Theme
     public function setTheme(string $theme_id): bool
     {
         $theme_id = \strtolower($theme_id);
-        if(\in_array($theme_id, \array_keys($this->themes))){
+        if (\in_array($theme_id, \array_keys($this->themes))) {
             $this->current_theme_id = $theme_id;
             return true;
         }
