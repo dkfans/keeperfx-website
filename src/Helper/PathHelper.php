@@ -25,8 +25,6 @@ class PathHelper
             throw new \Exception('getAppPathFromEnvVar should be called on the non CLI path');
         }
 
-        $path = null;
-
         // If running php from the command line
         if (\php_sapi_name() === 'cli' || \defined('STDIN')) {
 
