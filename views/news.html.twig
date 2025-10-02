@@ -4,7 +4,7 @@
 
 {% set meta = {
     title: article.title ?? '',
-    description: article.excerpt ?? article.contents ?? null,
+    description: (article.excerpt ?? article.contents ?? '')|strip_markdown,
     og: {
         type: 'article',
         url: '/news/' ~ article.id ~ '/' ~ article.createdTimestamp|date('Y-m-d') ~ '/' ~ article.titleSlug,

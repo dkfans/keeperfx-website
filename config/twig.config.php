@@ -57,6 +57,7 @@ return [
         \App\Twig\Extension\MoonPhaseExtension::class,
         \App\Twig\Extension\StringShortenTwigExtension::class,
         \App\Twig\Extension\InstanceOfTwigExtension::class,
+        \App\Twig\Extension\StripMarkdownExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
     ],

@@ -4,7 +4,7 @@
 
 {% set meta = {
     title: item.title ?? '',
-    description: item.description ?? '',
+    description: (item.description ?? '')|strip_markdown,
     og: {
         url: '/workshop/item/' ~ item.id ~ '/' ~ item.name|slugify,
         image: item.images|first ? '/workshop/image/' ~ item.id ~ '/' ~ item.images|first.filename : '/img/no-image-512.png'
