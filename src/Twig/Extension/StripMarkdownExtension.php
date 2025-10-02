@@ -44,6 +44,11 @@ class StripMarkdownExtension extends AbstractExtension
         // Replace <br> with single newline
         $string = preg_replace('#<\s*br\s*/?>#i', "\n", $string);
 
+        // Handle list items
+        $string = preg_replace('#<\s*li[^>]*>#i', "- ", $string);
+        $string = preg_replace('#</\s*li>#i', "", $string);
+        $string = preg_replace('#<\s*/?(ul|ol)[^>]*>#i', "\n", $string);
+
         // Strip remaining tags
         $text = strip_tags($string);
 
