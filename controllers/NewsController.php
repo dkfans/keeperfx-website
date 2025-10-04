@@ -15,7 +15,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Slim\Exception\HttpNotFoundException;
 
-class NewsController {
+class NewsController
+{
 
     public function newsArticleIndex(
         Request $request,
@@ -25,17 +26,18 @@ class NewsController {
         $id,
         $date_str = null,
         $slug = null
-    ){
+    ) {
 
         // Get news article
         $article = $em->getRepository(NewsArticle::class)->find($id);
-        if(!$article){
+        if (!$article) {
             throw new HttpNotFoundException($request, 'News article not found');
         }
 
         // Make sure title slug and date are in URL
-        if($article->getTitleSlug() !== $slug  || $article->getCreatedTimestamp()->format('Y-m-d') !== $date_str){
-            $response = $response->withHeader('Location',
+        if ($article->getTitleSlug() !== $slug  || $article->getCreatedTimestamp()->format('Y-m-d') !== $date_str) {
+            $response = $response->withHeader(
+                'Location',
                 '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug()
             )->withStatus(302);
             return $response;
@@ -56,7 +58,7 @@ class NewsController {
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ){
+    ) {
 
         // Get news article
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC']);
@@ -71,16 +73,26 @@ class NewsController {
         return $response;
     }
 
+    /**
+     * News image output endpoint.
+     *
+     * This is a fallback and is probably not in use.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param string $filename
+     * @return void
+     */
     public function outputNewsImage(
         Request $request,
         Response $response,
         $filename
-    ){
+    ) {
         // Get image filepath
         $filepath = Config::get('storage.path.news-img') . '/' . $filename;
 
         // Check if file exists
-        if(!\file_exists($filepath)){
+        if (!\file_exists($filepath)) {
             throw new HttpNotFoundException($request, 'news image not found');
         }
 
@@ -102,5 +114,4 @@ class NewsController {
 
         return $response;
     }
-
 }
