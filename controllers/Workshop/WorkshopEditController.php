@@ -190,6 +190,9 @@ class WorkshopEditController {
         $workshop_item_dir        = Config::get('storage.path.workshop') . '/' . $workshop_item->getId();
         $workshop_item_images_dir = $workshop_item_dir . '/images';
 
+        // Make sure the image directory exists
+        DirectoryHelper::createIfNotExist($workshop_item_images_dir);
+
         // Image variables
         $images_to_keep = [];
         $current_weight = -1;
