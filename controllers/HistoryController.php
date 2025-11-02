@@ -152,7 +152,7 @@ class HistoryController
                     'title'       => 'New Launcher and Web Installer',
                     'date'        => new \DateTime('2025-07-20'),
                     'date_format' => 'Y-m-d',
-                    'description' => "The new KeeperFX launcher made by Yani has come out of beta testing and has been made available on the website. It comes with a web installer that downloads and installs KeeperFX which should streamline the process for the less tech-savvy users. It also has a lot of new exiting features such as automatic updating, crash reports, an online port checker, and much more.",
+                    'description' => "Yani made a new and improved launcher for KeeperFX. It comes with a web installer that downloads and installs KeeperFX which should streamline the process for the less tech-savvy users.",
                 ],
                 [
                     'title'       => 'KeeperFX gets added to GOG',
