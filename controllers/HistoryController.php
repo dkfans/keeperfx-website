@@ -160,6 +160,12 @@ class HistoryController
                     'date_format' => 'Y-m-d',
                     'description' => "After some hard work from the GOG team and our own Loobinex, GingerNaTT and Spatulade, KeeperFX can now be installed with a single click using the GOG launcher.",
                 ],
+                [
+                    'title'       => 'Mod support',
+                    'date'        => new \DateTime('2025-09-15'),
+                    'date_format' => 'Y-m-d',
+                    'description' => "hzzdev made it so we can now have mods for KeeperFX. Before this change we had to use custom campaigns or even edit files directly, but now we can simply install a mod and enjoy it.",
+                ],
             ]])
         );
 
