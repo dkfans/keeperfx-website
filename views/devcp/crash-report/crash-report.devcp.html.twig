@@ -64,6 +64,15 @@
             <pre style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0;">{{ crash_report.description }}</pre>
         {% endif %}
 
+        {% if error.info is not empty or error.trace is not empty %}
+            <h5 style="margin-top: 30px; border-bottom: 0;">Error</h5>
+            <pre style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0; font-size: 12px;">{% if error.info is not empty %}{{ error.info.identifier }} ({{ error.info.exception_code }})
+{{ error.info.error_message }}
+
+{% endif %}{% if error.trace is not empty %}{% for num, text in error.trace %}[#{{ num }}] {{ text }}
+{% endfor %}{% endif %}</pre>
+        {% endif %}
+
         <h5 style="margin-top: 30px; border-bottom: 0;">Technical Data</h5>
 
         <div class="accordion" style="margin-top: 10px;">
