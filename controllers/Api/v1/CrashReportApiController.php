@@ -20,20 +20,21 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Psr\SimpleCache\CacheInterface;
 
-class CrashReportApiController {
+class CrashReportApiController
+{
 
     public function upload(
         Request $request,
         Response $response,
         EntityManager $em,
         NotificationCenter $nc,
-    ){
+    ) {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
 
         // Get POST data
         $post = $request->getParsedBody();
-        if($post == null){
+        if ($post == null) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
@@ -43,21 +44,32 @@ class CrashReportApiController {
             return $response->withStatus(500);
         }
 
+        // Get game log
+        $game_log = '';
+        if (isset($post['game_log']) && \is_string($post['game_log'])) {
+            // Check if game log is gzip+base64 encoded
+            if (isset($post['game_log_encoding']) && \is_string($post['game_log_encoding']) && $post['game_log_encoding'] === 'gzip+base64') {
+                $game_log = \gzdecode(\base64_decode($post['game_log']));
+            } else {
+                $game_log = $post['game_log'];
+            }
+        }
+
         // Create crash report entity
         $crash_report = new CrashReport();
         $crash_report->setDescription((string) ($post['description'] ?? ''));
         $crash_report->setGameConfig((string) ($post['game_config'] ?? ''));
-        $crash_report->setGameLog((string) ($post['game_log'] ?? ''));
+        $crash_report->setGameLog($game_log);
         $crash_report->setGameOutput((string) ($post['game_output'] ?? ''));
         $crash_report->setSource((string) ($post['source'] ?? 'N/A'));
 
         // Add contact details
-        if(isset($post['contact_details']) && \is_string($post['contact_details'])){
+        if (isset($post['contact_details']) && \is_string($post['contact_details'])) {
             $crash_report->setContactDetails($post['contact_details']);
         }
 
         // Make sure a game version is defined
-        if(!\array_key_exists('game_version', $post) || !\is_string($post['game_version']) || \strlen($post['game_version']) == 0){
+        if (!\array_key_exists('game_version', $post) || !\is_string($post['game_version']) || \strlen($post['game_version']) == 0) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
@@ -70,14 +82,14 @@ class CrashReportApiController {
         }
 
         // Check if savefile is included in request
-        if(
+        if (
             array_key_exists('save_file_name', $post) && \is_string($post['save_file_name']) && \strlen($post['save_file_name']) > 0
             && array_key_exists('save_file_data', $post) && \is_string($post['save_file_data']) && \strlen($post['save_file_data']) > 0
         ) {
 
             // Check if savefile storage dir is configured
             $savefile_storage_dir = Config::get('storage.path.crash-report-savefile');
-            if($savefile_storage_dir == null || $savefile_storage_dir == ''){
+            if ($savefile_storage_dir == null || $savefile_storage_dir == '') {
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
@@ -88,8 +100,8 @@ class CrashReportApiController {
             }
 
             // Check (and try to make) savefile storage dir
-            if(!\file_exists($savefile_storage_dir) || !\is_writable($savefile_storage_dir)) {
-                if(!@mkdir($savefile_storage_dir, 0777, true)){
+            if (!\file_exists($savefile_storage_dir) || !\is_writable($savefile_storage_dir)) {
+                if (!@mkdir($savefile_storage_dir, 0777, true)) {
                     $response->getBody()->write(
                         \json_encode([
                             'success' => false,
@@ -106,7 +118,7 @@ class CrashReportApiController {
 
             // Make sure the savefile is not too big
             $file_size_in_bytes = \strlen($savefile_data);
-            if($file_size_in_bytes > (int)$_ENV['APP_CRASH_REPORT_SAVEFILE_MAX_UPLOAD_SIZE']){
+            if ($file_size_in_bytes > (int)$_ENV['APP_CRASH_REPORT_SAVEFILE_MAX_UPLOAD_SIZE']) {
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
@@ -118,7 +130,7 @@ class CrashReportApiController {
 
             // Get and check extension
             $savefile_ext = \strtolower(\pathinfo($savefile_filename, \PATHINFO_EXTENSION));
-            if(!\in_array($savefile_ext, ['sav', 'zip', '7z'])){
+            if (!\in_array($savefile_ext, ['sav', 'zip', '7z'])) {
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
@@ -134,7 +146,7 @@ class CrashReportApiController {
 
             // Store file
             @\file_put_contents($savefile_storage_path, $savefile_data);
-            if(!\file_exists($savefile_storage_path)){
+            if (!\file_exists($savefile_storage_path)) {
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
@@ -170,5 +182,4 @@ class CrashReportApiController {
         );
         return $response;
     }
-
 }
