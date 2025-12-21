@@ -96,7 +96,7 @@
         {% if get_env('APP_THEME_BACKGROUND') is not empty %}
             <style>
                 body {
-                background: url("{{ get_env('APP_THEME_BACKGROUND') }}") !important;
+
                 }
             </style>
         {% endif %}
@@ -105,7 +105,7 @@
 
     </head>
 
-    <body style="background-color: #222;" data-no-instant>
+    <body style="{% if get_env('APP_THEME_BACKGROUND') is not empty %}background: url('{{ get_env('APP_THEME_BACKGROUND') }}') !important;{% else %}background-color: #222;{% endif %}" data-no-instant>
 
         {% block body %}{% endblock %}
 
