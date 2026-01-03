@@ -1,4 +1,14 @@
-User-Agent: *
-Allow: /
+User-agent: *
+Disallow: /api
 Disallow: /admin
+Disallow: /download
 Disallow: /workshop/download
+Disallow: /workshop/random
+
+# Archive.org
+User-agent: ia_archiver
+User-agent: archive.org_bot
+User-agent: ia_archiver-web.archive.org
+Disallow: /api
+Disallow: /admin
+Disallow: /workshop/random
