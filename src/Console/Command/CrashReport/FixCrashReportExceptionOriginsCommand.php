@@ -46,11 +46,12 @@ class FixCrashReportExceptionOriginsCommand extends Command
             return Command::INVALID;
         }
 
-        $reports_updated = 0;
-
         // Loop trough all workshop items
         /** @var CrashReport $report */
         foreach ($crash_reports as $crash_report) {
+
+            // Reset exception source function
+            $crash_report->setExceptionSourceFunction(null);
 
             $game_log = $crash_report->getGameLog();
             if (empty($game_log)) {
@@ -61,21 +62,13 @@ class FixCrashReportExceptionOriginsCommand extends Command
                 $exception_source_function = $matches[1] ?? null;
                 if (!empty($exception_source_function)) {
                     $crash_report->setExceptionSourceFunction($exception_source_function);
-                    $output->writeln("[+] {$crash_report->getId()} -> {$exception_source_function}");
-                    $reports_updated++;
+                    $output->writeln("[+] #{$crash_report->getId()} -> {$exception_source_function}");
                 }
             }
         }
 
         // Save changes to DB
-        if ($reports_updated > 0) {
-            $em->flush();
-        }
-
-        // Show output
-        if ($reports_updated > 0) {
-            $output->writeln("[+] <info>{$reports_updated}</info> crash reports updated!");
-        }
+        $em->flush();
 
         // Success
         $output->writeln("[+] Done!");
