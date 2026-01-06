@@ -69,7 +69,7 @@
             <pre style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0; font-size: 12px;">{% if error.info is not empty %}{{ error.info.identifier }} ({{ error.info.exception_code }})
 {{ error.info.error_message }}
 
-{% endif %}{% if error.trace is not empty %}{% for num, text in error.trace %}[#{{ num }}] {{ text }}
+{% endif %}{% if error.trace is not empty %}{% for num, text in error.trace %}{% if loop.index == 1 %}<span style="color: white; font-weight: 600;">{% endif %}[#{{ num }}] {{ text }}{% if loop.index == 1 %}</span>{% endif %}
 {% endfor %}{% endif %}</pre>
         {% endif %}
 

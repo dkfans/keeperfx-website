@@ -38,6 +38,9 @@ class CrashReport
     #[ORM\Column(nullable: true)]
     private string|null $source = null; // The source of the crash report
 
+    #[ORM\Column(nullable: true)]
+    private string|null $exception_source_function = null;
+
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
@@ -213,6 +216,24 @@ class CrashReport
     public function setSource(?string $source): self
     {
         $this->source = $source;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of exception_source_function
+     */
+    public function getExceptionSourceFunction(): ?string
+    {
+        return $this->exception_source_function;
+    }
+
+    /**
+     * Set the value of exception_source_function
+     */
+    public function setExceptionSourceFunction(?string $exception_source_function): self
+    {
+        $this->exception_source_function = $exception_source_function;
 
         return $this;
     }

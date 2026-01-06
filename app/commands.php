@@ -66,4 +66,7 @@ return [
 
     // Dev
     \App\Console\Command\Dev\CreateMockDataCommand::class,
+
+    // Crash Report
+    \App\Console\Command\CrashReport\FixCrashReportExceptionOriginsCommand::class,
 ];
