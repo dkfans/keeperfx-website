@@ -3,12 +3,12 @@
 namespace App\Console\Command\CrashReport;
 
 use App\Entity\CrashReport;
-use App\Workshop\WorkshopHelper;
 use Doctrine\ORM\EntityManager;
 
-use Psr\Container\ContainerInterface as Container;
+use Xenokore\Utility\Helper\StringHelper;
 
 use Symfony\Component\Console\Command\Command;
+use Psr\Container\ContainerInterface as Container;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
@@ -58,9 +58,9 @@ class FixCrashReportExceptionOriginsCommand extends Command
                 continue;
             }
 
-            if (\preg_match('/\[\#\d+\s?\]\s\S+\s+\:\s+(\S+)\s+\[/', $game_log, $matches)) {
+            if (\preg_match('/\[\#\d+\s?\]\s(?:keeperfx|KEEPERFX|KeeperFX)\S+?\s+\:\s+(\S+)\s+\[/', $game_log, $matches)) {
                 $exception_source_function = $matches[1] ?? null;
-                if (!empty($exception_source_function)) {
+                if (!empty($exception_source_function) && StringHelper::startsWith($exception_source_function, '@') == false) {
                     $crash_report->setExceptionSourceFunction($exception_source_function);
                     $output->writeln("[+] #{$crash_report->getId()} -> {$exception_source_function}");
                 }

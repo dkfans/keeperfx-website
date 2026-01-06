@@ -2,23 +2,25 @@
 
 namespace App\Controller\Api\v1;
 
-use App\Enum\UserRole;
-
-use App\Entity\CrashReport;
-
 use App\Account;
+
 use App\FlashMessage;
+
 use App\Config\Config;
+use App\Enum\UserRole;
 use App\UploadSizeHelper;
-use App\Notifications\NotificationCenter;
-use App\Notifications\Notification\CrashReportNotification;
-
+use App\Entity\CrashReport;
 use Doctrine\ORM\EntityManager;
-
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-
 use Psr\SimpleCache\CacheInterface;
+
+use App\Notifications\NotificationCenter;
+
+use Xenokore\Utility\Helper\StringHelper;
+use Psr\Http\Message\ResponseInterface as Response;
+
+use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Notifications\Notification\CrashReportNotification;
+use Symfony\Component\CssSelector\Parser\Handler\StringHandler;
 
 class CrashReportApiController
 {
@@ -64,9 +66,9 @@ class CrashReportApiController
         $crash_report->setSource((string) ($post['source'] ?? 'N/A'));
 
         // Check for exception source function
-        if (\preg_match('/\[\#\d+\s?\]\s\S+\s+\:\s+(\S+)\s\[+/', $game_log, $matches)) {
+        if (\preg_match('/\[\#\d+\s?\]\s(?:keeperfx|KEEPERFX|KeeperFX)\S+?\s+\:\s+(\S+)\s+\[/', $game_log, $matches)) {
             $exception_source_function = $matches[1] ?? null;
-            if (!empty($exception_source_function)) {
+            if (!empty($exception_source_function) && StringHelper::startsWith($exception_source_function, '@') == false) {
                 $crash_report->setExceptionSourceFunction($exception_source_function);
             }
         }
