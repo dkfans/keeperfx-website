@@ -64,7 +64,7 @@ class CrashReportApiController
         $crash_report->setSource((string) ($post['source'] ?? 'N/A'));
 
         // Check for exception source function
-        if (\preg_match('/\[\#\d+\s?\]\s\S+\s+\:\s+(\S+)\s+/', $game_log, $matches)) {
+        if (\preg_match('/\[\#\d+\s?\]\s\S+\s+\:\s+(\S+)\s\[+/', $game_log, $matches)) {
             $exception_source_function = $matches[1] ?? null;
             if (!empty($exception_source_function)) {
                 $crash_report->setExceptionSourceFunction($exception_source_function);
