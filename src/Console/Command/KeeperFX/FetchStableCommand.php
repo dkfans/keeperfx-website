@@ -219,7 +219,7 @@ class FetchStableCommand extends Command
             // If new version is 1.0.2 we will search for items with 1.0.1 and 1.0.0
             $output->writeln("[>] Searching workshop items with already existing major.minor...");
             $workshop_items_major_minor = $this->em->getRepository(WorkshopItem::class)->findBy(
-                ['min_game_version' => \array_map(fn($entity) => $entity->getId(), $same_major_minor_versions)]
+                ['min_game_build' => \array_map(fn($entity) => $entity->getId(), $same_major_minor_versions)]
             );
 
             // Update workshop items with new version
