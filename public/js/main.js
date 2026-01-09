@@ -161,5 +161,38 @@ $(function(){
         }
     });
 
+    $('.youtube-wrapper').each(function () {
+        const $wrapper = $(this);
+        const videoId = $wrapper.data('video-id');
+
+        const $button = $('<div>', {
+            class: 'youtube-play-button'
+        });
+
+        $wrapper.append($button);
+
+        $wrapper.on('click', function () {
+
+            if ($wrapper.hasClass('is-playing')) {
+                return;
+            }
+
+            $wrapper.addClass('is-playing');
+
+            const iframe = $('<iframe>', {
+                src: 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1',
+                title: 'YouTube video player',
+                frameborder: 0,
+                allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
+                referrerpolicy: 'strict-origin-when-cross-origin',
+                allowfullscreen: true,
+                width: '100%',
+                height: '100%'
+            });
+
+            $wrapper.empty().append(iframe);
+        });
+    });
+
 });
 

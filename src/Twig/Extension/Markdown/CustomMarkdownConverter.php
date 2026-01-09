@@ -62,16 +62,12 @@ class CustomMarkdownConverter implements MarkdownInterface
                 if (\preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|v/|shorts/))([\w\-]{11})~', $url, $ytMatch)) {
                     $id = htmlspecialchars($ytMatch[1], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
                     return sprintf(
-                        '<div class="youtube-wrapper">
-                            <iframe
-                                src="https://www.youtube-nocookie.com/embed/%s"
-                                title="YouTube video player"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin"
-                                allowfullscreen
-                            ></iframe>
+                        '<div class="youtube-wrapper" data-video-id="%s">
+                            <noscript>
+                                <span class="youtube-wrapper-javascript-warning">You need to enable javascript for the YouTube embed to work</span>
+                            </noscript>
                         </div>',
+                        $id,
                         $id
                     );
                 }

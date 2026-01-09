@@ -1731,16 +1731,65 @@ div.phpdebugbar-widgets-callgraph pre span {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
+.youtube-wrapper {
+    position: relative;
+    background: #000;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.youtube-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+            #202020 0%,
+            #290707 100%);
+    opacity: 0.85;
+    z-index: 1;
+}
+
+.youtube-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 64px;
+    height: 64px;
+    transform: translate(-50%, -50%);
+    background: url("/img/youtube-play-button.png") no-repeat center center;
+    background-size: contain;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.youtube-wrapper.is-playing::before,
+.youtube-wrapper.is-playing .youtube-play-button {
+    /* Hide overlay + play button after click */
+    display: none;
+}
+
+.youtube-wrapper {
+    width: 288px;
+    height: 162px;
+}
+
 .news-post .youtube-wrapper {
     margin: 0 auto;
     margin-top: 60px;
     margin-bottom: 60px;
     text-align: center;
+    width: 528px;
+    height: 297px;
 }
 
-.news-post .youtube-wrapper iframe {
-    height: 300px;
-    width: 530px;
+.youtube-wrapper-javascript-warning {
+    z-index: 99999;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    transform: translate(-50%, -50%);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
