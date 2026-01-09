@@ -101,7 +101,9 @@
             </style>
         {% endif %}
 
-        <link rel="stylesheet" href="{{ asset('/css/snow.css') }}" />
+        {% if get_env('APP_THEME_BANNER_SNOW_ENABLED') is not empty and get_env('APP_THEME_BANNER_SNOW_ENABLED') == '1' %}
+            <link rel="stylesheet" href="{{ asset('/css/snow.css') }}" />
+        {% endif %}
 
     </head>
 
