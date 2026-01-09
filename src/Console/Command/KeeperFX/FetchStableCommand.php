@@ -122,12 +122,16 @@ class FetchStableCommand extends Command
                 $temp_archive_path = \sys_get_temp_dir() . '/' . $filename;
                 $temp_archive_dir  = \sys_get_temp_dir() . '/' . $gh_release->name;
 
-                // Make sure there isn't a download/archive process already executing
-                if (
-                    \file_exists($temp_archive_path)
-                    || \file_exists($temp_archive_dir)
-                ) {
-                    $output->writeln("[-] One or more temporary files for this release already exist.");
+                // Remove possible existing temp archive
+                if (\file_exists($temp_archive_path) && \unlink($temp_archive_path) == false) {
+                    $output->writeln("[-] Temporary file already exists and can not be deleted: {$temp_archive_path}");
+                    $output->writeln("[>] Skipping this release because the process is probably still busy...");
+                    continue;
+                }
+
+                // Remove possible existing temp dir
+                if (\file_exists($temp_archive_dir) && DirectoryHelper::delete($temp_archive_dir) == false) {
+                    $output->writeln("[-] Temporary dir already exists and can not be deleted: {$temp_archive_dir}");
                     $output->writeln("[>] Skipping this release because the process is probably still busy...");
                     continue;
                 }
@@ -175,6 +179,7 @@ class FetchStableCommand extends Command
             } catch (\Exception $ex) {
 
                 $output->writeln("[-] <error>Something went wrong</error>");
+                $output->writeln("[-] Exception: {$ex->getMessage()}");
 
                 // Cleanup if something went wrong
                 $output->writeln("[>] Removing created files and directory...");
