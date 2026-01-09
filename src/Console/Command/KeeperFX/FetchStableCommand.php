@@ -56,9 +56,26 @@ class FetchStableCommand extends Command
         $output->writeln("[>] Fetching latest stable releases...");
         $output->writeln("[>] API Endpoint: " . self::GITHUB_RELEASE_URL);
 
+        // Make sure a Github token is set
+        if (
+            !isset($_ENV['APP_GITHUB_API_AUTH_TOKEN'])
+            || empty($_ENV['APP_GITHUB_API_AUTH_TOKEN'])
+        ) {
+            $output->writeln("[-] Github token not set");
+            $output->writeln("[>] ENV VAR: 'APP_GITHUB_API_AUTH_TOKEN'");
+            return Command::FAILURE;
+        }
+
         // Create HTTP client
         $client = new \GuzzleHttp\Client(
-            ['verify' => false] // Don't verify SSL connection
+            [
+                'verify' => false, // Don't verify SSL connection
+                'headers' => [
+                    'Accept'               => 'application/vnd.github+json',
+                    'Authorization'        => 'Bearer ' . $_ENV['APP_GITHUB_API_AUTH_TOKEN'],
+                    'X-GitHub-Api-Version' => '2022-11-28',
+                ],
+            ]
         );
 
         // Fetch releases
