@@ -44,7 +44,6 @@
         "jbroadway/urlify": "^1.2",
         "symfony/dom-crawler": "^6.2",
         "symfony/css-selector": "^6.2",
-        "mibe/feedwriter": "^1.1",
         "geertw/ip-anonymizer": "^1.1",
         "akrabat/ip-address-middleware": "^2.1",
         "symfony/var-dumper": "^6.2",
@@ -66,7 +65,8 @@
         "predis/predis": "^2.2",
         "php-debugbar/php-debugbar": "^2.1",
         "solaris/php-moon-phase": "^3.0",
-        "amoschou/commonmark-alert-extension": "dev-main"
+        "amoschou/commonmark-alert-extension": "dev-main",
+        "laminas/laminas-feed": "^2.26"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
