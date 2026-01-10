@@ -32,7 +32,7 @@
 
             <div class="content-body news-post">
                 <p>{{ article.contents|markdown_to_html }}</p>
-                <p class="text-muted">- KeeperFX Team</p>
+                <p class="text-muted">- {{ article.author.username }}, KeeperFX Team</p>
             </div>
         </div>
     </div>
