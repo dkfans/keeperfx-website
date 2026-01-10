@@ -204,6 +204,16 @@ a.title-link {
     color: var(--special-text-color);
 }
 
+.dropdown-keeper ion-icon {
+    position: relative;
+    top: 4px;
+    margin-right: 10px;
+    color: var(--special-text-color);
+    /* color: var(--bs-secondary-color); */
+    /* color: #da7510; */
+    font-size: 19px;
+}
+
 .header-separator {
     color: rgb(122, 103, 93);
     cursor: default;

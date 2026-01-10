@@ -74,28 +74,28 @@
 
                             <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper" aria-labelledby="navbarAdminDropdown">
 
-                                    <li><a class="dropdown-item" href="/moderate/workshop/list">Workshop</a></li>
-                                    <li><a class="dropdown-item" href="/moderate/workshop-comments/list">Latest Comments</a></li>
+                                    <li><a class="dropdown-item" href="/moderate/workshop/list"><ion-icon name="cube-outline"></ion-icon> Workshop</a></li>
+                                    <li><a class="dropdown-item" href="/moderate/workshop-comments/list"><ion-icon name="chatbubbles-outline"></ion-icon> Latest Comments</a></li>
 
                                     {% if account.role >= roles.developer %}
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="/dev/alpha-patches/list">Alpha Patches</a></li>
-                                        <li><a class="dropdown-item" href="/dev/prototypes/list">Prototypes</a></li>
-                                        <li><a class="dropdown-item" href="/dev/launcher/list">Launcher Releases</a></li>
-                                        <li><a class="dropdown-item" href="/dev/bundled-assets">Bundled Assets</a></li>
-                                        <li><a class="dropdown-item" href="/dev/game-files/list">Game File Indexes</a></li>
-                                        <li><a class="dropdown-item" href="/dev/crash-report/list">Crash Reports</a></li>
+                                        <li><a class="dropdown-item" href="/dev/alpha-patches/list"><ion-icon name="git-branch-outline"></ion-icon> Alpha Patches</a></li>
+                                        <li><a class="dropdown-item" href="/dev/prototypes/list"><ion-icon name="play-outline"></ion-icon> Prototypes</a></li>
+                                        <li><a class="dropdown-item" href="/dev/launcher/list"><ion-icon name="rocket-outline"></ion-icon> Launcher Releases</a></li>
+                                        <li><a class="dropdown-item" href="/dev/bundled-assets"><ion-icon name="document-attach-outline"></ion-icon> Bundled Assets</a></li>
+                                        <li><a class="dropdown-item" href="/dev/game-files/list"><ion-icon name="map-outline"></ion-icon> Game File Indexes</a></li>
+                                        <li><a class="dropdown-item" href="/dev/crash-report/list"><ion-icon name="bug-outline"></ion-icon> Crash Reports</a></li>
                                     {% endif %}
 
                                     {% if account.role >= roles.admin %}
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="/admin/releases/list">Releases</a></li>
-                                        <li><a class="dropdown-item" href="/admin/news/list">News</a></li>
-                                        <li><a class="dropdown-item" href="/admin/user/list">Users</a></li>
-                                        <li><a class="dropdown-item" href="/admin/ip-lookup/logs">IP Logs</a></li>
-                                        <li><a class="dropdown-item" href="/admin/ban/list">Bans</a></li>
-                                        <li><a class="dropdown-item" href="/admin/uploads">Uploads</a></li>
-                                        <li><a class="dropdown-item" href="/admin/server-info">Server Info</a></li>
+                                        <li><a class="dropdown-item" href="/admin/releases/list"><ion-icon name="game-controller-outline"></ion-icon> Releases</a></li>
+                                        <li><a class="dropdown-item" href="/admin/news/list"><ion-icon name="newspaper-outline"></ion-icon> News</a></li>
+                                        <li><a class="dropdown-item" href="/admin/user/list"><ion-icon name="people-outline"></ion-icon> Users</a></li>
+                                        <li><a class="dropdown-item" href="/admin/ip-lookup/logs"><ion-icon name="globe-outline"></ion-icon> IP Logs</a></li>
+                                        <li><a class="dropdown-item" href="/admin/ban/list"><ion-icon name="ban-outline"></ion-icon> Bans</a></li>
+                                        <li><a class="dropdown-item" href="/admin/uploads"><ion-icon name="folder-outline"></ion-icon> Uploads</a></li>
+                                        <li><a class="dropdown-item" href="/admin/server-info"><ion-icon name="server-outline"></ion-icon> Server Info</a></li>
                                     {% endif %}
 
                             </ul>
@@ -145,7 +145,7 @@
                             {% endif %}
 
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/account/notifications" data-instant>Show all</a></li>
+                            <li><a class="dropdown-item" href="/account/notifications" data-instant><ion-icon name="eye-outline" style="margin-right: 5px;"></ion-icon> Show all</a></li>
                         </ul>
                     </div>
 
@@ -168,19 +168,19 @@
                         <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper" aria-labelledby="navbarDropdown">
 
                             {# Workshop menu items #}
-                            <li><a class="dropdown-item" href="/workshop/user/{{ account.username|url_encode }}">My profile</a></li>
-                            <li><a class="dropdown-item" href="/workshop/my-items">My workshop items</a></li>
-                            <li><a class="dropdown-item" href="/workshop/my-ratings">My ratings</a></li>
+                            <li><a class="dropdown-item" href="/workshop/user/{{ account.username|url_encode }}"><ion-icon name="person-outline"></ion-icon> My profile</a></li>
+                            <li><a class="dropdown-item" href="/workshop/my-items"><ion-icon name="cube-outline"></ion-icon> My workshop items</a></li>
+                            <li><a class="dropdown-item" href="/workshop/my-ratings"><ion-icon name="star-outline"></ion-icon> My ratings</a></li>
                             <li><hr class="dropdown-divider"></li>
 
                             {# User account menu items #}
                             {# <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li> #}
-                            <li><a class="dropdown-item" href="/account">Account Settings</a></li>
-                            <li><a class="dropdown-item" href="/account/notifications/settings">Notification Settings</a></li>
-                            <li><a class="dropdown-item" href="/account/connections">Connections</a></li>
+                            <li><a class="dropdown-item" href="/account"><ion-icon name="person-outline"></ion-icon> Account Settings</a></li>
+                            <li><a class="dropdown-item" href="/account/notifications/settings"><ion-icon name="notifications-outline"></ion-icon> Notification Settings</a></li>
+                            <li><a class="dropdown-item" href="/account/connections"><ion-icon name="share-social-outline"></ion-icon> Connections</a></li>
 
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}">Logout</a></li>
+                            <li><a class="dropdown-item" href="/logout/{{ csrf.name }}/{{ csrf.value|url_encode }}"><ion-icon name="log-out-outline"></ion-icon> Logout</a></li>
 
                         </ul>
 
