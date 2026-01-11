@@ -16,135 +16,22 @@
 
             <div id="screenshots">
 
-                <div class="screenshot">
-                    <a href="/screenshots/keeperfx-new-map-scripts.png"
-                        data-pswp-width="1920"
-                        data-pswp-height="1080"
-                        data-cropped="true"
-                        target="_blank">
-                        <img src="/screenshots/thumbnail/keeperfx-new-map-scripts.jpg" alt="" />
-                    </a>
-                    <span class="screenshot-title">
-                        New level script commands
-                    </span>
-                </div>
-
-                <div class="screenshot">
-                    <a href="/screenshots/keeperfx-customizability.png"
-                        data-pswp-width="1920"
-                        data-pswp-height="1080"
-                        data-cropped="true"
-                        target="_blank">
-                        <img src="/screenshots/thumbnail/keeperfx-customizability.png" alt="" />
-                    </a>
-                    <span class="screenshot-title">
-                        Customizability
-                    </span>
-                </div>
-
-                <div class="screenshot">
-                    <a href="/screenshots/keeperfx-ctrl-hold-mine.png"
-                        data-pswp-width="1745"
-                        data-pswp-height="982"
-                        data-cropped="true"
-                        target="_blank">
-                        <img src="/screenshots/thumbnail/keeperfx-ctrl-hold-mine.jpg" alt="" />
-                    </a>
-                    <span class="screenshot-title">
-                        Bulk mining
-                    </span>
-                </div>
-
-                <div class="screenshot">
-                    <a href="/screenshots/keeperfx-drag-rooms.png"
-                        data-pswp-width="1225"
-                        data-pswp-height="869"
-                        data-cropped="true"
-                        target="_blank">
-                        <img src="/screenshots/thumbnail/keeperfx-drag-rooms.jpg" alt="" />
-                    </a>
-                    <span class="screenshot-title">
-                        Place rooms by dragging an area
-                    </span>
-                </div>
-
-                <div class="screenshot">
-                    <a href="/screenshots/keeperfx-shift-room-creation.png"
-                        data-pswp-width="1024"
-                        data-pswp-height="687"
-                        data-cropped="true"
-                        target="_blank">
-                        <img src="/screenshots/thumbnail/keeperfx-shift-room-creation.jpg" alt="" />
-                    </a>
-                    <span class="screenshot-title">
-                        Smart room placement
-                    </span>
-                </div>
-
-                <div class="screenshot">
-                    <a href="/screenshots/keeperfx-new-sprites-and-textures.png"
-                        data-pswp-width="1273"
-                        data-pswp-height="654"
-                        data-cropped="true"
-                        target="_blank">
-                        <img src="/screenshots/thumbnail/keeperfx-new-sprites-and-textures.jpg" alt="" />
-                    </a>
-                    <span class="screenshot-title">
-                        Extra textures and sprites
-                    </span>
-                </div>
-
-                <div class="screenshot">
-                    <a href="/screenshots/keeperfx-higher-render-distance.png"
-                        data-pswp-width="1609"
-                        data-pswp-height="943"
-                        data-cropped="true"
-                        target="_blank">
-                        <img src="/screenshots/thumbnail/keeperfx-higher-render-distance.png" alt="" />
-                    </a>
-                    <span class="screenshot-title">
-                        Higher render distance
-                    </span>
-                </div>
-
-                <div class="screenshot">
-                    <a href="/screenshots/keeperfx-far-zoom.jpg"
-                        data-pswp-width="1660"
-                        data-pswp-height="934"
-                        data-cropped="true"
-                        target="_blank">
-                        <img src="/screenshots/thumbnail/keeperfx-far-zoom.jpg" alt="" />
-                    </a>
-                    <span class="screenshot-title">
-                        Far zoom
-                    </span>
-                </div>
-
-                <div class="screenshot">
-                    <a href="/screenshots/keeperfx-new-hotkeys.jpg"
-                        data-pswp-width="1587"
-                        data-pswp-height="893"
-                        data-cropped="true"
-                        target="_blank">
-                        <img src="/screenshots/thumbnail/keeperfx-new-hotkeys.jpg" alt="" />
-                    </a>
-                    <span class="screenshot-title">
-                        New hotkeys
-                    </span>
-                </div>
-
-                <div class="screenshot">
-                    <a href="/screenshots/keeperfx-multiplayer.jpg"
-                        data-pswp-width="1389"
-                        data-pswp-height="799"
-                        data-cropped="true"
-                        target="_blank">
-                        <img src="/screenshots/thumbnail/keeperfx-multiplayer.jpg" alt="" />
-                    </a>
-                    <span class="screenshot-title">
-                        Modern multiplayer support
-                    </span>
-                </div>
+                {% for screenshot in screenshots %}
+                    <div class="screenshot-container">
+                        <div class="screenshot-image-container">
+                            <a href="{{ screenshot.src }}"
+                            data-pswp-width="{{ screenshot.width }}"
+                            data-pswp-height="{{ screenshot.height }}"
+                            data-cropped="true"
+                            target="_blank">
+                                <img src="{{ screenshot.thumbnail_src }}" alt="" />
+                            </a>
+                        </div>
+                        <span class="screenshot-title">
+                            {{ screenshot.title }}
+                        </span>
+                    </div>
+                {% endfor %}
 
             </div>
 
@@ -162,6 +49,10 @@
 {% block body_javascript %}
     <script>
         $(function(){
+
+            $.each($('.screenshot-image-container img'), function(e){
+                setImageLoadingHandler(this, "/img/broken-image-256.png");
+            });
 
             // Initialize image lightbox
             var lightbox = new PhotoSwipeLightbox({
