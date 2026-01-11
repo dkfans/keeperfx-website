@@ -208,4 +208,8 @@ $(function(){
         window.location.href = '/workshop/browse?' + queryParams.toString();
     });
 
+    $.each($('.workshop-grid-item-image-container img'), function(e){
+        setImageLoadingHandler(this, "/img/broken-image-256.png");
+    });
+
 });

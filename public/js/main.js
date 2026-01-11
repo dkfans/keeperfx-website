@@ -25,6 +25,34 @@ function handleSpoilers()
     });
 }
 
+function setImageLoadingHandler(element, fallbackImage, showSpinner = true)
+{
+    function fixBrokenImage(element) {
+        if ($(element).attr('src') !== fallbackImage) {
+            $(element).attr('src', fallbackImage);
+        }
+    }
+
+    if ($(element)[0].complete && $(element)[0].naturalWidth === 0) {
+        fixBrokenImage(element);
+        return;
+    }
+
+    $(element).on("error", function() {
+        fixBrokenImage(element);
+    });
+
+    $(element).on('load', function(e){
+        $(element).parent().find('.lds-ring').remove();
+        $(element).fadeIn();
+    });
+
+    if(showSpinner) {
+        $(element).parent().prepend($('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>'));
+        $(element).hide();
+    }
+}
+
 // Document ready
 $(function(){
 
@@ -139,26 +167,7 @@ $(function(){
 
     // Fix broken avatars
     $('img.user-avatar, .account-settings-avatar img').each(function() {
-
-        // Fallback image URL
-        let fallbackImage = "/img/horny-face-256.png";
-
-        // Function to run on broken images
-        function fixBrokenImage(img) {
-            if (img.src !== fallbackImage) {
-                img.src = fallbackImage;
-            }
-        }
-
-        // Handle avatars that are not loaded yet
-        $(this).on("error", function() {
-            fixBrokenImage(this);
-        });
-
-        // Handle avatars that have already been loaded
-        if (this.complete && this.naturalWidth === 0) {
-            fixBrokenImage(this);
-        }
+        setImageLoadingHandler(this, "/img/horny-face-256.png", false);
     });
 
     $('.youtube-wrapper').each(function () {
