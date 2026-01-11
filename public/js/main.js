@@ -33,8 +33,10 @@ function setImageLoadingHandler(element, fallbackImage, showSpinner = true)
         }
     }
 
-    if ($(element)[0].complete && $(element)[0].naturalWidth === 0) {
-        fixBrokenImage(element);
+    if ($(element)[0].complete) {
+        if($(element)[0].naturalWidth === 0){
+            fixBrokenImage(element);
+        }
         return;
     }
 
