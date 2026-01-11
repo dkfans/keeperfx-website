@@ -18,6 +18,10 @@
                         <ion-icon name="person-outline"></ion-icon>
                         Account Settings
                     </a>
+                    <a class="nav-link {% if path_equals('/account/notifications') %}active{% endif %}" href="/account/notifications" data-instant>
+                        <ion-icon name="notifications-outline"></ion-icon>
+                        Notifications
+                    </a>
                     <a class="nav-link {% if path_equals('/account/notifications/settings') %}active{% endif %}" href="/account/notifications/settings" data-instant>
                         <ion-icon name="notifications-outline"></ion-icon>
                         Notification Settings
