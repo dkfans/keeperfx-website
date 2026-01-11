@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Workshop;
+namespace App\Controller\Workshop\Tools;
 
 use App\Enum\WorkshopCategory;
 
@@ -16,18 +16,18 @@ use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class WorkshopMapNumberListController {
+class WorkshopMapNumberListToolController
+{
 
-    public function mapListIndex(
+    public function index(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em
-    ){
+    ) {
         $items = $em->getRepository(WorkshopItem::class)->findBy(['category' => WorkshopCategory::Map], ['map_number' => 'ASC']);
-        foreach($items as $item){
-            if($item->getMapNumber() === null)
-            {
+        foreach ($items as $item) {
+            if ($item->getMapNumber() === null) {
                 continue;
             }
 
@@ -37,11 +37,9 @@ class WorkshopMapNumberListController {
         }
 
         $response->getBody()->write(
-            $twig->render('workshop/mapnumber.list.map.html.twig', ['map_numbers' => $map_numbers])
+            $twig->render('workshop/tools/mapnumber_list_tool.html.twig', ['map_numbers' => $map_numbers])
         );
 
         return $response;
-
     }
-
 }

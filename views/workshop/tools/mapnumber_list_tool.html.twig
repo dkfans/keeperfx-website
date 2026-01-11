@@ -1,8 +1,17 @@
-{% extends "core/_layout.html.twig" %}
+{% extends "workshop/_workshop_layout.html.twig" %}
 
 {% set page_title = 'Mapnumber List (Maps)' %}
 
-{% block content %}
+{% block workshop_content %}
+
+    {% include 'core/_breadcrumb.html.twig' with {
+        items: [
+            { label: 'Workshop', url: '/workshop' },
+            { label: 'Tools', url: '/workshop/tools' },
+            { label: 'Map Number List' }
+        ],
+        add_back_button: true
+    } %}
 
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">

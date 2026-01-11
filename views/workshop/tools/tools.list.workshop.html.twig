@@ -10,6 +10,14 @@
 
 {% block workshop_content %}
 
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Workshop', url: '/workshop' },
+        { label: 'Tools', url: '/workshop/tools' },
+    ],
+    add_back_button: false
+} %}
+
     <div class="content-box bd-keeper bg-keeper">
         <div class="content-header">
             <div class="d-flex justify-content-between">
@@ -27,7 +35,7 @@
                     <div class="workshop-grid-item-info">
 
                         <div class="workshop-grid-item-title mt-2">
-                            <a href="{{ tool.url }}" title="{{ tool.title }}" data-no-instant>
+                            <a href="{{ tool.url }}" title="{{ tool.title }}" data-instant>
                                 {{ tool.title }}
                             </a>
                         </div>
@@ -37,6 +45,7 @@
                         </p>
 
                         <div class="mt-0 mb-3">
+                            {% if tool.user is defined %}
                             <a
                             href="/workshop/user/{{ tool.user.username|url_encode }}"
                             {# href="/workshop/browse?user={{ tool.user.username }}" #}
@@ -51,6 +60,7 @@
                                 {% endif %}
                                 <span class="user-username">{{ tool.user.username }}</span>
                             </a>
+                            {% endif %}
                         </div>
 
                     </div>

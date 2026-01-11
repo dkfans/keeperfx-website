@@ -292,9 +292,6 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         // Random workshop item
         $group->get('/random/{item_category}', [Workshop\WorkshopRandomController::class, 'navRandomItem']);
 
-        // Mapnumber lists
-        $group->get('/map_number/list/map', [Workshop\WorkshopMapNumberListController::class, 'mapListIndex']);
-
         // Redirect '/workshop' to '/workshop/browse'
         $group->redirect('[/]', '/workshop/browse', 302);
 
@@ -328,6 +325,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
             // Tool: Training Level tool
             $group->get('/training-level-curve-tool', [Workshop\Tools\WorkshopTrainingLevelToolController::class, 'index']);
+
+            // Tool: Map Number List
+            $group->get('/map-number-list', [Workshop\Tools\WorkshopMapNumberListToolController::class, 'index']);
         });
     });
 
@@ -404,6 +404,7 @@ $app->redirect('/giveaways/dk3-beta-key', 'https://youtu.be/ceWFU2pBOPo', 302);
 // Tools moved to workshop
 $app->redirect('/tools/kfx-cfg-diff', '/workshop/tools/kfx-cfg-diff', 301);
 $app->redirect('/tools/kfx-host-checker', '/workshop/tools/kfx-host-checker', 301);
+$app->redirect('/workshop/map_number/list/map', '/workshop/tools/map-number-list', 301);
 
 // Add '/release/' to stable/alpha API endpoints
 $app->redirect('/api/v1/stable/latest', '/api/v1/release/stable/latest', 301);

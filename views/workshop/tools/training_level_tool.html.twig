@@ -9,11 +9,19 @@
 
 {% block workshop_content %}
 
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Workshop', url: '/workshop' },
+        { label: 'Tools', url: '/workshop/tools' },
+        { label: 'Training Level Curve Tool' }
+    ],
+    add_back_button: true
+} %}
+
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
             <div class="d-flex justify-content-between">
                 <h2>Training Level Curve Tool</h2>
-                <a href="/workshop/tools" data-instant>Go back to tools</a>
             </div>
         </div>
         <div class="content-body">

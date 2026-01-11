@@ -1,6 +1,6 @@
 {% extends "workshop/_workshop_layout.html.twig" %}
 
-{% set page_title = 'Available map number finder tool' %}
+{% set page_title = 'Available map number finder' %}
 
 {% set meta = {
     title: page_title,
@@ -9,11 +9,19 @@
 
 {% block workshop_content %}
 
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Workshop', url: '/workshop' },
+        { label: 'Tools', url: '/workshop/tools' },
+        { label: 'Available Map Number Finder' }
+    ],
+    add_back_button: true
+} %}
+
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
             <div class="d-flex justify-content-between">
                 <h2>Available map number finder tool</h2>
-                <a href="/workshop/tools" data-instant>Go back to tools</a>
             </div>
         </div>
         <div class="content-body">
@@ -24,9 +32,7 @@
                 <br /><br />
                 You can use this tool to find an available map number for you to use so it can be uploaded to the KeeperFX workshop without any conflicts.
                 <br /><br />
-                You can also find a full list of used map numbers here: <a href="https://keeperfx.net/workshop/map_number/list/map" target="_blank">
-                    https://keeperfx.net/workshop/map_number/list/map
-                </a>
+                You can also find a full list of used map numbers <a href="/workshop/tools/map-number-list">here</a>.
             </p>
 
             <div class="row">
