@@ -1,0 +1,44 @@
+{# Define the 'Go Back' button URL #}
+{# It will automatically select the second last URL (one up) #}
+{% set go_back_url = null %}
+{% if items|length >= 2 and items[items|length - 2].url is defined %}
+    {% set go_back_url = items[items|length - 2].url %}
+{% endif %}
+
+<nav class="content-box bg-keeper bd-keeper" aria-label="breadcrumb">
+  <div style="display: flex; align-items: center;">
+    <ol class="breadcrumb" style="margin: 10px; flex-grow: 1;">
+        <li class="breadcrumb-item">
+            <a href="/">Home</a>
+        </li>
+      {% for item in items %}
+        {% if loop.last %}
+          <li class="breadcrumb-item" aria-current="page">
+            {{ item.label }}
+          </li>
+        {% else %}
+
+            {% if item.url is defined %}
+          <li class="breadcrumb-item">
+            <a href="{{ item.url }}">{{ item.label }}</a>
+          </li>
+            {% else %}
+            <li class="breadcrumb-item">
+                {{ item.label }}
+            </li>
+            {% endif %}
+
+
+        {% endif %}
+      {% endfor %}
+    </ol>
+
+    {# Check it we need to add the back button #}
+    {% if add_back_button is defined and add_back_button != false %}
+        <a href="{{ go_back_url }}" id="go-back-link" style="margin-right: 10px; white-space: nowrap;" data-instant>
+            <span class="text-muted">&laquo;</span>&nbsp;Back
+        </a>
+    {% endif %}
+
+  </div>
+</nav>
