@@ -45,7 +45,7 @@
                         </p>
 
                         <div class="mt-0 mb-3">
-                            {% if tool.user is defined %}
+                            {% if tool.user is defined and tool.user is not null %}
                             <a
                             href="/workshop/user/{{ tool.user.username|url_encode }}"
                             {# href="/workshop/browse?user={{ tool.user.username }}" #}
