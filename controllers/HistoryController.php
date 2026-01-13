@@ -166,6 +166,12 @@ class HistoryController
                     'date_format' => 'Y-m-d',
                     'description' => "hzzdev made it so we can now have mods for KeeperFX. Before this change we had to use custom campaigns or even edit files directly, but now we can simply install a mod and enjoy it.",
                 ],
+                [
+                    'title'       => 'Controller support!',
+                    'date'        => new \DateTime('2026-01-11'),
+                    'date_format' => 'Y-m-d',
+                    'description' => "qqluqq has amazed us yet again with the addition of controller support for KeeperFX.",
+                ],
             ]])
         );
 
