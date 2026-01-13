@@ -14,7 +14,8 @@ use Slim\Exception\HttpNotFoundException;
 
 use Xenokore\Utility\Helper\StringHelper;
 
-class WikiController {
+class WikiController
+{
 
     private function fixMarkdownHeaderTagsSEO(string $content): string
     {
@@ -25,13 +26,16 @@ class WikiController {
                 '/^\#{3} /m',
                 '/^\#{2} /m',
                 '/^\#{1} /m'
-            ], [
+            ],
+            [
                 '###### ',
                 '###### ',
                 '##### ',
                 '#### ',
                 '### ',
-            ], $content);
+            ],
+            $content
+        );
     }
 
     public function wikiPage(
@@ -40,37 +44,37 @@ class WikiController {
         TwigEnvironment $twig,
         FlashMessage $flash,
         ?string $page = null,
-    ){
+    ) {
         // Get wiki dir
         $wiki_dir = Config::get('storage.path.wiki-repo');
-        if(empty($wiki_dir) || !\is_dir($wiki_dir) || !\is_readable($wiki_dir)){
-            throw new HttpInternalServerErrorException($request, "wiki dir is not accessible");
+        if (empty($wiki_dir) || !\is_dir($wiki_dir) || !\is_readable($wiki_dir)) {
+            throw new HttpInternalServerErrorException($request, "wiki directory does not exist or is not accessible: {$wiki_dir}");
         }
 
         // Redirect to the "/wiki/home" if no page is given
-        if($page === null){
+        if ($page === null) {
             $response = $response->withHeader('Location', '/wiki/home')->withStatus(302);
             return $response;
         }
 
         // Make sure wiki page URL is lowercase
         // Redirect the user if it isn't
-        if(\strtolower($page) !== $page){
+        if (\strtolower($page) !== $page) {
             $response = $response->withHeader('Location', '/wiki/' . \strtolower($page))->withStatus(302);
             return $response;
         }
 
         // Get the markdown file
         $file = null;
-        foreach(\glob($wiki_dir . '/*.md') as $file_path){
-            if(strtolower(\basename($file_path)) === strtolower($page) . '.md'){
+        foreach (\glob($wiki_dir . '/*.md') as $file_path) {
+            if (strtolower(\basename($file_path)) === strtolower($page) . '.md') {
                 $file = $file_path;
                 break;
             }
         }
 
         // Make sure file is found
-        if(!$file){
+        if (!$file) {
             throw new HttpNotFoundException($request);
         }
 
@@ -86,7 +90,7 @@ class WikiController {
 
         // Get 'sidebar' contents
         $sidebar_contents = \file_get_contents($wiki_dir . '/_Sidebar.md');
-        if($sidebar_contents === false){
+        if ($sidebar_contents === false) {
             throw new \Exception("Sidebar markdown file not found");
         }
 
@@ -108,16 +112,16 @@ class WikiController {
 
     private function makeGithubUrlsLowercase(string $string): string
     {
-        return \preg_replace_callback("~\[(.+?)\]\((.+?)\)~", function($matches){
+        return \preg_replace_callback("~\[(.+?)\]\((.+?)\)~", function ($matches) {
 
             // Only lowercase URLs without a slash
             // This should work against any absolute URLs as well as "subdirectory-URLs".
-            if(\str_contains($matches[2], '/') === false){
+            if (\str_contains($matches[2], '/') === false) {
 
                 $url = $matches[2];
 
                 // Handle hash-bang
-                if(\str_contains($url, '#') === true){
+                if (\str_contains($url, '#') === true) {
                     $exp = explode('#', $url);
                     $url = strtolower($exp[0]) . '#' . $exp[1];
                 } else {
@@ -139,44 +143,43 @@ class WikiController {
 
         // Loop trough the sidebar menu contents
         $lines = \explode(PHP_EOL, $contents);
-        foreach($lines as $line)
-        {
+        foreach ($lines as $line) {
             $line = \trim($line);
 
             // If this is an empty line we are not in a list
-            if(empty($line)){
+            if (empty($line)) {
                 $current_menu = null;
                 continue;
             }
 
             // Ignore comments
-            if(StringHelper::startsWith($line, '<!--')){
+            if (StringHelper::startsWith($line, '<!--')) {
                 continue;
             }
 
             // Ignore the sidebar title
             // The space after '##' is important
-            if(StringHelper::startsWith($line, '##  ')){
+            if (StringHelper::startsWith($line, '##  ')) {
                 continue;
             }
 
             // If this is a menu title
-            if(StringHelper::startsWith($line, '#### ')){
+            if (StringHelper::startsWith($line, '#### ')) {
                 $name = substr($line, 5);
                 $current_menu = $name;
                 continue;
             }
 
             // If this is not a item it will be a subitem
-            if(StringHelper::startsWith($line, ['*', '-'])){
+            if (StringHelper::startsWith($line, ['*', '-'])) {
 
                 // We need to be in a menu
-                if($current_menu === null){
+                if ($current_menu === null) {
                     continue;
                 }
 
                 // Find the link and title
-                if(!\preg_match('~\[(.+)\]\((.+)\)~', $line, $matches)){
+                if (!\preg_match('~\[(.+)\]\((.+)\)~', $line, $matches)) {
                     continue;
                 }
 
@@ -186,5 +189,4 @@ class WikiController {
 
         return $array;
     }
-
 }
