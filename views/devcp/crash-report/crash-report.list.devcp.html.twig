@@ -40,20 +40,20 @@
                         {% endif %}
 
                         <tr{% if is_latest %} style="background-color: rgba(45, 45, 45, 0.25);"{% endif %}>
-                            <td>{{ crash_report.id }}</td>
-                            <td>
+                            <td data-table-search>{{ crash_report.id }}</td>
+                            <td data-table-search>
                                 {% if is_latest %}<strong>{% endif %}
                                 {{ crash_report.gameVersion|unique_color }}
                                 {% if is_latest %}</strong>{% endif %}
                             </td>
-                            <td style="max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <td data-table-search style="max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 {% if crash_report.exceptionSourceFunction is not null %}
                                     {{ crash_report.exceptionSourceFunction }}
                                 {% else %}
                                     <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
-                            <td>{{ crash_report.createdTimestamp|date('Y-m-d G:i') }}</td>
+                            <td data-table-search>{{ crash_report.createdTimestamp|date('Y-m-d G:i') }}</td>
                             <td>
                                 {% if crash_report.saveFilename is not null %}
                                     <ion-icon name="save-outline"></ion-icon>
@@ -107,17 +107,19 @@
         $.each(searchRows, function(i, el){
 
             // Show or hide the row
-            let content = $(el).text().toLowerCase();
+            let content = $(el).find('[data-table-search]').text().toLowerCase();
             if(!content.includes(string)){
                 $(el).hide();
             } else {
                 $(el).show();
             }
+
+
         });
 
         // Mark the keyword
         $(searchRows).unmark();
-        $(searchRows).mark(string);
+        $(searchRows).find('[data-table-search]').mark(string);
     }));
 </script>
 
