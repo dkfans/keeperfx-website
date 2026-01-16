@@ -61,7 +61,7 @@
 
         {% if crash_report.description %}
             <h5 style="margin-top: 30px; border-bottom: 0;">Description</h5>
-            <pre style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0;">{{ crash_report.description }}</pre>
+            <p style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0;">{{ crash_report.description }}</p>
         {% endif %}
 
         {% if error.info is not empty or error.trace is not empty %}
