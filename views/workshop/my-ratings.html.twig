@@ -128,140 +128,138 @@
 
 {% block body_javascript %}
 
-    {# jQuery Debounce #}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js" integrity="sha512-JZSo0h5TONFYmyLMqp8k4oPhuo6yNk9mHM+FY50aBjpypfofqtEWsAgRDQm94ImLCzSaHeqNvYuD9382CEn2zw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    {# mark.js (keyword highlighting) #}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha512-mhbv5DqBMgrWL+32MmsDOt/OAvqr/cHimk6B8y/bx/xS88MVkYGPiVv2ixKVrkywF2qHplNRUvFsAHUdxZ3Krg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <script>
 
-        // Variables
-        $tableRows   = $('#table-body tr');
+        $(function(){
 
-        function updateTableRows()
-        {
-            $('#table-body tr').unmark();
+            // Variables
+            $tableRows   = $('#table-body tr');
 
-            // Get search string
-            var searchString = $('#search').val().toLowerCase();
+            function updateTableRows()
+            {
+                $('#table-body tr').unmark();
 
-            // Get filters
-            var filterQuality1       = $('#filter-quality-1').data('filter');
-            var filterQuality2       = $('#filter-quality-2').data('filter');
-            var filterQuality3       = $('#filter-quality-3').data('filter');
-            var filterQuality4       = $('#filter-quality-4').data('filter');
-            var filterQuality5       = $('#filter-quality-5').data('filter');
-            var filterDifficulty1    = $('#filter-difficulty-1').data('filter');
-            var filterDifficulty2    = $('#filter-difficulty-2').data('filter');
-            var filterDifficulty3    = $('#filter-difficulty-3').data('filter');
-            var filterDifficulty4    = $('#filter-difficulty-4').data('filter');
-            var filterDifficulty5    = $('#filter-difficulty-5').data('filter');
-            var isQualityFiltered    = (filterQuality1 || filterQuality2 || filterQuality3 || filterQuality4 || filterQuality5);
-            var isDifficultyFiltered = (filterDifficulty1 || filterDifficulty2 || filterDifficulty3 || filterDifficulty4 || filterDifficulty5);
+                // Get search string
+                var searchString = $('#search').val().toLowerCase();
 
-            // Loop trough all rows
-            $.each($('#table-body tr'), function(i, el){
+                // Get filters
+                var filterQuality1       = $('#filter-quality-1').data('filter');
+                var filterQuality2       = $('#filter-quality-2').data('filter');
+                var filterQuality3       = $('#filter-quality-3').data('filter');
+                var filterQuality4       = $('#filter-quality-4').data('filter');
+                var filterQuality5       = $('#filter-quality-5').data('filter');
+                var filterDifficulty1    = $('#filter-difficulty-1').data('filter');
+                var filterDifficulty2    = $('#filter-difficulty-2').data('filter');
+                var filterDifficulty3    = $('#filter-difficulty-3').data('filter');
+                var filterDifficulty4    = $('#filter-difficulty-4').data('filter');
+                var filterDifficulty5    = $('#filter-difficulty-5').data('filter');
+                var isQualityFiltered    = (filterQuality1 || filterQuality2 || filterQuality3 || filterQuality4 || filterQuality5);
+                var isDifficultyFiltered = (filterDifficulty1 || filterDifficulty2 || filterDifficulty3 || filterDifficulty4 || filterDifficulty5);
 
-                // Handle searches
-                if(searchString != ""){
-                    let content = $(el).text().toLowerCase();
-                    if(!content.includes(searchString)){
-                        $(el).hide();
-                        return;
-                    } else {
-                        $('#table-body tr').mark(searchString);
-                    }
-                }
+                // Loop trough all rows
+                $.each($('#table-body tr'), function(i, el){
 
-                // Handle quality filters
-                if(isQualityFiltered){
-
-                    let qualityRating = $(el).find('[data-workshop-rating-type="quality"]');
-                    if(qualityRating.length === 0){
-                        $(el).hide();
-                        return;
+                    // Handle searches
+                    if(searchString != ""){
+                        let content = $(el).text().toLowerCase();
+                        if(!content.includes(searchString)){
+                            $(el).hide();
+                            return;
+                        } else {
+                            $('#table-body tr').mark(searchString);
+                        }
                     }
 
-                    let score = parseInt($(qualityRating).data('workshop-rating-score'));
-                    if(score == 1 && filterQuality1 == false){
-                        $(el).hide();
-                        return;
-                    } else if(score == 1 && filterQuality1 == false){
-                        $(el).hide();
-                        return;
-                    } else if(score == 2 && filterQuality2 == false){
-                        $(el).hide();
-                        return;
-                    } else if(score == 3 && filterQuality3 == false){
-                        $(el).hide();
-                        return;
-                    } else if(score == 4 && filterQuality4 == false){
-                        $(el).hide();
-                        return;
-                    } else if(score == 5 && filterQuality5 == false){
-                        $(el).hide();
-                        return;
+                    // Handle quality filters
+                    if(isQualityFiltered){
+
+                        let qualityRating = $(el).find('[data-workshop-rating-type="quality"]');
+                        if(qualityRating.length === 0){
+                            $(el).hide();
+                            return;
+                        }
+
+                        let score = parseInt($(qualityRating).data('workshop-rating-score'));
+                        if(score == 1 && filterQuality1 == false){
+                            $(el).hide();
+                            return;
+                        } else if(score == 1 && filterQuality1 == false){
+                            $(el).hide();
+                            return;
+                        } else if(score == 2 && filterQuality2 == false){
+                            $(el).hide();
+                            return;
+                        } else if(score == 3 && filterQuality3 == false){
+                            $(el).hide();
+                            return;
+                        } else if(score == 4 && filterQuality4 == false){
+                            $(el).hide();
+                            return;
+                        } else if(score == 5 && filterQuality5 == false){
+                            $(el).hide();
+                            return;
+                        }
                     }
-                }
 
-                // Handle difficulty filters
-                if(isDifficultyFiltered){
+                    // Handle difficulty filters
+                    if(isDifficultyFiltered){
 
-                    let difficultyRating = $(el).find('[data-workshop-rating-type="difficulty"]');
-                    if(difficultyRating.length === 0){
-                        $(el).hide();
-                        return;
+                        let difficultyRating = $(el).find('[data-workshop-rating-type="difficulty"]');
+                        if(difficultyRating.length === 0){
+                            $(el).hide();
+                            return;
+                        }
+
+                        let score = parseInt($(difficultyRating).data('workshop-rating-score'));
+                        if(score == 1 && filterDifficulty1 == false){
+                            $(el).hide();
+                            return;
+                        } else if(score == 1 && filterDifficulty1 == false){
+                            $(el).hide();
+                            return;
+                        } else if(score == 2 && filterDifficulty2 == false){
+                            $(el).hide();
+                            return;
+                        } else if(score == 3 && filterDifficulty3 == false){
+                            $(el).hide();
+                            return;
+                        } else if(score == 4 && filterDifficulty4 == false){
+                            $(el).hide();
+                            return;
+                        } else if(score == 5 && filterDifficulty5 == false){
+                            $(el).hide();
+                            return;
+                        }
                     }
 
-                    let score = parseInt($(difficultyRating).data('workshop-rating-score'));
-                    if(score == 1 && filterDifficulty1 == false){
-                        $(el).hide();
-                        return;
-                    } else if(score == 1 && filterDifficulty1 == false){
-                        $(el).hide();
-                        return;
-                    } else if(score == 2 && filterDifficulty2 == false){
-                        $(el).hide();
-                        return;
-                    } else if(score == 3 && filterDifficulty3 == false){
-                        $(el).hide();
-                        return;
-                    } else if(score == 4 && filterDifficulty4 == false){
-                        $(el).hide();
-                        return;
-                    } else if(score == 5 && filterDifficulty5 == false){
-                        $(el).hide();
-                        return;
-                    }
-                }
+                    $(el).show();
+                });
 
-                $(el).show();
+            }
+
+            // Handle search input
+            $('#search').on('keyup', $.debounce(250, function(e){
+
+                // Update the table
+                // This handles the search
+                updateTableRows();
+            }));
+
+            // Handle filter buttons
+            $('[data-filter]').on('click', function(e){
+
+                // Toggle button color
+                $(this).toggleClass('btn-dark');
+                $(this).toggleClass('btn-primary');
+
+                // Toggle filter status
+                let isSelected = $(this).data('filter');
+                $(this).data('filter', !isSelected);
+
+                // Update the table
+                updateTableRows();
             });
 
-        }
-
-        // Handle search input
-        $('#search').on('keyup', $.debounce(250, function(e){
-
-            // Update the table
-            // This handles the search
-            updateTableRows();
-        }));
-
-        // Handle filter buttons
-        $('[data-filter]').on('click', function(e){
-
-            // Toggle button color
-            $(this).toggleClass('btn-dark');
-            $(this).toggleClass('btn-primary');
-
-            // Toggle filter status
-            let isSelected = $(this).data('filter');
-            $(this).data('filter', !isSelected);
-
-            // Update the table
-            updateTableRows();
         });
 
     </script>
