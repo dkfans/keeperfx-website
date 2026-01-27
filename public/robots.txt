@@ -1,6 +1,7 @@
 User-agent: *
 Disallow: /api
 Disallow: /admin
+Disallow: /oauth
 Disallow: /download
 Disallow: /workshop/download
 Disallow: /workshop/random
@@ -11,4 +12,5 @@ User-agent: archive.org_bot
 User-agent: ia_archiver-web.archive.org
 Disallow: /api
 Disallow: /admin
+Disallow: /oauth
 Disallow: /workshop/random
