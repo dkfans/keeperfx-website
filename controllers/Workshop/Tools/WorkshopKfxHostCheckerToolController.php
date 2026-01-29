@@ -16,13 +16,14 @@ use Xenokore\Utility\Helper\StringHelper;
  * A tool to compare CFGs and show the differences.
  * This is useful for getting only updated properties from KeeperFX configs.
  */
-class WorkshopKfxHostCheckerToolController {
+class WorkshopKfxHostCheckerToolController
+{
 
     public function index(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ){
+    ) {
         // Get IP
         $ip = $request->getAttribute('ip_address');
 
@@ -42,7 +43,7 @@ class WorkshopKfxHostCheckerToolController {
         Request $request,
         Response $response,
         string $ip,
-    ){
+    ) {
         if (filter_var($ip, FILTER_VALIDATE_IP) == false) {
             $response->getBody()->write(
                 \json_encode([
@@ -53,22 +54,29 @@ class WorkshopKfxHostCheckerToolController {
             return $response;
         }
 
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) == false) {
+
+        // Check for IP protocol version
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) == true) {
+
+            // IPv4
+            $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+        } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) == true) {
+
+            // IPv6
+            $socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
+        } else {
+
+            // Can this even happen?
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
-                    'error' => 'MUST_BE_IPV4'
+                    'error' => 'UNKNOWN_IP_VERSION'
                 ])
             );
             return $response;
         }
 
-        // Raw packet data (excluding IP and UDP headers)
-        $packet = hex2bin('8fff864b82ff00010000ffff0000057800010000000000020000000000000000000013880000000200000002ec5093d400000000');
-        $port = 5556;
-
         // Create a UDP socket
-        $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
         if (!$socket) {
             die("Could not create socket\n");
         }
@@ -76,6 +84,13 @@ class WorkshopKfxHostCheckerToolController {
         // Set a 5-second timeout for sending and receiving (10 sec total)
         socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 5, 'usec' => 0]);
         socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 5, 'usec' => 0]);
+
+        // Raw packet data (excluding IP and UDP headers)
+        // This is an ENET handshake packet because it's the only way to get a response from the server
+        $packet = hex2bin('8fff864b82ff00010000ffff0000057800010000000000020000000000000000000013880000000200000002ec5093d400000000');
+
+        // Default KeeperFX ENET lobby port port
+        $port = 5556;
 
         // Send the binary payload to the server
         if (socket_sendto($socket, $packet, strlen($packet), 0, $ip, $port) === false) {
