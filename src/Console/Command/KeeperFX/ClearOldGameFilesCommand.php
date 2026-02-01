@@ -34,7 +34,7 @@ class ClearOldGameFilesCommand extends Command
     {
         // Make sure the game files directory is set
         $storage_dir = Config::get('storage.path.game-files');
-        if($storage_dir === null) {
+        if ($storage_dir === null) {
             $output->writeln("[-] Game files directory is not set");
             $output->writeln("[>] ENV VAR: 'APP_GAME_FILE_STORAGE'");
             return Command::FAILURE;
@@ -54,26 +54,38 @@ class ClearOldGameFilesCommand extends Command
 
         // Get all stable versions
         $stable_versions = [];
-        foreach($stable_builds as $stable_build){
+        foreach ($stable_builds as $stable_build) {
             $stable_versions[] = $stable_build->getVersion();
         }
 
         // Get all alpha versions
         $alpha_versions = [];
-        foreach($alpha_patches as $alpha_patch){
+        foreach ($alpha_patches as $alpha_patch) {
             $alpha_versions[] = $alpha_patch->getVersion();
         }
 
-        // Remove all stable versions
-        $removed_stable_versions = $this->game_file_handler->removeAllExcept(ReleaseType::STABLE, $stable_versions);
-        foreach($removed_stable_versions as $stable_version){
-            $output->writeln("[+] Removed: {$stable_version}");
+        // Check if stable directory is accessible
+        $dir = Config::get('storage.path.game-files') . '/' . ReleaseType::STABLE->value;
+        if (!DirectoryHelper::isAccessible($dir)) {
+            $output->writeln("[-] Stable game files directory is not accessible: {$dir}");
+        } else {
+            // Remove all stable versions
+            $removed_stable_versions = $this->game_file_handler->removeAllExcept(ReleaseType::STABLE, $stable_versions);
+            foreach ($removed_stable_versions as $stable_version) {
+                $output->writeln("[+] Removed: {$stable_version}");
+            }
         }
 
-        // Remove all alpha versions
-        $removed_alpha_versions  = $this->game_file_handler->removeAllExcept(ReleaseType::ALPHA, $alpha_versions);
-        foreach($removed_alpha_versions as $alpha_version){
-            $output->writeln("[+] Removed: {$alpha_version}");
+        // Check if alpha directory is accessible
+        $dir = Config::get('storage.path.game-files') . '/' . ReleaseType::ALPHA->value;
+        if (!DirectoryHelper::isAccessible($dir)) {
+            $output->writeln("[-] Alpha game files directory is not accessible: {$dir}");
+        } else {
+            // Remove all alpha versions
+            $removed_alpha_versions  = $this->game_file_handler->removeAllExcept(ReleaseType::ALPHA, $alpha_versions);
+            foreach ($removed_alpha_versions as $alpha_version) {
+                $output->writeln("[+] Removed: {$alpha_version}");
+            }
         }
 
         // Return

@@ -173,50 +173,39 @@ class GameFileHandler
             throw new \RuntimeException("Directory is not accessible: $dir");
         }
 
-        // Loop trough main dir
-        foreach (new \FilesystemIterator($dir, \FilesystemIterator::SKIP_DOTS) as $item) {
+        // Get game file indexes
+        $indexes = $this->em->getRepository(GameFileIndex::class)->findBy(
+            ['release_type' => $release_type->value]
+        );
 
-            // Check if current item is a dir
-            if ($item->isDir()) {
-
-                // Check if we can remove this version dir
-                $version = $item->getFilename();
-                if (!\in_array($version, $versions_to_keep, true)) {
-
-                    // Remove it
-                    $result = DirectoryHelper::delete($item->getPathname());
-                    if (!$result) {
-                        throw new \Exception("Failed to remove dir: {$item->getPathname()}");
-                    } else {
-
-                        // Remember this version
-                        $versions_removed[] = $version;
-                    }
-                }
-            }
-        }
-
-        // Get all release entities
-        $releases = null;
-        if ($release_type == ReleaseType::STABLE) {
-            $releases = $this->em->getRepository(GithubRelease::class)->findAll();
-        }
-        if ($release_type == ReleaseType::STABLE) {
-            $releases = $this->em->getRepository(GithubAlphaBuild::class)->findAll();
-        }
-
-        // If there are entities found
-        if ($releases !== null && \count($releases) === 0) {
-
+        if ($indexes !== null && \count($indexes) > 0) {
             $entities_removed = false;
 
-            // Loop trough the entities and remove versions we do not keep
-            /** @var GithubRelease|GithubAlphaBuild $release */
-            foreach ($releases as $release) {
-                if (\in_array($release->getVersion(), $versions_to_keep) === false) {
-                    $this->em->remove($release);
-                    $entities_removed = true;
+            /** @var GameFileIndex $index */
+            foreach ($indexes as $index) {
+
+                $version = $index->getVersion();
+
+                // Check if we need to keep this version
+                if (\in_array($version, $versions_to_keep)) {
+                    continue;
                 }
+
+                // Remove the storage directory
+                $index_dir = $dir . \DIRECTORY_SEPARATOR . $version;
+                if (DirectoryHelper::isAccessible($index_dir)) {
+                    $result = DirectoryHelper::delete($index_dir);
+                    if (!$result) {
+                        throw new \Exception("Failed to remove dir: {$index_dir}");
+                    }
+                }
+
+                // Remove the entity
+                $this->em->remove($index);
+                $entities_removed = true;
+
+                // Remember this version
+                $versions_removed[] = $version;
             }
 
             // Flush database if entities are removed
