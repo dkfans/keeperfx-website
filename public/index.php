@@ -106,4 +106,31 @@ if ($_ENV['APP_ENV'] === 'prod') {
 }
 
 // Start Slim App
-$app->run();
+if (Config::get('app.whoops.is_enabled') === true) {
+
+    // Just run the app without catching any exceptions
+    // Whoops will catch them instead
+    $app->run();
+} else {
+
+    // Catch any exceptions that aren't caught by the Error Middleware
+    try {
+        $app->run();
+    } catch (\Exception $ex) {
+
+        \http_response_code(500);
+
+        // Serve correct maintenance page
+        $content_type = $_SERVER["CONTENT_TYPE"] ?? '';
+        if ($content_type == 'application/json') {
+            \header('Content-Type: application/json');
+            echo \json_encode([
+                'success'    => false,
+                'error_code' => 500,
+                'error'      => 'INTERNAL_SERVER_ERROR'
+            ]);
+        } else {
+            echo \file_get_contents(__DIR__ . '/../views/something-went-wrong.html');
+        }
+    }
+}
