@@ -191,7 +191,7 @@ class WorkshopKfxCfgDiffToolController
             }
 
             // Start a section
-            if (\preg_match("/\[(.+)\].*?/", $line, $matches)) {
+            if (\preg_match("/^\[(.+)\].*?$/", $line, $matches)) {
                 $current_section = $matches[1];
                 $array[$matches[1]] = [];
                 continue;
