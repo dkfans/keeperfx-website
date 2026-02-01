@@ -116,6 +116,22 @@ if (Config::get('app.whoops.is_enabled') === true) {
     // Catch any exceptions that aren't caught by the Error Middleware
     try {
         $app->run();
+    } catch (\PDOException | \Doctrine\DBAL\Driver\PDO\Exception | \Doctrine\DBAL\Exception\ConnectionException) {
+
+        \http_response_code(500);
+
+        // Serve correct maintenance page
+        $content_type = $_SERVER["CONTENT_TYPE"] ?? '';
+        if ($content_type == 'application/json') {
+            \header('Content-Type: application/json');
+            echo \json_encode([
+                'success'    => false,
+                'error_code' => 500,
+                'error'      => 'DATABASE_CONNECTION_ERROR'
+            ]);
+        } else {
+            echo \file_get_contents(__DIR__ . '/../views/database-connection-error.html');
+        }
     } catch (\Exception $ex) {
 
         \http_response_code(500);
