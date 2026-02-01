@@ -16,18 +16,19 @@ use Slim\Exception\HttpBadRequestException;
  * The avatar controller is used to output avatars.
  * Updating an avatar is done in the AccountController.
  */
-class AvatarController {
+class AvatarController
+{
 
     public function outputAvatar(
         Request $request,
         Response $response,
         $filename,
-    ){
+    ) {
         // Get avatar filepath
         $filepath = Config::get('storage.path.avatar') . '/' . $filename;
 
         // Check if file exists
-        if(!\file_exists($filepath)){
+        if (!\file_exists($filepath)) {
             throw new HttpNotFoundException($request, 'avatar not found');
         }
 
@@ -65,15 +66,14 @@ class AvatarController {
         Response $response,
         $size,
         $username,
-    ):Response
-    {
+    ): Response {
         // Make sure username is legit
-        if(!\preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9\.\_\-]+$/', $username)){
+        if (!\preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9\.\_\-]+$/', $username)) {
             throw new HttpBadRequestException($request);
         }
 
         // Make sure size is not too small or too big
-        if(!is_int($size) || $size < 1 || $size > 512){
+        if (!is_int($size) || $size < 1 || $size > 512) {
             $size = 256;
         }
 
@@ -86,7 +86,7 @@ class AvatarController {
             ->autoColor()
             ->generate();
 
-        // Return avatar
+        // Set output headers
         $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
         $response = $response
             ->withHeader('Pragma', 'public')
@@ -94,8 +94,10 @@ class AvatarController {
             ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
             ->withHeader('Content-Type', 'image/png');
 
-        return $response->withBody(
-            $image->stream('png', 85)
+        // Output PNG data
+        $response->getBody()->write(
+            $image->toPng()->toString()
         );
+        return $response;
     }
 }
