@@ -16,14 +16,15 @@ use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class AdminServerInfoController {
+class AdminServerInfoController
+{
 
     public function serverInfoIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em
-    ){
+    ) {
         // Get PHP upload limits
         $php_max_upload            = (int)(\ini_get('upload_max_filesize')) * 1024 * 1024;
         $php_max_post              = (int)(\ini_get('post_max_size')) * 1024 * 1024;
@@ -33,8 +34,8 @@ class AdminServerInfoController {
         // Get alpha builds size
         $alpha_build_storage_size = 0;
         $alpha_builds = $em->getRepository(GithubAlphaBuild::class)->findAll();
-        if($alpha_builds){
-            foreach($alpha_builds as $alpha_build) {
+        if ($alpha_builds) {
+            foreach ($alpha_builds as $alpha_build) {
                 $alpha_build_storage_size += $alpha_build->getSizeInBytes();
             }
         }
@@ -42,8 +43,8 @@ class AdminServerInfoController {
         // Get workshop files total storage size
         $workshop_file_storage_size = 0;
         $workshop_files = $em->getRepository(WorkshopFile::class)->findAll();
-        if($workshop_files){
-            foreach($workshop_files as $workshop_file) {
+        if ($workshop_files) {
+            foreach ($workshop_files as $workshop_file) {
                 $workshop_file_storage_size += $workshop_file->getSize();
             }
         }
@@ -68,10 +69,10 @@ class AdminServerInfoController {
                 'upload_calculated_minimum'     => $upload_calculated_minimum,
                 'last_user'                     => $em->getRepository(User::class)->findOneBy([], ['created_timestamp' => 'DESC']),
                 'last_workshop_item'            => $em->getRepository(WorkshopItem::class)->findOneBy([], ['created_timestamp' => 'DESC']),
+                'ipv6_support'                  => \defined('AF_INET6') && @\inet_pton('::1') !== false,
             ])
         );
 
         return $response;
     }
-
 }

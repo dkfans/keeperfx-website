@@ -182,7 +182,7 @@
             </tr>
         </table>
 
-        {# PHP upload info #}
+        {# PHP info #}
         <table class="table">
             <tr>
                 <td style="width: 50%">
@@ -222,6 +222,14 @@
                 </td>
                 <td style="width: 50%" class="text-info">
                     {{ upload_calculated_minimum|format_bytes }}
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 50%">
+                    IPv6 support
+                </td>
+                <td style="width: 50%" class="text-info">
+                    {{ ipv6_support ? 'Yes' : 'No' }}
                 </td>
             </tr>
         </table>
