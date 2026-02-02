@@ -107,7 +107,7 @@ class CreateMockDataCommand extends Command
 
             $admin_bio = new UserBio();
             $admin_bio->setBio($faker->realText());
-            $admin_user->setBio($admin_bio);
+            $admin_bio->setUser($admin_user);
 
             $this->em->persist($admin_user);
             $this->em->persist($admin_bio);
@@ -138,8 +138,8 @@ class CreateMockDataCommand extends Command
             // Most of them have a bio set
             if ($i % \random_int(3, 5) !== 0) {
                 $bio = new UserBio();
+                $bio->setUser($user);
                 $bio->setBio($faker->realText());
-                $user->setBio($bio);
                 $this->em->persist($bio);
             }
 
