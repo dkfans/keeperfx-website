@@ -20,7 +20,8 @@ class HandleCommitsCommand extends Command
 {
     private EntityManager $em;
 
-    public function __construct(EntityManager $em) {
+    public function __construct(EntityManager $em)
+    {
         $this->em = $em;
         parent::__construct();
     }
@@ -39,13 +40,13 @@ class HandleCommitsCommand extends Command
         // Get local keeperfx repo dir
         // TODO: make CLI chroot accessible
         $kfx_repo_dir = Config::get('storage.path.kfx-repo');
-        if(empty($kfx_repo_dir)){
+        if (empty($kfx_repo_dir)) {
             $output->writeln("[-] KeeperFX Repo dir not configured (APP_KFX_REPO_STORAGE)");
             return Command::FAILURE;
         }
 
         // Make sure project directory exists
-        if(!DirectoryHelper::isAccessible($kfx_repo_dir)){
+        if (!DirectoryHelper::isAccessible($kfx_repo_dir)) {
             $output->writeln("[-] Directory does not exist: " . $kfx_repo_dir);
             $output->writeln("[>] Run the 'kfx:pull-repo' command first");
             return Command::FAILURE;
@@ -53,19 +54,17 @@ class HandleCommitsCommand extends Command
 
         // Handle tags in ascending order: v1 -> v2 -> v3
         $github_releases = $this->em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'ASC']);
-        foreach($github_releases as $index => $github_release){
+        foreach ($github_releases as $index => $github_release) {
 
             // ALready handled commits for this release
-            if($github_release->getCommitsHandled() === true){
+            if ($github_release->getCommitsHandled() === true) {
                 continue;
             }
 
             // Check if there is previous release
-            if(!isset($github_releases[$index - 1])){
-
-                // Can't handle first release
-                $github_release->setCommitsHandled(true);
-                $this->em->persist($github_release);
+            // We do this because we need a release to compare it to
+            // Otherwise we have no starting point
+            if (!isset($github_releases[$index - 1])) {
                 continue;
             }
 
@@ -86,20 +85,20 @@ class HandleCommitsCommand extends Command
 
             // Run the process
             $process->run();
-            if(!$process->isSuccessful()){
+            if (!$process->isSuccessful()) {
                 $output->writeln("[-] Failed to get git log");
                 return Command::FAILURE;
             }
 
             // Get the git log commits
             $parsed_commits = GitHelper::parseCommitsFromGitLog($process->getOutput());
-            if(!$parsed_commits){
+            if (!$parsed_commits) {
                 $output->writeln("[-] Failed to grab commits for {$current_tag}");
                 continue;
             }
 
             // Loop trough all commits
-            foreach($parsed_commits as $parsed_commit){
+            foreach ($parsed_commits as $parsed_commit) {
 
                 $commit = new GitCommit();
                 $commit->setHash($parsed_commit['hash']);
@@ -111,7 +110,7 @@ class HandleCommitsCommand extends Command
             }
 
             // Show commit count message
-            if(($commit_count = \count($parsed_commits)) > 0){
+            if (($commit_count = \count($parsed_commits)) > 0) {
                 $output->writeln("[+] Handled {$commit_count} commits!");
             } else {
                 $output->writeln("[?] No commits handled");
@@ -126,7 +125,7 @@ class HandleCommitsCommand extends Command
         }
 
         // If we handled commits we'll have to flush the DB changes
-        if($commits_handled){
+        if ($commits_handled) {
             $output->writeln("[>] Writing changes to database...");
             $this->em->flush();
         } else {
