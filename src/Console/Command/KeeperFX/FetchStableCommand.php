@@ -4,12 +4,18 @@ namespace App\Console\Command\KeeperFX;
 
 use App\Enum\ReleaseType;
 
+use App\Entity\WorkshopItem;
 use App\Entity\GithubRelease;
 
 use App\DiscordNotifier;
-use App\Entity\WorkshopItem;
 use App\GameFileHandler;
 use Doctrine\ORM\EntityManager;
+
+use wapmorgan\UnifiedArchive\UnifiedArchive;
+use wapmorgan\UnifiedArchive\Exceptions\EmptyFileListException;
+use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
+
+use Psr\SimpleCache\CacheInterface;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
@@ -17,10 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 
 use Xenokore\Utility\Helper\JsonHelper;
 use Xenokore\Utility\Helper\DirectoryHelper;
-
-use wapmorgan\UnifiedArchive\UnifiedArchive;
-use wapmorgan\UnifiedArchive\Exceptions\EmptyFileListException;
-use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 
 class FetchStableCommand extends Command
 {
@@ -41,6 +43,7 @@ class FetchStableCommand extends Command
         private EntityManager $em,
         private DiscordNotifier $discord_notifier,
         private GameFileHandler $game_file_handler,
+        private CacheInterface $cache,
     ) {
         parent::__construct();
     }
@@ -275,6 +278,11 @@ class FetchStableCommand extends Command
 
             // Send a notification on Discord
             $this->discord_notifier->notifyNewStableBuild($new_release);
+
+            // Clear cache
+            if ($this->cache->has('latest-stable-minor-releases')) {
+                $this->cache->delete('latest-stable-minor-releases');
+            }
         }
 
         $output->writeln("[+] Done!");
