@@ -10,7 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class WorkshopFile {
+class WorkshopFile
+{
 
     #[ORM\Id]
     #[ORM\Column]
@@ -18,6 +19,7 @@ class WorkshopFile {
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: WorkshopItem::class, inversedBy: 'files')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private WorkshopItem $item;
 
     #[ORM\Column]

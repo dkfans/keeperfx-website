@@ -6,14 +6,16 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class UserIpLog {
+class UserIpLog
+{
 
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ip_logs')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\Column]
@@ -25,19 +27,19 @@ class UserIpLog {
     #[ORM\Column]
     private \DateTime $last_seen_timestamp;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private string|null $country = null;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private bool|null $is_proxy = null;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private bool|null $is_hosting = null;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private string|null $host_name = null;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private string|null $isp = null;
 
     #[ORM\PrePersist]

@@ -21,7 +21,8 @@ class WorkshopComment
     #[ORM\ManyToOne(targetEntity: WorkshopItem::class, inversedBy: 'comments')]
     private WorkshopItem $item;
 
-    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\ManyToOne(targetEntity: 'User', inversedBy: 'workshop_comments')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\Column(type: 'text')]
@@ -33,14 +34,15 @@ class WorkshopComment
     #[ORM\Column]
     private \DateTime $updated_timestamp;
 
-    #[ORM\ManyToOne(targetEntity: WorkshopComment::class)]
+    #[ORM\ManyToOne(targetEntity: WorkshopComment::class, inversedBy: 'replies')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private WorkshopComment|null $parent = null;
 
-    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'parent', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'parent')]
     #[ORM\OrderBy(["created_timestamp" => "DESC"])]
     private Collection $replies;
 
-    #[ORM\OneToMany(targetEntity: WorkshopCommentReport::class, mappedBy: 'comment', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopCommentReport::class, mappedBy: 'comment')]
     #[ORM\OrderBy(["created_timestamp" => "DESC"])]
     private Collection $reports;
 

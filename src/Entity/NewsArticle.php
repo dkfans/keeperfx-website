@@ -20,6 +20,7 @@ class NewsArticle
     private string $title;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $author;
 
     #[ORM\Column(nullable: true)]

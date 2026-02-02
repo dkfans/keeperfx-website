@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class WorkshopCommentReport {
+class WorkshopCommentReport
+{
 
     #[ORM\Id]
     #[ORM\Column]
@@ -16,9 +17,11 @@ class WorkshopCommentReport {
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
-    #[ORM\ManyToOne(targetEntity: WorkshopComment::class)]
+    #[ORM\ManyToOne(targetEntity: WorkshopComment::class, inversedBy: 'reports')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private WorkshopComment $comment;
 
     #[ORM\Column(type: 'text')]

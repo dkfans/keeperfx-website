@@ -7,7 +7,8 @@ use Xenokore\Utility\Helper\StringHelper;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class UserEmailVerification {
+class UserEmailVerification
+{
 
     #[ORM\Id]
     #[ORM\Column]
@@ -15,6 +16,7 @@ class UserEmailVerification {
     private int $id;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'email_verification')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\Column()]

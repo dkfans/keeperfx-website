@@ -22,6 +22,7 @@ class WorkshopItem
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private User|null $submitter = null;
 
     #[ORM\Column(nullable: true)]
@@ -69,27 +70,27 @@ class WorkshopItem
     #[ORM\Column(nullable: true)]
     private string|null $thumbnail = null;
 
-    #[ORM\OneToMany(targetEntity: WorkshopFile::class, mappedBy: 'item', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopFile::class, mappedBy: 'item')]
     #[ORM\OrderBy(["weight" => "ASC"])]
     private Collection $files;
 
-    #[ORM\OneToMany(targetEntity: WorkshopImage::class, mappedBy: 'item', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopImage::class, mappedBy: 'item')]
     #[ORM\OrderBy(["weight" => "ASC"])]
     private Collection $images;
 
-    #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'item', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'item')]
     private Collection $ratings;
 
     #[ORM\Column(type: "decimal", precision: 3, scale: 2, nullable: true)]
     private float|null $rating_score = null;
 
-    #[ORM\OneToMany(targetEntity: WorkshopDifficultyRating::class, mappedBy: 'item', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopDifficultyRating::class, mappedBy: 'item')]
     private Collection $difficulty_ratings;
 
     #[ORM\Column(type: "decimal", precision: 3, scale: 2, nullable: true)]
     private float|null $difficulty_rating_score = null;
 
-    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'item', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'item')]
     #[ORM\OrderBy(["created_timestamp" => "DESC"])]
     private Collection $comments;
 

@@ -7,14 +7,16 @@ use App\Enum\UserNotificationType;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class UserNotificationSetting {
+class UserNotificationSetting
+{
 
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'notification_settings')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\Column]

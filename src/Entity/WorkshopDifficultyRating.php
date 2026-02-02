@@ -6,7 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class WorkshopDifficultyRating {
+class WorkshopDifficultyRating
+{
 
     #[ORM\Id]
     #[ORM\Column]
@@ -14,12 +15,14 @@ class WorkshopDifficultyRating {
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: WorkshopItem::class, inversedBy: 'difficulty_ratings')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private WorkshopItem $item;
 
     #[ORM\Column(type: 'integer')]
     private int $score;
 
-    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\ManyToOne(targetEntity: 'User', inversedBy: 'workshop_difficulty_ratings')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\Column]

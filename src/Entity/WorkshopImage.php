@@ -6,7 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class WorkshopImage {
+class WorkshopImage
+{
 
     #[ORM\Id]
     #[ORM\Column]
@@ -14,6 +15,7 @@ class WorkshopImage {
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: WorkshopItem::class, inversedBy: 'images')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private WorkshopItem $item;
 
     #[ORM\Column]

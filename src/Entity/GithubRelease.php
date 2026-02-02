@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
@@ -39,10 +40,10 @@ class GithubRelease
     private NewsArticle|null $linked_news_post = null;
 
     #[ORM\OneToMany(targetEntity: GitCommit::class, mappedBy: "release")]
-    private $commits;
+    private Collection $commits;
 
     #[ORM\OneToMany(targetEntity: ReleaseMirror::class, mappedBy: "release")]
-    private $mirrors;
+    private Collection $mirrors;
 
     /**
      * Get the value of id

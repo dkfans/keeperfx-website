@@ -8,20 +8,22 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class UserNotification {
+class UserNotification
+{
 
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'notifications')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\Column]
     private string $class;
 
-    #[ORM\Column(type: 'text', nullable:true)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private string|null $data;
 
     #[ORM\Column]

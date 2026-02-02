@@ -42,10 +42,10 @@ class User
     #[ORM\Column(nullable: true)]
     private string|null $country = null;
 
-    #[ORM\OneToOne(targetEntity: UserBio::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToOne(targetEntity: UserBio::class, mappedBy: 'user')]
     private UserBio|null $bio = null;
 
-    #[ORM\OneToOne(targetEntity: UserEmailVerification::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToOne(targetEntity: UserEmailVerification::class, mappedBy: 'user')]
     private UserEmailVerification|null $email_verification = null;
 
     #[ORM\Column]
@@ -54,40 +54,40 @@ class User
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
-    #[ORM\OneToMany(targetEntity: NewsArticle::class, mappedBy: 'author', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: NewsArticle::class, mappedBy: 'author')]
     private Collection $news_articles;
 
-    #[ORM\OneToMany(targetEntity: UserOAuthToken::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: UserOAuthToken::class, mappedBy: 'user')]
     private Collection $connection_tokens;
 
-    #[ORM\OneToMany(targetEntity: UserCookieToken::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: UserCookieToken::class, mappedBy: 'user')]
     private Collection $cookie_tokens;
 
-    #[ORM\OneToMany(targetEntity: UserPasswordResetToken::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: UserPasswordResetToken::class, mappedBy: 'user')]
     private Collection $password_reset_tokens;
 
-    #[ORM\OneToMany(targetEntity: UserNotification::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: UserNotification::class, mappedBy: 'user')]
     private Collection $notifications;
 
-    #[ORM\OneToMany(targetEntity: UserNotificationSetting::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: UserNotificationSetting::class, mappedBy: 'user')]
     private Collection $notification_settings;
 
-    #[ORM\OneToMany(targetEntity: WorkshopItem::class, mappedBy: 'submitter', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopItem::class, mappedBy: 'submitter')]
     private Collection $workshop_items;
 
-    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'user')]
     private Collection $workshop_comments;
 
-    #[ORM\OneToMany(targetEntity: WorkshopCommentReport::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopCommentReport::class, mappedBy: 'user')]
     private Collection $workshop_comment_reports;
 
-    #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopRating::class, mappedBy: 'user')]
     private Collection $workshop_ratings;
 
-    #[ORM\OneToMany(targetEntity: WorkshopDifficultyRating::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: WorkshopDifficultyRating::class, mappedBy: 'user')]
     private Collection $workshop_difficulty_ratings;
 
-    #[ORM\OneToMany(targetEntity: UserIpLog::class, mappedBy: 'user', cascade: ["remove"])]
+    #[ORM\OneToMany(targetEntity: UserIpLog::class, mappedBy: 'user')]
     #[ORM\OrderBy(["last_seen_timestamp" => "DESC"])]
     private Collection $ip_logs;
 

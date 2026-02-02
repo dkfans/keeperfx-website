@@ -15,6 +15,7 @@ class UserBio
     private int $id;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'bio')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\Column(type: 'text')]
