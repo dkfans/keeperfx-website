@@ -23,6 +23,12 @@ git clone https://github.com/dkfans/keeperfx-website.git
 cd keeperfx-website
 ```
 
+Create the storage volumes
+```
+docker volume create kfx_storage
+docker volume create kfx_database
+```
+
 Start the containers:
 ```
 docker compose up -d
