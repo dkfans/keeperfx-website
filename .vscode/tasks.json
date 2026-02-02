@@ -6,9 +6,9 @@
         {
             "label": "Start REPL (PsySH)",
             "type": "shell",
-            "command": "./vendor/bin/psysh",
+            "command": "./vendor/bin/psysh --trust-project",
             "windows": {
-                "command": "php ./vendor/bin/psysh"
+                "command": "php ./vendor/bin/psysh --trust-project"
             },
             "problemMatcher": []
         },
