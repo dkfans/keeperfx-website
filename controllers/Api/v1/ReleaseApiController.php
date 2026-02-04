@@ -2,26 +2,27 @@
 
 namespace App\Controller\Api\v1;
 
-// use App\Entity\NewsArticle;
+use App\Entity\NewsArticle;
+use App\Entity\GithubRelease;
+use App\Entity\GithubAlphaBuild;
 
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityManager;
 
+use Psr\SimpleCache\CacheInterface;
+use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-use Psr\SimpleCache\CacheInterface;
-use App\Entity\GithubRelease;
-use App\Entity\GithubAlphaBuild;
-use App\Entity\NewsArticle;
-
-class ReleaseApiController {
+class ReleaseApiController
+{
 
     public function latestStable(
         Request $request,
         Response $response,
         EntityManager $em,
         // TODO: CacheInterface $cache,
-    ){
+    ) {
         /** @var GithubRelease $release */
         $release = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
 
@@ -49,7 +50,7 @@ class ReleaseApiController {
         Response $response,
         EntityManager $em,
         // TODO: CacheInterface $cache,
-    ){
+    ) {
         /** @var GithubAlphaBuild $alpha_build */
         $alpha_build = $em->getRepository(GithubAlphaBuild::class)->findOneBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC']);
 
@@ -80,7 +81,7 @@ class ReleaseApiController {
         Response $response,
         EntityManager $em,
         string $version,
-    ){
+    ) {
         $response = $response->withHeader('Content-Type', 'application/json');
 
         // Only keep numbers and dots for the version
@@ -89,7 +90,7 @@ class ReleaseApiController {
         // Get the release the user has
         /** @var GithubRelease $release */
         $release = $em->getRepository(GithubRelease::class)->findOneBy(['version' => $version]);
-        if(!$release){
+        if (!$release) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
@@ -103,7 +104,7 @@ class ReleaseApiController {
         $latest_release = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
 
         // Check if still up to date
-        if($release === $latest_release){
+        if ($release === $latest_release) {
 
             // Still up to date
             $response->getBody()->write(
@@ -121,7 +122,7 @@ class ReleaseApiController {
         $news = null;
         /** @var NewsArticle $article */
         $article = $latest_release->getLinkedNewsPost();
-        if($article){
+        if ($article) {
             $news = [
                 'title'     => $article->getTitle(),
                 'timestamp' => $article->getCreatedTimestamp()->format('c'),
@@ -164,7 +165,7 @@ class ReleaseApiController {
         // Get version parts
         // Alpha patches must be 'x.y.z.build'
         $version_parts = \explode('.', $version);
-        if(\count($version_parts) != 4){
+        if (\count($version_parts) != 4) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
@@ -177,7 +178,7 @@ class ReleaseApiController {
         // Get the alpha patch the user has
         /** @var GithubAlphaBuild $release */
         $alpha_patch = $em->getRepository(GithubAlphaBuild::class)->findOneBy(['version' => $version]);
-        if(!$alpha_patch){
+        if (!$alpha_patch) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
@@ -197,7 +198,7 @@ class ReleaseApiController {
             ->getResult();
 
         // Check if there are no updates
-        if(\count($alpha_patches) == 0){
+        if (\count($alpha_patches) == 0) {
             $response->getBody()->write(
                 \json_encode([
                     'success'     => true,
@@ -213,8 +214,7 @@ class ReleaseApiController {
         // There are updates, we'll make a list of patches
         // This way any application can show the titles of the alpha patches and such
         $patches = [];
-        foreach($alpha_patches as $patch)
-        {
+        foreach ($alpha_patches as $patch) {
             $patches[] = [
                 'name'           => $patch->getName(),
                 'version'        => $patch->getVersion(),
@@ -241,4 +241,62 @@ class ReleaseApiController {
         return $response;
     }
 
+    public function getAlphaByBuildId(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        string $build_id
+    ) {
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        // Make sure build ID is numeric
+        if (\is_numeric($build_id) === false) {
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'INVALID_BUILD_ID',
+                ])
+            );
+            return $response;
+        }
+
+        // Create query
+        /** @var QueryBuilder $query */
+        $query = $em->getRepository(GithubAlphaBuild::class)->createQueryBuilder('alpha');
+        $query = $query
+            ->where('alpha.is_available = 1')
+            ->andWhere($query->expr()->like('alpha.version', ':search'))
+            ->setParameter('search', '%.' . $build_id)
+            ->setMaxResults(1);
+
+        // Do the DB query
+        $result = $query->getQuery()->getResult();
+
+        // Make sure we found a build
+        if (\count($result) === 0) {
+            throw new HttpNotFoundException($request, "alpha patch build {$build_id} not found");
+        }
+
+        /** @var GithubAlphaBuild $alpha_build */
+        $alpha_build = $result[0];
+
+        $response->getBody()->write(
+            \json_encode([
+                'success' => true,
+                'alpha_build' => [
+                    'artifact_id'     => $alpha_build->getArtifactId(),
+                    'name'            => $alpha_build->getName(),
+                    'version'         => $alpha_build->getVersion(),
+                    'workflow_title'  => $alpha_build->getWorkflowTitle(),
+                    'workflow_run_id' => $alpha_build->getWorkflowRunId(),
+                    'filename'        => $alpha_build->getFilename(),
+                    'timestamp'       => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
+                    'size_in_bytes'   => $alpha_build->getSizeInBytes(),
+                    'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename())
+                ]
+            ])
+        );
+
+        return $response;
+    }
 }

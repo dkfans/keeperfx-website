@@ -379,6 +379,7 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/v1/release/alpha/latest', [Api\v1\ReleaseApiController::class, 'latestAlpha']);
     $group->get('/v1/release/stable/check/{version}', [Api\v1\ReleaseApiController::class, 'checkStableUpdate']);
     $group->get('/v1/release/alpha/check/{version}', [Api\v1\ReleaseApiController::class, 'checkAlphaUpdate']);
+    $group->get('/v1/release/alpha/build/{build_id:\d+}', [Api\v1\ReleaseApiController::class, 'getAlphaByBuildId']);
     $group->get('/v1/release/{type}/{version:[a-zA-Z0-9\.\-]+}/files', [Api\v1\GameFileController::class, 'listFiles']);
 
     // API: Crash Report
