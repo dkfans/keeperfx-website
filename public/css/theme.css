@@ -1750,6 +1750,8 @@ div.phpdebugbar-widgets-callgraph pre span {
     background: #000;
     cursor: pointer;
     overflow: hidden;
+    width: 288px;
+    height: 162px;
 }
 
 .youtube-wrapper::before {
@@ -1786,11 +1788,6 @@ div.phpdebugbar-widgets-callgraph pre span {
 .youtube-wrapper.is-playing .youtube-play-button {
     /* Hide overlay + play button after click */
     display: none;
-}
-
-.youtube-wrapper {
-    width: 288px;
-    height: 162px;
 }
 
 .news-post .youtube-wrapper {
