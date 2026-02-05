@@ -1769,11 +1769,17 @@ div.phpdebugbar-widgets-callgraph pre span {
     left: 50%;
     width: 64px;
     height: 64px;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(1);
+    transform-origin: center;
     background: url("/img/youtube-play-button.png") no-repeat center center;
     background-size: contain;
     z-index: 2;
     pointer-events: none;
+    transition: transform 0.2s ease;
+}
+
+.youtube-wrapper:hover .youtube-play-button {
+    transform: translate(-50%, -50%) scale(1.08);
 }
 
 .youtube-wrapper.is-playing::before,
