@@ -60,7 +60,6 @@
         "gumlet/php-image-resize": "^2.0",
         "crunzphp/crunz": "^3.4",
         "lasserafn/php-initial-avatar-generator": "dev-update-image-lib#a46ab8f1427f93c5b37957e739205da7fcca0290",
-        "wyrihaximus/html-compress": "^4.2",
         "fgribreau/mailchecker": "^6.0",
         "predis/predis": "^2.2",
         "php-debugbar/php-debugbar": "^2.1",
