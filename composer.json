@@ -1,7 +1,7 @@
 {
     "name": "dkfans/keeperfx-website",
     "type": "project",
-    "version": "0.0.1",
+    "version": "1",
     "autoload": {
         "psr-4": {
             "App\\": "src/",
@@ -11,7 +11,7 @@
     "authors": [
         {
             "name": "Yani",
-            "email": "yani@xenokore.com"
+            "email": "yani@keeperfx.net"
         }
     ],
     "require": {
