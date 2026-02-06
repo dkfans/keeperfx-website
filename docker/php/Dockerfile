@@ -1,5 +1,5 @@
 # Start with PHP 8.4 FPM (FastCGI Process Manager)
-FROM php:8.5-fpm
+FROM php:8.4-fpm
 
 # Update package list and install dependencies
 RUN apt-get update && apt-get install -y \
@@ -38,6 +38,7 @@ RUN docker-php-ext-install -j$(nproc) \
     gd \
     intl \
     zip \
+    opcache \
     sockets \
     bz2
 
