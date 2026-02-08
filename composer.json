@@ -49,7 +49,7 @@
         "symfony/var-dumper": "^6.2",
         "zeuxisoo/slim-whoops": "^0.7.3",
         "wapmorgan/unified-archive": "^1.1",
-        "gemorroj/archive7z": "^5.5",
+        "gemorroj/archive7z": "^5.8",
         "league/oauth2-client": "^2.6",
         "wohali/oauth2-discord-new": "^1.2",
         "vertisan/oauth2-twitch-helix": "^1.1",
