@@ -55,10 +55,10 @@ class FetchAlphaCommand extends Command
         $output->writeln("[>] Fetching latest alpha releases...");
 
         // Make sure a Github token is set
-        if(
+        if (
             !isset($_ENV['APP_GITHUB_API_AUTH_TOKEN'])
             || empty($_ENV['APP_GITHUB_API_AUTH_TOKEN'])
-        ){
+        ) {
             $output->writeln("[-] Github token not set");
             $output->writeln("[>] ENV VAR: 'APP_GITHUB_API_AUTH_TOKEN'");
             return Command::FAILURE;
@@ -66,15 +66,15 @@ class FetchAlphaCommand extends Command
 
         // Make sure an output directory is set
         $storage_dir = Config::get('storage.path.alpha-patch');
-        if($storage_dir === null){
+        if ($storage_dir === null) {
             $output->writeln("[-] Alpha build download directory is not set");
             $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_STORAGE_CLI_PATH' or 'APP_ALPHA_PATCH_STORAGE'");
             return Command::FAILURE;
         }
 
         // Create output directory if it does not exist
-        if(!\is_dir($storage_dir)){
-            if(!@\mkdir($storage_dir)){
+        if (!\is_dir($storage_dir)) {
+            if (!@\mkdir($storage_dir)) {
                 $output->writeln("[-] Failed to create alpha build download directory");
                 $output->writeln("[>] DIR: {$storage_dir}");
                 return Command::FAILURE;
@@ -101,7 +101,7 @@ class FetchAlphaCommand extends Command
         // Grab Github workflow runs
         $res = $client->request('GET', self::GITHUB_WORKFLOW_RUNS_URL);
         $json = \json_decode($res->getBody());
-        if(!$json || empty($json->workflow_runs)){
+        if (!$json || empty($json->workflow_runs)) {
             $output->writeln("[-] Failed to fetch workflow runs");
             return Command::FAILURE;
         }
@@ -112,10 +112,10 @@ class FetchAlphaCommand extends Command
         $output->writeln("[+] Grabbed " . \count($runs) . " runs");
 
         // Loop trough all fetched workflow runs
-        foreach($runs as $run){
+        foreach ($runs as $run) {
 
             // Make sure this run is a successful alpha build
-            if(
+            if (
                 $run->status      !== 'completed' ||
                 $run->conclusion  !== 'success' ||
                 $run->workflow_id !== $workflow_id
@@ -124,33 +124,31 @@ class FetchAlphaCommand extends Command
             }
 
             // Make sure this run has artifacts
-            if(empty($run->artifacts_url)){
+            if (empty($run->artifacts_url)) {
                 continue;
             }
 
             // Grab artifacts
             $res = $client->request('GET', $run->artifacts_url);
             $json = \json_decode($res->getBody());
-            if(!$json || empty($json->artifacts)){
+            if (!$json || empty($json->artifacts)) {
                 continue;
             }
 
             // Handle specific artifact in workflow run
             // Fallback to first artifact
             $artifact_index = (int) ($_ENV['APP_ALPHA_PATCH_GITHUB_WORKFLOW_ARTIFACT_INDEX'] ?? 0);
-            $artifact = $json->artifacts[
-                !empty($json->artifacts[$artifact_index]) ? $artifact_index : 0
-            ];
+            $artifact = $json->artifacts[!empty($json->artifacts[$artifact_index]) ? $artifact_index : 0];
 
             // Get artifact download URL
             $dl_url = $artifact->archive_download_url ?? null;
-            if(!\is_string($dl_url) || !\filter_var($dl_url, FILTER_VALIDATE_URL)){
+            if (!\is_string($dl_url) || !\filter_var($dl_url, FILTER_VALIDATE_URL)) {
                 continue;
             }
 
             // Check if artifact is already downloaded
             $db_build = $this->em->getRepository(GithubAlphaBuild::class)->findOneBy(['artifact_id' => $artifact->id]);
-            if($db_build){
+            if ($db_build) {
                 continue;
             }
 
@@ -167,14 +165,24 @@ class FetchAlphaCommand extends Command
             $temp_archive_path_new = \sys_get_temp_dir() . '/' . $artifact->name . '-new.7z';
             $temp_archive_dir      = \sys_get_temp_dir() . '/' . $artifact->name;
 
-            // Make sure there isn't a download/archive process already executing
-            if(
-                \file_exists($temp_archive_path)
-                || \file_exists($temp_archive_path_new)
-                || \file_exists($temp_archive_dir)
-            ){
-                $output->writeln("[-] One or more temporary files for this build already exist.");
-                $output->writeln("[>] Skipping this build because the process is probably still busy...");
+            // Remove possible existing temp archive
+            if (\file_exists($temp_archive_path) && \unlink($temp_archive_path) == false) {
+                $output->writeln("[-] Temporary file already exists and can not be deleted: {$temp_archive_path}");
+                $output->writeln("[>] Skipping this release because the process is probably still busy...");
+                continue;
+            }
+
+            // Remove possible existing new temp archive
+            if (\file_exists($temp_archive_path_new) && \unlink($temp_archive_path_new) == false) {
+                $output->writeln("[-] Temporary file already exists and can not be deleted: {$temp_archive_path_new}");
+                $output->writeln("[>] Skipping this release because the process is probably still busy...");
+                continue;
+            }
+
+            // Remove possible existing temp dir
+            if (\file_exists($temp_archive_dir) && DirectoryHelper::delete($temp_archive_dir) == false) {
+                $output->writeln("[-] Temporary dir already exists and can not be deleted: {$temp_archive_dir}");
+                $output->writeln("[>] Skipping this release because the process is probably still busy...");
                 continue;
             }
 
@@ -183,7 +191,7 @@ class FetchAlphaCommand extends Command
 
                 $output->writeln("[>] Downloading: {$artifact->name} -> <info>{$temp_archive_path}</info>");
                 $client->request('GET', $artifact->archive_download_url, ['sink' => $temp_archive_path]);
-                if(!\file_exists($temp_archive_path)){
+                if (!\file_exists($temp_archive_path)) {
                     $output->writeln("[-] Failed to download artifact");
                     return Command::FAILURE;
                 } else {
@@ -192,7 +200,7 @@ class FetchAlphaCommand extends Command
 
                 // Open the archive
                 $temp_archive = UnifiedArchive::open($temp_archive_path);
-                if($temp_archive === null){
+                if ($temp_archive === null) {
                     $output->writeln("[-] Failed to open the archive");
                     return Command::FAILURE;
                 }
@@ -201,10 +209,10 @@ class FetchAlphaCommand extends Command
                 $output->writeln("[>] Extracting...");
                 try {
                     $temp_archive->extract($temp_archive_dir);
-                } catch (EmptyFileListException $ex){
+                } catch (EmptyFileListException $ex) {
                     $output->writeln("[-] No files in archive");
                     return Command::FAILURE;
-                } catch (ArchiveExtractionException $ex){
+                } catch (ArchiveExtractionException $ex) {
                     $output->writeln("[-] Archive Extraction Exception: " . $ex->getMessage());
                     return Command::FAILURE;
                 }
@@ -213,7 +221,7 @@ class FetchAlphaCommand extends Command
                 $bundled_files_added = 0;
                 $bundle_path = Config::get('storage.path.alpha-patch-file-bundle');
                 $output->writeln("[>] Adding file bundle...");
-                if($bundle_path === null || !\is_dir($bundle_path)){
+                if ($bundle_path === null || !\is_dir($bundle_path)) {
                     $output->writeln("[-] File bundle path is not a dir");
                     $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'");
                     return Command::FAILURE;
@@ -223,12 +231,12 @@ class FetchAlphaCommand extends Command
                     foreach ($iterator as $item) {
                         if ($item->isDir()) {
                             $item_dir_path = $temp_archive_dir . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-                            if(!\file_exists($item_dir_path) && !\is_dir($item_dir_path)){
+                            if (!\file_exists($item_dir_path) && !\is_dir($item_dir_path)) {
                                 \mkdir($item_dir_path);
                             }
                         } else {
                             $item_filepath = $temp_archive_dir . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-                            if(\copy($item, $item_filepath) === true){
+                            if (\copy($item, $item_filepath) === true) {
                                 $bundled_files_added++;
                             } else {
                                 throw new \Exception("failed to copy bundled alpha patch file");
@@ -242,7 +250,7 @@ class FetchAlphaCommand extends Command
                 // Rename the default 'keeperfx.cfg' file
                 $cfg_filepath     = $temp_archive_dir . '/keeperfx.cfg';
                 $cfg_filepath_new = $temp_archive_dir . '/_keeperfx.cfg';
-                if(\file_exists($cfg_filepath)){
+                if (\file_exists($cfg_filepath)) {
                     \rename($cfg_filepath, $cfg_filepath_new);
                 }
 
@@ -256,7 +264,7 @@ class FetchAlphaCommand extends Command
                 }
 
                 // Remove output file if it already exists
-                if(\file_exists($output_path)){
+                if (\file_exists($output_path)) {
                     $output->writeln("[>] '{$output_path}' already exists?");
                     $output->writeln("[>] Removing file...");
                     \unlink($output_path);
@@ -264,7 +272,7 @@ class FetchAlphaCommand extends Command
 
                 // Move new archive
                 $output->writeln("[>] Moving new archive to: <info>{$output_path}</info>");
-                if(\rename($temp_archive_path_new, $output_path) === false){
+                if (\rename($temp_archive_path_new, $output_path) === false) {
                     throw new \Exception("failed to move file");
                 }
 
@@ -276,20 +284,19 @@ class FetchAlphaCommand extends Command
 
                 // Get filesize
                 $output_filesize = \filesize($output_path);
-
-            } catch (\Exception $ex){
+            } catch (\Exception $ex) {
 
                 $output->writeln("[-] <error>Something went wrong</error>");
 
                 // Cleanup if something went wrong
                 $output->writeln("[>] Removing created files and directory...");
-                if(\file_exists($temp_archive_path)){
+                if (\file_exists($temp_archive_path)) {
                     \unlink($temp_archive_path);
                 }
-                if(\file_exists($temp_archive_path_new)){
+                if (\file_exists($temp_archive_path_new)) {
                     \unlink($temp_archive_path_new);
                 }
-                if(\file_exists($temp_archive_dir)){
+                if (\file_exists($temp_archive_dir)) {
                     DirectoryHelper::delete($temp_archive_dir);
                 }
 
@@ -305,8 +312,8 @@ class FetchAlphaCommand extends Command
 
             // Get version
             $version = null;
-            foreach($this->version_regex as $regex){
-                if(\preg_match($regex, $build_name, $matches)){
+            foreach ($this->version_regex as $regex) {
+                if (\preg_match($regex, $build_name, $matches)) {
                     $version = \str_replace('_', '.', $matches[1]);
                     break;
                 }
@@ -315,7 +322,7 @@ class FetchAlphaCommand extends Command
             // Store game files
             $output->writeln("[>] Storing game files for version {$version}");
             $game_files_store_result = $this->game_file_handler->storeVersionFromPath(ReleaseType::ALPHA, $version, $temp_archive_dir);
-            if(!$game_files_store_result){
+            if (!$game_files_store_result) {
                 $output->writeln("[-] Failed to move game files");
                 return Command::FAILURE;
             }
@@ -342,8 +349,8 @@ class FetchAlphaCommand extends Command
             $output->writeln("[+] Output filesize: " . BinaryFormatter::bytes($output_filesize)->format());
 
             // Send a notification on Discord
-            if(self::IS_ENABLED){
-                if($this->discord_notifier->notifyNewAlphaPatch($build)){
+            if (self::IS_ENABLED) {
+                if ($this->discord_notifier->notifyNewAlphaPatch($build)) {
                     $output->writeln("[+] Discord has been notified!");
                 }
             }
@@ -353,7 +360,7 @@ class FetchAlphaCommand extends Command
             // This hopefully accomplishes a few things:
             // - A possible virus that slipped in will get easily found and flagged
             // - Antivirus companies will get a sample that they can whitelist
-            if(!empty($_ENV['APP_VIRUSTOTAL_API_KEY'])){
+            if (!empty($_ENV['APP_VIRUSTOTAL_API_KEY'])) {
                 $output->writeln("[+] Sending file to VirusTotal...");
                 $resp = VirusTotalScanner::scanFile($output_path);
             }

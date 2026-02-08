@@ -28,7 +28,8 @@ class FetchPrototypeCommand extends Command
 
     private EntityManager $em;
 
-    public function __construct(EntityManager $em) {
+    public function __construct(EntityManager $em)
+    {
         $this->em = $em;
         parent::__construct();
     }
@@ -44,10 +45,10 @@ class FetchPrototypeCommand extends Command
         $output->writeln("[>] Fetching latest prototypes...");
 
         // Make sure a Github token is set
-        if(
+        if (
             !isset($_ENV['APP_GITHUB_API_AUTH_TOKEN'])
             || empty($_ENV['APP_GITHUB_API_AUTH_TOKEN'])
-        ){
+        ) {
             $output->writeln("[-] Github token not set");
             $output->writeln("[>] ENV VAR: 'APP_GITHUB_API_AUTH_TOKEN'");
             return Command::FAILURE;
@@ -55,15 +56,15 @@ class FetchPrototypeCommand extends Command
 
         // Make sure an output directory is set
         $storage_dir = Config::get('storage.path.prototype');
-        if($storage_dir === null) {
+        if ($storage_dir === null) {
             $output->writeln("[-] Prototype download directory is not set");
             $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_STORAGE_CLI_PATH' or 'APP_PROTOTYPE_STORAGE'");
             return Command::FAILURE;
         }
 
         // Create output directory if it does not exist
-        if(!\is_dir($storage_dir)){
-            if(!@\mkdir($storage_dir)){
+        if (!\is_dir($storage_dir)) {
+            if (!@\mkdir($storage_dir)) {
                 $output->writeln("[-] Failed to create prototype download directory");
                 $output->writeln("[>] DIR: {$storage_dir}");
                 return Command::FAILURE;
@@ -90,7 +91,7 @@ class FetchPrototypeCommand extends Command
         // Grab Github workflow runs
         $res = $client->request('GET', self::GITHUB_WORKFLOW_RUNS_URL);
         $json = \json_decode($res->getBody());
-        if(!$json || empty($json->workflow_runs)){
+        if (!$json || empty($json->workflow_runs)) {
             $output->writeln("[-] Failed to fetch workflow runs");
             return Command::FAILURE;
         }
@@ -101,10 +102,10 @@ class FetchPrototypeCommand extends Command
         $output->writeln("[+] Grabbed " . \count($runs) . " runs");
 
         // Loop trough all fetched workflow runs
-        foreach($runs as $run){
+        foreach ($runs as $run) {
 
             // Make sure this run is a successful prototype build
-            if(
+            if (
                 $run->status      !== 'completed' ||
                 $run->conclusion  !== 'success' ||
                 $run->workflow_id !== $workflow_id
@@ -113,14 +114,14 @@ class FetchPrototypeCommand extends Command
             }
 
             // Make sure this run has artifacts
-            if(empty($run->artifacts_url)){
+            if (empty($run->artifacts_url)) {
                 continue;
             }
 
             // Grab artifacts
             $res = $client->request('GET', $run->artifacts_url);
             $json = \json_decode($res->getBody());
-            if(!$json || empty($json->artifacts)){
+            if (!$json || empty($json->artifacts)) {
                 continue;
             }
 
@@ -129,17 +130,17 @@ class FetchPrototypeCommand extends Command
 
             // Get artifact download URL
             $dl_url = $artifact->archive_download_url ?? null;
-            if(!\is_string($dl_url) || !\filter_var($dl_url, FILTER_VALIDATE_URL)){
+            if (!\is_string($dl_url) || !\filter_var($dl_url, FILTER_VALIDATE_URL)) {
                 continue;
             }
 
             // Check if artifact is already downloaded
             $db_build = $this->em->getRepository(GithubPrototype::class)->findOneBy(['artifact_id' => $artifact->id]);
-            if($db_build){
+            if ($db_build) {
                 continue;
             }
 
-            $output->writeln("[>] New artifact found: {$run->id} -> {$artifact->id}");
+            $output->writeln("[>] New artifact found for run {$run->id}: Artifact ID {$artifact->id}");
 
             // Create filename and output path
             // Also add a random string to the new filename so the download URL can not be guessed
@@ -153,14 +154,24 @@ class FetchPrototypeCommand extends Command
             $temp_archive_path_new = \sys_get_temp_dir() . '/' . $artifact->name . '-new.7z';
             $temp_archive_dir      = \sys_get_temp_dir() . '/' . $artifact->name;
 
-            // Make sure there isn't a download/archive process already executing
-            if(
-                \file_exists($temp_archive_path)
-                || \file_exists($temp_archive_path_new)
-                || \file_exists($temp_archive_dir)
-            ){
-                $output->writeln("[-] One or more temporary files for this build already exist.");
-                $output->writeln("[>] Skipping this build because the process it probably still busy...");
+            // Remove possible existing temp archive
+            if (\file_exists($temp_archive_path) && \unlink($temp_archive_path) == false) {
+                $output->writeln("[-] Temporary file already exists and can not be deleted: {$temp_archive_path}");
+                $output->writeln("[>] Skipping this release because the process is probably still busy...");
+                continue;
+            }
+
+            // Remove possible existing new temp archive
+            if (\file_exists($temp_archive_path_new) && \unlink($temp_archive_path_new) == false) {
+                $output->writeln("[-] Temporary file already exists and can not be deleted: {$temp_archive_path_new}");
+                $output->writeln("[>] Skipping this release because the process is probably still busy...");
+                continue;
+            }
+
+            // Remove possible existing temp dir
+            if (\file_exists($temp_archive_dir) && DirectoryHelper::delete($temp_archive_dir) == false) {
+                $output->writeln("[-] Temporary dir already exists and can not be deleted: {$temp_archive_dir}");
+                $output->writeln("[>] Skipping this release because the process is probably still busy...");
                 continue;
             }
 
@@ -169,7 +180,7 @@ class FetchPrototypeCommand extends Command
 
                 $output->writeln("[>] Downloading: {$artifact->name} -> <info>{$temp_archive_path}</info>");
                 $client->request('GET', $artifact->archive_download_url, ['sink' => $temp_archive_path]);
-                if(!\file_exists($temp_archive_path)){
+                if (!\file_exists($temp_archive_path)) {
                     $output->writeln("[-] Failed to download artifact");
                     return Command::FAILURE;
                 } else {
@@ -184,7 +195,7 @@ class FetchPrototypeCommand extends Command
                 // Add bundle files
                 $bundle_path = Config::get('storage.path.prototype-file-bundle');
                 $output->writeln("[>] Adding file bundle...");
-                if($bundle_path === null || !\is_dir($bundle_path)){
+                if ($bundle_path === null || !\is_dir($bundle_path)) {
                     $output->writeln("[-] File bundle path is not set or not a dir");
                     $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_FILE_BUNDLE_STORAGE_CLI_PATH'");
                     return Command::FAILURE;
@@ -194,7 +205,7 @@ class FetchPrototypeCommand extends Command
                     foreach ($iterator as $item) {
                         if ($item->isDir()) {
                             $item_dir_path = $temp_archive_dir . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-                            if(!\file_exists($item_dir_path) && !\is_dir($item_dir_path)){
+                            if (!\file_exists($item_dir_path) && !\is_dir($item_dir_path)) {
                                 \mkdir($item_dir_path);
                             }
                         } else {
@@ -207,7 +218,7 @@ class FetchPrototypeCommand extends Command
                 // Rename the default 'keeperfx.cfg' file
                 $cfg_filepath     = $temp_archive_dir . '/keeperfx.cfg';
                 $cfg_filepath_new = $temp_archive_dir . '/_keeperfx.cfg';
-                if(\file_exists($cfg_filepath)){
+                if (\file_exists($cfg_filepath)) {
                     \rename($cfg_filepath, $cfg_filepath_new);
                 }
 
@@ -221,7 +232,7 @@ class FetchPrototypeCommand extends Command
                 }
 
                 // Remove output file if it already exists
-                if(\file_exists($output_path)){
+                if (\file_exists($output_path)) {
                     $output->writeln("[>] '{$output_path}' already exists?");
                     $output->writeln("[>] Removing file...");
                     \unlink($output_path);
@@ -233,20 +244,22 @@ class FetchPrototypeCommand extends Command
 
                 // Get filesize
                 $output_filesize = \filesize($output_path);
-
-            } catch (\Exception $ex){
+            } catch (\Exception $ex) {
 
                 $output->writeln("[-] <error>Something went wrong</error>...");
+                $output->writeln("[-] <error>{$ex->getMessage()}</error>...");
+
+                dd($ex);
 
                 // Cleanup if something went wrong
                 $output->writeln("[>] Removing created files and directory...");
-                if(\file_exists($temp_archive_path)){
+                if (\file_exists($temp_archive_path)) {
                     \unlink($temp_archive_path);
                 }
-                if(\file_exists($temp_archive_path_new)){
+                if (\file_exists($temp_archive_path_new)) {
                     \unlink($temp_archive_path_new);
                 }
-                if(\file_exists($temp_archive_dir)){
+                if (\file_exists($temp_archive_dir)) {
                     DirectoryHelper::delete($temp_archive_dir);
                 }
 
@@ -284,11 +297,10 @@ class FetchPrototypeCommand extends Command
             // This hopefully accomplishes a few things:
             // - A possible virus that slipped in will get easily found and flagged
             // - Antivirus companies will get a sample that they can whitelist
-            if(!empty($_ENV['APP_VIRUSTOTAL_API_KEY'])){
+            if (!empty($_ENV['APP_VIRUSTOTAL_API_KEY'])) {
                 $output->writeln("[+] Sending file to VirusTotal...");
                 $resp = VirusTotalScanner::scanFile($output_path);
             }
-
         }
 
         $output->writeln("[+] Done!");
