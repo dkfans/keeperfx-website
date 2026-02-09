@@ -21,7 +21,7 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
 
     public function __construct()
     {
-        if(!empty($_SERVER["REQUEST_URI"])){
+        if (!empty($_SERVER["REQUEST_URI"])) {
             $this->current_uri  = $_SERVER["REQUEST_URI"];
             $this->current_path = \parse_url($_SERVER["REQUEST_URI"])['path'];
         }
@@ -49,18 +49,25 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
      */
     public function pathEquals(string ...$paths): bool
     {
-        foreach([$this->current_uri, $this->current_path] as $current){
+        foreach ([$this->current_uri, $this->current_path] as $current) {
+
+            // Make sure the current URL is not too long
+            // 4096 is the hard limit for the fnmatch() function anyways
+            if (\strlen($current) > 4096) {
+                return false;
+            }
 
             foreach ($paths as $path) {
-                if (strpos($path, '+') !== false || strpos($path, '[') !== false) {
-                    $regex_path = str_replace('/', '\\/', addslashes($path));
+
+                if (\strpos($path, '+') !== false || \strpos($path, '[') !== false) {
+                    $regex_path = \str_replace('/', '\\/', \addslashes($path));
                     $regex_path = '~^' . $regex_path . '$~';
 
-                    if (preg_match($regex_path, $current)) {
+                    if (\preg_match($regex_path, $current)) {
                         return true;
                     }
                 }
-                if (fnmatch($path, $current)) {
+                if (\fnmatch($path, $current)) {
                     return true;
                 }
                 if ($path === $current) {
