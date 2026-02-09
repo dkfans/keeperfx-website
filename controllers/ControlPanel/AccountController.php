@@ -34,7 +34,8 @@ use Psr\SimpleCache\CacheInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpForbiddenException;
 
-class AccountController {
+class AccountController
+{
 
     public function accountSettingsIndex(
         Request $request,
@@ -44,7 +45,7 @@ class AccountController {
         FlashMessage $flash,
         EntityManager $em,
         Theme $theme,
-    ){
+    ) {
         // Response
         $response->getBody()->write(
             $twig->render('cp/account-settings.cp.html.twig', [
@@ -65,7 +66,7 @@ class AccountController {
         Account $account,
         EntityManager $em,
         FlashMessage $flash
-    ){
+    ) {
         // Get country list [XX => emoji flag]
         $countries = require APP_ROOT . '/config/country.flag.config.php';
 
@@ -74,7 +75,7 @@ class AccountController {
         $country_code = (string) $post['country'] ?? '';
 
         // Update country code
-        if (strlen($country_code) === 2 && \array_key_exists($country_code, $countries)){
+        if (strlen($country_code) === 2 && \array_key_exists($country_code, $countries)) {
             $account->getUser()->setCountry($country_code);
         } else {
             $account->getUser()->setCountry(null);
@@ -95,24 +96,24 @@ class AccountController {
         Account $account,
         EntityManager $em,
         FlashMessage $flash
-    ){
+    ) {
         // Get post vars
         $post  = $request->getParsedBody();
         $about_me = (string) ($post['about_me'] ?? '');
 
         // Check if user has a bio
         $bio = $account->getUser()->getBio();
-        if(empty($about_me)){
+        if (empty($about_me)) {
 
             // Handle removal
-            if($bio){
+            if ($bio) {
                 $em->remove($bio);
                 $em->flush();
             }
         } else {
 
             // Handle update/creation
-            if($bio){
+            if ($bio) {
                 $bio->setBio($about_me);
             } else {
                 $new_bio = new UserBio();
@@ -135,20 +136,20 @@ class AccountController {
         EntityManager $em,
         Session $session,
         FlashMessage $flash
-    ){
+    ) {
         // Get post vars
         $post  = $request->getParsedBody();
         $email = (string) $post['new_email_address'] ?? '';
 
         // Check for valid email address
-        if(empty($email) || !\filter_var($email, \FILTER_VALIDATE_EMAIL)){
+        if (empty($email) || !\filter_var($email, \FILTER_VALIDATE_EMAIL)) {
             $flash->error('Invalid email address.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
         }
 
         // Make sure this is not a throwaway email address
-        if(!MailChecker::isValid($email)){
+        if (!MailChecker::isValid($email)) {
             $flash->warning('Invalid email address.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
@@ -156,7 +157,7 @@ class AccountController {
 
         // Check if email address already exists
         $existing_email = $em->getRepository(User::class)->findOneBy(['email' => $email]);
-        if($existing_email){
+        if ($existing_email) {
             $flash->warning('This email address is already in use.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
@@ -171,7 +172,7 @@ class AccountController {
         $account->removeExistingEmailVerification();
         $email_id = $account->createEmailVerification();
         // Add the mail ID to the session so it's instantly sent
-        if($email_id){
+        if ($email_id) {
             $session['send_email'] = $email_id;
         }
 
@@ -193,14 +194,14 @@ class AccountController {
         CacheInterface $cache,
         $token_name,
         $token_value
-    ){
+    ) {
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Make sure email address is not verified yet
-        if($account->getUser()->isEmailVerified()){
+        if ($account->getUser()->isEmailVerified()) {
             $flash->warning('Your email address has already been verified.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
@@ -208,11 +209,11 @@ class AccountController {
 
         // Get the verification
         $verification = $account->getUser()->getEmailVerification();
-        if(!$verification){
+        if (!$verification) {
 
             // Create new verification
             $email_id = $account->createEmailVerification(); // This also flushes any DB changes
-            if(!$email_id){
+            if (!$email_id) {
                 throw new \Exception('failed to create new verification');
             }
 
@@ -226,8 +227,8 @@ class AccountController {
         }
 
         // Make sure user is not trying to send emails too fast
-        $cache_key = 'email_verification:' . $verification->getToken();
-        if($cache->has($cache_key)){
+        $cache_key = 'email_verification-' . $verification->getToken();
+        if ($cache->has($cache_key)) {
             $flash->warning('Please wait a few minutes before resending the verification email.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
@@ -235,7 +236,7 @@ class AccountController {
 
         // Make a new email
         $email_id = $account->createEmailVerificationMail($verification);
-        if(!$email_id){
+        if (!$email_id) {
             $flash->warning('Something went wrong while sending the verification email. Try again later.');
         } else {
             $flash->success('Verification email sent!');
@@ -261,15 +262,15 @@ class AccountController {
         CsrfGuard $csrf_guard,
         $token_name,
         $token_value
-    ){
+    ) {
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Check if this user needed to be verified
         $verification = $account->getUser()->getEmailVerification();
-        if($verification){
+        if ($verification) {
             $em->remove($verification);
         }
 
@@ -290,7 +291,7 @@ class AccountController {
         Account $account,
         EntityManager $em,
         FlashMessage $flash
-    ){
+    ) {
         // Get post vars
         $post             = $request->getParsedBody();
         $current_password = (string) $post['current_password'] ?? '';
@@ -298,14 +299,14 @@ class AccountController {
         $repeat_password  = (string) $post['repeat_password'] ?? '';
 
         // Check if current password is correct
-        if(!\password_verify($current_password, $account->getUser()->getPassword())){
+        if (!\password_verify($current_password, $account->getUser()->getPassword())) {
             $flash->error('Your current password is not correct.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
         }
 
         // Make sure passwords match
-        if($new_password !== $repeat_password){
+        if ($new_password !== $repeat_password) {
             $flash->warning('The given passwords did not match.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
@@ -328,13 +329,13 @@ class AccountController {
         TwigEnvironment $twig,
         Theme $theme,
         FlashMessage $flash,
-    ){
+    ) {
         // Get post vars
         $post     = $request->getParsedBody();
         $theme_id = (string) $post['theme_id'] ?? '';
 
         // Update the theme on the account
-        if($account->updateTheme($theme_id) === false){
+        if ($account->updateTheme($theme_id) === false) {
             $flash->error('Failed to update theme');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
@@ -354,13 +355,13 @@ class AccountController {
         FlashMessage $flash,
         UploadSizeHelper $upload_size_helper,
         WorkshopCache $workshop_cache,
-    ){
+    ) {
         // Get avatar file
         $files = $request->getUploadedFiles();
         $file  = $files['avatar'] ?? null;
 
         // Check if avatar file is valid uploaded file
-        if(!($file instanceof UploadedFileInterface) || $file->getError() === \UPLOAD_ERR_NO_FILE){
+        if (!($file instanceof UploadedFileInterface) || $file->getError() === \UPLOAD_ERR_NO_FILE) {
             $flash->error('Missing or invalid avatar file upload.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
@@ -369,18 +370,18 @@ class AccountController {
         // Check file extension
         $filename = $file->getClientFilename();
         $file_extension = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-        if(!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])){
+        if (!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
             $flash->warning('Invalid avatar image file. Allowed file types: jpg, jpeg, png, gif, webp');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
         }
 
         // Check filesize
-        if($file->getSize() > $upload_size_helper->getFinalAvatarUploadSize()){
+        if ($file->getSize() > $upload_size_helper->getFinalAvatarUploadSize()) {
             $flash->warning(
                 'Maximum upload filesize for avatar exceeded. (' .
-                BinaryFormatter::bytes($upload_size_helper->getFinalAvatarUploadSize())->format() .
-                ')'
+                    BinaryFormatter::bytes($upload_size_helper->getFinalAvatarUploadSize())->format() .
+                    ')'
             );
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
@@ -389,21 +390,21 @@ class AccountController {
         // Check if avatar upload directory exists
         // Create it if it doesn't
         $avatar_dir = Config::get('storage.path.avatar');
-        if(empty($avatar_dir)){
+        if (empty($avatar_dir)) {
             throw new \Exception('Avatar storage directory not set: \'APP_AVATAR_STORAGE\'');
         }
-        if(!is_dir($avatar_dir)){
-            if(!\mkdir($avatar_dir)){
+        if (!is_dir($avatar_dir)) {
+            if (!\mkdir($avatar_dir)) {
                 throw new \Exception('Failed to create avatar storage directory: \'' . $avatar_dir . '\'');
             }
         }
 
         // Remove any existing avatar
         $existing_avatar = $account->getUser()->getAvatar();
-        if($existing_avatar){
+        if ($existing_avatar) {
             $existing_avatar_path = $avatar_dir . '/' . $existing_avatar;
-            if(\file_exists($existing_avatar_path)){
-                if(!\unlink($existing_avatar_path)){
+            if (\file_exists($existing_avatar_path)) {
+                if (!\unlink($existing_avatar_path)) {
                     throw new \Exception("Failed to remove avatar: '{$existing_avatar_path}'");
                 }
             }
@@ -411,10 +412,10 @@ class AccountController {
 
         // Remove any existing small avatar
         $existing_avatar_small = $account->getUser()->getAvatarSmall();
-        if($existing_avatar_small){
+        if ($existing_avatar_small) {
             $existing_avatar_small_path = $avatar_dir . '/' . $existing_avatar_small;
-            if(\file_exists($existing_avatar_small_path)){
-                if(!\unlink($existing_avatar_small_path)){
+            if (\file_exists($existing_avatar_small_path)) {
+                if (!\unlink($existing_avatar_small_path)) {
                     throw new \Exception("Failed to remove small avatar: '{$existing_avatar_small_path}'");
                 }
             }
@@ -426,7 +427,7 @@ class AccountController {
 
         // Move screenshot
         $file->moveTo($avatar_path);
-        if(!\file_exists($avatar_path)){
+        if (!\file_exists($avatar_path)) {
             throw new \Exception('Failed to move uploaded avatar');
         }
 
@@ -435,7 +436,7 @@ class AccountController {
 
         // Generate a small avatar for this user
         $avatar_small = ThumbnailHelper::createThumbnail($avatar_path, 128, 128);
-        if($avatar_small){
+        if ($avatar_small) {
             $account->getUser()->setAvatarSmall($avatar_small);
         }
 
@@ -460,14 +461,14 @@ class AccountController {
         WorkshopCache $workshop_cache,
         $token_name,
         $token_value
-    ){
+    ) {
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Check if user has an avatar
-        if($account->getUser()->getAvatar() === null){
+        if ($account->getUser()->getAvatar() === null) {
             $flash->warning('You do not have an avatar.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
             return $response;
@@ -475,25 +476,25 @@ class AccountController {
 
         // Get avatar dir
         $avatar_dir = Config::get('storage.path.avatar');
-        if(empty($avatar_dir)){
+        if (empty($avatar_dir)) {
             throw new \Exception('Avatar storage directory not set: \'APP_AVATAR_STORAGE\'');
         }
-        if(!is_dir($avatar_dir)){
+        if (!is_dir($avatar_dir)) {
             throw new \Exception("Avatar storage directory does not exist: '{$avatar_dir}'");
         }
 
         // Remove avatar file
         $avatar_path = $avatar_dir . '/' . $account->getUser()->getAvatar();
-        if(\file_exists($avatar_path)){
-            if(!\unlink($avatar_path)){
+        if (\file_exists($avatar_path)) {
+            if (!\unlink($avatar_path)) {
                 throw new \Exception("Failed to remove avatar: '{$avatar_path}'");
             }
         }
 
         // Remove small avatar file
         $avatar_small_path = $avatar_dir . '/' . $account->getUser()->getAvatarSmall();
-        if(\file_exists($avatar_path)){
-            if(!\unlink($avatar_small_path)){
+        if (\file_exists($avatar_path)) {
+            if (!\unlink($avatar_small_path)) {
                 throw new \Exception("Failed to remove small avatar: '{$avatar_small_path}'");
             }
         }
@@ -521,9 +522,9 @@ class AccountController {
         Account $account,
         $token_name,
         $token_value,
-    ){
+    ) {
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
@@ -533,11 +534,11 @@ class AccountController {
         // Check if 'remember me' token is set (and valid)
         $cookies = $request->getCookieParams();
         $token = (string) ($cookies['user_cookie_token'] ?? '');
-        if($token && \preg_match('~^[a-zA-Z0-9]+$~', $token)){
+        if ($token && \preg_match('~^[a-zA-Z0-9]+$~', $token)) {
 
             // Find token in DB
             $cookieToken = $em->getRepository(UserCookieToken::class)->findOneBy(['token' => $token]);
-            if($cookieToken){
+            if ($cookieToken) {
 
                 // Remove token
                 $em->remove($cookieToken);
@@ -561,5 +562,4 @@ class AccountController {
         $response = $response->withHeader('Location', '/')->withStatus(302);
         return $response;
     }
-
 }
