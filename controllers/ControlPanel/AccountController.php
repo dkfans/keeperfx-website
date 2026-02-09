@@ -317,8 +317,6 @@ class AccountController
             }
         }
 
-
-
         // Update to new password
         $account->getUser()->setPassword($new_password);
         $em->flush();
