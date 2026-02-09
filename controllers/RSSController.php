@@ -227,7 +227,7 @@ class RSSController
                     }
 
                     if ($item->getDescription() !== null || $item->getThumbnail() !== null) {
-                        $description_with_html .= '<br /><br />';
+                        $description_with_html .= '<br />';
                     }
 
                     // Add description
