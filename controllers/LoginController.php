@@ -18,7 +18,8 @@ use Dflydev\FigCookies\FigResponseCookies;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class LoginController {
+class LoginController
+{
 
     public function loginIndex(
         Request $request,
@@ -26,10 +27,10 @@ class LoginController {
         TwigEnvironment $twig,
         Account $account,
         FlashMessage $flash
-    ){
+    ) {
 
         // Only logged-out guests allowed
-        if($account->isLoggedIn()){
+        if ($account->isLoggedIn()) {
             $response = $response->withHeader('Location', '/')->withStatus(302);
             // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
@@ -37,8 +38,8 @@ class LoginController {
 
         $params = $request->getQueryParams();
 
-        if(isset($params['msg'])){
-            switch((string)$params['msg']){
+        if (isset($params['msg'])) {
+            switch ((string)$params['msg']) {
                 case 'workshop-rate':
                     $flash->info('You need to be logged in to rate workshop items.');
                     break;
@@ -62,10 +63,10 @@ class LoginController {
         Account $account,
         FlashMessage $flash,
         BanChecker $ban_checker,
-    ){
+    ) {
 
         // Only logged-out guests allowed
-        if($account->isLoggedIn()){
+        if ($account->isLoggedIn()) {
             $response = $response->withHeader('Location', '/')->withStatus(302);
             // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
@@ -80,15 +81,15 @@ class LoginController {
         $password = (string) ($post['password'] ?? '');
         $redirect = (string) ($post['redirect'] ?? '');
 
-        if($username && $password){
+        if ($username && $password) {
 
             $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
-            if($user){
+            if ($user) {
 
-                if(\password_verify($password, $user->getPassword())){
+                if ($user->getPassword() !== null && \password_verify($password, $user->getPassword())) {
 
                     // Check if user is banned
-                    if($user->getRole() == UserRole::Banned){
+                    if ($user->getRole() == UserRole::Banned) {
 
                         // Make them wait :)
                         \sleep(1 + \random_int(0, 3));
@@ -105,7 +106,7 @@ class LoginController {
                     }
 
                     // Check if this IP or hostname is banned
-                    if($ban_checker->checkAll($ip, $hostname)){
+                    if ($ban_checker->checkAll($ip, $hostname)) {
 
                         // Make them wait :)
                         \sleep(1 + \random_int(0, 3));
@@ -125,13 +126,13 @@ class LoginController {
                     $account->setCurrentLoggedInUser($user);
 
                     // Log IP
-                    if($ip){
+                    if ($ip) {
                         $account->logIp($ip);
                     }
 
                     // Check if password hash needs updating
                     // This is required when new algorithms are used or the options change
-                    if(\password_needs_rehash(
+                    if (\password_needs_rehash(
                         $user->getPassword(),
                         $_ENV['APP_PASSWORD_HASH'],
                         [
@@ -149,7 +150,7 @@ class LoginController {
                     }
 
                     // Handle 'Remember me'
-                    if(isset($post['remember_me'])){
+                    if (isset($post['remember_me'])) {
 
                         // Add cookie to response
                         $response = FigResponseCookies::set($response, $account->createRememberMeSetCookie());
@@ -157,7 +158,7 @@ class LoginController {
 
                     // Determine redirect location
                     $redirect_location = '/';
-                    if($redirect && \preg_match('/^\/[a-zA-Z0-9\-\/\.]/', $redirect)){
+                    if ($redirect && \preg_match('/^\/[a-zA-Z0-9\-\/\.]/', $redirect)) {
                         $redirect_location = $redirect;
                     }
 
@@ -167,7 +168,6 @@ class LoginController {
                     // Redirect
                     $response = $response->withHeader('Location', $redirect_location)->withStatus(302);
                     return $response;
-
                 }
             }
         }

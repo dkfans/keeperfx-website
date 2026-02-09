@@ -298,19 +298,26 @@ class AccountController
         $new_password     = (string) $post['new_password'] ?? '';
         $repeat_password  = (string) $post['repeat_password'] ?? '';
 
-        // Check if current password is correct
-        if (!\password_verify($current_password, $account->getUser()->getPassword())) {
-            $flash->error('Your current password is not correct.');
-            $response = $response->withHeader('Location', '/account')->withStatus(302);
-            return $response;
+        // Check if current account has a password set
+        // Some accounts do not have passwords because they are creation by an OAuth connection
+        if ($account->getUser()->getPassword() !== null) {
+
+            // Check if current password is correct
+            if (!\password_verify($current_password, $account->getUser()->getPassword())) {
+                $flash->error('Your current password is not correct.');
+                $response = $response->withHeader('Location', '/account')->withStatus(302);
+                return $response;
+            }
+
+            // Make sure passwords match
+            if ($new_password !== $repeat_password) {
+                $flash->warning('The given passwords did not match.');
+                $response = $response->withHeader('Location', '/account')->withStatus(302);
+                return $response;
+            }
         }
 
-        // Make sure passwords match
-        if ($new_password !== $repeat_password) {
-            $flash->warning('The given passwords did not match.');
-            $response = $response->withHeader('Location', '/account')->withStatus(302);
-            return $response;
-        }
+
 
         // Update to new password
         $account->getUser()->setPassword($new_password);
