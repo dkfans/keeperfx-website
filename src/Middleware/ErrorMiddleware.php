@@ -77,7 +77,16 @@ class ErrorMiddleware implements MiddlewareInterface
 
             // Log error if not a normal HTTP exception
             if ($this->logger && !($ex instanceof HttpSpecializedException)) {
-                $this->logger->error($ex->getMessage());
+                $this->logger->error(
+                    sprintf(
+                        "%s: %s in %s:%d\n%s",
+                        get_class($ex),
+                        $ex->getMessage(),
+                        $ex->getFile(),
+                        $ex->getLine(),
+                        $ex->getTraceAsString()
+                    )
+                );
             }
 
             if ($json_response == true) {
