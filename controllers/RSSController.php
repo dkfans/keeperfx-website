@@ -2,19 +2,22 @@
 
 namespace App\Controller;
 
+use URLify;
 use App\Entity\NewsArticle;
+use App\Entity\WorkshopItem;
+
 use App\Entity\GithubRelease;
+use Laminas\Feed\Writer\Feed;
+
+use Laminas\Feed\Writer\Entry;
+use Doctrine\ORM\EntityManager;
 use App\Entity\GithubAlphaBuild;
 
-use Laminas\Feed\Writer\Feed;
-use Laminas\Feed\Writer\Entry;
-
-use Doctrine\ORM\EntityManager;
 use Twig\Environment as TwigEnvironment;
 use League\CommonMark\CommonMarkConverter;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Twig\Extension\Markdown\CustomMarkdownConverter;
 
 class RSSController
 {
@@ -132,7 +135,7 @@ class RSSController
     public function alphaPatchFeed(
         Request $request,
         Response $response,
-        EntityManager $em
+        EntityManager $em,
     ) {
         $alpha_patches = $em->getRepository(GithubAlphaBuild::class)->findBy(['is_available' => true], ['timestamp' => 'DESC']);
 
@@ -166,6 +169,78 @@ class RSSController
 
             // Add to feed
             $feed->addEntry($entry);
+        }
+
+        $response->getBody()->write(
+            $feed->export('rss')
+        );
+
+        return $response->withHeader('Content-Type', 'application/rss+xml');
+    }
+
+    public function workshopFeed(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        CustomMarkdownConverter $md_converter,
+    ) {
+
+        // Create feed
+        $feed = new Feed();
+        $feed
+            ->setTitle('KeeperFX - Workshop')
+            ->setDescription('The latest workshop items on the KeeperFX website')
+            ->setLink($_ENV['APP_ROOT_URL'])
+            ->setFeedLink($_ENV['APP_ROOT_URL'] . '/rss/workshop', 'rss');
+
+        // Get workshop items
+        $workshop_items = $em->getRepository(WorkshopItem::class)->findBy(['is_last_file_broken' => false], ['creation_orderby_timestamp' => 'DESC'], 10);
+        if ($workshop_items) {
+
+            /** @var WorkshopItem $item */
+            foreach ($workshop_items as $item) {
+
+                // Create feed item
+                /** @var Entry $entry */
+                $entry = $feed->createEntry();
+                $entry
+                    ->setTitle($item->getName())
+                    ->setLink($_ENV['APP_ROOT_URL'] . '/workshop/item/' . $item->getId() . '/' . URLify::slug($item->getName()))
+                    ->setDateCreated($item->getCreatedTimestamp());
+
+                // Get submitter username
+                $author = ['name' => 'KeeperFX Team'];
+                if ($item->getSubmitter()) {
+                    $author['name'] = $item->getSubmitter()->getUsername();
+                    $author['uri']  = $_ENV['APP_ROOT_URL'] . '/workshop/item/' . $item->getSubmitter()->getUsername();
+                }
+                $entry->addAuthor($author);
+
+                // Add description
+                if ($item->getDescription() !== null || $item->getThumbnail() !== null) {
+
+                    $description_with_html = '';
+
+                    // Add thumbnail
+                    if ($item->getThumbnail() !== null) {
+                        $description_with_html = '<img src="' . $_ENV['APP_ROOT_URL'] . '/workshop/image/' . $item->getId() . '/' . $item->getThumbnail() . '" />';
+                    }
+
+                    if ($item->getDescription() !== null || $item->getThumbnail() !== null) {
+                        $description_with_html .= '<br /><br />';
+                    }
+
+                    // Add description
+                    if ($item->getDescription() !== null) {
+                        $description_with_html .= $md_converter->convert($item->getDescription());
+                    }
+
+                    $entry->setDescription($description_with_html);
+                }
+
+                // Add to feed
+                $feed->addEntry($entry);
+            }
         }
 
         $response->getBody()->write(
