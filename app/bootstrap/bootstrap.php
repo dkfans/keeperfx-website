@@ -1,13 +1,15 @@
 <?php
 
-use App\Config\Config;
-use App\Kernel\ContainerFactory;
-use App\Kernel\ErrorLogger;
-
 use Dotenv\Dotenv;
+
+use App\Config\Config;
+use App\Kernel\ErrorLogger;
+use App\Kernel\ContainerFactory;
+
 use Monolog\Logger;
 use Monolog\ErrorHandler;
 use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\LineFormatter;
 
 use Psr\Log\LoggerInterface;
 
@@ -32,7 +34,7 @@ Dotenv::createImmutable(APP_ROOT)->safeLoad();
 Config::loadDir(APP_ROOT . '/config');
 
 // Custom error handler to convert warnings and notices into exceptions
-if(!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int)$_ENV['APP_RAISE_EXCEPTION_ON_WARNING'] === 1){
+if (!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int)$_ENV['APP_RAISE_EXCEPTION_ON_WARNING'] === 1) {
     \set_error_handler(function ($severity, $message, $file, $line) {
         if (!(\error_reporting() & $severity)) {
             // This error code is not included in error_reporting
@@ -44,19 +46,30 @@ if(!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int)$_ENV['APP_RAISE_EXCE
 
 // Prepare the storage
 // This should also work for docker volumes
-foreach(Config::get('storage.path') as $storage_name => $storage_path){
-    if(!empty($storage_path)){
+foreach (Config::get('storage.path') as $storage_name => $storage_path) {
+    if (!empty($storage_path)) {
         try {
             \Xenokore\Utility\Helper\DirectoryHelper::createIfNotExist($storage_path, 0777, true);
-        } catch (\Exception $ex){}
+        } catch (\Exception $ex) {
+        }
     }
 }
 
+// Create logger line formatter
+$line_formatter = new LineFormatter(
+    "[%datetime%] %channel%.%level_name%: %message%\n%context%\n%extra%\n",
+    "Y-m-d\TH:i:sP",
+    true,   // allowInlineLineBreaks (important)
+    true    // ignoreEmptyContextAndExtra
+);
+
 // Create logger
 $logger = new Logger('app');
-foreach(Config::get('logger.logs') as $log){
-    if($log['is_enabled']){
-        $logger->pushHandler(new StreamHandler($log['path'], $log['level']));
+foreach (Config::get('logger.logs') as $log) {
+    if ($log['is_enabled']) {
+        $handler = new StreamHandler($log['path'], $log['level']);
+        $handler->setFormatter($line_formatter);
+        $logger->pushHandler($handler);
     }
     unset($log);
 }
