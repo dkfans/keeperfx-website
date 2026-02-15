@@ -125,8 +125,10 @@ class FetchPrototypeCommand extends Command
                 continue;
             }
 
-            // Only handle first artifact in workflow run
-            $artifact = $json->artifacts[0];
+            // Handle specific artifact in workflow run
+            // Fallback to first artifact
+            $artifact_index = (int) ($_ENV['APP_PROTOTYPE_GITHUB_WORKFLOW_ARTIFACT_INDEX'] ?? 0);
+            $artifact = $json->artifacts[!empty($json->artifacts[$artifact_index]) ? $artifact_index : 0];
 
             // Get artifact download URL
             $dl_url = $artifact->archive_download_url ?? null;
