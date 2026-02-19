@@ -4,12 +4,12 @@
 
 {% block page %}
 
-{# Header #}
-{# <div class="content-box bg-keeper bd-keeper">
-    <div class="content-header" style="border-bottom: 0; margin-bottom: 8px;">
-        <h2>Account Settings</h2>
-    </div>
-</div> #}
+{% include 'core/_breadcrumb.html.twig' with {
+  items: [
+    { label: 'Control Panel', url: '/account' },
+    { label: 'Account Settings' }
+  ]
+} %}
 
 {# Change Avatar #}
 <div class="content-box bg-keeper bd-keeper">

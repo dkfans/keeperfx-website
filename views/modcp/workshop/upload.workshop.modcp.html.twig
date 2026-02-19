@@ -4,7 +4,14 @@
 
 {% block page %}
 
-
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Control Panel', url: '/account' },
+        { label: 'Workshop', url: '/moderate/workshop/list' },
+        { label: 'Upload' }
+    ],
+    add_back_button: true
+} %}
 
 <div class="content-box bg-keeper bd-keeper">
 <div class="content-header">

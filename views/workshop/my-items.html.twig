@@ -4,6 +4,14 @@
 
 {% block workshop_content %}
 
+    {% include 'core/_breadcrumb.html.twig' with {
+        items: [
+            { label: 'Workshop', url: '/workshop' },
+            { label: 'My workshop items' }
+        ],
+        add_back_button: false
+    } %}
+
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
             <h2>

@@ -4,6 +4,15 @@
 
 {% block page %}
 
+    {% include 'core/_breadcrumb.html.twig' with {
+        items: [
+            { label: 'Control Panel', url: '/account' },
+            { label: 'Workshop', url: '/moderate/workshop/list' },
+            { label: workshop_item.name, url: '/moderate/workshop/' ~ workshop_item.id },
+        ],
+        add_back_button: true
+    } %}
+
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">
             <div class="d-flex justify-content-between">

@@ -13,6 +13,15 @@
 
 {% block workshop_content %}
 
+    {% include 'core/_breadcrumb.html.twig' with {
+        items: [
+            { label: 'Workshop', url: '/workshop' },
+            { label: 'Profile' },
+            { label: user.username }
+        ],
+        add_back_button: false
+    } %}
+
 <div class="content-box bg-keeper bd-keeper">
 
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">

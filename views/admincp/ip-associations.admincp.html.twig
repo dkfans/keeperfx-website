@@ -4,11 +4,18 @@
 
 {% block page %}
 
-{# Stats #}
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Control Panel', url: '/account' },
+        { label: 'IP Logs', url: '/admin/ip-lookup/logs' },
+        { label: 'Find associations' }
+    ],
+    add_back_button: true
+} %}
+
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header d-flex justify-content-between">
         <h2>IP Log Associations</h2>
-        <a href="/admin/ip-lookup/logs">Back to IP logs</a>
     </div>
     <div class="content-body">
 

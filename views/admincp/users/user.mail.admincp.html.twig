@@ -4,6 +4,16 @@
 
 {% block page %}
 
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Control Panel', url: '/account' },
+        { label: 'Users', url: '/admin/user/list' },
+        { label: user.username, url: '/admin/user/' ~ user.id },
+        { label: 'Send mail' }
+    ],
+    add_back_button: true
+} %}
+
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
         <h2>Send mail to <span class="text-special">{{ user.username }}</span></h2>

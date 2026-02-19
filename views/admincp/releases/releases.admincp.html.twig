@@ -4,6 +4,14 @@
 
 {% block page %}
 
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Control Panel', url: '/account' },
+        { label: 'Releases' }
+    ],
+    add_back_button: false
+} %}
+
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
         <h2>Releases ({{ releases|length }})</h2>

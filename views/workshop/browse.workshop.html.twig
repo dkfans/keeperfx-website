@@ -8,6 +8,14 @@
 
 {% block workshop_content %}
 
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Workshop', url: '/workshop' },
+        { label: 'Browse', url: '/workshop/browse' },
+    ],
+    add_back_button: false
+} %}
+
     <div class="content-box bd-keeper bg-keeper">
         <div class="content-header">
             <div class="d-flex justify-content-between">

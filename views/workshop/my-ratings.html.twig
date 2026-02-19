@@ -2,9 +2,15 @@
 
 {% set page_title = 'My Ratings' %}
 
-
-
 {% block workshop_content %}
+
+    {% include 'core/_breadcrumb.html.twig' with {
+        items: [
+            { label: 'Workshop', url: '/workshop' },
+            { label: 'My Ratings' }
+        ],
+        add_back_button: false
+    } %}
 
     <div class="content-box bg-keeper bd-keeper">
         <div class="content-header">

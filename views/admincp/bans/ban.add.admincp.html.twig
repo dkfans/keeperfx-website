@@ -4,10 +4,18 @@
 
 {% block page %}
 
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Control Panel', url: '/account' },
+        { label: 'Bans', url: '/admin/ban/list' },
+        { label: 'Create new pattern' }
+    ],
+    add_back_button: true
+} %}
+
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
         <h2>Create new ban pattern</h2>
-        <a href="/admin/ban/list" data-instant>Go back to list</a>
     </div>
     <div class="content-body">
 

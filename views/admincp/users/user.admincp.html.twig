@@ -4,13 +4,20 @@
 
 {% block page %}
 
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Control Panel', url: '/account' },
+        { label: 'Users', url: '/admin/user/list' },
+        { label: user.username }
+    ],
+    add_back_button: true
+} %}
+
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
         <h2>{{ user.username }}</h2>
         <div>
             <a href="/workshop/user/{{ user.username|url_encode }}">View Profile</a>
-            <span class="text-muted mx-1">&bullet;</span>
-            <a href="/admin/user/list">Back to user list</a>
         </div>
     </div>
     <div class="content-body">

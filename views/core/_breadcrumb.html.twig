@@ -9,7 +9,7 @@
   <div style="display: flex; align-items: center;">
     <ol class="breadcrumb" style="margin: 10px; flex-grow: 1;">
         <li class="breadcrumb-item">
-            <a href="/">Home</a>
+            <a href="/" data-instant>Home</a>
         </li>
       {% for item in items %}
         {% if loop.last %}
@@ -20,7 +20,7 @@
 
             {% if item.url is defined %}
           <li class="breadcrumb-item">
-            <a href="{{ item.url }}">{{ item.label }}</a>
+            <a href="{{ item.url }}" data-instant>{{ item.label }}</a>
           </li>
             {% else %}
             <li class="breadcrumb-item">

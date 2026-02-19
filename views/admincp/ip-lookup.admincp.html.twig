@@ -4,6 +4,15 @@
 
 {% block page %}
 
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Control Panel', url: '/account' },
+        { label: 'IP Logs', url: '/admin/ip-lookup/logs' },
+        { label: 'Look up' }
+    ],
+    add_back_button: true
+} %}
+
 {# IP Lookup #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">

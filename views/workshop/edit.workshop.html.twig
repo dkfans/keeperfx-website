@@ -4,6 +4,15 @@
 
 {% block workshop_content %}
 
+    {% include 'core/_breadcrumb.html.twig' with {
+        items: [
+            { label: 'Workshop', url: '/workshop' },
+            { label: workshop_item.name, url: '/workshop/item/' ~ workshop_item.id ~ '/' ~ workshop_item.name|slugify },
+            { label: 'Edit', url: '/workshop/edit/' ~ workshop_item.id }
+        ],
+        add_back_button: true
+    } %}
+
     <div class="content-box bg-keeper bd-keeper">
 
         <div class="content-header">
@@ -11,8 +20,6 @@
                 <h2>Edit workshop item: {{ workshop_item.name }}</h2>
                 <div>
                     <a href="/workshop/edit/{{ workshop_item.id }}/files">Edit files</a>
-                    <span style="margin: 0 3px" class="text-muted"> • </span>
-                    <a href="/workshop/item/{{ workshop_item.id }}/{{ workshop_item.name|slugify }}">Back to workshop item</a>
                 </div>
             </div>
         </div>
