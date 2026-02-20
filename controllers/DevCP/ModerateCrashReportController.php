@@ -31,8 +31,6 @@ class ModerateCrashReportController
         $response->getBody()->write(
             $twig->render('devcp/crash-report/crash-report.list.devcp.html.twig', [
                 'crash_reports' => $em->getRepository(CrashReport::class)->findBy([], ['id' => 'DESC']),
-                'latest_alpha'  => $em->getRepository(GithubAlphaBuild::class)->findOneBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC']),
-                'latest_stable' => $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']),
             ])
         );
 

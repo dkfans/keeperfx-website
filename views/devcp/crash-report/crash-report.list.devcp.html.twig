@@ -33,25 +33,10 @@
             <tbody>
                 {% for crash_report in crash_reports %}
 
-                        {# Check if this release is either the latest alpha or stable #}
-                        {% set is_latest = false %}
-                        {% if crash_report.gameVersion is not empty and latest_alpha is not empty %}
-                            {% if crash_report.gameVersion == (latest_alpha.version ~ ' Alpha') %}
-                                {% set is_latest = true %}
-                            {% endif %}
-                        {% endif %}
-                        {% if crash_report.gameVersion is not empty and latest_stable is not empty %}
-                            {% if crash_report.gameVersion == latest_stable.version %}
-                                {% set is_latest = true %}
-                            {% endif %}
-                        {% endif %}
-
-                        <tr{% if is_latest %} style="background-color: rgba(45, 45, 45, 0.25);"{% endif %}>
+                        <tr>
                             <td data-table-search>{{ crash_report.id }}</td>
                             <td data-table-search>
-                                {% if is_latest %}<strong>{% endif %}
                                 {{ crash_report.gameVersion|unique_color }}
-                                {% if is_latest %}</strong>{% endif %}
                             </td>
                             <td data-table-search style="max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 {% if crash_report.exceptionSourceFunction is not null %}
