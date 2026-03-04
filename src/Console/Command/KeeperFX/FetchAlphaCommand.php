@@ -32,6 +32,8 @@ class FetchAlphaCommand extends Command
 
     public const GITHUB_WORKFLOW_RUNS_URL = 'https://api.github.com/repos/dkfans/keeperfx/actions/runs';
 
+    public const ARTIFACT_NAME_REGEX = '/^keeperfx\-(.+?)\_Alpha\-patch\-signed$/';
+
     private array $version_regex = [
         '/^keeperfx\-(\d+\_\d+\_\d+\_\d+)\_Alpha\-patch$/'
     ];
@@ -123,8 +125,12 @@ class FetchAlphaCommand extends Command
                 continue;
             }
 
+            // TODO: check if this workflow has already been handled
+            // Currently we check if the artifact is already downloaded, but that adds a bunch of extra requests
+
             // Make sure this run has artifacts
             if (empty($run->artifacts_url)) {
+                $output->writeln("[-] Failed to grab artifacts for this run");
                 continue;
             }
 
@@ -132,23 +138,45 @@ class FetchAlphaCommand extends Command
             $res = $client->request('GET', $run->artifacts_url);
             $json = \json_decode($res->getBody());
             if (!$json || empty($json->artifacts)) {
+                $output->writeln("[-] Failed to grab artifacts for this run");
                 continue;
             }
 
-            // Handle specific artifact in workflow run
-            // Fallback to first artifact
-            $artifact_index = (int) ($_ENV['APP_ALPHA_PATCH_GITHUB_WORKFLOW_ARTIFACT_INDEX'] ?? 0);
-            $artifact = $json->artifacts[!empty($json->artifacts[$artifact_index]) ? $artifact_index : 0];
+            // Get the correct artifact
+            $artifact = null;
+            foreach ($json->artifacts as $found_artifact) {
+                if (!isset($found_artifact->name) || empty($found_artifact->name)) {
+                    $output->writeln("[-] Invalid artifact...");
+                    continue;
+                }
+                if (\preg_match(self::ARTIFACT_NAME_REGEX, $found_artifact->name, $matches)) {
+                    $artifact = $found_artifact;
+                    continue;
+                }
+            }
 
-            // Get artifact download URL
-            $dl_url = $artifact->archive_download_url ?? null;
-            if (!\is_string($dl_url) || !\filter_var($dl_url, FILTER_VALIDATE_URL)) {
+            // Make sure artifact has an ID
+            if (!isset($artifact->id) || !is_numeric($artifact->id)) {
+                $output->writeln("[-] Missing or invalid artifact ID");
                 continue;
             }
 
             // Check if artifact is already downloaded
             $db_build = $this->em->getRepository(GithubAlphaBuild::class)->findOneBy(['artifact_id' => $artifact->id]);
             if ($db_build) {
+                continue;
+            }
+
+            // Get artifact download URL
+            $dl_url = $artifact->archive_download_url ?? null;
+            if ($dl_url == null) {
+                $output->writeln("[-] Artifact download URL not found");
+                continue;
+            }
+
+            // Validate artifact download URL
+            if (!\is_string($dl_url) || !\filter_var($dl_url, FILTER_VALIDATE_URL)) {
+                $output->writeln("[-] Invalid artifact download URL: {$dl_url}");
                 continue;
             }
 
