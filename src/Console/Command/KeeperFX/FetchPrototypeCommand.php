@@ -26,7 +26,7 @@ class FetchPrototypeCommand extends Command
 
     public const GITHUB_WORKFLOW_RUNS_URL = 'https://api.github.com/repos/dkfans/keeperfx/actions/runs';
 
-    public const ARTIFACT_NAME_REGEX = '/^keeperfx\-(.+?)\_Prototype\_(.+?)\-patch$/';
+    public const ARTIFACT_NAME_REGEX = '/^keeperfx\-([\d\_\-]+?)\_Prototype\_([a-f\d]+?)\-patch$/';
 
     private EntityManager $em;
 
