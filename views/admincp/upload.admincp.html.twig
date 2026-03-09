@@ -20,7 +20,7 @@
     <div class="content-body" id="upload-content-body">
 
         {# Upload progress bar #}
-        <div class="progress mb-3 bg-dark" id="upload-progress-wrapper">
+        <div class="progress mb-3 bg-dark d-none" id="upload-progress-wrapper">
             <div
                 id="upload-progress-bar"
                 class="progress-bar progress-bar-striped progress-bar-animated"
@@ -132,6 +132,8 @@ $(function () {
         toastr.info('URL copied!');
     });
 
+    $('#upload-progress-wrapper').removeClass(('d-none'));
+
     // Upload form handler
     $(document).on('submit', '#moderate-edit-workshop-file-form', function (e) {
         e.preventDefault();
@@ -177,6 +179,9 @@ $(function () {
 
                     // Ensure copy buttons inside new content are visible
                     $('#upload-content-body').find('[data-copy-url]').show();
+
+                    // Ensure upload progress bar is visible again
+                    $('#upload-progress-wrapper').removeClass(('d-none'));
 
                     toastr.success("File successfully uploaded!");
 
