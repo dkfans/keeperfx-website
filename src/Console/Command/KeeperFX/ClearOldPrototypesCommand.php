@@ -15,7 +15,8 @@ class ClearOldPrototypesCommand extends Command
 {
     private EntityManager $em;
 
-    public function __construct(EntityManager $em) {
+    public function __construct(EntityManager $em)
+    {
         $this->em = $em;
         parent::__construct();
     }
@@ -30,7 +31,7 @@ class ClearOldPrototypesCommand extends Command
     {
         // Make sure an output directory is set
         $storage_dir = Config::get('storage.path.prototype');
-        if($storage_dir === null) {
+        if ($storage_dir === null) {
             $output->writeln("[-] Prototype download directory is not set");
             $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_STORAGE_CLI_PATH' or 'APP_PROTOTYPE_STORAGE'");
             return Command::FAILURE;
@@ -45,25 +46,41 @@ class ClearOldPrototypesCommand extends Command
             ->getQuery()
             ->getResult();
 
-        if($result){
-            foreach($result as $entity){
+        if ($result) {
+            foreach ($result as $entity) {
 
                 $file_path = $storage_dir . '/' . $entity->getFilename();
-                if(\file_exists($file_path)){
-                    if(!\unlink($file_path)){
-                        $output->writeln("[-] Failed to remove file <error>{$file_path}</error>");
+                if (\file_exists($file_path)) {
+                    if (!\unlink($file_path)) {
+                        $output->writeln("[-] Failed to remove file: <error>{$file_path}</error>");
+                        continue;
                     }
                 }
 
                 $this->em->remove($entity);
-                $output->writeln("[+] Removed <info>{$entity->getName()}</info>");
+                $output->writeln("[+] Removed: <info>{$entity->getName()}</info>");
             }
 
             $this->em->flush();
         }
 
-        $output->writeln("[+] Done!");
+        // Remove old leftover files from storage dir
+        $output->writeln("[>] Removing old files from storage dir: <info>{$storage_dir}</info>");
+        $dir_iterator = new \RecursiveDirectoryIterator($storage_dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $iterator     = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($iterator as $item) {
+            if ($item->isFile() && $item->getMTime() < $stale_timestamp->getTimestamp()) {
+                $filepath = $item->getPathname();
+                if (\unlink($filepath)) {
+                    $output->writeln("[+] Removed leftover file: <info>{$filepath}</info>");
+                } else {
+                    $output->writeln("[-] Failed to remove leftover file: <error>{$filepath}</error>");
+                }
+            }
+        }
 
+        // Done!
+        $output->writeln("[+] Done!");
         return Command::SUCCESS;
     }
 }
