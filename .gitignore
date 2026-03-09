@@ -27,6 +27,9 @@ docker-compose.yml
 # Storage
 /storage/
 
+# GnuPG
+/.gnupg
+
 # Logs
 *.log
 php_errors.log*
