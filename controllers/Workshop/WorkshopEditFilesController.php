@@ -22,7 +22,8 @@ use Slim\Exception\HttpForbiddenException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class WorkshopEditFilesController {
+class WorkshopEditFilesController
+{
 
     public function index(
         Request $request,
@@ -32,10 +33,10 @@ class WorkshopEditFilesController {
         Account $account,
         EntityManager $em,
         $item_id
-    ){
+    ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             $flash->warning('The requested workshop item could not be found.');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
@@ -44,7 +45,7 @@ class WorkshopEditFilesController {
         }
 
         // Check if user is workshop item submitter
-        if($workshop_item->getSubmitter() !== $account->getUser()){
+        if ($workshop_item->getSubmitter() !== $account->getUser()) {
             $flash->warning('You can not edit the files for this workshop item because you did not submit it.');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
@@ -71,11 +72,10 @@ class WorkshopEditFilesController {
         UploadSizeHelper $upload_size_helper,
         WorkshopBrokenFileHandler $broken_file_handler,
         $item_id
-    )
-    {
+    ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             $flash->warning('The requested workshop item could not be found.');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
@@ -84,7 +84,7 @@ class WorkshopEditFilesController {
         }
 
         // Check if user is workshop item submitter
-        if($workshop_item->getSubmitter() !== $account->getUser()){
+        if ($workshop_item->getSubmitter() !== $account->getUser()) {
             $flash->warning('You can not edit the files for this workshop item because you did not submit it.');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
@@ -96,7 +96,7 @@ class WorkshopEditFilesController {
         $uploaded_files = $request->getUploadedFiles();
 
         // Make sure uploaded file is set
-        if(empty($uploaded_files['file']) || $uploaded_files['file']->getError() === UPLOAD_ERR_NO_FILE){
+        if (empty($uploaded_files['file']) || $uploaded_files['file']->getError() === UPLOAD_ERR_NO_FILE) {
             $flash->warning('No file was uploaded...');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
@@ -109,7 +109,7 @@ class WorkshopEditFilesController {
         $filename = $file->getClientFilename();
 
         // Make sure upload file does not exceed file size
-        if($file->getSize() > $upload_size_helper->getFinalWorkshopItemUploadSize()){
+        if ($file->getSize() > $upload_size_helper->getFinalWorkshopItemUploadSize()) {
             $flash->warning('File upload size is too big.');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
@@ -122,8 +122,8 @@ class WorkshopEditFilesController {
         $workshop_item_files_dir = $workshop_item_dir . '/files';
 
         // Make sure output directory exists
-        if(!\is_dir($workshop_item_files_dir)){
-            if(!@mkdir($workshop_item_files_dir, 0777, true)){
+        if (!\is_dir($workshop_item_files_dir)) {
+            if (!@mkdir($workshop_item_files_dir, 0777, true)) {
                 throw new \Exception("Failed to create 'files' dir for workshop item with id {$workshop_item->getId()}.");
             }
         }
@@ -136,7 +136,7 @@ class WorkshopEditFilesController {
 
         // Move uploaded file to storage
         $file->moveTo($storage_path);
-        if(!\file_exists($storage_path)){
+        if (!\file_exists($storage_path)) {
             throw new \Exception('Failed to move workshop item file');
         }
 
@@ -167,15 +167,17 @@ class WorkshopEditFilesController {
         $broken_file_handler->handleItem($workshop_item, true);
 
         $flash->success('File uploaded!');
+        $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId() . '/files')->withStatus(302);
+        return $response;
 
         // Show edit page
-        $response->getBody()->write(
-            $twig->render('workshop/edit.files.workshop.html.twig', [
-                'workshop_item' => $workshop_item,
-                'files'         => $em->getRepository(WorkshopFile::class)->findBy(['item' => $workshop_item]),
-            ])
-        );
-        return $response;
+        // $response->getBody()->write(
+        //     $twig->render('workshop/edit.files.workshop.html.twig', [
+        //         'workshop_item' => $workshop_item,
+        //         'files'         => $em->getRepository(WorkshopFile::class)->findBy(['item' => $workshop_item]),
+        //     ])
+        // );
+        // return $response;
     }
 
     public function delete(
@@ -192,28 +194,27 @@ class WorkshopEditFilesController {
         $file_id,
         $token_name,
         $token_value,
-    )
-    {
+    ) {
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if user is workshop item submitter
-        if($workshop_item->getSubmitter() !== $account->getUser()){
+        if ($workshop_item->getSubmitter() !== $account->getUser()) {
             // TODO: change to "not allowed" response
             throw new HttpNotFoundException($request);
         }
 
         // Check if workshop file exists
         $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
-        if(!$workshop_file){
+        if (!$workshop_file) {
             throw new HttpNotFoundException($request);
         }
 
@@ -224,13 +225,13 @@ class WorkshopEditFilesController {
         $workshop_file_path      = $workshop_item_files_dir . '/' . $workshop_file->getStorageFilename();
 
         // Make sure file exists
-        if(!\file_exists($workshop_file_path)){
+        if (!\file_exists($workshop_file_path)) {
             throw new \Exception("Workshop file does not exist: '{$workshop_file_path}'");
         }
 
         // Remove file and double check
         @\unlink($workshop_file_path);
-        if(\file_exists($workshop_file_path)){
+        if (\file_exists($workshop_file_path)) {
             throw new \Exception("Workshop file still exists after removal...: '{$workshop_file_path}'");
         }
 
@@ -257,7 +258,8 @@ class WorkshopEditFilesController {
                 $query_builder->expr()->and(
                     $query_builder->expr()->eq('item_id', $workshop_item->getId()),
                     $query_builder->expr()->gt('weight', $deleted_weight)
-                ))
+                )
+            )
             ->set('weight', 'weight - 1');
         $query_builder->executeQuery();
 
@@ -287,43 +289,42 @@ class WorkshopEditFilesController {
         $direction,
         $token_name,
         $token_value,
-    )
-    {
+    ) {
         // Check for valid direction
-        if(!\in_array($direction, ['up', 'down'])){
+        if (!\in_array($direction, ['up', 'down'])) {
             throw new HttpNotFoundException($request);
         }
 
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if workshop file exists
         $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
-        if(!$workshop_file){
+        if (!$workshop_file) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if file is attached to item
-        if($workshop_file->getItem() !== $workshop_item){
+        if ($workshop_file->getItem() !== $workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if file is submitted by user
-        if($workshop_file->getItem()->getSubmitter() !== $account->getUser()){
+        if ($workshop_file->getItem()->getSubmitter() !== $account->getUser()) {
             // TODO: change to "not allowed" response
             throw new HttpNotFoundException($request);
         }
 
         // Make sure we can move up
-        if($direction === 'up' && $workshop_file->getWeight() <= 0){
+        if ($direction === 'up' && $workshop_file->getWeight() <= 0) {
             $flash->error('Failed to move workshop file.');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
@@ -332,7 +333,7 @@ class WorkshopEditFilesController {
         }
 
         // Make sure we can move down
-        if($direction === 'down' && $workshop_file->getWeight() >= (\count($workshop_item->getFiles()) - 1)){
+        if ($direction === 'down' && $workshop_file->getWeight() >= (\count($workshop_item->getFiles()) - 1)) {
             $flash->error('Failed to move workshop file.');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
@@ -345,7 +346,7 @@ class WorkshopEditFilesController {
 
         // Check if we can change with the file with the wanted weight
         $workshop_file_at_wanted_weight = $em->getRepository(WorkshopFile::class)->findOneBy(['item' => $workshop_item, 'weight' => $wanted_weight]);
-        if(!$workshop_file_at_wanted_weight || $workshop_file_at_wanted_weight == $workshop_file){
+        if (!$workshop_file_at_wanted_weight || $workshop_file_at_wanted_weight == $workshop_file) {
             throw new \Exception('something went wrong..');
         }
 
@@ -366,7 +367,6 @@ class WorkshopEditFilesController {
         $flash->success('The file has been successfully moved.');
         $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId() . '/files')->withStatus(302);
         return $response;
-
     }
 
     public function rename(
@@ -379,36 +379,35 @@ class WorkshopEditFilesController {
         CsrfGuard $csrf_guard,
         $item_id,
         $file_id
-    )
-    {
+    ) {
 
         $post     = $request->getParsedBody();
         $new_name = \trim((string) ($post['name'] ?? null));
 
         // Make sure new name is valid
-        if(!$new_name || \strlen($new_name) > 64 || \strlen($new_name) < 1){
+        if (!$new_name || \strlen($new_name) > 64 || \strlen($new_name) < 1) {
             return $request;
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if workshop file exists
         $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
-        if(!$workshop_file){
+        if (!$workshop_file) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if file is attached to item
-        if($workshop_file->getItem() !== $workshop_item){
+        if ($workshop_file->getItem() !== $workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if file is owned by user
-        if($workshop_file->getItem()->getSubmitter() !== $account->getUser()){
+        if ($workshop_file->getItem()->getSubmitter() !== $account->getUser()) {
             // TODO: change to "not allowed" response
             throw new HttpNotFoundException($request);
         }

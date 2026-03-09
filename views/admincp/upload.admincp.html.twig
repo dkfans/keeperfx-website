@@ -17,7 +17,7 @@
     <div class="content-header">
         <h2>Uploads</h2>
     </div>
-    <div class="content-body" id="upload-content-body">
+    <div class="content-body">
 
         {# Upload progress bar #}
         <div class="progress mb-3 bg-dark d-none" id="upload-progress-wrapper">
@@ -34,7 +34,7 @@
         </div>
 
         {# Upload form #}
-        <form action="/admin/uploads/upload" method="POST" enctype="multipart/form-data" id="moderate-edit-workshop-file-form">
+        <form action="/admin/uploads/upload" method="POST" enctype="multipart/form-data" id="moderate-edit-item-files-form">
 
             <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
             <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
@@ -48,7 +48,7 @@
                                 *
                             </span>
                         </label>
-                        <input type="file" class="form-control" id="workshop-file" name="file" required>
+                        <input type="file" class="form-control" id="admin-upload-file" name="file" required>
                         <div class="form-group mt-1">
                             <span class="text-muted" style="font-size: 12px;">Maximum filesize: {{ globals.upload_limit.file.formatted }}</span>
                         </div>
@@ -67,7 +67,7 @@
             </p>
         {% else %}
 
-            <table class="table">
+            <table class="table" id="files-table">
 
                 <thead>
                     <tr>
@@ -132,71 +132,128 @@ $(function () {
         toastr.info('URL copied!');
     });
 
-    $('#upload-progress-wrapper').removeClass(('d-none'));
+    // Item max upload file size check
+    $('#admin-upload-file').on('change', function(){
+        if(this.files[0].size > app_store.upload_limit.file.size){
+            toastr.warning('File exceeds maximum file size of ' + app_store.upload_limit.file.formatted);
+            this.value = null;
+        }
+    });
 
-    // Upload form handler
-    $(document).on('submit', '#moderate-edit-workshop-file-form', function (e) {
-        e.preventDefault();
+    const $form = $('#moderate-edit-item-files-form');
+    const $file = $('#workshop-file');
+    const $button = $form.find('button[type="submit"]');
 
-        let form = this;
-        let formData = new FormData(form);
+    const $progressWrapper = $('#upload-progress-wrapper');
+    const $progressBar = $('#upload-progress-bar');
+
+    // Show progress bar
+    $progressWrapper.removeClass('d-none');
+
+    // Convert submit button to a normal button
+    $button.attr('type', 'button');
+
+    // Handle ajax upload
+    $button.on('click', function (e) {
+
+        e.preventDefault()
+
+        if (!$file[0].files.length) {
+            if (typeof toastr !== 'undefined') {
+                toastr.info('Please select a file first');
+            }
+            return;
+        }
+
+        $button.buttonLoader(true);
+
+        const formData = new FormData($form[0]);
+
+        $progressBar
+            .removeClass('bg-success bg-danger')
+            .addClass('progress-bar-animated')
+            .css('width', '0%')
+            .attr('aria-valuenow', 0)
+            .text('0%');
 
         $.ajax({
-            url: form.action,
-            type: 'POST',
+            url: $form.attr('action'),
+            method: 'POST',
             data: formData,
             processData: false,
             contentType: false,
+
             xhr: function () {
-                let xhr = new window.XMLHttpRequest();
+
+                const xhr = new window.XMLHttpRequest();
 
                 xhr.upload.addEventListener('progress', function (evt) {
-                    if (evt.lengthComputable) {
-                        let percent = Math.round((evt.loaded / evt.total) * 100);
 
-                        $('#upload-progress-bar')
-                            .css('width', percent + '%')
-                            .attr('aria-valuenow', percent)
-                            .text(percent + '%');
-                    }
-                }, false);
+                    if (!evt.lengthComputable) return;
+
+                    const percent = Math.round((evt.loaded / evt.total) * 100);
+
+                    $progressBar
+                        .css('width', percent + '%')
+                        .attr('aria-valuenow', percent)
+                        .text(percent + '%');
+
+                });
 
                 return xhr;
             },
+
             success: function (response) {
 
-                $('#upload-progress-bar')
+                $progressBar
                     .removeClass('progress-bar-animated')
                     .addClass('bg-success')
                     .text('Upload complete');
 
-                let newHtml = $('<div>').html(response);
-                let newContent = newHtml.find('#upload-content-body');
+                const $html = $('<div>').html(response);
+                const $newTbody = $html.find('#files-table tbody');
+                const $currentTbody = $('#files-table tbody');
 
-                if (newContent.length) {
-
-                    $('#upload-content-body').replaceWith(newContent);
-
-                    // Ensure copy buttons inside new content are visible
-                    $('#upload-content-body').find('[data-copy-url]').show();
-
-                    // Ensure upload progress bar is visible again
-                    $('#upload-progress-wrapper').removeClass(('d-none'));
-
-                    toastr.success("File successfully uploaded!");
-
-                } else {
-                    console.error('No #upload-content-body found in response');
-                    toastr.error("Upload failed");
+                if ($newTbody.length) {
+                    $currentTbody.html($newTbody.html());
                 }
+
+                $file.val('');
+                $button.buttonLoader(false);
+
+                setTimeout(function () {
+
+                    $progressBar
+                        .css('width', '0%')
+                        .attr('aria-valuenow', 0)
+                        .removeClass('bg-success progress-bar-animated')
+                        .text('0%');
+
+                }, 800);
+
+                if (typeof toastr !== 'undefined') {
+                    toastr.success('File successfully uploaded!');
+                }
+
             },
+
             error: function () {
-                $('#upload-progress-bar')
+
+                $button.buttonLoader(false);
+
+                $progressBar
                     .removeClass('progress-bar-animated')
                     .addClass('bg-danger')
                     .text('Upload failed');
+
+                if (typeof toastr !== 'undefined') {
+                    toastr.error('Upload failed');
+                }
+
             }
+
         });
+
     });
 
 });
