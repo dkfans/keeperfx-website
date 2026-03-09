@@ -141,7 +141,7 @@ class FetchPrototypeCommand extends Command
                 }
                 if (\preg_match(self::ARTIFACT_NAME_REGEX, $found_artifact->name, $matches)) {
                     $artifact = $found_artifact;
-                    continue;
+                    break;
                 }
             }
 
