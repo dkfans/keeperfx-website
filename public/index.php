@@ -118,6 +118,9 @@ if (Config::get('app.whoops.is_enabled') === true) {
         $app->run();
     } catch (\Exception $ex) {
 
+        // 500 response
+        \http_response_code(500);
+
         // Log the error
         $logger->error(
             sprintf(
@@ -129,9 +132,6 @@ if (Config::get('app.whoops.is_enabled') === true) {
                 $ex->getTraceAsString()
             )
         );
-
-        // 500 response
-        \http_response_code(500);
 
         // Check for database error
         if ($ex instanceof \PDOException || $ex instanceof \Doctrine\DBAL\Driver\PDO\Exception || $ex instanceof \Doctrine\DBAL\Exception\ConnectionException) {
