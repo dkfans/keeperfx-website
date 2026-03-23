@@ -389,6 +389,9 @@ class WorkshopEditController
             }
         }
 
+        // Remember name of workshop item
+        $item_name = $workshop_item->getName();
+
         // Remove from DB
         $em->remove($workshop_item);
         $em->flush();
@@ -396,9 +399,9 @@ class WorkshopEditController
         // Clear the workshop browse page cache so it reflects the new data
         $workshop_cache->clearAllCachedBrowsePageData();
 
-        $flash->success('Your workshop item has been removed.');
+        $flash->success("Your workshop item '$item_name' has been removed.");
 
-        $response = $response->withHeader('Location', '/workshop/browse')->withStatus(302);
+        $response = $response->withHeader('Location', '/workshop/my-items')->withStatus(302);
         return $response;
     }
 }
