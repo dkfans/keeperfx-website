@@ -19,6 +19,7 @@ class WorkshopComment
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: WorkshopItem::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private WorkshopItem $item;
 
     #[ORM\ManyToOne(targetEntity: 'User', inversedBy: 'workshop_comments')]
