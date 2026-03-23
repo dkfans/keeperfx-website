@@ -116,37 +116,52 @@ if (Config::get('app.whoops.is_enabled') === true) {
     // Catch any exceptions that aren't caught by the Error Middleware
     try {
         $app->run();
-    } catch (\PDOException | \Doctrine\DBAL\Driver\PDO\Exception | \Doctrine\DBAL\Exception\ConnectionException) {
-
-        \http_response_code(500);
-
-        // Serve correct maintenance page
-        $content_type = $_SERVER["CONTENT_TYPE"] ?? '';
-        if ($content_type == 'application/json') {
-            \header('Content-Type: application/json');
-            echo \json_encode([
-                'success'    => false,
-                'error_code' => 500,
-                'error'      => 'DATABASE_CONNECTION_ERROR'
-            ]);
-        } else {
-            echo \file_get_contents(__DIR__ . '/../views/database-connection-error.html');
-        }
     } catch (\Exception $ex) {
 
+        // Log the error
+        $logger->error(
+            sprintf(
+                "%s: %s in %s:%d\n%s",
+                get_class($ex),
+                $ex->getMessage(),
+                $ex->getFile(),
+                $ex->getLine(),
+                $ex->getTraceAsString()
+            )
+        );
+
+        // 500 response
         \http_response_code(500);
 
-        // Serve correct maintenance page
+        // Check for database error
+        if ($ex instanceof \PDOException || $ex instanceof \Doctrine\DBAL\Driver\PDO\Exception || $ex instanceof \Doctrine\DBAL\Exception\ConnectionException) {
+
+            // Database connection error message
+            $json_error_string = 'DATABASE_CONNECTION_ERROR';
+            $view_filename = 'database-connection-error.html';
+        } else {
+
+            // Default error message
+            $json_error_string = 'INTERNAL_SERVER_ERROR';
+            $view_filename = 'something-went-wrong.html';
+        }
+
+        // Check if we need to return JSON
         $content_type = $_SERVER["CONTENT_TYPE"] ?? '';
         if ($content_type == 'application/json') {
+
+            // Return JSON
             \header('Content-Type: application/json');
             echo \json_encode([
                 'success'    => false,
                 'error_code' => 500,
-                'error'      => 'INTERNAL_SERVER_ERROR'
+                'error'      => $json_error_string
             ]);
-        } else {
-            echo \file_get_contents(__DIR__ . '/../views/something-went-wrong.html');
+            return;
         }
+
+        // Return HTML view
+        echo \file_get_contents(__DIR__ . '/../views/' . $view_filename);
+        return;
     }
 }
