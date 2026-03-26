@@ -7,7 +7,7 @@
     {% include 'core/_breadcrumb.html.twig' with {
         items: [
             { label: 'Workshop', url: '/workshop' },
-            { label: workshop_item.name, url: '/workshop/item' ~ workshop_item.id ~ '/' ~ workshop_item.name|slugify },
+            { label: workshop_item.name, url: '/workshop/item/' ~ workshop_item.id ~ '/' ~ workshop_item.name|slugify },
             { label: 'Edit', url: '/workshop/edit/' ~ workshop_item.id },
             { label: 'Files' }
         ],
