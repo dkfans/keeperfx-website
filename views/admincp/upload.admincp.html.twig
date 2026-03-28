@@ -34,7 +34,7 @@
         </div>
 
         {# Upload form #}
-        <form action="/admin/uploads/upload" method="POST" enctype="multipart/form-data" id="moderate-edit-item-files-form">
+        <form action="/admin/uploads/upload" method="POST" enctype="multipart/form-data" id="admin-upload-files-form">
 
             <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
             <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
@@ -140,8 +140,8 @@ $(function () {
         }
     });
 
-    const $form = $('#moderate-edit-item-files-form');
-    const $file = $('#workshop-file');
+    const $form = $('#admin-upload-files-form');
+    const $file = $('#admin-upload-file');
     const $button = $form.find('button[type="submit"]');
 
     const $progressWrapper = $('#upload-progress-wrapper');
