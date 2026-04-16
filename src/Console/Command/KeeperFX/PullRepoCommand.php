@@ -25,7 +25,7 @@ class PullRepoCommand extends Command
 
         // Check for repo URL
         $repo_url = $_ENV['APP_KFX_REPO_URL'];
-        if(empty($repo_url)){
+        if (empty($repo_url)) {
             $output->writeln("[-] Repo URL not configured (APP_KFX_REPO_URL)");
             return Command::FAILURE;
         }
@@ -33,7 +33,7 @@ class PullRepoCommand extends Command
         // Get local keeperfx repo dir
         // TODO: make CLI chroot accessible
         $kfx_repo_dir = Config::get('storage.path.kfx-repo');
-        if(empty($kfx_repo_dir)){
+        if (empty($kfx_repo_dir)) {
             $output->writeln("[-] KeeperFX Repo dir not configured (APP_KFX_REPO_STORAGE)");
             return Command::FAILURE;
         }
@@ -42,27 +42,26 @@ class PullRepoCommand extends Command
         $output->writeln("[>] KeeperFX project dir: {$kfx_repo_dir}");
 
         // Check if directory is accessible
-        if(!DirectoryHelper::isAccessible($kfx_repo_dir)){
+        if (!DirectoryHelper::isAccessible($kfx_repo_dir)) {
 
             // Clone the wiki repo
             $output->writeln("[>] Cloning KeeperFX repo...");
             $process = new Process(['git',  'clone', $repo_url, $kfx_repo_dir]);
             $process->run();
-            if(!$process->isSuccessful()){
+            if (!$process->isSuccessful()) {
                 $output->writeln("[-] Failed to clone wiki");
                 return Command::FAILURE;
             }
-
         } else {
 
             // Check if directory is a git repo
             $output->writeln("[>] Checking if directory is a git repo...");
             $process = new Process(['git',  'status'], $kfx_repo_dir);
             $process->run();
-            if(!$process->isSuccessful()){
+            if (!$process->isSuccessful()) {
 
                 // Delete directory
-                if(DirectoryHelper::delete($kfx_repo_dir) == false){
+                if (DirectoryHelper::delete($kfx_repo_dir) == false) {
                     $output->writeln("[-] Failed to delete incompatible KeeperFX repo directory");
                     return Command::FAILURE;
                 }
@@ -71,18 +70,19 @@ class PullRepoCommand extends Command
                 $output->writeln("[>] Cloning KeeperFX repo...");
                 $process = new Process(['git',  'clone', $repo_url, $kfx_repo_dir]);
                 $process->run();
-                if(!$process->isSuccessful()){
+                if (!$process->isSuccessful()) {
                     $output->writeln("[-] Failed to clone KeeperFX repo");
                     return Command::FAILURE;
                 }
-
             } else {
 
                 // Reset local repo changes
                 $output->writeln("[>] Resetting local KeeperFX repo changes...");
-                $process = new Process(['git',  'reset', '--hard'], $kfx_repo_dir);
-                $process->run();
-                if(!$process->isSuccessful()){
+                $process_local = new Process(['git',  'reset', '--hard'], $kfx_repo_dir);
+                $process_remote = new Process(['git',  'reset', '--hard', 'origin/master'], $kfx_repo_dir);
+                $process_local->run();
+                $process_remote->run();
+                if ($process_local->isSuccessful() == false && $process_remote->isSuccessful() == false) {
                     $output->writeln("[-] Failed to reset KeeperFX repo");
                     return Command::FAILURE;
                 }
@@ -91,7 +91,7 @@ class PullRepoCommand extends Command
                 $output->writeln("[>] Pulling last KeeperFX repo...");
                 $process = new Process(['git',  'pull'], $kfx_repo_dir);
                 $process->run();
-                if(!$process->isSuccessful()){
+                if (!$process->isSuccessful()) {
                     $output->writeln("[-] Failed to pull KeeperFX repo");
                     return Command::FAILURE;
                 }
