@@ -167,6 +167,7 @@ $(function () {
 
         $button.buttonLoader(true);
 
+        const fileName = $file[0].files[0].name;
         const formData = new FormData($form[0]);
 
         $progressBar
@@ -216,6 +217,12 @@ $(function () {
 
                 if ($newTbody.length) {
                     $currentTbody.html($newTbody.html());
+                    $currentTbody.find('[data-copy-url]').show();
+
+                    // Highlight the row that has the filename we uploaded
+                    $currentTbody.find('a').filter(function() {
+                        return $(this).text().trim() === fileName;
+                    }).parent().parent().css('background-color', 'rgba(45, 45, 45, 0.25)');
                 }
 
                 $file.val('');
