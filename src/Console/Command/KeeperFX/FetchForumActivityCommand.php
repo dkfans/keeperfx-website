@@ -33,12 +33,14 @@ class FetchForumActivityCommand extends Command
         // Check if enabled
         if ($_ENV['APP_FORUM_ACTIVITY_ENABLED'] != 1) {
             $output->writeln("[?] Fetching forum threads is disabled");
+            $this->cache->delete('keeperfx_forum_threads');
             return Command::SUCCESS;
         }
 
         // Make sure URL is set
         if (empty($_ENV['APP_FORUM_ACTIVITY_URL'])) {
             $output->writeln("[-] No forum activity URL set");
+            $this->cache->delete('keeperfx_forum_threads');
             return Command::FAILURE;
         }
 
@@ -59,7 +61,7 @@ class FetchForumActivityCommand extends Command
 
         // Create Guzzle HTTP client config
         $guzzle_config = [
-            'verify' => false // Don't verify SSL connection
+            'verify' => false, // Don't verify SSL connection
         ];
 
         // Check if we need to connect to IP instead (and pass the host)
@@ -70,7 +72,14 @@ class FetchForumActivityCommand extends Command
         }
 
         // Create HTTP client
-        $client = new \GuzzleHttp\Client($guzzle_config);
+        // Optionally use FlareSolverr to bypass the CloudFlare check
+        if ((bool)($_ENV['APP_FORUM_ACTIVITY_USE_FLARESOLVERR'] ?? false) == true) {
+            $client = new \App\Guzzle\FlareSolverrGuzzleClient($guzzle_config);
+            $flaresolverr_client_string = (string) ($_ENV['GUZZLE_FLARESOLVERR_CLIENT'] ?? 'null');
+            $output->writeln("[>] Using FlareSolverr proxy: {$flaresolverr_client_string}");
+        } else {
+            $client = new \GuzzleHttp\Client($guzzle_config);
+        }
 
         try {
 
@@ -83,15 +92,17 @@ class FetchForumActivityCommand extends Command
             } elseif ($ex->getCode() == 404) {
                 $output->writeln("[-] 404 Not found");
             } else {
-                $output->writeln("[-] Unknown problem");
+                $output->writeln("[-] Exception: {$ex->getMessage()}");
             }
 
+            $this->cache->delete('keeperfx_forum_threads');
             return Command::FAILURE;
         }
 
         $content = $res->getBody();
         if (!$content) {
             $output->writeln("[-] Failed to grab content");
+            $this->cache->delete('keeperfx_forum_threads');
             return Command::FAILURE;
         }
 
