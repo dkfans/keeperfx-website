@@ -413,3 +413,12 @@ $app->redirect('/api/v1/stable/latest', '/api/v1/release/stable/latest', 301);
 $app->redirect('/api/v1/alpha/latest', '/api/v1/release/alpha/latest', 301);
 $app->redirect('/api/v1/stable/check/{version}', '/api/v1/release/stable/check/{version}', 301);
 $app->redirect('/api/v1/alpha/check/{version}', '/api/v1/release/alpha/check/{version}', 301);
+
+// Add '/download/' after '/game-files/'
+$app->get('/game-files/{version:alpha|stable}/{rest:.*}', function ($request, $response) {
+    $version = $request->getAttribute('version');
+    $rest = $request->getAttribute('rest');
+    return $response
+        ->withHeader('Location', "/game-files/download/$version/$rest")
+        ->withStatus(301);
+});
