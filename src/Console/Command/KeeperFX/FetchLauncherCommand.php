@@ -20,7 +20,7 @@ use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 
 class FetchLauncherCommand extends Command
 {
-    public const GITHUB_RELEASE_URL = 'https://api.github.com/repos/yani/keeperfx-launcher-qt/releases';
+    public const GITHUB_RELEASE_URL = 'https://api.github.com/repos/dkfans/keeperfx-launcher-qt/releases';
 
     private array $files_archive_asset_regex = [
         '/^keeperfx\-launcher\-qt\-(.+?)\-win64\.7z$/'
@@ -46,7 +46,7 @@ class FetchLauncherCommand extends Command
     {
         // Make sure an output directory is set
         $storage_dir = Config::get('storage.path.launcher');
-        if($storage_dir === null){
+        if ($storage_dir === null) {
             $output->writeln("[-] Launcher storage directory is not set");
             $output->writeln("[>] ENV VAR: 'APP_LAUNCHER_STORAGE_CLI_PATH' or 'APP_LAUNCHER_STORAGE'");
             return Command::FAILURE;
@@ -64,7 +64,7 @@ class FetchLauncherCommand extends Command
         // Fetch releases
         $res = $client->request('GET', self::GITHUB_RELEASE_URL);
         $gh_releases = JsonHelper::decode($res->getBody());
-        if(empty($gh_releases)){
+        if (empty($gh_releases)) {
             $output->writeln("[-] Failed to fetch releases");
             return Command::FAILURE;
         }
@@ -74,36 +74,36 @@ class FetchLauncherCommand extends Command
         $output->writeln("[>] Found {$release_count} releases...");
 
         // Loop trough all fetched releases
-        foreach($gh_releases as $gh_release){
+        foreach ($gh_releases as $gh_release) {
 
             // Make sure github release data is valid
-            if(empty($gh_release->tag_name) || empty($gh_release->assets) || empty($gh_release->assets[0]->browser_download_url)){
+            if (empty($gh_release->tag_name) || empty($gh_release->assets) || empty($gh_release->assets[0]->browser_download_url)) {
                 $output->writeln("[-] Invalid github release data...");
                 continue;
             }
 
             // Check if release already exists in DB
             $db_release = $this->em->getRepository(LauncherRelease::class)->findOneBy(['tag' => $gh_release->tag_name]);
-            if($db_release){
+            if ($db_release) {
                 continue;
             }
 
             // Get assets
             $files_archive_asset = null;
             $installer_asset = null;
-            foreach($gh_release->assets as $asset){
+            foreach ($gh_release->assets as $asset) {
 
                 // Files
-                foreach($this->files_archive_asset_regex as $regex){
-                    if(\preg_match($regex, $asset->name, $matches)){
+                foreach ($this->files_archive_asset_regex as $regex) {
+                    if (\preg_match($regex, $asset->name, $matches)) {
                         $files_archive_asset = $asset;
                         continue 2;
                     }
                 }
 
                 // Installer
-                foreach($this->installer_asset_regex as $regex){
-                    if(\preg_match($regex, $asset->name, $matches)){
+                foreach ($this->installer_asset_regex as $regex) {
+                    if (\preg_match($regex, $asset->name, $matches)) {
                         $installer_asset = $asset;
                         continue 2;
                     }
@@ -111,7 +111,7 @@ class FetchLauncherCommand extends Command
             }
 
             // Make sure assets are found
-            if($files_archive_asset === null || $installer_asset === null){
+            if ($files_archive_asset === null || $installer_asset === null) {
                 $output->writeln("[-] Failed to get required assets");
                 return Command::FAILURE;
             }
@@ -126,20 +126,20 @@ class FetchLauncherCommand extends Command
             $launcher_installer_storage_path = $launcher_storage_dir . '/keeperfx-web-installer.exe';
 
             // Make sure there isn't a download/archive process already executing
-            if(\file_exists($temp_archive_dir)){
+            if (\file_exists($temp_archive_dir)) {
                 $output->writeln("[-] The temporary directory for this release already exist.");
                 $output->writeln("[>] Skipping this release because the process is probably still busy...");
                 continue;
             }
 
             // Make temporary asset directory
-            if(!DirectoryHelper::createIfNotExist($temp_archive_dir)){
+            if (!DirectoryHelper::createIfNotExist($temp_archive_dir)) {
                 $output->writeln("[-] Failed to create temporary folder: $temp_archive_dir");
                 return Command::FAILURE;
             }
 
             // Make temporary asset directory for archive files
-            if(!DirectoryHelper::createIfNotExist($temp_archive_files_dir)){
+            if (!DirectoryHelper::createIfNotExist($temp_archive_files_dir)) {
                 $output->writeln("[-] Failed to create temporary folder: $temp_archive_files_dir");
                 return Command::FAILURE;
             }
@@ -151,7 +151,7 @@ class FetchLauncherCommand extends Command
                 // Download installer
                 $output->writeln("[>] Downloading: {$gh_release->name} -> <info>{$temp_installer_path}</info> ({$installer_asset->size} bytes)");
                 $client->request('GET', $installer_asset->browser_download_url, ['sink' => $temp_installer_path]);
-                if(!\file_exists($temp_installer_path)){
+                if (!\file_exists($temp_installer_path)) {
                     $output->writeln("[-] Failed to download installer");
                     return Command::FAILURE;
                 } else {
@@ -161,7 +161,7 @@ class FetchLauncherCommand extends Command
                 // Download files archive
                 $output->writeln("[>] Downloading: {$gh_release->name} -> <info>{$temp_files_archive_path}</info> ({$files_archive_asset->size} bytes)");
                 $client->request('GET', $files_archive_asset->browser_download_url, ['sink' => $temp_files_archive_path]);
-                if(!\file_exists($temp_files_archive_path)){
+                if (!\file_exists($temp_files_archive_path)) {
                     $output->writeln("[-] Failed to download files archive");
                     return Command::FAILURE;
                 } else {
@@ -170,7 +170,7 @@ class FetchLauncherCommand extends Command
 
                 // Open the files archive
                 $files_archive = UnifiedArchive::open($temp_files_archive_path);
-                if($files_archive === null){
+                if ($files_archive === null) {
                     $output->writeln("[-] Failed to open the files archive");
                     return Command::FAILURE;
                 }
@@ -179,21 +179,20 @@ class FetchLauncherCommand extends Command
                 $output->writeln("[>] Extracting...");
                 try {
                     $files_archive->extract($temp_archive_files_dir);
-                } catch (EmptyFileListException $ex){
+                } catch (EmptyFileListException $ex) {
                     $output->writeln("[-] No files in files archive");
                     return Command::FAILURE;
-                } catch (ArchiveExtractionException $ex){
+                } catch (ArchiveExtractionException $ex) {
                     $output->writeln("[-] Archive Extraction Exception: " . $ex->getMessage());
                     return Command::FAILURE;
                 }
-
             } catch (\Exception $ex) {
 
                 $output->writeln("[-] <error>Something went wrong</error>");
 
                 // Cleanup if something went wrong
                 $output->writeln("[>] Removing created files and directory...");
-                if(\file_exists($temp_archive_dir)){
+                if (\file_exists($temp_archive_dir)) {
                     DirectoryHelper::delete($temp_archive_dir);
                 }
 
@@ -201,33 +200,33 @@ class FetchLauncherCommand extends Command
             }
 
             // Make storage dir
-            if(!DirectoryHelper::createIfNotExist($launcher_storage_dir)){
+            if (!DirectoryHelper::createIfNotExist($launcher_storage_dir)) {
                 $output->writeln("[-] Failed to create folder: $launcher_storage_dir");
                 return Command::FAILURE;
             }
 
             // Move installer
-            if(!\rename($temp_installer_path, $launcher_installer_storage_path)){
+            if (!\rename($temp_installer_path, $launcher_installer_storage_path)) {
                 $output->writeln("[-] Failed to move installer: $temp_installer_path -> $launcher_installer_storage_path");
                 return Command::FAILURE;
             }
 
             // Make files dir
-            if(!DirectoryHelper::createIfNotExist($launcher_files_storage_dir)){
+            if (!DirectoryHelper::createIfNotExist($launcher_files_storage_dir)) {
                 $output->writeln("[-] Failed to create folder: $launcher_files_storage_dir");
                 return Command::FAILURE;
             }
 
             // Move files in files dir
-            foreach (scandir($temp_archive_files_dir) as $file){
-                if ($file != '.' && $file != '..'){
+            foreach (scandir($temp_archive_files_dir) as $file) {
+                if ($file != '.' && $file != '..') {
                     \copy($temp_archive_files_dir . '/' . $file, $launcher_files_storage_dir . '/' . $file);
                 }
             }
 
             // Clean up
             $output->writeln("[>] Removing temporary files...");
-            if(\file_exists($temp_archive_dir)){
+            if (\file_exists($temp_archive_dir)) {
                 DirectoryHelper::delete($temp_archive_dir);
             }
 
