@@ -49,9 +49,10 @@
     var filemap_tree = $('#filemap_tree').treeview({
         data          : {{ filemap_widget_data|json_encode()|raw }},
         levels        : 1,
-        showBorder    : false,
+        showBorder    : true,
         showIcon      : true,
         backColor     : "#222",
+        borderColor   : "#333",
         color         : "#f0f0f0",
         onhoverColor  : "#2a2a2a",
         expandIcon    : "ti ti-folder",
@@ -68,7 +69,28 @@
                 $('#filemap_tree').treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
             }
 
-        }
+        },
+    });
+
+    // Fix download links (anchors)
+    $('#filemap_tree a').on('click', function(e){
+
+        // Prevent any events
+        // Otherwise a bug arises where we can only download 1 file
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        // Create temporary anchor based on original anchor
+        const $this = $(this);
+        const $temp = $('<a>', {
+            href: $this.attr('href'),
+            download: $this.text(),
+            target: '_blank'
+        }).appendTo('body');
+
+        // Remove temporary anchor
+        $temp[0].click();
+        $temp.remove();
     });
 
 
@@ -82,10 +104,14 @@
         if(string == ""){
             filemap_tree.treeview('clearSearch');
             filemap_tree.treeview('collapseAll');
+
+            $(filemap_tree).unmark();
             return;
         }
 
         var results = filemap_tree.treeview('search', [ string, {ignoreCase: true, revealResults: true} ]);
+
+        $(filemap_tree).mark(string);
     }));
 
 </script>
