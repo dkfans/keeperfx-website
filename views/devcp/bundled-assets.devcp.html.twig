@@ -100,7 +100,8 @@
         var game_files_tree = $('#game_files_tree').treeview({
             data          : {{ game_files_tree|json_encode()|raw }},
             levels        : 1,
-            showBorder    : false,
+            showBorder    : true,
+            borderColor   : "#333",
             showIcon      : true,
             backColor     : "#222",
             color         : "#f0f0f0",
@@ -124,7 +125,8 @@
         var alpha_patch_tree = $('#alpha_patch_tree').treeview({
             data          : {{ alpha_patch_tree|json_encode()|raw }},
             levels        : 1,
-            showBorder    : false,
+            showBorder    : true,
+            borderColor   : "#333",
             showIcon      : true,
             backColor     : "#222",
             color         : "#f0f0f0",
@@ -148,7 +150,8 @@
         var prototype_tree = $('#prototype_tree').treeview({
             data          : {{ prototype_tree|json_encode()|raw }},
             levels        : 1,
-            showBorder    : false,
+            showBorder    : true,
+            borderColor   : "#333",
             showIcon      : true,
             backColor     : "#222",
             color         : "#f0f0f0",
