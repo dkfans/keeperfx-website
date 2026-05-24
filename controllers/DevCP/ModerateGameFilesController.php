@@ -59,11 +59,17 @@ class ModerateGameFilesController
         if (!$game_file_index) {
             throw new HttpNotFoundException($request);
         }
+
+        $game_version = $game_file_index->getVersion();
+
         // Show output
         $response->getBody()->write(
             $twig->render('devcp/game-files/game-files.devcp.html.twig', [
-                'game_version'        => $game_file_index->getVersion(),
-                'filemap_widget_data' => $this->buildWidgetFileTreeFromFilemap($game_file_index->getData()),
+                'game_version'        => $game_version,
+                'filemap_widget_data' => $this->buildWidgetFileTreeFromFilemap(
+                    $game_file_index->getData(),
+                    $_ENV['APP_ROOT_URL'] . "/game-files/download/{$type}/{$game_version}"
+                ),
             ])
         );
         return $response;
@@ -72,7 +78,7 @@ class ModerateGameFilesController
     /**
      * Converts filemap (path => checksum) to widget tree format
      */
-    private function buildWidgetFileTreeFromFilemap(array $filemap): array
+    private function buildWidgetFileTreeFromFilemap(array $filemap, ?string $base_url = null): array
     {
         $root = [];
 
@@ -102,7 +108,7 @@ class ModerateGameFilesController
 
             // Add the file with checksum tag
             $current[] = [
-                'text' => $filename,
+                'text' => $base_url != null ? "<a href='{$base_url}/{$normalized}' download target='_blank'>{$filename}</a>" : $filename,
                 'tags' => [$checksum]
             ];
         }
