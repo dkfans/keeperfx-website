@@ -1689,8 +1689,8 @@ div.phpdebugbar-widgets-callgraph pre span {
 }
 
 .md-alert-note {
-    border-color: #448aff;
-    background-color: rgba(68, 138, 255, 0.1);
+    border-color: rgba(68, 138, 255, 0.63);
+    background-color: rgba(68, 138, 255, 0.032);
 }
 
 .md-alert-note svg {
@@ -1698,8 +1698,8 @@ div.phpdebugbar-widgets-callgraph pre span {
 }
 
 .md-alert-tip {
-    border-color: #00c853;
-    background-color: rgba(0, 200, 83, 0.1);
+    border-color: rgba(0, 200, 83, 0.63);
+    background-color: rgba(0, 200, 83, 0.032);
 }
 
 .md-alert-tip svg {
@@ -1707,8 +1707,8 @@ div.phpdebugbar-widgets-callgraph pre span {
 }
 
 .md-alert-important {
-    border-color: #b300ff;
-    background-color: rgba(165, 17, 251, 0.1);
+    border-color: rgba(171, 0, 244, 0.63);
+    background-color: rgba(165, 17, 251, 0.032);
 }
 
 .md-alert-important svg {
@@ -1716,8 +1716,8 @@ div.phpdebugbar-widgets-callgraph pre span {
 }
 
 .md-alert-warning {
-    border-color: #ffab00;
-    background-color: rgba(255, 171, 0, 0.1);
+    border-color: rgba(255, 171, 0, 0.63);
+    background-color: rgba(255, 171, 0, 0.032);
 }
 
 .md-alert-warning svg {
@@ -1725,8 +1725,8 @@ div.phpdebugbar-widgets-callgraph pre span {
 }
 
 .md-alert-caution {
-    border-color: #ff5252;
-    background-color: rgba(255, 82, 82, 0.1);
+    border-color: rgba(255, 82, 82, 0.63);
+    background-color: rgba(255, 82, 82, 0.032);
 }
 
 .md-alert-caution svg {
