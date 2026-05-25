@@ -31,13 +31,6 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.42.0/tabler-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css" />
-    <style>
-        .node-filemap_tree .badge {
-            float: right;
-            font-family: monospace;
-            font-size: 14px;
-        }
-    </style>
 {% endblock %}
 
 {% block body_javascript %}
@@ -54,19 +47,20 @@
         backColor     : "#222",
         borderColor   : "#333",
         color         : "#f0f0f0",
-        onhoverColor  : "#2a2a2a",
+        onhoverColor  : "#252525",
+        selectedBackColor : "#222",
         expandIcon    : "ti ti-folder",
         collapseIcon  : "ti ti-folder-open",
         emptyIcon     : "ti ti-file-filled",
         showTags: true,
-        onNodeSelected: function(event, data) {
+        onNodeSelected: function(e, data) {
 
-            // Deselect again
-            $('#filemap_tree').treeview('toggleNodeSelected', [ data.nodeId, { silent: true } ]);
-
-            // Open or close directories
             if(typeof data.nodes != 'undefined'){
-                $('#filemap_tree').treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
+                // Open or close directories
+                $('#filemap_tree').treeview('toggleNodeExpanded', [ data.nodeId ]);
+            } else {
+                // Deselect if file
+                $('#filemap_tree').treeview('toggleNodeSelected', [ data.nodeId, { silent: true } ]);
             }
 
         },
@@ -95,16 +89,18 @@
 
 
     // Handle search
-    $('#search').on('keyup', $.debounce(1000, function(e){
+    $('#search').val(""); // clear input
+    $('#search').on('keyup change', $.debounce(100, function(e){
 
         // Get search string
         var string = $(this).val().toLowerCase();
 
+        // Clear open folders
+        filemap_tree.treeview('collapseAll');
+
         // Handle clearing of search
         if(string == ""){
             filemap_tree.treeview('clearSearch');
-            filemap_tree.treeview('collapseAll');
-
             $(filemap_tree).unmark();
             return;
         }
@@ -113,6 +109,14 @@
 
         $(filemap_tree).mark(string);
     }));
+
+    $(filemap_tree).on('searchComplete', function(event, data) {
+        $(filemap_tree).find('.node-filemap_tree').not(':has(> .ti-folder-open), .search-result').hide();
+    });
+
+    $(filemap_tree).on('searchCleared', function(event, data) {
+        $(filemap_tree).find('.node-filemap_tree').show();
+    });
 
 </script>
 

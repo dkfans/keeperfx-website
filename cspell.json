@@ -178,6 +178,7 @@
         "timeago",
         "TINYINT",
         "toastr",
+        "treeview",
         "unicode",
         "unmark",
         "urlify",
