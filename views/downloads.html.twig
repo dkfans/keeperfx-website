@@ -11,7 +11,96 @@
 {{ render_flash_messages() }}
 
 {# Download buttons #}
-<div class="content-box" style="padding: 10px; text-align: center;">
+<div class="d-flex flex-column align-items-center" style="margin: 5em 15px 6em 15px; padding: 10px;">
+
+    <h2 class="mt-3 mb-4">Download KeeperFX</h2>
+
+    <div class="d-flex flex-row align-items-center" style="gap: 20px">
+
+        {% if launcher %}
+
+            <a href="/download/web-installer/{{ launcher.nameHash }}/keeperfx-web-installer.exe"
+                class="btn btn-medieval p-3 text-start"
+                role="button" download>
+
+                <div class="row align-items-center g-4 p-2">
+                    <div class="col-auto">
+                        {# style="filter: invert(45%) sepia(80%) saturate(3929%) hue-rotate(188deg) brightness(99%) contrast(111%); #}
+                        <img src="/img/os/windows.svg"
+                            style="filter: invert(100%) brightness(90%);
+                                    width: 52px; height: 52px;" />
+                    </div>
+                    <div class="col">
+                        <h4 class="fs-5 text-white">
+                            KeeperFX for Windows
+                        </h4>
+
+                        <div class="d-flex flex-column" style="font-size: 0.85em;">
+                            <span class="text-gray">Online <span class="text-white">Installer + Updater</span></span>
+                            <span class="text-gray"><span class="text-white">Windows 10</span> and higher (<span class="text-white">64bit</span>)</span>
+                        </div>
+
+                    </div>
+                </div>
+            </a>
+
+            {# <span class="mt-2 font-monospace text-dark text-center" style="font-size: 0.85em">
+                keeperfx-web-installer.exe ({{ launcher.sizeInBytes|format_bytes }})
+                <br />
+                SHA256: azda51zda91zd9a1zd9a19zd1d59az19da5
+            </span> #}
+
+        {% endif %}
+
+        <div class="btn btn-medieval btn-medieval-black p-3 text-start" style="cursor: not-allowed;">
+            <div class="row align-items-center g-4 p-2">
+                <div class="col-auto">
+                    {# style="filter: invert(45%) sepia(80%) saturate(3929%) hue-rotate(188deg) brightness(99%) contrast(111%); #}
+                    <img src="/img/os/linux.svg"
+                        style="filter: invert(100%) brightness(90%);
+                                width: 52px; height: 52px;" />
+                </div>
+                <div class="col">
+                    <h4 class="fs-5 text-white">
+                        KeeperFX for Linux
+                    </h4>
+
+                    <div class="d-flex flex-column" style="font-size: 0.85em;">
+                        <span class="text-gray">Not available yet</span>
+                        <span class="text-muted">Coming soon...</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="btn btn-medieval btn-medieval-black p-3 text-start" style="cursor: not-allowed;">
+            <div class="row align-items-center g-4 p-2">
+                <div class="col-auto">
+                    {# style="filter: invert(45%) sepia(80%) saturate(3929%) hue-rotate(188deg) brightness(99%) contrast(111%); #}
+                    <img src="/img/os/apple.svg"
+                        style="filter: invert(100%) brightness(90%);
+                                width: 52px; height: 52px;" />
+                </div>
+                <div class="col">
+                    <h4 class="fs-5 text-white">
+                        KeeperFX for Mac
+                    </h4>
+
+                    <div class="d-flex flex-column" style="font-size: 0.85em;">
+                        <span class="text-gray">Not available yet</span>
+                        <span class="text-muted">Maybe some day</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{# <div class="content-box" style="padding: 10px; text-align: center;">
     {% if workshop_globals.stable_builds|length > 0 %}
         <a href="{{ (workshop_globals.stable_builds|first).downloadUrl }}" class="btn btn-medieval" style="margin: 15px; min-height: 100px; padding: 20px" data-stable-build-download="true" download>
             <h3>Download latest release</h3>
@@ -24,35 +113,13 @@
             <span>{{ alpha_builds[0].name }}</span>
         </a>
     {% endif %}
-
-    <br /><br />
-
-    {% if launcher %}
-        <a href="/download/web-installer/{{ launcher.nameHash }}/keeperfx-web-installer.exe"
-            class="btn btn-medieval btn-medieval-blue p-3"
-            style="text-align: left;"
-            role="button" download>
-
-            <div class="row align-items-center g-3">
-                <div class="col-auto">
-                <img src="/img/os/windows.svg"
-                    style="filter: invert(45%) sepia(80%) saturate(3929%) hue-rotate(188deg) brightness(99%) contrast(111%);
-                            width: 32px; height: 32px;" />
-                </div>
-                <div class="col">
-                    <h5 style="font-size: 1.2em;">Download Web Installer</h5>
-                    <span style="font-size: 0.85em;">Windows 10 and higher (64bit)</span>
-                </div>
-            </div>
-        </a>
-    {% endif %}
-
-</div>
+</div> #}
 
 {# Stable Releases #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">
         <h2>Full Releases</h2>
+        <h6 class="text-muted">Windows - Portable</h6>
     </div>
     <div class="content-body">
 
@@ -145,6 +212,7 @@
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">
         <h2>Alpha Patches</h2>
+        <h6 class="text-muted">for Windows</h6>
     </div>
     <div class="content-body">
         <p>
