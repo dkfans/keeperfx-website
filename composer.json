@@ -70,7 +70,8 @@
         "php-debugbar/php-debugbar": "^2.1",
         "solaris/php-moon-phase": "^3.0",
         "amoschou/commonmark-alert-extension": "dev-main",
-        "laminas/laminas-feed": "^2.26"
+        "laminas/laminas-feed": "^2.26",
+        "matomo/device-detector": "^6.5"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
