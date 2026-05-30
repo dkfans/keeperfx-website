@@ -1,0 +1,100 @@
+{
+    frankenphp
+    order php_server before file_server
+}
+
+localhost:80 {
+    # Project root
+    root * /var/www/public
+
+    # Force browser XSS protection
+    header X-XSS-Protection "1; mode=block"
+
+	# Enable compression (optional)
+	# encode zstd br gzip
+
+    # Use FrankenPHP to execute PHP
+    php_server
+
+    # Cache assets & favicon
+    @cachedFiles path /img/* /js/* /css/* /font/* /screenshots/* /favicon.ico
+    handle @cachedFiles {
+        header Cache-Control "public, max-age=2592000"
+        file_server
+    }
+
+    # Workshop images -> /var/storage/workshop/$1/images/$2
+    @workshop path_regexp workshop ^/workshop/image/([0-9]+)/(.*)$
+    handle @workshop {
+        rewrite * /workshop/{re.workshop.1}/images/{re.workshop.2}
+        root * /var/storage
+        header Cache-Control "public, max-age=2592000"
+        file_server
+    }
+
+    # Avatars -> /var/storage/avatar/$1
+    @avatar path_regexp avatar ^/avatar/(.*)$
+    handle @avatar {
+        rewrite * /avatar/{re.avatar.1}
+        root * /var/storage
+        header Cache-Control "public, max-age=2592000"
+        file_server
+    }
+
+    # News images -> /var/storage/news-img/$1
+    @news path_regexp news ^/news/image/(.*)$
+    handle @news {
+        rewrite * /news-img/{re.news.1}
+        root * /var/storage
+        header Cache-Control "public, max-age=2592000"
+        file_server
+    }
+
+    # Crash report savefiles -> /var/storage/crash-report/savefiles/$1
+    @crash path_regexp crash ^/dev/crash-report/download/(.*)$
+    handle @crash {
+        rewrite * /crash-report/savefiles/{re.crash.1}
+        root * /var/storage
+        header Content-Disposition "attachment; filename={re.crash.1}"
+        file_server
+    }
+
+    # Alpha patches -> /var/storage/alpha-patch/$1
+    @alpha path_regexp alpha ^/download/alpha/(.*)$
+    handle @alpha {
+        rewrite * /alpha-patch/{re.alpha.1}
+        root * /var/storage
+        header Content-Disposition "attachment; filename={re.alpha.1}"
+        file_server
+    }
+
+    # Prototypes -> /var/storage/prototype/$1
+    @proto path_regexp proto ^/download/prototype/(.*)$
+    handle @proto {
+        rewrite * /prototype/{re.proto.1}
+        root * /var/storage
+        header Content-Disposition "attachment; filename={re.proto.1}"
+        file_server
+    }
+
+    # Web Uploads -> /var/storage/upload/$1
+    @uploads path_regexp uploads ^/uploads/(.*)$
+    handle @uploads {
+        rewrite * /upload/{re.uploads.1}
+        root * /var/storage
+        header Content-Disposition "attachment; filename={re.uploads.1}"
+        file_server
+    }
+
+    # Game Files -> /var/storage/game-files/$1/$2/$3
+    @gamefiles path_regexp gamefiles ^/game-files/download/([a-z]+)/([0-9\.]+)/(.*)$
+    handle @gamefiles {
+        rewrite * /game-files/{re.gamefiles.1}/{re.gamefiles.2}/{re.gamefiles.3}
+        root * /var/storage
+        header Content-Disposition "attachment; filename={query}"
+        file_server
+    }
+
+    # Fallback for directly accessible files
+    file_server
+}
