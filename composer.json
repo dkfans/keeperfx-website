@@ -8,6 +8,11 @@
             "App\\Controller\\": "controllers/"
         }
     },
+    "config": {
+        "platform": {
+            "php": "8.4"
+        }
+    },
     "authors": [
         {
             "name": "Yani",
