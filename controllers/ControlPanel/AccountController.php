@@ -74,18 +74,20 @@ class AccountController
         $post         = $request->getParsedBody();
         $country_code = (string) $post['country'] ?? '';
 
-        // Update country code
-        if (strlen($country_code) === 2 && \array_key_exists($country_code, $countries)) {
-            $account->getUser()->setCountry($country_code);
-        } else {
-            $account->getUser()->setCountry(null);
+        // Make sure country exists
+        if (strlen($country_code) !== 2 || \array_key_exists($country_code, $countries) === false) {
+            $country_code = null;
         }
+
+        // Update country code
+        $account->getUser()->setCountry($country_code);
 
         // Save changes to DB
         $em->flush();
 
         $flash->success('Your country has been updated!');
 
+        // Redirect user back to account page
         $response = $response->withHeader('Location', '/account')->withStatus(302);
         return $response;
     }
