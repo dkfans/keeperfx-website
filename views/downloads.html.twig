@@ -19,9 +19,11 @@
 
         {% if launcher %}
 
-            <a href="/download/web-installer/{{ launcher.nameHash }}/keeperfx-web-installer.exe"
+            <a href="{{ globals.cdn.base_url }}/download/web-installer/{{ launcher.nameHash }}/keeperfx-web-installer.exe"
                 class="btn btn-medieval p-3 text-start"
-                role="button" download>
+                role="button"
+                data-launcher-download="true"
+                download>
 
                 <div class="row align-items-center g-4 p-2">
                     <div class="col-auto">
@@ -170,7 +172,7 @@
                         <td>{{ release.sizeInBytes|format_bytes }}</td>
                         <td>
                             {% if release.mirrors is not empty %}
-                                {% for mirror in release.mirrors %}{% if loop.index > 1 %}, {% endif %}<a href="{{ mirror.url }}" target="_blank">{{ loop.index }}</a>{% endfor %}
+                                {% for mirror in release.mirrors %}{% if loop.index > 1 %}, {% endif %}<a href="{{ mirror.url }}" data-stable-build-download="true" download>{{ loop.index }}</a>{% endfor %}
                             {% else %}
                                 <span class="text-muted">-</span>
                             {% endif %}
@@ -248,6 +250,7 @@
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Mirrors</th>
                     <th>Size</th>
                     <th>Date (GMT)</th>
                     <th>Title</th>
@@ -257,9 +260,23 @@
                 {% for build in alpha_builds %}
                     <tr>
                         <td>
-                            <a href="/download/alpha/{{ build.filename|url_encode }}" data-alpha-patch-download="true" download>
+                            <a href="{{ globals.cdn.base_url }}/download/alpha/{{ build.filename|url_encode }}" data-alpha-patch-download="true" download>
                                 {{ build.name }}
                             </a>
+                        </td>
+                        <td>
+                            {% if globals.cdn.endpoints is not empty and globals.cdn.endpoints > 1 %}
+                                {% set cdn_loop_count = 1 %}
+                                {%- for endpoint_id, endpoint in globals.cdn.endpoints -%}
+                                    {%- if endpoint_id != globals.cdn.id -%}
+                                        {%- if cdn_loop_count > 1 %}, {% endif -%}
+                                        <a href="{{ endpoint.url }}/download/alpha/{{ build.filename|url_encode }}"  data-alpha-patch-download="true" download>{{ cdn_loop_count }}</a>
+                                        {%- set cdn_loop_count = cdn_loop_count + 1 -%}
+                                    {%- endif -%}
+                                {%- endfor -%}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
                         </td>
                         <td>{{ build.sizeInBytes|format_bytes }}</td>
                         <td>{{ build.timestamp|date('Y-m-d, G:i') }}</td>

@@ -4,10 +4,11 @@ namespace App\Controller;
 
 use Slim\Routing\RouteCollectorProxy;
 
+use App\Middleware\CdnMiddleware;
 use App\Middleware\LoggedInMiddleware;
-use App\Middleware\AuthAdminCPMiddleware;
-use App\Middleware\AuthModCPMiddleware;
 use App\Middleware\AuthDevCPMiddleware;
+use App\Middleware\AuthModCPMiddleware;
+use App\Middleware\AuthAdminCPMiddleware;
 
 /** @var \Slim\App $app */
 /** @var \Psr\Container\ContainerInterface $container */
@@ -28,9 +29,9 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/news/image/{filename}', [NewsController::class, 'outputNewsImage']);
     $group->get('/news/{id:\d+}[/{date_str}[/{slug}]]', [NewsController::class, 'newsArticleIndex']);
 
-    $group->get('/downloads', [DownloadController::class, 'downloadsIndex']);
-    $group->get('/downloads/stable', [DownloadController::class, 'stableDownloadsIndex']);
-    $group->get('/downloads/alpha', [DownloadController::class, 'alphaDownloadsIndex']);
+    $group->get('/downloads', [DownloadController::class, 'downloadsIndex'])->add(CdnMiddleware::class);
+    $group->get('/downloads/stable', [DownloadController::class, 'stableDownloadsIndex'])->add(CdnMiddleware::class);
+    $group->get('/downloads/alpha', [DownloadController::class, 'alphaDownloadsIndex'])->add(CdnMiddleware::class);
     // TODO: Specific download routes can be created if a download counter is implemented
     // $group->get('/download/alpha/{filename}', [DownloadController::class, 'alphaDownload']);
     // $group->get('/download/stable/{filename}', [DownloadController::class, 'stableDownload']);
@@ -94,6 +95,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             $group->post('/country', [ControlPanel\AccountController::class, 'updateCountry']);
             $group->post('/about-me', [ControlPanel\AccountController::class, 'updateAboutMe']);
             $group->post('/theme', [ControlPanel\AccountController::class, 'updateTheme']);
+            $group->post('/cdn', [ControlPanel\AccountController::class, 'updateCdn']);
             $group->get('/remove-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeEmail']);
             $group->get('/remove-avatar/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'removeAvatar']);
             $group->get('/resend-verification-email/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'resendVerificationEmail']);
@@ -236,7 +238,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
 
         // Public view
-        $group->get('/item/{id:\d+}[/{slug}]', [Workshop\WorkshopItemController::class, 'itemIndex']);
+        $group->get('/item/{id:\d+}[/{slug}]', [Workshop\WorkshopItemController::class, 'itemIndex'])->add(CdnMiddleware::class);
 
         // Download file
         $group->get('/download/{item_id:\d+}/{file_id:\d+}/{filename}', [Workshop\WorkshopDownloadController::class, 'download']);

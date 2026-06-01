@@ -2,12 +2,13 @@
 
 namespace App\Twig;
 
+use App\CDN;
 use App\UploadSizeHelper;
 use ByteUnits\Binary as BinaryFormatter;
-
 use Psr\Container\ContainerInterface;
 
-class TwigGlobalProvider {
+class TwigGlobalProvider
+{
 
     private ContainerInterface $container;
 
@@ -22,6 +23,11 @@ class TwigGlobalProvider {
 
         return [
             'globals' => [
+                'cdn' => [
+                    'id'        => $this->container->get(CDN::class)->getCurrentId(),
+                    'base_url'  => $this->container->get(CDN::class)->getBaseUrl(),
+                    'endpoints' => $this->container->get(CDN::class)->getAll(),
+                ],
                 'upload_limit' => [
                     'avatar' => [
                         'size'      => $upload_size_helper->getFinalAvatarUploadSize(),

@@ -298,7 +298,7 @@
                         {% if item.files|length > 0 %}
                             <div class="text-center" style="margin-bottom: 10px; width: 100%; margin-top: 30px;">
                                 <a
-                                    href="/workshop/download/{{ item.id }}/{{ item.files|first.id }}/{{ item.files|first.filename|url_encode }}"
+                                    href="{{ globals.cdn.base_url }}/workshop/download/{{ item.id }}/{{ item.files|first.id }}/{{ item.files|first.filename|url_encode }}"
                                     class="btn btn-lg btn-medieval {% if item.isBundledWithGame %}btn-grayscale{% endif %}"
                                     style="width: 100%; max-width: 300px; min-height: 50px; padding-top: 9px; padding-bottom: 4px; font-size: {% if item.isBundledWithGame %}18{% else %}22{% endif %}px;"
                                     download>
@@ -332,6 +332,7 @@
                                 <thead>
                                     <tr>
                                         <th>File</th>
+                                        <th>Mirrors</th>
                                         <th>Filesize</th>
                                         <th>Downloads</th>
                                         <th>Date</th>
@@ -341,7 +342,21 @@
                                     {% for file in item.files %}
                                         <tr>
                                             <td>
-                                                {% if file.isBroken %}<s>{% endif %}<a href="/workshop/download/{{ item.id }}/{{ file.id }}/{{ file.filename|url_encode }}">{{ file.filename }}</a>{% if file.isBroken %}</s> (Broken){% endif %}
+                                                {% if file.isBroken %}<s>{% endif %}<a href="{{ globals.cdn.base_url }}/workshop/download/{{ item.id }}/{{ file.id }}/{{ file.filename|url_encode }}" download>{{ file.filename }}</a>{% if file.isBroken %}</s> (Broken){% endif %}
+                                            </td>
+                                            <td>
+                                                {% if globals.cdn.endpoints is not empty and globals.cdn.endpoints > 1 %}
+                                                    {% set cdn_loop_count = 1 %}
+                                                    {%- for endpoint_id, endpoint in globals.cdn.endpoints -%}
+                                                        {%- if endpoint_id != globals.cdn.id -%}
+                                                            {%- if cdn_loop_count > 1 %}, {% endif -%}
+                                                            <a href="{{ endpoint.url }}/workshop/download/{{ item.id }}/{{ file.id }}/{{ file.filename|url_encode }}" download>{{ cdn_loop_count }}</a>
+                                                            {%- set cdn_loop_count = cdn_loop_count + 1 -%}
+                                                        {%- endif -%}
+                                                    {%- endfor -%}
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
                                             </td>
                                             <td>{{ file.size|format_bytes }}</td>
                                             <td>{{ file.downloadCount }}</td>

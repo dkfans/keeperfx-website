@@ -167,7 +167,6 @@
     </div>
 </div>
 
-
 {# Change Theme #}
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header">
@@ -191,6 +190,51 @@
 
             <div class="form-group">
                 <button type="submit" class="btn btn-medieval">Update</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+{# Change CDN #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Download Server (CDN)</h2>
+    </div>
+    <div class="content-body">
+        <form action="/account/cdn" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            <div class="form-group" style="max-width: 400px;">
+
+                {% for endpoint_id, endpoint_data in cdn.all %}
+
+                    <div class="select-cdn-box">
+                        <div class="select-cdn-box-left">
+                            <input class="form-check-input" type="radio" name="cdn" value="{{ endpoint_id }}" {% if cdn.current == endpoint_id %}checked{% endif %}>
+                        </div>
+                        <div class="select-cdn-box-right w-100">
+                            <strong>{{ endpoint_data.name }}</strong>
+                            {# <div class="w-100 d-flex justify-content-between"> #}
+                            <div class="w-100">
+                                <span class="text-muted">{{ endpoint_data.location }}</span>
+                                {# <span class="" id="cdn-speedtest-speed-{{ endpoint_id }}"></span> #}
+                                <span class="ms-3" id="cdn-speedtest-speed-{{ endpoint_id }}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-medieval">Update</button>
+                <button type="button" class="btn btn-medieval btn-medieval-black" id="cdn-speedtest" style="display:none">Speedtest</button>
+                <span class="ms-3" id="cdn-speedtest-status"></span>
             </div>
 
         </form>
@@ -246,6 +290,9 @@
 
 {% block body_javascript %}
     <script>
+        var cdn_endpoints = {{ cdn.all|json_encode()|raw }} ;
+    </script>
+    <script>
         $(function(e){
             // Avatar max upload filesize check
             $('#avatar').on('change', function(){
@@ -253,6 +300,147 @@
                     toastr.warning('Avatar exceeds maximum filesize of ' + app_store.upload_limit.avatar.formatted);
                     this.value = null;
                 }
+            });
+
+            // Allow clicking on the CDN boxes to select them (JS only)
+            $('.select-cdn-box').addClass('select-cdn-box-hover');
+            $('.select-cdn-box').on('click', function(e){
+                if (e.target.type === 'radio') {
+                    return;
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                // Uncheck all radio inputs with name="cdn"
+                $('input[name="cdn"]').prop('checked', false);
+                // Check the radio input inside the clicked box
+                $(this).closest('.select-cdn-box').find('input[type="radio"]').prop('checked', true);
+            });
+
+            // Speed test
+
+            $('#cdn-speedtest').show();
+            $('#cdn-speedtest').on('click', async function(e){
+
+                // Show user we are testing the speed
+                $(this).buttonLoader(true);
+                $('#cdn-speedtest-status').text('Testing download speeds...');
+
+                // Clear older speeds
+                $('[id^=cdn-speedtest-speed]').removeClass('text-success').removeClass('text-danger').text('');
+
+                const speedTestFile = "/speedtest/10MiB.speedtest.bin";
+                const speedTestFileSize = 10485760;
+
+                async function testTransferSpeed(url, maxDownloadDuration = 5, connectionTimeout = 5000) {
+                    const startTime = performance.now();
+                    let downloadedBytes = 0;
+
+                    const controller = new AbortController();
+                    let abortReason = null; // State variable for browser compatibility
+
+                    const connectTimer = setTimeout(() => {
+                        abortReason = "connection_timeout";
+                        controller.abort();
+                    }, connectionTimeout);
+
+                    try {
+                        const response = await fetch(url, {
+                            signal: controller.signal,
+                            cache: 'no-store',
+                            mode: 'cors'
+                        });
+
+                        clearTimeout(connectTimer);
+
+                        if (!response.ok) {
+                            return { url, speedMBps: 0, duration: -1, downloadedBytes: 0 };
+                        }
+
+                        const downloadTimer = setTimeout(() => {
+                            abortReason = "download_timeout";
+                            controller.abort();
+                        }, maxDownloadDuration * 1000);
+
+                        const reader = response.body.getReader();
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            if (done) break;
+                            downloadedBytes += value.length;
+                        }
+
+                        clearTimeout(downloadTimer);
+
+                        const endTime = performance.now();
+                        const duration = (endTime - startTime) / 1000;
+                        const speedMBps = (downloadedBytes / (1024 * 1024)) / duration;
+
+                        return { url, speedMBps, duration, downloadedBytes };
+
+                    } catch (error) {
+                        const endTime = performance.now();
+                        const duration = (endTime - startTime) / 1000;
+
+                        if (error.name === 'AbortError' || controller.signal.aborted) {
+                            if (abortReason === "connection_timeout") {
+                                return { url, speedMBps: 0, duration: Infinity, downloadedBytes: 0 };
+                            }
+
+                            if (abortReason === "download_timeout") {
+                                console.log(`[SpeedTest] 5s up. JS actually received: ${downloadedBytes} bytes.`);
+                                const speedMBps = (downloadedBytes / (1024 * 1024)) / duration;
+                                return { url, speedMBps, duration, downloadedBytes };
+                            }
+                        }
+
+                        console.error(`Request failed for ${url}:`, error);
+                        return { url, speedMBps: 0, duration: -1, downloadedBytes: 0 };
+                    }
+                }
+
+                var bestEndpoint;
+                var bestSpeed = 0;
+
+                for (const id in cdn_endpoints) {
+                    const data = cdn_endpoints[id];
+
+                    // Test the download speed for this endpoint
+                    $('#cdn-speedtest-status').text(`Testing ${data.name}...`);
+                    const result = await testTransferSpeed(data.url + speedTestFile);
+
+                    if(result.duration == -1){
+                        $('#cdn-speedtest-speed-' + id).text("Failure").addClass('text-danger');
+                        continue;
+                    }
+
+                    if(result.duration == Infinity){
+                        $('#cdn-speedtest-speed-' + id).text("Timeout").addClass('text-danger');
+                        continue;
+                    }
+
+                    if(result.speedMbps == 0){
+                        $('#cdn-speedtest-speed-' + id).addClass('text-danger');
+                    }
+
+                    // Show the speed
+                    if(result.speedMBps > 1){
+                        $('#cdn-speedtest-speed-' + id).text(result.speedMBps.toFixed(2) + ' MiB/s');
+                    } else {
+                        $('#cdn-speedtest-speed-' + id).text((result.speedMBps / 1000).toFixed(2)  + ' KiB/s');
+                    }
+
+                    if(result.speedMBps > bestSpeed){
+                        bestSpeed = result.speedMBps;
+                        bestEndpoint = id;
+                    }
+                }
+
+                if(bestEndpoint){
+                    $('#cdn-speedtest-speed-' + bestEndpoint).addClass('text-success');
+                }
+
+                $(this).buttonLoader(false);
+                $('#cdn-speedtest-status').text('');
+
             });
         });
     </script>

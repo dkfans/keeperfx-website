@@ -1,5 +1,37 @@
 
 
+{# The launcher extra information modal #}
+{% if launcher %}
+<div class="modal fade" id="launcherDownloadModal" tabindex="-1" aria-labelledby="launcherDownloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-keeper bd-keeper">
+            <div class="modal-body p-4" style="border: 0; background-color: rgba(6, 6, 6, 0.666);">
+                <h5 class="mb-4">
+                    Your download will start shortly!
+                </h5>
+                <p>
+                    If your download does not start automatically, <a href="#" id="launcherDownloadModalURL">click here</a>.
+                </p>
+                {% if globals.cdn.endpoints is not empty and globals.cdn.endpoints > 1 %}
+                    <p>
+                        If you are experiencing slow download speeds, try one of our mirrors:
+                        {% set cdn_loop_count = 1 %}
+                        {%- for endpoint_id, endpoint in globals.cdn.endpoints -%}
+                            {%- if endpoint_id != globals.cdn.id -%}
+                                {%- if cdn_loop_count > 1 %}, {% endif -%}
+                                <a href="{{ endpoint.url }}/download/web-installer/{{ launcher.nameHash }}/keeperfx-web-installer.exe" data-launcher-download="false" download>Mirror #{{ cdn_loop_count }}</a>
+                                {%- set cdn_loop_count = cdn_loop_count + 1 -%}
+                            {%- endif -%}
+                        {%- endfor -%}
+                    </p>
+                {% endif %}
+                <button type="button" class="btn btn-medieval mt-3" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {# The stable build extra information modal #}
 <div class="modal fade" id="stableBuildDownloadModal" tabindex="-1" aria-labelledby="stableBuildDownloadModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -46,6 +78,10 @@
 {# Script that opens the modal when an anchor containing a specific data attribute is clicked (data-stable-build="true" and data-alpha-patch="true") #}
 <script>
 $(function(){
+    $('a[data-launcher-download="true"]').on('click', function(e){
+        $('#launcherDownloadModalURL').attr('href',  $(this).attr('href'));
+        $('#launcherDownloadModal').modal('show');
+    });
     $('a[data-stable-build-download="true"]').on('click', function(e){
         $('#stableBuildDownloadModalURL').attr('href',  $(this).attr('href'));
         $('#stableBuildDownloadModal').modal('show');

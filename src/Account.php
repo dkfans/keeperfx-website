@@ -31,6 +31,7 @@ class Account
         private EntityManager $em,
         private Mailer $mailer,
         private Theme $theme,
+        private CDN $cdn,
         private FlashMessage $flash,
     ) {
         // Check if current user is logged in
@@ -57,6 +58,13 @@ class Account
 
                 // Set the theme
                 $theme->setTheme($user->getTheme());
+
+                // Set the CDN to use
+                $user_cdn_choice = $user->getCdn();
+                if ($user_cdn_choice !== null) {
+                    $cdn->setCdn($user->getCdn());
+                    $cdn->setUserChoice(true);
+                }
             }
         }
     }

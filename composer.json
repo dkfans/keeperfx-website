@@ -71,7 +71,8 @@
         "solaris/php-moon-phase": "^3.0",
         "amoschou/commonmark-alert-extension": "dev-main",
         "laminas/laminas-feed": "^2.26",
-        "matomo/device-detector": "^6.5"
+        "matomo/device-detector": "^6.5",
+        "maxmind-db/reader": "^1.13"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",

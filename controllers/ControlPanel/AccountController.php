@@ -7,6 +7,7 @@ use App\Entity\UserBio;
 use App\Entity\UserCookieToken;
 use App\Entity\UserEmailVerification;
 
+use App\CDN;
 use App\Theme;
 use App\Account;
 use App\FlashMessage;
@@ -44,6 +45,7 @@ class AccountController
         Account $account,
         FlashMessage $flash,
         EntityManager $em,
+        CDN $cdn,
         Theme $theme,
     ) {
         // Response
@@ -53,6 +55,10 @@ class AccountController
                 'website_theme' => [
                     'current' => $theme->getCurrentTheme(),
                     'all'     => $theme->getAllThemes(),
+                ],
+                'cdn' => [
+                    'current' => $cdn->getCurrentId(),
+                    'all'     => $cdn->getAll(),
                 ],
             ])
         );
@@ -95,6 +101,40 @@ class AccountController
             'change_country',
             ['from_country' => $original_country, 'to_country' => $country_code]
         );
+
+        // Redirect user back to account page
+        $response = $response->withHeader('Location', '/account')->withStatus(302);
+        return $response;
+    }
+
+    public function updateCdn(
+        Request $request,
+        Response $response,
+        Account $account,
+        EntityManager $em,
+        CDN $cdn,
+        FlashMessage $flash
+    ) {
+        // Get post vars
+        $post   = $request->getParsedBody();
+        $cdn_id = (string) $post['cdn'] ?? '';
+
+        // Update country code
+        if($cdn->isValidCdn($cdn_id) === false){
+            throw new HttpForbiddenException($request);
+        }
+
+        // Update user and save changes to DB
+        $account->getUser()->setCdn($cdn_id);
+        $em->flush();
+
+        // Log
+        $flash->success('Your CDN has been updated!');
+        // $account->log(
+        //     $request->getAttribute('ip_address'),
+        //     'change_country',
+        //     ['from_country' => $original_country, 'to_country' => $country_code]
+        // );
 
         // Redirect user back to account page
         $response = $response->withHeader('Location', '/account')->withStatus(302);

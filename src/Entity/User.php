@@ -45,6 +45,9 @@ class User
     #[ORM\OneToOne(targetEntity: UserBio::class, mappedBy: 'user')]
     private UserBio|null $bio = null;
 
+    #[ORM\Column(nullable: true)]
+    private string|null $cdn = null;
+
     #[ORM\OneToOne(targetEntity: UserEmailVerification::class, mappedBy: 'user')]
     private UserEmailVerification|null $email_verification = null;
 
@@ -479,5 +482,23 @@ class User
     public function getWorkshopCommentReports(): Collection
     {
         return $this->workshop_comment_reports;
+    }
+
+    /**
+     * Get the value of cdn
+     */
+    public function getCdn(): ?string
+    {
+        return $this->cdn;
+    }
+
+    /**
+     * Set the value of cdn
+     */
+    public function setCdn(?string $cdn): self
+    {
+        $this->cdn = $cdn;
+
+        return $this;
     }
 }
