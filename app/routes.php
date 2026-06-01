@@ -9,10 +9,8 @@ use App\Middleware\AuthAdminCPMiddleware;
 use App\Middleware\AuthModCPMiddleware;
 use App\Middleware\AuthDevCPMiddleware;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-
 /** @var \Slim\App $app */
+/** @var \Psr\Container\ContainerInterface $container */
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////// Application routes
