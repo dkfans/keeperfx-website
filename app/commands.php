@@ -63,6 +63,7 @@ return [
     // Website
     \App\Console\Command\Website\CacheWebsiteChangelogCommand::class,
     \App\Console\Command\Website\BenchmarkBcryptHashCost::class,
+    \App\Console\Command\Website\FetchGeoIpDatabaseCommand::class,
 
     // Dev
     \App\Console\Command\Dev\CreateMockDataCommand::class,

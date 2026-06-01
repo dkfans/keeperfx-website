@@ -8,8 +8,6 @@ use Xenokore\Utility\Helper\FileHelper;
 
 class CDN
 {
-    // Database: https://cdn.jsdelivr.net/npm/@ip-location-db/geo-whois-asn-country-mmdb/geo-whois-asn-country.mmdb
-
     private array $cdn_config;
 
     private string $current_cdn_id;
