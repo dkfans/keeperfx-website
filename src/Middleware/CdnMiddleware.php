@@ -60,7 +60,7 @@ class CdnMiddleware implements MiddlewareInterface
                 }
 
                 // Remember current CDN so we don't need to lookup again later
-                $this->session['cdn'] = $this->cdn->getCurrent();
+                $this->session['cdn'] = $this->cdn->getCurrentId();
             }
         }
 
