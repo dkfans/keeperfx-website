@@ -607,7 +607,7 @@ footer {
 }
 
 .btn-medieval-black,
-.form-group .btn-medieval-gray {
+.form-group .btn-medieval-black {
     box-shadow: inset 0 0 3px rgba(255, 241, 241, 0.2);
     background: url(../img/bg-black.png) repeat;
 }
