@@ -5,11 +5,13 @@ namespace App;
 use App\Enum\UserRole;
 
 use App\Entity\User;
+use App\Entity\UserLog;
 use App\Entity\UserIpLog;
 use App\Entity\UserOAuthToken;
 use App\Entity\UserCookieToken;
 use App\Entity\UserEmailVerification;
 
+use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
 
@@ -241,6 +243,45 @@ class Account
 
         // Add IP log to DB
         $this->em->persist($ip_log);
+        $this->em->flush();
+    }
+
+    public function log(string $ip, string $log_type, array $variables = []): void
+    {
+        if (array_key_exists($log_type, Config::load('user_log')) === false) {
+            throw new \Exception("invalid user log type: '{$log_type}'");
+        }
+
+        $text = Config::get('user_log.' . $log_type);
+        if (empty($text)) {
+            throw new \Exception("invalid user log type: '{$log_type}' -> empty text");
+        }
+
+        $regex = '/\<([a-zA-Z0-9\_\-]+?)\>/';
+        if (\preg_match_all($regex, $text, $matches) !== false) {
+            foreach ($matches[1] as $match) {
+                if (\array_key_exists($match, $variables) === false) {
+                    throw new \Exception("invalid user log: '{$log_type}' -> missing variable: '{$match}'");
+                }
+            }
+        }
+
+        foreach ($variables as $name => $data) {
+            if (\is_object($data) && \method_exists($data, 'getId')) {
+                $variables[$name] = [
+                    '_class' => \get_class($data),
+                    '_id'    => $data->getId(),
+                ];
+            }
+        }
+
+        $user_log = new UserLog();
+        $user_log->setUser($this->user);
+        $user_log->setLogType($log_type);
+        $user_log->setVariables($variables);
+        $user_log->setIp($ip);
+
+        $this->em->persist($user_log);
         $this->em->flush();
     }
 

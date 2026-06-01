@@ -74,6 +74,9 @@ class AccountController
         $post         = $request->getParsedBody();
         $country_code = (string) $post['country'] ?? '';
 
+        // Get original country for logging later
+        $original_country = $account->getUser()->getCountry();
+
         // Make sure country exists
         if (strlen($country_code) !== 2 || \array_key_exists($country_code, $countries) === false) {
             $country_code = null;
@@ -85,7 +88,13 @@ class AccountController
         // Save changes to DB
         $em->flush();
 
+        // Log
         $flash->success('Your country has been updated!');
+        $account->log(
+            $request->getAttribute('ip_address'),
+            'change_country',
+            ['from_country' => $original_country, 'to_country' => $country_code]
+        );
 
         // Redirect user back to account page
         $response = $response->withHeader('Location', '/account')->withStatus(302);

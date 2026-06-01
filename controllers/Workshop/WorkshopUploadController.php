@@ -213,6 +213,9 @@ class WorkshopUploadController {
         $em->persist($workshop_item);
         $em->flush(); // flush because we need ID for creating storage directory
 
+        // Log this user action
+        $account->log($request->getAttribute('ip_address'), 'workshop_item_submit', ['workshop_item' => $workshop_item]);
+
         // Define directories for files
         $workshop_item_dir        = Config::get('storage.path.workshop') . '/' . $workshop_item->getId();
         $workshop_item_files_dir  = $workshop_item_dir . '/files';

@@ -91,6 +91,10 @@ class User
     #[ORM\OrderBy(["last_seen_timestamp" => "DESC"])]
     private Collection $ip_logs;
 
+    #[ORM\OneToMany(targetEntity: UserLog::class, mappedBy: 'user')]
+    #[ORM\OrderBy(["timestamp" => "DESC"])]
+    private Collection $user_logs;
+
     public function __construct()
     {
         $this->news_articles               = new ArrayCollection();
@@ -105,6 +109,7 @@ class User
         $this->workshop_ratings            = new ArrayCollection();
         $this->workshop_difficulty_ratings = new ArrayCollection();
         $this->ip_logs                     = new ArrayCollection();
+        $this->user_logs                   = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -355,11 +360,19 @@ class User
     }
 
     /**
-     * Get the value of workshop_difficulty_ratings
+     * Get the IP logs
      */
     public function getIpLogs(): Collection
     {
         return $this->ip_logs;
+    }
+
+    /**
+     * Get the user logs
+     */
+    public function getLogs(): Collection
+    {
+        return $this->user_logs;
     }
 
     /**
