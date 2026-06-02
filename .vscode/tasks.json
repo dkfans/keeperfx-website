@@ -113,6 +113,7 @@
                 "user:merge",
                 "website:benchmark-bcrypt-hash-cost",
                 "website:cache-git-commits",
+                "website:fetch-geoip-db",
                 "workshop:add-tag",
                 "workshop:fetch-creature-maker",
                 "workshop:fetch-unearth",
