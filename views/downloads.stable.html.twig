@@ -37,7 +37,7 @@
             <tbody>
                 {% for release in stable_releases %}
                     <tr class="{% if loop.first %}latest-release{% endif %}">
-                        <td>
+                        <td style="text-wrap: nowrap">
                             <a href="{{ release.downloadUrl }}" data-stable-build-download="true" download>
                                 {{ release.name }}
                             </a>

@@ -36,7 +36,7 @@
             <tbody>
                 {% for build in alpha_builds %}
                     <tr>
-                        <td>
+                        <td style="text-wrap: nowrap">
                             <a href="{{ globals.cdn.base_url }}/download/alpha/{{ build.filename|url_encode }}" data-alpha-patch-download="true" download>
                                 {{ build.name }}
                             </a>

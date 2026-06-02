@@ -163,7 +163,7 @@
             <tbody>
                 {% for release in workshop_globals.latest_stable_minor_releases|slice(0, 3) %}
                     <tr class="{% if loop.first %}latest-release{% endif %}">
-                        <td>
+                        <td style="text-wrap: nowrap">
                             <a href="{{ release.downloadUrl }}" data-stable-build-download="true" download>
                                 {{ release.name }}
                             </a>
@@ -259,7 +259,7 @@
             <tbody>
                 {% for build in alpha_builds %}
                     <tr>
-                        <td>
+                        <td style="text-wrap: nowrap">
                             <a href="{{ globals.cdn.base_url }}/download/alpha/{{ build.filename|url_encode }}" data-alpha-patch-download="true" download>
                                 {{ build.name }}
                             </a>
