@@ -86,6 +86,9 @@ if ($_ENV['APP_ENV'] === 'dev') {
     $debug_stack = new Doctrine\DBAL\Logging\DebugStack();
     $em->getConnection()->getConfiguration()->setSQLLogger($debug_stack);
     $debugbar->addCollector(new \DebugBar\Bridge\DoctrineCollector($debug_stack));
+
+    // Session collector
+    $debugbar->addCollector(new \App\DebugBar\SessionCollector($container));
 }
 
 // Add Session (Compwright\PhpSession) middlewares.
