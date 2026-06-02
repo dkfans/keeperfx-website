@@ -172,7 +172,7 @@
                         <td>{{ release.sizeInBytes|format_bytes }}</td>
                         <td>
                             {% if release.mirrors is not empty %}
-                                {% for mirror in release.mirrors %}{% if loop.index > 1 %}, {% endif %}<a href="{{ mirror.url }}" data-stable-build-download="true" download>{{ loop.index }}</a>{% endfor %}
+                                {% for mirror in release.mirrors %}{% if loop.index > 1 %}, {% endif %}<a href="{{ mirror.url }}" data-stable-build-download="true" download>#{{ loop.index }}</a>{% endfor %}
                             {% else %}
                                 <span class="text-muted">-</span>
                             {% endif %}
@@ -250,8 +250,8 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Mirrors</th>
                     <th>Size</th>
+                    <th>Mirrors</th>
                     <th>Date (GMT)</th>
                     <th>Title</th>
                 </tr>
@@ -264,13 +264,14 @@
                                 {{ build.name }}
                             </a>
                         </td>
+                        <td>{{ build.sizeInBytes|format_bytes }}</td>
                         <td>
                             {% if globals.cdn.endpoints is not empty and globals.cdn.endpoints > 1 %}
                                 {% set cdn_loop_count = 1 %}
                                 {%- for endpoint_id, endpoint in globals.cdn.endpoints -%}
                                     {%- if endpoint_id != globals.cdn.id -%}
                                         {%- if cdn_loop_count > 1 %}, {% endif -%}
-                                        <a href="{{ endpoint.url }}/download/alpha/{{ build.filename|url_encode }}"  data-alpha-patch-download="true" download>{{ cdn_loop_count }}</a>
+                                        <a href="{{ endpoint.url }}/download/alpha/{{ build.filename|url_encode }}"  data-alpha-patch-download="true" download>#{{ cdn_loop_count }}</a>
                                         {%- set cdn_loop_count = cdn_loop_count + 1 -%}
                                     {%- endif -%}
                                 {%- endfor -%}
@@ -278,7 +279,6 @@
                                 <span class="text-muted">-</span>
                             {% endif %}
                         </td>
-                        <td>{{ build.sizeInBytes|format_bytes }}</td>
                         <td>{{ build.timestamp|date('Y-m-d, G:i') }}</td>
                         <td>{{ build.workflowTitle|github_interact }}</td>
                     </tr>

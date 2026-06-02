@@ -350,7 +350,7 @@
                                                     {%- for endpoint_id, endpoint in globals.cdn.endpoints -%}
                                                         {%- if endpoint_id != globals.cdn.id -%}
                                                             {%- if cdn_loop_count > 1 %}, {% endif -%}
-                                                            <a href="{{ endpoint.url }}/workshop/download/{{ item.id }}/{{ file.id }}/{{ file.filename|url_encode }}" download>{{ cdn_loop_count }}</a>
+                                                            <a href="{{ endpoint.url }}/workshop/download/{{ item.id }}/{{ file.id }}/{{ file.filename|url_encode }}" download>#{{ cdn_loop_count }}</a>
                                                             {%- set cdn_loop_count = cdn_loop_count + 1 -%}
                                                         {%- endif -%}
                                                     {%- endfor -%}
