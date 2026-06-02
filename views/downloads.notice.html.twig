@@ -1,7 +1,7 @@
 
 
 {# The launcher extra information modal #}
-{% if launcher %}
+{% if launcher ?? false %}
 <div class="modal fade" id="launcherDownloadModal" tabindex="-1" aria-labelledby="launcherDownloadModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-keeper bd-keeper">
