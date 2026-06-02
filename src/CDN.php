@@ -48,8 +48,10 @@ class CDN
 
     public function setByCountryDefault(string $country): bool
     {
-        if (\array_key_exists($country, $this->cdn_config['country_default'])) {
-            $this->setCdn($this->cdn_config['country_default'][$country]);
+        $country = \strtoupper($country);
+
+        if (\array_key_exists($country, $this->cdn_config['country_defaults'])) {
+            $this->setCdn($this->cdn_config['country_defaults'][$country]);
             return true;
         }
 
