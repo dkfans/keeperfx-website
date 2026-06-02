@@ -36,24 +36,23 @@ class CdnMiddleware implements MiddlewareInterface
 
             // Check if we already figured out a good default CDN for them
             if (!empty($this->session['cdn'])) {
-
                 $this->cdn->setCdn($this->session['cdn']);
             } else {
 
                 // Check if we have a country IP database
                 $database_file = __DIR__ . '/../../var/' . \basename($_ENV['APP_GEOIP_DATABASE']);
                 if (FileHelper::isAccessible($database_file)) {
-
-                    // Get country
                     try {
+                        // Find IP in GeoIP database
                         $reader  = new \MaxMind\Db\Reader($database_file);
                         $record  = $reader->get($request->getAttribute('ip_address'));
-                        $country = $record['country'] ?? null;
 
-                        if ($country !== null) {
+                        // Check if country code is found
+                        $country_code = $record['country_code'] ?? null;
+                        if ($country_code !== null) {
 
                             // Try and set the best CDN for this country
-                            $this->cdn->setByCountryDefault($country);
+                            $this->cdn->setByCountryDefault($country_code);
                         }
                     } catch (\Exception $ex) {
                     }
