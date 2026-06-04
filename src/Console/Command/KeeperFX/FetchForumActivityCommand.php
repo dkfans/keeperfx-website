@@ -33,12 +33,14 @@ class FetchForumActivityCommand extends Command
         // Check if enabled
         if ($_ENV['APP_FORUM_ACTIVITY_ENABLED'] != 1) {
             $output->writeln("[?] Fetching forum threads is disabled");
+            $this->cache->delete('keeperfx_forum_threads');
             return Command::SUCCESS;
         }
 
         // Make sure URL is set
         if (empty($_ENV['APP_FORUM_ACTIVITY_URL'])) {
             $output->writeln("[-] No forum activity URL set");
+            $this->cache->delete('keeperfx_forum_threads');
             return Command::FAILURE;
         }
 
@@ -59,7 +61,7 @@ class FetchForumActivityCommand extends Command
 
         // Create Guzzle HTTP client config
         $guzzle_config = [
-            'verify' => false // Don't verify SSL connection
+            'verify' => false, // Don't verify SSL connection
         ];
 
         // Check if we need to connect to IP instead (and pass the host)
@@ -86,12 +88,14 @@ class FetchForumActivityCommand extends Command
                 $output->writeln("[-] Unknown problem");
             }
 
+            $this->cache->delete('keeperfx_forum_threads');
             return Command::FAILURE;
         }
 
         $content = $res->getBody();
         if (!$content) {
             $output->writeln("[-] Failed to grab content");
+            $this->cache->delete('keeperfx_forum_threads');
             return Command::FAILURE;
         }
 
