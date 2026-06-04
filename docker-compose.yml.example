@@ -118,19 +118,6 @@ services:
         profiles:
             #- donotstart
 
-    flaresolverr:
-        image: flaresolverr/flaresolverr:latest
-        container_name: kfx-flaresolverr
-        environment:
-            - 'LOG_LEVEL=info'
-            - 'LOG_HTML=false'
-            - 'CAPTCHA_SOLVER=none'
-        restart: unless-stopped
-        networks:
-            - kfx_network
-        profiles:
-            #- donotstart
-
 networks:
     kfx_network:
         name: kfx_network
