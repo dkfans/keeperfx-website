@@ -13,7 +13,7 @@ $(function(){
 
     // Time definitions
     var notificationPollIntervalTimeDefault = 1 * 60 * 1000; // 1 minute
-    var notificationPollIntervalTimeWhenIdle = 20 * 60 * 1000; // 20 minutes
+    var notificationPollIntervalTimeWhenIdle = 5 * 60 * 1000; // 5 minutes
 
     // Variables
     var notificationPollInterval;
