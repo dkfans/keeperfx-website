@@ -184,6 +184,7 @@ $(function(){
         setImageLoadingHandler(this, "/img/horny-face-256.png", false);
     });
 
+    // Youtube Widget
     $('.youtube-wrapper').each(function () {
         const $wrapper = $(this);
         const videoId = $wrapper.data('video-id');
