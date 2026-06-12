@@ -268,15 +268,40 @@
 
         <h5>CDN Custom Country Rules</h5>
         <table class="table">
-            {% for country, endpoint in cdn_rules %}
+            {% for country_code, endpoint in cdn_rules %}
             <tr>
                 <td style="width: 50%">
-                    {{ get_country_emoji(country) }}
+                    {{ get_country_emoji(country_code) }}
 
-                    {{ get_country_string(country) }}
+                    {{ get_country_string(country_code) }}
                 </td>
                 <td style="width: 50%" class="text-info">
                     {{ cdn_info[endpoint].name }}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+</div>
+
+{# Top Countries #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Top Countries</h2>
+    </div>
+    <div class="content-body">
+
+        <table class="table">
+            {% for country_code, count in country_counts %}
+            <tr>
+                <td style="width: 50%">
+                    {{ get_country_emoji(country_code) }}
+
+                    {{ get_country_string(country_code) }}
+                </td>
+                <td style="width: 50%" class="text-info">
+                    {{ count }} users
                 </td>
             </tr>
             {% endfor %}

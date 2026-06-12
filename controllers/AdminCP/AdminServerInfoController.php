@@ -50,6 +50,7 @@ class AdminServerInfoController
             }
         }
 
+        // CDN information
         $cdn_info = [
             'null' => [
                 'count' => $em->getRepository(User::class)->count(['cdn' => NULL]),
@@ -63,12 +64,28 @@ class AdminServerInfoController
             ];
         }
 
+        // Users
+        $users = $em->getRepository(User::class)->findAll();
+
+        // Country counts
+        $country_counts = [];
+        foreach ($users as $user) {
+            $country_code = $user->getCountry();
+            if ($country_code !== null) {
+                if (array_key_exists($country_code, $country_counts) === false) {
+                    $country_counts[$country_code] = 0;
+                }
+                $country_counts[$country_code]++;
+            }
+        }
+        \arsort($country_counts);
+
         // Response
         $response->getBody()->write(
             $twig->render('admincp/server-info.admincp.html.twig', [
                 'alpha_build_count'             => \count($alpha_builds),
                 'alpha_build_storage_size'      => $alpha_build_storage_size,
-                'workshop_item_count'           => $em->getRepository(WorkshopItem::class)->count([]),
+                'workshop_item_count'           => \count($users),
                 'workshop_file_count'           => \count($workshop_files),
                 'workshop_file_storage_size'    => $workshop_file_storage_size,
                 'user_count'                    => $em->getRepository(User::class)->count([]),
@@ -86,6 +103,7 @@ class AdminServerInfoController
                 'ipv6_support'                  => \defined('AF_INET6') && @\inet_pton('::1') !== false,
                 'cdn_info'                      => $cdn_info,
                 'cdn_rules'                     => Config::get('cdn.country_defaults'),
+                'country_counts'                => $country_counts,
             ])
         );
 
