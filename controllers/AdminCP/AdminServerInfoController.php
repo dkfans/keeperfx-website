@@ -2,19 +2,19 @@
 
 namespace App\Controller\AdminCP;
 
+use App\CDN;
+use App\Config\Config;
+use App\Entity\GithubAlphaBuild;
 use App\Entity\Mail;
 use App\Entity\User;
 use App\Entity\UserIpLog;
-use App\Entity\WorkshopItem;
-use App\Entity\WorkshopFile;
 use App\Entity\WorkshopComment;
-use App\Entity\GithubAlphaBuild;
-
+use App\Entity\WorkshopFile;
+use App\Entity\WorkshopItem;
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
 class AdminServerInfoController
 {
@@ -23,7 +23,8 @@ class AdminServerInfoController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-        EntityManager $em
+        EntityManager $em,
+        CDN $cdn,
     ) {
         // Get PHP upload limits
         $php_max_upload            = (int)(\ini_get('upload_max_filesize')) * 1024 * 1024;
@@ -49,6 +50,19 @@ class AdminServerInfoController
             }
         }
 
+        $cdn_info = [
+            'null' => [
+                'count' => $em->getRepository(User::class)->count(['cdn' => NULL]),
+                'name'  => Config::get('cdn.endpoints.' . Config::get('cdn.default') . '.name') . ' (custom country rules)',
+            ]
+        ];
+        foreach ($cdn->getAll() as $id => $data) {
+            $cdn_info[$id] = [
+                'count' => $em->getRepository(User::class)->count(['cdn' => $id]),
+                'name'  => $data['name'],
+            ];
+        }
+
         // Response
         $response->getBody()->write(
             $twig->render('admincp/server-info.admincp.html.twig', [
@@ -70,6 +84,8 @@ class AdminServerInfoController
                 'last_user'                     => $em->getRepository(User::class)->findOneBy([], ['created_timestamp' => 'DESC']),
                 'last_workshop_item'            => $em->getRepository(WorkshopItem::class)->findOneBy([], ['created_timestamp' => 'DESC']),
                 'ipv6_support'                  => \defined('AF_INET6') && @\inet_pton('::1') !== false,
+                'cdn_info'                      => $cdn_info,
+                'cdn_rules'                     => Config::get('cdn.country_defaults'),
             ])
         );
 

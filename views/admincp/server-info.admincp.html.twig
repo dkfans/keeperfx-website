@@ -245,4 +245,44 @@
     </div>
 </div>
 
+{# CDN #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>CDN</h2>
+    </div>
+    <div class="content-body">
+
+        <h5>CDN Choice</h5>
+        <table class="table">
+            {% for id, data in cdn_info %}
+            <tr>
+                <td style="width: 50%">
+                    {{ data.name }}
+                </td>
+                <td style="width: 50%" class="text-info">
+                    {{ data.count }} users
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h5>CDN Custom Country Rules</h5>
+        <table class="table">
+            {% for country, endpoint in cdn_rules %}
+            <tr>
+                <td style="width: 50%">
+                    {{ get_country_emoji(country) }}
+
+                    {{ get_country_string(country) }}
+                </td>
+                <td style="width: 50%" class="text-info">
+                    {{ cdn_info[endpoint].name }}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+</div>
+
 {% endblock %}
