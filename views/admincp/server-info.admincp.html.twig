@@ -293,18 +293,26 @@
     <div class="content-body">
 
         <table class="table">
-            {% for country_code, count in country_counts %}
-            <tr>
-                <td style="width: 50%">
-                    {{ get_country_emoji(country_code) }}
+            {% for country_code, count in country_counts|slice(0,10) %}
+                <tr>
+                    <td style="width: 50%">
+                        {{ get_country_emoji(country_code) }}
 
-                    {{ get_country_string(country_code) }}
-                </td>
-                <td style="width: 50%" class="text-info">
-                    {{ count }} users
-                </td>
-            </tr>
+                        {{ get_country_string(country_code) }}
+                    </td>
+                    <td style="width: 50%" class="text-info">
+                        {{ count }} users
+                    </td>
+                </tr>
             {% endfor %}
+            {% if country_counts|length > 10 %}
+                <tr>
+                    <td style="width: 50%" class="text-muted">
+                        {{ country_counts|length - 10 }} more countries hidden
+                    </td>
+                    <td style="width: 50%" class="text-info"></td>
+                </tr>
+            {% endif %}
         </table>
 
     </div>
