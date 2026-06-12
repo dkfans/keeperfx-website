@@ -78,7 +78,10 @@ class AdminServerInfoController
                 $country_counts[$country_code]++;
             }
         }
+
+        // Sort and limit the countries
         \arsort($country_counts);
+        $country_counts = array_slice($country_counts, 0, 10, true);
 
         // Response
         $response->getBody()->write(
