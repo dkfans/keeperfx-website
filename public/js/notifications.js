@@ -6,6 +6,29 @@
 // Document ready
 $(function(){
 
+    $(document).on('click', '#notificationMarkAllRead', function(e){
+
+        e.preventDefault();
+        console.log('marking all notifications as read');
+
+        $.ajax({
+            url: $(this).attr('href'),
+            method: 'GET',
+            success: function() {
+                // Update UI
+                $('#notificationDropdown li.notification').remove();
+                $('#notificationNoNewItemsListItem').show();
+                $('#notificationMarkAllReadDividerListItem, #notificationMarkAllReadListItem').hide();
+                $('#notificationBadge').text('');
+                toastr.success('All notifications have been marked as read.');
+            }
+        });
+    });
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // POLLING
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Only poll when polling is enabled and we are logged in
     if(app_store.polling == false || app_store.account == null){
         return;

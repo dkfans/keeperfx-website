@@ -122,27 +122,28 @@
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper"
-                            style="max-width: calc(100% - 20px); min-width: 350px;" aria-labelledby="navbarNotificationDropdown">
+                            style="max-width: calc(100% - 20px); min-width: 350px;" aria-labelledby="navbarNotificationDropdown" id="notificationDropdown">
 
-                            {% if unread_notifications|length > 0 %}
-                                {% for notification_id, notification in unread_notifications %}
-                                    <li>
-                                        <a class="dropdown-item" href="/account/notification/{{ notification_id }}" style="max-width: 100%; white-space: normal;">
-                                            {{ notification.text|notification_render }}
-                                            <br/>
-                                            <time class="text-muted" datetime="{{ notification.timestamp|date('c') }}">
-                                                {{ notification.timestamp|date('Y/m/d - H:i') }}
-                                            </time>
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/account/notifications/mark-all-as-read/{{ csrf.name }}/{{ csrf.value|url_encode }}">Mark all as read</a></li>
-                            {% else %}
-                                <li>
-                                    <a class="dropdown-item disabled text-muted" href="#" disabled>No new notifications</a>
+                            <li id="notificationNoNewItemsListItem" {% if unread_notifications|length > 0 %}style="display:none"{% endif %}><a class="dropdown-item disabled text-muted" href="#" disabled>No new notifications</a></li>
+
+                            {% for notification_id, notification in unread_notifications %}
+                                <li class="notification">
+                                    <a class="dropdown-item" href="/account/notification/{{ notification_id }}" style="max-width: 100%; white-space: normal;">
+                                        {{ notification.text|notification_render }}
+                                        <br/>
+                                        <time class="text-muted" datetime="{{ notification.timestamp|date('c') }}">
+                                            {{ notification.timestamp|date('Y/m/d - H:i') }}
+                                        </time>
+                                    </a>
                                 </li>
-                            {% endif %}
+                            {% endfor %}
+
+                            <li id="notificationMarkAllReadDividerListItem" {% if unread_notifications|length == 0 %}style="display:none"{% endif %}>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li id="notificationMarkAllReadListItem" {% if unread_notifications|length == 0 %}style="display:none"{% endif %}>
+                                <a class="dropdown-item" href="/account/notifications/mark-all-as-read/{{ csrf.name }}/{{ csrf.value|url_encode }}" id="notificationMarkAllRead" data-no-instant>Mark all as read</a>
+                            </li>
 
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/account/notifications" data-instant><ion-icon name="eye-outline" style="margin-right: 5px;"></ion-icon> Show all</a></li>
