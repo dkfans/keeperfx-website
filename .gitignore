@@ -9,10 +9,10 @@ __MAINTENANCE_MODE_ACTIVE
 .env
 
 # Cache files (during dev)
-# /cache/
+/cache/
 
 # Logs (during dev)
-# /logs/
+/logs/
 
 # Composer
 vendor/
