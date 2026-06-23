@@ -1,5 +1,9 @@
 services:
 
+    redis:
+
+    mariadb:
+
     php:
         volumes:
             # Make sure these directories are writable by the `www-data` user:
@@ -30,6 +34,8 @@ services:
             - nginx
         networks:
             - kfx_network
+        profiles:
+            - donotstart
 
     mailpit:
         image: axllent/mailpit:latest
@@ -43,6 +49,8 @@ services:
             MP_MAX_MESSAGES: 500
             MP_SMTP_AUTH_ACCEPT_ANY: 1
             MP_SMTP_AUTH_ALLOW_INSECURE: 1
+        profiles:
+            - donotstart
 
 volumes:
     kfx_storage:

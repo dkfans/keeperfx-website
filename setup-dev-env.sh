@@ -53,7 +53,7 @@ echo ""
 docker compose up -d --wait
 
 # Install composer libs
-# This needs to be run as root because we install into the host filesystem
+# This needs to be run as the host user because we install into the host filesystem
 docker compose exec -it -u $(id -u) php composer install
 
 # Setup the database
@@ -66,7 +66,12 @@ docker compose exec -it -u www-data php ./console dev:generate-mock-data
 # Done!
 echo ""
 echo ""
-echo "Website:       http://127.0.0.1:5500"
-echo "mailpit:       http://127.0.0.1:5525"
-echo "mitmproxy:     http://127.0.0.1:5580"
-echo "mitmproxy UI:  http://127.0.0.1:5581/?token=keeperfx"
+echo "If you want to use the following services you still need to enable them in the docker compose override:"
+echo "    mailpit:       http://127.0.0.1:5525"
+echo "    mitmproxy:     http://127.0.0.1:5580"
+echo "    mitmproxy UI:  http://127.0.0.1:5581/?token=keeperfx"
+echo ""
+echo ""
+echo -e "KeeperFX Website available at: \033[4;35mhttp://127.0.0.1:5500\033[0m"
+echo ""
+echo ""
