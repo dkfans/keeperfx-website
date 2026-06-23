@@ -35,9 +35,9 @@ class GenerateAllAvatarThumbnailsCommand extends Command
     {
         // Define workshop storage dir
         $storage_dir = Config::get('storage.path.avatar');
-        if($storage_dir == null){
+        if ($storage_dir == null) {
             $output->writeln("[-] Avatar storage directory is not set");
-            $output->writeln("[>] ENV VAR: 'APP_AVATAR_STORAGE_CLI_PATH' or 'APP_AVATAR_STORAGE'");
+            $output->writeln("[>] ENV VAR: 'APP_AVATAR_STORAGE'");
             return Command::FAILURE;
         }
 
@@ -47,22 +47,22 @@ class GenerateAllAvatarThumbnailsCommand extends Command
         $output->writeln("[>] Generating all user avatar thumbnails...");
 
         $users = $em->getRepository(User::class)->findAll();
-        foreach($users as $user){
+        foreach ($users as $user) {
 
             $output->writeln("[>] Processing user: <info>{$user->getUsername()}</info>");
 
-            if($user->getAvatar() === null){
+            if ($user->getAvatar() === null) {
                 continue;
             }
 
-            if($user->getAvatarSmall() !== null){
+            if ($user->getAvatarSmall() !== null) {
                 continue;
             }
 
             $avatar_path = $storage_dir . '/' . $user->getAvatar();
 
             $thumbnail_filename = ThumbnailHelper::createThumbnail($avatar_path, 128, 128);
-            if($thumbnail_filename){
+            if ($thumbnail_filename) {
                 $user->setAvatarSmall($thumbnail_filename);
                 $output->writeln("[+] Created small avatar for user: {$user->getUsername()}");
             }
@@ -74,5 +74,4 @@ class GenerateAllAvatarThumbnailsCommand extends Command
         $output->writeln("[+] Done!");
         return Command::SUCCESS;
     }
-
 }

@@ -48,7 +48,7 @@ class FetchLauncherCommand extends Command
         $storage_dir = Config::get('storage.path.launcher');
         if ($storage_dir === null) {
             $output->writeln("[-] Launcher storage directory is not set");
-            $output->writeln("[>] ENV VAR: 'APP_LAUNCHER_STORAGE_CLI_PATH' or 'APP_LAUNCHER_STORAGE'");
+            $output->writeln("[>] ENV VAR: 'APP_LAUNCHER_STORAGE'");
             return Command::FAILURE;
         }
 

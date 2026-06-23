@@ -1,5 +1,7 @@
 <?php
 
+use App\Config\Config;
+
 /**
  * Twig Configuration
  */
@@ -16,7 +18,7 @@ return [
     'options'    => [
         'debug'            => $_ENV['APP_ENV'] === 'dev',
         'charset'          => 'utf-8',
-        'cache'            => APP_ROOT . '/cache/twig',
+        'cache'            => Config::get('cache.file_storage_dir') . '/twig',
         'auto_reload'      => $_ENV['APP_ENV'] === 'dev',
         'strict_variables' => true,
         'autoescape'       => 'html',

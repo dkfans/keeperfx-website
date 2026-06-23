@@ -9,6 +9,6 @@ $task
     ->everyMinute()
     ->description('Fetch Discord information')
     ->preventOverlapping()
-    ->appendOutputTo(($_ENV['APP_LOG_STORAGE'] ?? __DIR__ . '/../logs') . '/' . basename(__FILE__, '.php') . '.log');
+    ->appendOutputTo(($_ENV['APP_LOG_STORAGE'] ?? '/app/log') . '/' . basename(__FILE__, '.php') . '.log');
 
 return $schedule;

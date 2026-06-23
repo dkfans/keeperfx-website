@@ -1,5 +1,7 @@
 <?php
 
+use App\Config\Config;
+
 return [
 
     // Class definition files (and others)
@@ -11,7 +13,7 @@ return [
     // -> Never compiles in 'dev' env, regardless of it being enabled
     'compilation'    => [
         'is_enabled' => true,
-        'output_dir' => APP_ROOT . '/cache/container',
+        'output_dir' => Config::get('cache.file_storage_dir') . '/container',
     ],
 
     // Autowire classes

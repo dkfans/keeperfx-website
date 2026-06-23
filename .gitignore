@@ -8,6 +8,12 @@ __MAINTENANCE_MODE_ACTIVE
 # Environment vars
 .env
 
+# Cache files (during dev)
+# /cache/
+
+# Logs (during dev)
+# /logs/
+
 # Composer
 vendor/
 .composer/
@@ -18,7 +24,7 @@ migrations/*
 
 # Docker
 docker/data/*
-docker-compose.yml
+compose.override.yml
 .bash_history
 
 # INCLUDE VSCode tasks.json (project specific)

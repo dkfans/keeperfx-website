@@ -33,7 +33,7 @@ class ClearOldPrototypesCommand extends Command
         $storage_dir = Config::get('storage.path.prototype');
         if ($storage_dir === null) {
             $output->writeln("[-] Prototype download directory is not set");
-            $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_STORAGE_CLI_PATH' or 'APP_PROTOTYPE_STORAGE'");
+            $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_STORAGE'");
             return Command::FAILURE;
         }
 

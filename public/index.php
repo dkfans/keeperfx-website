@@ -105,7 +105,7 @@ require APP_ROOT . '/app/routes.php';
 // Enable Slim route caching
 if ($_ENV['APP_ENV'] === 'prod') {
     $routeCollector = $app->getRouteCollector();
-    $routeCollector->setCacheFile(APP_ROOT . '/cache/router.cache');
+    $routeCollector->setCacheFile(Config::get('cache.file_storage_dir') . '/router.cache');
 }
 
 // Start Slim App

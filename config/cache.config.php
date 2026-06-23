@@ -19,6 +19,12 @@ return [
     'namespace' => null,
 
     /**
+     * The storage directory for cached files
+     * This is required because not everything will be handled by the cache adapter and some stuff will always use the filesystem
+     */
+    'file_storage_dir' => $_ENV['APP_CACHE_DIR'] ?? '/app/cache',
+
+    /**
      * Adapter to use
      *
      * Currently implemented:
@@ -32,7 +38,7 @@ return [
      */
     'adapter_config' => [
         'filesystem' => [
-            'dir' => APP_ROOT . '/cache/app',
+            'dir' => ($_ENV['APP_CACHE_DIR'] ?? '/app/cache') . '/app',
         ],
         'redis' => [
             'dsn' => $_ENV['APP_CACHE_REDIS_DSN']

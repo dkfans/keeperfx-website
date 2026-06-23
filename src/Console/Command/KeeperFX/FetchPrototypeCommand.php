@@ -60,7 +60,7 @@ class FetchPrototypeCommand extends Command
         $storage_dir = Config::get('storage.path.prototype');
         if ($storage_dir === null) {
             $output->writeln("[-] Prototype download directory is not set");
-            $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_STORAGE_CLI_PATH' or 'APP_PROTOTYPE_STORAGE'");
+            $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_STORAGE'");
             return Command::FAILURE;
         }
 
@@ -227,7 +227,7 @@ class FetchPrototypeCommand extends Command
                 $output->writeln("[>] Adding file bundle...");
                 if ($bundle_path === null || !\is_dir($bundle_path)) {
                     $output->writeln("[-] File bundle path is not set or not a dir");
-                    $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_FILE_BUNDLE_STORAGE_CLI_PATH'");
+                    $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_FILE_BUNDLE_STORAGE'");
                     return Command::FAILURE;
                 } else {
                     $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);

@@ -70,7 +70,7 @@ class FetchAlphaCommand extends Command
         $storage_dir = Config::get('storage.path.alpha-patch');
         if ($storage_dir === null) {
             $output->writeln("[-] Alpha build download directory is not set");
-            $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_STORAGE_CLI_PATH' or 'APP_ALPHA_PATCH_STORAGE'");
+            $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_STORAGE'");
             return Command::FAILURE;
         }
 
@@ -251,7 +251,7 @@ class FetchAlphaCommand extends Command
                 $output->writeln("[>] Adding file bundle...");
                 if ($bundle_path === null || !\is_dir($bundle_path)) {
                     $output->writeln("[-] File bundle path is not a dir");
-                    $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE_CLI_PATH'");
+                    $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE'");
                     return Command::FAILURE;
                 } else {
                     $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);

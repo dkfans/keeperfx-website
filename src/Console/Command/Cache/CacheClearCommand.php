@@ -16,8 +16,6 @@ use Xenokore\Utility\Helper\StringHelper;
 
 class CacheClearCommand extends Command
 {
-    public const CACHE_DIR = APP_ROOT . '/cache';
-
     private CacheInterface $cache;
 
     public function __construct(CacheInterface $cache)
@@ -39,7 +37,7 @@ class CacheClearCommand extends Command
         $current_user = \exec('whoami');
         $owning_user  = \get_current_user();
 
-        if($current_user !== $owning_user){
+        if ($current_user !== $owning_user) {
             $output->writeln('[!] <error>Current user and script owner do not match!</error>');
             $output->writeln('[>] User executing the command: ' . $current_user);
             $output->writeln('[>] Script owner: ' . $owning_user);
@@ -59,11 +57,11 @@ class CacheClearCommand extends Command
 
         // Check if we need to ignore sessions in this cache
         // This makes it so users will not lose their logged in session or CSRF tokens
-        if($input->getOption('ignore-sessions')){
+        if ($input->getOption('ignore-sessions')) {
             $output->writeln("[>] Ignoring sessions in cache");
 
             // Only ignore sessions in Redis cache
-            if(Config::get('cache.adapter') === 'redis'){
+            if (Config::get('cache.adapter') === 'redis') {
                 $output->writeln("[>] Adapter: redis");
 
                 // Get the prefix
@@ -80,7 +78,7 @@ class CacheClearCommand extends Command
 
                     // Check if length of this key matches that of a session ID
                     $key_name = substr($key, strlen($prefix) + 1);
-                    if(strlen($key_name) !== Config::get('session.sid_length')){
+                    if (strlen($key_name) !== Config::get('session.sid_length')) {
                         $predis->del($key);
                         continue;
                     }
@@ -89,13 +87,13 @@ class CacheClearCommand extends Command
                     $str = $predis->get($key);
 
                     // Make sure this isn't a Doctrine or Twig object
-                    if(StringHelper::contains($str, 'Doctrine\\') || StringHelper::contains($str, 'Twig\\')){
+                    if (StringHelper::contains($str, 'Doctrine\\') || StringHelper::contains($str, 'Twig\\')) {
                         $predis->del($key);
                         continue;
                     }
 
                     // Simple check to make sure this is unserializable
-                    if(StringHelper::contains($str, 'a:') === false){
+                    if (StringHelper::contains($str, 'a:') === false) {
                         $predis->del($key);
                         continue;
                     }
@@ -114,7 +112,7 @@ class CacheClearCommand extends Command
                     }
 
                     // Last check to make sure this is a user session
-                    if(empty($arr['uid'])){
+                    if (empty($arr['uid'])) {
                         $predis->del($key);
                         continue;
                     }
@@ -125,14 +123,13 @@ class CacheClearCommand extends Command
 
                 $output->writeln("[+] <info>CACHE CLEARED</info>");
                 $output->writeln("[>] Sessions kept: <info>$session_kept_count</info>");
-
             } else {
                 $output->writeln("[-] Ignoring sessions in non redis caches is not implemented yet");
                 return Command::FAILURE;
             }
         } else {
             $output->writeln("[>] Clearing <info>FULL</info> cache");
-            if($this->cache->clear()){
+            if ($this->cache->clear()) {
                 $output->writeln("[+] <info>CACHE CLEARED</info>");
             } else {
                 $output->writeln("[-] <error>CACHE CLEAR FAILED</error>");
@@ -140,9 +137,9 @@ class CacheClearCommand extends Command
             }
         }
 
-        $output->writeln('[>] Clearing cache file directory: ' . self::CACHE_DIR);
+        $output->writeln('[>] Clearing cache file directory: ' . Config::get('cache.file_storage_dir'));
 
-        $iterator = new \RecursiveDirectoryIterator(self::CACHE_DIR, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $iterator = new \RecursiveDirectoryIterator(Config::get('cache.file_storage_dir'), \RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::CHILD_FIRST);
 
         $dir_count  = 0;
@@ -151,16 +148,16 @@ class CacheClearCommand extends Command
         $file_count_deleted = 0;
 
         /** @var \SplFileInfo $file */
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $path = $file->getRealPath();
 
-            if($file->getFilename() === '.gitignore'){
+            if ($file->getFilename() === '.gitignore') {
                 continue;
             }
 
-            if ($file->isDir()){
+            if ($file->isDir()) {
                 $dir_count++;
-                if(@\rmdir($path)){
+                if (@\rmdir($path)) {
                     $dir_count_deleted++;
                     // $output->writeln("[+] DIR: <info>{$path}</info> DELETED");
                 } else {
@@ -168,7 +165,7 @@ class CacheClearCommand extends Command
                 }
             } else {
                 $file_count++;
-                if(@\unlink($path)){
+                if (@\unlink($path)) {
                     $file_count_deleted++;
                     // $output->writeln("[+] FILE: <info>{$path}</info> DELETED");
                 } else {

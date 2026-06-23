@@ -1,0 +1,49 @@
+services:
+
+    php:
+        volumes:
+            # Make sure these directories are writable by the `www-data` user:
+            - ./cache:/app/cache:rw
+            - ./logs:/app/log:rw
+
+    nginx:
+        ports:
+            - "127.0.0.1:5500:80"
+
+    cron:
+        profiles:
+            - donotstart
+
+    clamav:
+        profiles:
+            - donotstart
+
+    mitmproxy:
+        image: mitmproxy/mitmproxy:latest
+        container_name: kfx-mitmproxy
+        restart: unless-stopped
+        ports:
+            - 127.0.0.1:5580:8080
+            - 127.0.0.1:5581:8081
+        command: mitmweb --web-host 0.0.0.0 --mode reverse:http://kfx-nginx:80 --set web_password=keeperfx
+        depends_on:
+            - nginx
+        networks:
+            - kfx_network
+
+    mailpit:
+        image: axllent/mailpit:latest
+        container_name: kfx-mailpit
+        restart: unless-stopped
+        ports:
+            - "127.0.0.1:5525:8025" # Web UI
+        networks:
+            - kfx_network
+        environment:
+            MP_MAX_MESSAGES: 500
+            MP_SMTP_AUTH_ACCEPT_ANY: 1
+            MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+volumes:
+    kfx_storage:
+    kfx_database:

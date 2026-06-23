@@ -1,5 +1,7 @@
 <?php
 
+use App\Config\Config;
+
 /**
  * Doctrine configuration file
  */
@@ -22,11 +24,11 @@ return [
 
     'dev_mode' => $_ENV['APP_ENV'] === 'dev',
 
-    'cache_dir' => APP_ROOT . '/cache/doctrine', // If using 'filesystem' cache
+    'cache_dir' => Config::get('cache.file_storage_dir') . '/doctrine', // If using 'filesystem' cache
 
     'orm_naming_strategy' => new \Doctrine\ORM\Mapping\UnderscoreNamingStrategy(CASE_LOWER),
 
-    'proxy_dir' => APP_ROOT . '/cache/doctrine/proxy',
+    'proxy_dir' => Config::get('cache.file_storage_dir') . '/doctrine/proxy',
 
     'proxy_class_generation' => $_ENV['APP_ENV'] === 'dev' ?
         \Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_ALWAYS :

@@ -21,7 +21,8 @@ class ScanWorkshopNewCommand extends Command
 {
     private EntityManager $em;
 
-    public function __construct(EntityManager $em) {
+    public function __construct(EntityManager $em)
+    {
         $this->em = $em;
         parent::__construct();
     }
@@ -37,9 +38,9 @@ class ScanWorkshopNewCommand extends Command
 
         // Define workshop storage dir
         $storage_dir = Config::get('storage.path.workshop');
-        if($storage_dir === null){
+        if ($storage_dir === null) {
             $output->writeln("[-] Workshop storage directory is not set");
-            $output->writeln("[>] ENV VAR: 'APP_WORKSHOP_STORAGE_CLI_PATH' or 'APP_WORKSHOP_STORAGE'");
+            $output->writeln("[>] ENV VAR: 'APP_WORKSHOP_STORAGE'");
             return Command::FAILURE;
         }
 
@@ -50,16 +51,16 @@ class ScanWorkshopNewCommand extends Command
 
             $dsn = $_ENV['APP_CLAMAV_DSN'] ?? null;
 
-            if(!\is_string($dsn)){
+            if (!\is_string($dsn)) {
                 $output->writeln("[-] Invalid ClamAV DSN string ('APP_CLAMAV_DSN')");
                 return Command::FAILURE;
             }
 
-            if(StringHelper::startsWith($dsn, 'unix://')){
+            if (StringHelper::startsWith($dsn, 'unix://')) {
                 $clam = new Pipe(StringHelper::subtract($dsn, \strlen('unix://')));
-            } elseif(StringHelper::startsWith($dsn, 'tcp://')){
+            } elseif (StringHelper::startsWith($dsn, 'tcp://')) {
                 $exp = \explode(':', StringHelper::subtract($dsn, \strlen('tcp://')));
-                if(\count($exp) !== 2){
+                if (\count($exp) !== 2) {
                     $output->writeln("[-] Invalid ClamAV DSN string ('APP_CLAMAV_DSN')");
                     return Command::FAILURE;
                 }
@@ -82,7 +83,7 @@ class ScanWorkshopNewCommand extends Command
 
         // Find an un-scanned file
         $file = $this->em->getRepository(WorkshopFile::class)->findOneBy(['scan_status' => WorkshopScanStatus::NOT_SCANNED_YET]);
-        if(!$file){
+        if (!$file) {
             $output->writeln("[>] No files waiting to be scanned");
             $output->writeln("[>] Done!");
             return Command::SUCCESS;
@@ -100,7 +101,7 @@ class ScanWorkshopNewCommand extends Command
             $this->em->flush();
 
             // Make sure file exists
-            if(!\file_exists($path) || !\is_readable($path)){
+            if (!\file_exists($path) || !\is_readable($path)) {
                 $output->writeln("[-] File does not exist or is not accessible");
                 return Command::FAILURE;
             }
@@ -109,7 +110,7 @@ class ScanWorkshopNewCommand extends Command
             $result = $clam->fileScanInStream($path);
 
             // Virus found !!
-            if($result === false){
+            if ($result === false) {
 
                 $output->writeln("[!] <error>Malware found!</error>");
 
@@ -122,7 +123,7 @@ class ScanWorkshopNewCommand extends Command
                 @\unlink($path);
 
                 // Make sure file is removed
-                if(!\file_exists($path) || !\is_readable($path)){
+                if (!\file_exists($path) || !\is_readable($path)) {
                     $output->writeln("[-] Failed to remove file...");
                 } else {
                     $output->writeln("[+] File removed!");
@@ -140,7 +141,6 @@ class ScanWorkshopNewCommand extends Command
 
             // Yay!
             $output->writeln("[+] <question>No malware found</question>");
-
         } catch (\Exception $ex) {
 
             $output->writeln("[-] Something went wrong");

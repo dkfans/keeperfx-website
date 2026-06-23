@@ -46,7 +46,7 @@ class ExtractAlphaGameFilesCommand extends Command
     {
         // Make sure the game files directory is set
         $game_file_dir = Config::get('storage.path.game-files');
-        if($game_file_dir === null) {
+        if ($game_file_dir === null) {
             $output->writeln("[-] Game files directory is not set");
             $output->writeln("[>] ENV VAR: 'APP_GAME_FILE_STORAGE'");
             return Command::FAILURE;
@@ -54,9 +54,9 @@ class ExtractAlphaGameFilesCommand extends Command
 
         // Make sure the alpha patch archive directory is set
         $archive_dir = Config::get('storage.path.alpha-patch');
-        if($archive_dir === null){
+        if ($archive_dir === null) {
             $output->writeln("[-] Alpha build download directory is not set");
-            $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_STORAGE_CLI_PATH' or 'APP_ALPHA_PATCH_STORAGE'");
+            $output->writeln("[>] ENV VAR: 'APP_ALPHA_PATCH_STORAGE'");
             return Command::FAILURE;
         }
 
@@ -66,7 +66,7 @@ class ExtractAlphaGameFilesCommand extends Command
         $alpha_patch = $this->em->getRepository(GithubAlphaBuild::class)->findOneBy(['version' => $version]);
 
         // Make sure version is found
-        if(!$alpha_patch){
+        if (!$alpha_patch) {
             $output->writeln("[-] Alpha patch version '{$version}' not found");
             return Command::FAILURE;
         }
@@ -75,7 +75,7 @@ class ExtractAlphaGameFilesCommand extends Command
         $alpha_patch_archive_path = $archive_dir . "/" . $alpha_patch->getFilename();
 
         // Make sure archive is accessible
-        if(!FileHelper::isAccessible($alpha_patch_archive_path)){
+        if (!FileHelper::isAccessible($alpha_patch_archive_path)) {
             $output->writeln("[-] Alpha patch archive is not accessible: {$alpha_patch_archive_path}");
             return Command::FAILURE;
         }
@@ -86,19 +86,19 @@ class ExtractAlphaGameFilesCommand extends Command
         try {
 
             // Remove any leftover temp files
-            if(\file_exists($temp_archive_dir)){
+            if (\file_exists($temp_archive_dir)) {
                 DirectoryHelper::delete($temp_archive_dir);
             }
 
             // Open the archive
             $temp_archive = UnifiedArchive::open($alpha_patch_archive_path);
-            if($temp_archive === null){
+            if ($temp_archive === null) {
                 $output->writeln("[-] Failed to open the archive");
                 return Command::FAILURE;
             }
 
             // Check if output directory exists
-            if(!DirectoryHelper::isAccessible($temp_archive_dir)){
+            if (!DirectoryHelper::isAccessible($temp_archive_dir)) {
                 DirectoryHelper::createIfNotExist($temp_archive_dir);
             }
 
@@ -106,29 +106,28 @@ class ExtractAlphaGameFilesCommand extends Command
             $output->writeln("[>] Extracting...");
             try {
                 $temp_archive->extract($temp_archive_dir);
-            } catch (EmptyFileListException $ex){
+            } catch (EmptyFileListException $ex) {
                 $output->writeln("[-] No files in archive");
                 return Command::FAILURE;
-            } catch (ArchiveExtractionException $ex){
+            } catch (ArchiveExtractionException $ex) {
                 $output->writeln("[-] Archive Extraction Exception: " . $ex->getMessage());
                 return Command::FAILURE;
             }
 
             // Move files with game file handler
             $game_files_store_result = $this->game_file_handler->storeVersionFromPath(ReleaseType::ALPHA, $version, $temp_archive_dir);
-            if(!$game_files_store_result){
+            if (!$game_files_store_result) {
                 $output->writeln("[-] Failed to move game files");
                 return Command::FAILURE;
             }
             $output->writeln("[+] {$game_files_store_result} game files stored");
-
         } catch (\Exception $ex) {
 
             $output->writeln("[-] <error>Something went wrong</error>");
 
             // Cleanup if something went wrong
             $output->writeln("[>] Removing temp directory...");
-            if(\file_exists($temp_archive_dir)){
+            if (\file_exists($temp_archive_dir)) {
                 DirectoryHelper::delete($temp_archive_dir);
             }
 

@@ -14,19 +14,19 @@ return [
         'default_log' => [
             'is_enabled' => true,
             'level'      => Level::Info, // info
-            'path'       => ($_ENV['APP_LOG_STORAGE'] ?? APP_ROOT . '/logs') . '/app.log',
+            'path'       => ($_ENV['APP_LOG_STORAGE'] ?? '/app/log') . '/app.log',
         ],
 
         'error_log' => [
             'is_enabled' => true,
             'level'      => Level::Warning, // warning
-            'path'       => ($_ENV['APP_LOG_STORAGE'] ?? APP_ROOT . '/logs') . '/app.error.log',
+            'path'       => ($_ENV['APP_LOG_STORAGE'] ?? '/app/log') . '/app.error.log',
         ],
 
         'debug_log' => [
             'is_enabled' => $_ENV['APP_ENV'] === 'dev',
             'level'      => Level::Debug, // debug
-            'path'       => ($_ENV['APP_LOG_STORAGE'] ?? APP_ROOT . '/logs') . '/app.debug.log',
+            'path'       => ($_ENV['APP_LOG_STORAGE'] ?? '/app/log') . '/app.debug.log',
         ],
     ],
 

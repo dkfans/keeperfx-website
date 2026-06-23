@@ -18,44 +18,62 @@ The Docker Compose file is used on the official production server so it makes de
 You can [set up your environment natively](/docs/native-dev-setup.md) but it's highly suggested to just use Docker using the instructions below. 
 
 Download the repository:
-```
+```sh
 git clone https://github.com/dkfans/keeperfx-website.git
 cd keeperfx-website
 ```
 
-Create the storage volumes
+Setup .env file
+```sh
+cp .env.docker .env && \
+    sed -i "s/^MYSQL_PASSWORD=.*/MYSQL_PASSWORD=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32)/" .env && \
+    sed -i "s/^MYSQL_ROOT_PASSWORD=.*/MYSQL_ROOT_PASSWORD=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32)/" .env
 ```
+
+Optional: Setup cache and logs dir (in development):
+```sh
+mkdir -p ./logs ./cache && \ 
+    chmod -R 666 ./logs ./cache
+```
+
+Optional: Setup the docker compose overrides (in development):
+```sh
+cp compose.override.yml.example compose.override.yml
+```
+
+Create the storage volumes (in production):
+```sh
 docker volume create kfx_storage
 docker volume create kfx_database
 ```
 
 Start the containers:
-```
+```sh
 docker compose up -d
 ```
 
 Install composer libraries:
-```
+```sh
 docker compose exec -it -u www-data php composer install
 ```
 
-Do the database migrations (this sets up the database structure):
-```
+Do the database migrations:
+```sh
 docker compose exec -it -u www-data php ./console migrations:migrate
 ```
 
 Optional: Create an admin user:
-```
+```sh
 docker compose exec -it -u www-data php ./console user:create <username> <password> admin
 ```
 
-Optional: Generate mock data for development
-```
+Optional: Generate mock data (in development)
+```sh
 docker compose exec -it -u www-data php ./console dev:generate-mock-data
 ```
 
 Optional: Retrieve all kinds of data for different website functionality
-```
+```sh
 docker compose exec -it -u www-data php ./console kfx:pull-repo
 docker compose exec -it -u www-data php ./console kfx:handle-commits
 docker compose exec -it -u www-data php ./console kfx:fetch-discord-info

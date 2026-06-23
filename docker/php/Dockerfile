@@ -20,7 +20,8 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     libwebp-dev \
     libfreetype6-dev \
-    libsocket++-dev
+    libsocket++-dev \
+    libfcgi-bin
 
 # Clean up to reduce image size
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -48,8 +49,18 @@ RUN git config --system --add safe.directory '*'
 # Get Composer (PHP package manager)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Create dynamic application dirs
+RUN mkdir -p /app/cache && \
+    chown -R www-data:www-data /app/cache
+RUN mkdir -p /app/log && \
+    chown -R www-data:www-data /app/log
+RUN mkdir -p /app/storage && \
+    chown -R www-data:www-data /app/storage
+RUN mkdir -p /app/var && \
+    chown -R www-data:www-data /app/var
+
 # Set working directory
-WORKDIR /var/www
+WORKDIR /app/www
 
 # Start php-fpm
 CMD ["php-fpm"]
