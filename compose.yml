@@ -109,7 +109,12 @@ services:
 
 networks:
     kfx_network:
+        name: kfx_network
 
 volumes:
     kfx_storage:
+        name: kfx_storage
+        external: true
     kfx_database:
+        name: kfx_database
+        external: true

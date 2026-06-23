@@ -54,4 +54,6 @@ services:
 
 volumes:
     kfx_storage:
+        external: false
     kfx_database:
+        external: false

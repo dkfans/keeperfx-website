@@ -40,11 +40,6 @@ fi
 # Copy the compose override example configuration
 cp compose.override.yml.example compose.override.yml
 
-# Create persistent docker volumes
-echo "Creating persistent docker volumes..."
-docker volume inspect kfx_storage > /dev/null 2>&1 || docker volume create kfx_storage
-docker volume inspect kfx_database > /dev/null 2>&1 || docker volume create kfx_database
-
 # Start the docker containers and wait for the healthcheck to pass
 echo ""
 echo "Starting all docker containers for initial vendor and database setup"
