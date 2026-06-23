@@ -96,7 +96,8 @@ class Mailer
         if ((bool)$_ENV['APP_SMTP_TLS']) {
             $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         } else {
-            $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            // $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $php_mailer->SMTPSecure = false;
         }
 
         if ((bool)$_ENV['APP_SMTP_VERIFY_CERT'] === false) {
