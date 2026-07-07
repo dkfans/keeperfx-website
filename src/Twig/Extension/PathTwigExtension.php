@@ -23,7 +23,7 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
     {
         if (!empty($_SERVER["REQUEST_URI"])) {
             $this->current_uri  = $_SERVER["REQUEST_URI"];
-            $this->current_path = \parse_url($_SERVER["REQUEST_URI"])['path'];
+            $this->current_path = \parse_url($_SERVER["REQUEST_URI"])['path'] ?? '/';
         }
     }
 
