@@ -49,7 +49,9 @@ $(function(){
     function notificationPoll(){
 
         var $dropdown = $('[aria-labelledby="navbarNotificationDropdown"]');
-        var currentNotificationCount = $dropdown.find('.dropdown-item').length - 2;
+        // var currentNotificationCount = $dropdown.find('.dropdown-item').length - 2;
+        var currentNotificationCount = parseInt($('#notificationBadge').text());
+
 
         // Do nothing if we have the notification dropdown open
         if($dropdownButton.hasClass('show')){
@@ -66,7 +68,8 @@ $(function(){
                 // Get the new dropdown HTML
                 var $html = $(data);
                 var $newDropdown = $html.find('[aria-labelledby="navbarNotificationDropdown"]');
-                var newNotificationCount = $newDropdown.find('.dropdown-item').length - 2;
+                // var newNotificationCount = $newDropdown.find('.dropdown-item').length - 2;
+                var newNotificationCount = parseInt($html.find('#notificationBadge').text());
 
                 // Make sure our current dropdown is not open
                 // And that there are either less or more notifications now
