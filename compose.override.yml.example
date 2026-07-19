@@ -1,28 +1,35 @@
 services:
 
     redis:
+        restart: on-failure
 
     mariadb:
+        restart: on-failure
 
     php:
+        restart: on-failure
         volumes:
             # Make sure these directories are writable by the `www-data` user:
             - ./cache:/app/cache:rw
             - ./logs:/app/log:rw
 
     nginx:
+        restart: on-failure
         ports:
             - "127.0.0.1:5500:80"
 
     cron:
+        restart: on-failure
         profiles:
             - donotstart
 
     clamav:
+        restart: on-failure
         profiles:
             - donotstart
 
     mitmproxy:
+        restart: on-failure
         image: mitmproxy/mitmproxy:latest
         container_name: kfx-mitmproxy
         restart: unless-stopped
@@ -38,6 +45,7 @@ services:
             - donotstart
 
     mailpit:
+        restart: on-failure
         image: axllent/mailpit:latest
         container_name: kfx-mailpit
         restart: unless-stopped
