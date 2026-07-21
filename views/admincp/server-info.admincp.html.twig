@@ -292,27 +292,56 @@
     </div>
     <div class="content-body">
 
-        <table class="table">
-            {% for country_code, count in country_counts|slice(0,10) %}
-                <tr>
-                    <td style="width: 50%">
-                        {{ get_country_emoji(country_code) }}
+        {% if country_counts is not empty %}
+            <table class="table">
+                {% for country_code, count in country_counts|slice(0,10) %}
+                    <tr>
+                        <td style="width: 50%">
+                            {{ get_country_emoji(country_code) }}
 
-                        {{ get_country_string(country_code) }}
+                            {{ get_country_string(country_code) }}
+                        </td>
+                        <td style="width: 50%" class="text-info">
+                            {{ count }} users
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% if country_counts|length > 10 %}
+                    <tr>
+                        <td style="width: 50%" class="text-muted">
+                            {{ country_counts|length - 10 }} more countries hidden
+                        </td>
+                        <td style="width: 50%" class="text-info"></td>
+                    </tr>
+                {% endif %}
+            </table>
+        {% else %}
+            <span class="text-muted">No country counts found</span>
+        {% endif %}
+
+    </div>
+</div>
+
+{# Environment variables #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Environment Variables</h2>
+    </div>
+    <div class="content-body">
+
+        <div class="alert bg-dark">Some environment variables are not included for security reasons</div>
+
+        <table class="table">
+            {% for var in env_vars %}
+                <tr>
+                    <td style="width: 50%; font-size: 11px" class="font-monospace">
+                        {{ var }}
                     </td>
-                    <td style="width: 50%" class="text-info">
-                        {{ count }} users
+                    <td style="width: 50%; font-size: 11px" class="text-info font-monospace">
+                        {{ get_env(var) }}
                     </td>
                 </tr>
             {% endfor %}
-            {% if country_counts|length > 10 %}
-                <tr>
-                    <td style="width: 50%" class="text-muted">
-                        {{ country_counts|length - 10 }} more countries hidden
-                    </td>
-                    <td style="width: 50%" class="text-info"></td>
-                </tr>
-            {% endif %}
         </table>
 
     </div>
