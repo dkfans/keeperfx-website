@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Psr7\LazyOpenStream;
 use geertw\IpAnonymizer\IpAnonymizer;
 use Twig\Environment as TwigEnvironment;
+use Jaybizzle\CrawlerDetect\CrawlerDetect;
 
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -74,7 +75,8 @@ class WorkshopDownloadController {
         }
 
         // Increase download count
-        if(!isset($request->getQueryParams()['no_download_increment'])){
+        // Except if the downloader is a crawler or the 'no_download_increment' GET parameter is given
+        if ((new CrawlerDetect())->isCrawler() === false && !isset($request->getQueryParams()['no_download_increment'])) {
 
             // Get anonymized IP hash & cache key
             // This way we can protect against people abusing download numbers yet still be privacy friendly
