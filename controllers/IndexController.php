@@ -33,7 +33,38 @@ class IndexController
         // Grab some stuff from DB to show on main page
         $articles              = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 3);
         $release               = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
-        $latest_workshop_items = $em->getRepository(WorkshopItem::class)->findBy(['is_published' => true, 'is_last_file_broken' => false], ['created_timestamp' => 'DESC'], 3);
+
+        // TODO: use the following query but cache it instead of the big query builder a few lines below
+        // $latest_workshop_items = $em->getRepository(WorkshopItem::class)->findBy(['is_published' => true, 'is_last_file_broken' => false], ['created_timestamp' => 'DESC'], 3);
+
+        $latest_workshop_items = $em->createQueryBuilder()
+
+            // Use partials to stop lazy loading
+            ->select(
+                'w',
+                'PARTIAL i.{id, filename}',
+                'PARTIAL s.{id, username, avatar, avatar_small}',
+                'PARTIAL bio.{id}',
+                'PARTIAL verify.{id}',
+            )
+
+            ->from(WorkshopItem::class, 'w')
+            ->leftJoin('w.images', 'i')
+            ->leftJoin('w.submitter', 's')
+
+            // Left join the following entities instantly to lower amount of queries
+            ->leftJoin('s.bio', 'bio')
+            ->leftJoin('s.email_verification', 'verify')
+
+            ->where('w.is_published = :published')
+            ->andWhere('w.is_last_file_broken = :broken')
+            ->setParameter('published', true)
+            ->setParameter('broken', false)
+
+            ->orderBy('w.created_timestamp', 'DESC')
+            ->setMaxResults(3)
+            ->getQuery()
+            ->getResult();
 
         // Get featured Twitch stream
         $twitch_channel = null;
