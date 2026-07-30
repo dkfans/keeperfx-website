@@ -16,7 +16,8 @@ use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class WorkshopRandomController {
+class WorkshopRandomController
+{
 
     public function navRandomItem(
         Request $request,
@@ -24,34 +25,52 @@ class WorkshopRandomController {
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $item_category
-    ){
-        $category = match($item_category){
+        string $item_category
+    ) {
+        $category = match ($item_category) {
             default    => WorkshopCategory::Map,
             'map'      => WorkshopCategory::Map,
             'campaign' => WorkshopCategory::Campaign,
         };
 
-        // TODO: order by rand maybe?
-        $workshop_items = $em->getRepository(WorkshopItem::class)->findBy(
-            ['is_published' => true, 'category' => $category->value]
-        );
+        $count = $em->getRepository(WorkshopItem::class)
+            ->createQueryBuilder('w')
+            ->select('COUNT(w.id)')
+            ->where('w.category = :category')
+            ->andWhere('w.is_published = :is_published')
+            ->andWhere('w.is_last_file_broken = :is_last_file_broken')
+            ->setParameter('category', $category->value)
+            ->setParameter('is_published', true)
+            ->setParameter('is_last_file_broken', false)
+            ->getQuery()
+            ->getSingleScalarResult();
 
-        if(empty($workshop_items)){
+        if ($count === 0) {
             $flash->warning('Random workshop item not found.');
-            $response->getBody()->write(
-                $twig->render('workshop/alert.workshop.html.twig')
-            );
+            $response->getBody()->write($twig->render('workshop/alert.workshop.html.twig'));
             return $response;
         }
 
-        $item = $workshop_items[\random_int(0, \count($workshop_items) - 1)];
+        $offset = random_int(0, $count - 1);
 
-        $response = $response->withHeader('Location',
+        $item = $em->getRepository(WorkshopItem::class)
+            ->createQueryBuilder('w')
+            ->where('w.category = :category')
+            ->andWhere('w.is_published = :is_published')
+            ->andWhere('w.is_last_file_broken = :is_last_file_broken')
+            ->setParameter('category', $category->value)
+            ->setParameter('is_published', true)
+            ->setParameter('is_last_file_broken', false)
+            ->setFirstResult($offset)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        $response = $response->withHeader(
+            'Location',
             '/workshop/item/' . $item->getId() . '/' . URLify::slug($item->getName()) . '#nav-top'
         )->withStatus(302);
 
         return $response;
     }
-
 }
