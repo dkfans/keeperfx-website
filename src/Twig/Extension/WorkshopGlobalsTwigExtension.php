@@ -117,7 +117,7 @@ class WorkshopGlobalsTwigExtension extends \Twig\Extension\AbstractExtension imp
                 'categories'                    => WorkshopCategory::cases(),
                 'categories_without_difficulty' => Config::get('app.workshop.item_categories_without_difficulty'),
                 'categories_map'                => $categories_map,
-                'tags'                          => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+                //'tags'                          => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
                 'stable_builds'                 => $stable_builds_map,
                 'latest_stable_minor_releases'  => $latest_minor_releases,
             ]
