@@ -32,10 +32,10 @@ class FetchAlphaCommand extends Command
 
     public const GITHUB_WORKFLOW_RUNS_URL = 'https://api.github.com/repos/dkfans/keeperfx/actions/runs';
 
-    public const ARTIFACT_NAME_REGEX = '/^keeperfx\-([\d\_\-]+?)\_Alpha\-patch\-signed$/';
+    public const ARTIFACT_NAME_REGEX = '/^keeperfx\-([\d\_\-]+?)[\-\_]Alpha\-patch\-signed$/';
 
     private array $version_regex = [
-        '/^keeperfx\-(\d+\_\d+\_\d+\_\d+)\_Alpha\-patch$/'
+        '/^keeperfx\-(\d+\_\d+\_\d+\_\d+)[\-\_]Alpha\-patch$/'
     ];
 
     public function __construct(
