@@ -155,9 +155,15 @@ class FetchAlphaCommand extends Command
                 }
             }
 
-            // Make sure artifact has an ID
+            // Make sure artifact is found
+            if (!$artifact) {
+                $output->writeln("[-] Artifact not found");
+                continue;
+            }
+
+            // Make sure artifact has a valid ID
             if (!isset($artifact->id) || !is_numeric($artifact->id)) {
-                $output->writeln("[-] Missing or invalid artifact ID");
+                $output->writeln("[-] Artifact does not have a valid ID");
                 continue;
             }
 
