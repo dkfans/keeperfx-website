@@ -45,7 +45,7 @@ log_allow_line_breaks: true
 
 # By default empty context arrays are shown in the log.
 # Set the value to true to remove them.
-log_ignore_empty_context: false
+log_ignore_empty_context: true
 
 # This option determines whether the output should be emailed or not.
 email_output: false

@@ -1,14 +1,9 @@
 <?php
 
-use App\Config\Config;
-
-$schedule = new \Crunz\Schedule();
-
-$task = $schedule->run(\PHP_BINARY . ' ' . \dirname(__DIR__) . '/console workshop:fix-ratings');
-$task
-    ->everySixHours()
-    ->description('Fix and recalculate workshop ratings')
-    ->preventOverlapping()
-    ->appendOutputTo(($_ENV['APP_LOG_STORAGE'] ?? '/app/log') . '/' . basename(__FILE__, '.php') . '.log');
-
-return $schedule;
+return \App\TaskScheduler::schedule(
+    \App\TaskScheduler::task(
+        description: 'Fix and recalculate workshop ratings',
+        console_command: 'workshop:fix-ratings',
+        interval: 'everySixHours',
+    ),
+);
