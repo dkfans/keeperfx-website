@@ -34,6 +34,7 @@ return [
     \App\Console\Command\Workshop\FetchCreatureMakerCommand::class,
     \App\Console\Command\Workshop\GenerateAllThumbnailsCommand::class,
     \App\Console\Command\Workshop\FixWorkshopRatingsCommand::class,
+    \App\Console\Command\Workshop\VirusScanWorkshopCommand::class,
 
     // Cache
     \App\Console\Command\Cache\CacheClearCommand::class,
@@ -45,10 +46,6 @@ return [
     // Maintenance
     \App\Console\Command\Maintenance\MaintenanceStartCommand::class,
     \App\Console\Command\Maintenance\MaintenanceStopCommand::class,
-
-    // ClamAV scanner
-    \App\Console\Command\ClamAV\ScanWorkshopNewCommand::class,
-    \App\Console\Command\ClamAV\ScanWorkshopAllCommand::class,
 
     // Mail
     \App\Console\Command\Mail\CreateMailCommand::class,

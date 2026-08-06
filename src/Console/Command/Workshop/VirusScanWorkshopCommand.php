@@ -1,23 +1,25 @@
 <?php
 
-namespace App\Console\Command\ClamAV;
+namespace App\Console\Command\Workshop;
 
 use App\Enum\WorkshopScanStatus;
 
 use App\Entity\WorkshopFile;
 
 use App\Config\Config;
+
 use Appwrite\ClamAV\Pipe;
 use Appwrite\ClamAV\Network;
 use Doctrine\ORM\EntityManager;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
 use Xenokore\Utility\Helper\StringHelper;
 
-class ScanWorkshopAllCommand extends Command
+class VirusScanWorkshopCommand extends Command
 {
     private EntityManager $em;
 
@@ -29,8 +31,10 @@ class ScanWorkshopAllCommand extends Command
 
     protected function configure()
     {
-        $this->setName("clamav:scan-workshop-all")
-            ->setDescription("Use ClamAV to scan all workshop files.");
+        $this->setName("workshop:virus-scan")
+            ->setDescription("Use ClamAV to scan workshop files.")
+            ->addArgument('target', InputArgument::REQUIRED, 'Target to scan (<id>|scanned|new|all)')
+            ->addArgument('order', InputArgument::OPTIONAL, 'Order (ASC|DESC)');
     }
 
     protected function execute(Input $input, Output $output)
@@ -71,6 +75,7 @@ class ScanWorkshopAllCommand extends Command
 
             $version = $clam->version();
         } catch (\Exception $ex) {
+            $output->writeln("[-] Exception: {$ex->getMessage()}");
             $output->writeln("[-] Failed to setup ClamAV client!");
             return Command::FAILURE;
         }
@@ -78,11 +83,66 @@ class ScanWorkshopAllCommand extends Command
         $output->writeln("[+] Successfully setup ClamAV client");
         $output->writeln("[+] ClamAV version: {$version}");
 
-        // Get all files to scan
-        $files = $this->em->getRepository(WorkshopFile::class)->findBy(
-            ['scan_status' => [WorkshopScanStatus::NOT_SCANNED_YET, WorkshopScanStatus::SCANNED]],
-            ['created_timestamp' => 'DESC']
-        );
+        // Get the order for this scan (only ASC and DESC allowed)
+        $order = $input->getArgument('order');
+        if (empty($order) || !in_array(\strtoupper($order), ['ASC', 'DESC'])) {
+            $order = 'ASC';
+        } else {
+            $order = \strtoupper($order);
+        }
+
+        // Get the target for this scan
+        // all          -> scans every single item in the workshop, should not really be used except for dev environments
+        // new          -> scans new items that are not scanned yet
+        // scanned      -> scans previously scanned items
+        // <id>[,<id>]  -> scans one or more items by their id
+        $target = (string) $input->getArgument('target');
+
+        if ($target === 'all') {
+
+            $files = $this->em->getRepository(WorkshopFile::class)->findBy(
+                [],
+                ['created_timestamp' => $order]
+            );
+        } elseif ($target === 'new') {
+
+            $files = $this->em->getRepository(WorkshopFile::class)->findBy(
+                ['scan_status' => [WorkshopScanStatus::NOT_SCANNED_YET]],
+                ['created_timestamp' => $order]
+            );
+        } elseif ($target === 'scanned') {
+
+            $files = $this->em->getRepository(WorkshopFile::class)->findBy(
+                ['scan_status' => [WorkshopScanStatus::SCANNED]],
+                ['created_timestamp' => $order]
+            );
+        } else {
+
+            $ids = [];
+
+            foreach (explode(',', $target) as $id) {
+
+                if (!\is_numeric($id)) {
+                    $output->writeln("[-] Invalid ID or target to scan: {$id}");
+                    return Command::FAILURE;
+                }
+
+                $id = (int) $id;
+
+                if (in_array($id, $ids)) {
+                    $output->writeln("[?] Duplicate ID to scan: {$id} -> ignoring");
+                    continue;
+                }
+
+                $ids[] = $id;
+            }
+
+            $files = $this->em->getRepository(WorkshopFile::class)->findBy(
+                ['item' => $ids],
+                ['created_timestamp' => $order]
+            );
+        }
+
         if (!$files || \count($files) === 0) {
             $output->writeln("[?] No files found to scan");
             $output->writeln("[>] Done!");
@@ -95,7 +155,7 @@ class ScanWorkshopAllCommand extends Command
                 $output->writeln("[>] Scanning: <comment>{$file->getFilename()}</comment> [<info>{$file->getItem()->getName()}</info>]");
 
                 $path = $storage_dir . '/' . $file->getItem()->getId() . '/files/' . $file->getStorageFilename();
-                $output->writeln("[>] File: <info>{$path}</info>");
+                $output->writeln("\t[>] File: <info>{$path}</info>");
 
                 // Update scan status
                 $file->setScanStatus(WorkshopScanStatus::SCANNING);
@@ -103,8 +163,10 @@ class ScanWorkshopAllCommand extends Command
 
                 // Make sure file exists
                 if (!\file_exists($path) || !\is_readable($path)) {
-                    $output->writeln("[-] File does not exist or is not accessible");
-                    return Command::FAILURE;
+                    $output->writeln("\t[-] <error>File does not exist or is not accessible</error>");
+                    $file->setScanStatus(WorkshopScanStatus::INVALID);
+                    $this->em->flush();
+                    continue;
                 }
 
                 // Scan file
@@ -113,27 +175,26 @@ class ScanWorkshopAllCommand extends Command
                 // Virus found !!
                 if ($result === false) {
 
-                    $output->writeln("[!] <error>Malware found!</error>");
+                    $output->writeln("\t[!] <error>Malware found!</error>");
 
                     // Remove from DB
                     $this->em->remove($file);
                     $this->em->flush();
-                    $output->writeln("[+] Removed from DB!");
+                    $output->writeln("\t[+] Removed from DB!");
 
                     // Remove FILE
                     @\unlink($path);
 
                     // Make sure file is removed
-                    if (!\file_exists($path) || !\is_readable($path)) {
-                        $output->writeln("[-] Failed to remove file...");
+                    if (\file_exists($path)) {
+                        $output->writeln("\t[-] <error>Failed to remove file...</error>");
                     } else {
-                        $output->writeln("[+] File removed!");
+                        $output->writeln("\t[+] File removed!");
                     }
 
                     // TODO: do some reporting (send mail to admin)
 
-                    $output->writeln("[>] Done!");
-                    return Command::SUCCESS;
+                    continue;
                 }
 
                 // Update scan status
@@ -141,16 +202,16 @@ class ScanWorkshopAllCommand extends Command
                 $this->em->flush();
 
                 // Yay!
-                $output->writeln("[+] <question>No malware found</question>");
+                $output->writeln("\t[+] <question>No malware found</question>");
             } catch (\Exception $ex) {
 
-                $output->writeln("[-] Something went wrong");
+                $output->writeln("\t[-] Something went wrong");
 
                 // Reset scan status
                 $file->setScanStatus(WorkshopScanStatus::NOT_SCANNED_YET);
                 $this->em->flush();
 
-                $output->writeln("[>] Scan status reset");
+                $output->writeln("\t[>] Scan status reset");
             }
         }
 

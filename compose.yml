@@ -97,6 +97,8 @@ services:
         image: clamav/clamav:latest
         container_name: kfx-clamav
         restart: unless-stopped
+        environment:
+            CLAMD_CONF_StreamMaxLength: 512M
         networks:
             - kfx_network
         healthcheck:
