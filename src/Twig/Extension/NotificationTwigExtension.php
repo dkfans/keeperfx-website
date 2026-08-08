@@ -40,6 +40,12 @@ class NotificationTwigExtension extends \Twig\Extension\AbstractExtension implem
         // **interesting**
         $string = \preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $string);
 
+        // `code`
+        $string = \preg_replace('/\`(.*?)\`/', '<code>$1</code>', $string);
+
+        // ::muted::
+        $string = \preg_replace('/\:\:(.*?)\:\:/', '<span class="text-muted">$1</span>', $string);
+
         return $string;
     }
 
