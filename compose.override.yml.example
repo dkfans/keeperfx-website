@@ -5,6 +5,9 @@ services:
 
     mariadb:
         restart: on-failure
+        ports:
+            # Open loopback port 3316 to access the database
+            - "127.0.0.1:3316:3306"
 
     php:
         restart: on-failure
@@ -32,7 +35,6 @@ services:
         restart: on-failure
         image: mitmproxy/mitmproxy:latest
         container_name: kfx-mitmproxy
-        restart: unless-stopped
         ports:
             - 127.0.0.1:5580:8080
             - 127.0.0.1:5581:8081
@@ -48,7 +50,6 @@ services:
         restart: on-failure
         image: axllent/mailpit:latest
         container_name: kfx-mailpit
-        restart: unless-stopped
         ports:
             - "127.0.0.1:5525:8025" # Web UI
         networks:
