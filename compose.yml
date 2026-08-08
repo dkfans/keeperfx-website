@@ -97,8 +97,9 @@ services:
         image: clamav/clamav:latest
         container_name: kfx-clamav
         restart: unless-stopped
-        environment:
-            CLAMD_CONF_StreamMaxLength: 512M
+        volumes:
+            - ./docker/clamav/clamd.conf:/etc/clamav/clamd.conf
+            - kfx_storage:/app/storage:r
         networks:
             - kfx_network
         healthcheck:

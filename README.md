@@ -87,9 +87,9 @@ Visit the website at: http://127.0.0.1:5500
 
 
 > **NOTE:**  
-> If you are using a lower-end machine you might want to disable the `clamd` container as it can eat up to 2GB of RAM.
-> If you wish to not automatically start mirroring all of the game releases and other files you can disable the `cron` container.
-> You can do so by uncommenting the `donotstart` profiles in the docker compose file.
+> If you are using a lower-end machine you might want to disable the `clamav` container as it can eat up to 2GB of RAM 
+> or if you wish to not automatically start mirroring all of the game releases and other files you can disable the `cron` container.
+> You can do so by uncommenting the `donotstart` profiles in the docker compose override file.
 
 
 

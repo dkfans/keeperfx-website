@@ -2,29 +2,27 @@
 
 namespace App\Console\Command\Workshop;
 
-use App\Enum\WorkshopScanStatus;
-
-use App\Entity\WorkshopFile;
-
 use App\Config\Config;
-
-use Appwrite\ClamAV\Pipe;
+use App\Entity\WorkshopFile;
+use App\Enum\UserRole;
+use App\Enum\WorkshopScanStatus;
+use App\Notifications\Notification\VirusRemovedNotification;
+use App\Notifications\NotificationCenter;
 use Appwrite\ClamAV\Network;
+use Appwrite\ClamAV\Pipe;
 use Doctrine\ORM\EntityManager;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-
 use Xenokore\Utility\Helper\StringHelper;
 
 class VirusScanWorkshopCommand extends Command
 {
-    private EntityManager $em;
-
-    public function __construct(EntityManager $em)
-    {
+    public function __construct(
+        private EntityManager $em,
+        private NotificationCenter $nc,
+    ) {
         $this->em = $em;
         parent::__construct();
     }
@@ -149,12 +147,18 @@ class VirusScanWorkshopCommand extends Command
             return Command::SUCCESS;
         }
 
+        /** @var WorkshopFile $file */
         foreach ($files as $file) {
             try {
 
-                $output->writeln("[>] Scanning: <comment>{$file->getFilename()}</comment> [<info>{$file->getItem()->getName()}</info>]");
+                $storage_filename = $file->getStorageFilename();
+                $filename         = $file->getFilename();
+                $item_id          = $file->getItem()->getId();
+                $item_name        = $file->getItem()->getName();
 
-                $path = $storage_dir . '/' . $file->getItem()->getId() . '/files/' . $file->getStorageFilename();
+                $output->writeln("[>] Scanning: <comment>{$filename}</comment> [<info>{$item_name}</info>]");
+
+                $path = $storage_dir . '/' . $item_id . '/files/' . $storage_filename;
                 $output->writeln("\t[>] File: <info>{$path}</info>");
 
                 // Update scan status
@@ -170,7 +174,9 @@ class VirusScanWorkshopCommand extends Command
                 }
 
                 // Scan file
-                $result = $clam->fileScanInStream($path);
+                // When using the default docker compose file we can scan the path directly
+                // because the volume is mapped exactly like it is in PHP.
+                $result = $clam->fileScan($path);
 
                 // Virus found !!
                 if ($result === false) {
@@ -180,20 +186,24 @@ class VirusScanWorkshopCommand extends Command
                     // Remove from DB
                     $this->em->remove($file);
                     $this->em->flush();
-                    $output->writeln("\t[+] Removed from DB!");
+                    $output->writeln("\t[+] File removed from the database!");
 
                     // Remove FILE
                     @\unlink($path);
 
                     // Make sure file is removed
                     if (\file_exists($path)) {
-                        $output->writeln("\t[-] <error>Failed to remove file...</error>");
+                        $output->writeln("\t[-] <error>Failed to remove file from filesystem...</error>");
                     } else {
                         $output->writeln("\t[+] File removed!");
                     }
 
-                    // TODO: do some reporting (send mail to admin)
-
+                    // Notify admins
+                    $this->nc->sendNotificationToAllWithRole(
+                        UserRole::Admin,
+                        VirusRemovedNotification::class,
+                        ['filename' => $filename, 'item_id' => $item_id, 'item_name' => $item_name]
+                    );
                     continue;
                 }
 
