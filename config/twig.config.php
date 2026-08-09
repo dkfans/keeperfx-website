@@ -60,6 +60,7 @@ return [
         \App\Twig\Extension\StringShortenTwigExtension::class,
         \App\Twig\Extension\InstanceOfTwigExtension::class,
         \App\Twig\Extension\StripMarkdownExtension::class,
+        \App\Twig\Extension\ConfigTwigExtension::class,
 
         \Twig\Extra\Markdown\MarkdownExtension::class,
     ],
