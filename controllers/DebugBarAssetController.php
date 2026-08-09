@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use \LasseRafn\InitialAvatarGenerator\InitialAvatar as AvatarGenerator;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 

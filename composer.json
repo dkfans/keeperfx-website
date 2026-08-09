@@ -39,7 +39,6 @@
         "jaybizzle/crawler-detect": "^1.4",
         "jbroadway/urlify": "^1.2",
         "laminas/laminas-feed": "^2.26",
-        "lasserafn/php-initial-avatar-generator": "dev-update-image-lib#a46ab8f1427f93c5b37957e739205da7fcca0290",
         "league/commonmark": "^2.3",
         "league/oauth2-client": "^2.6",
         "matomo/device-detector": "^6.5",

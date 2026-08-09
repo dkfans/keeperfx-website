@@ -3,14 +3,13 @@
 namespace App\Controller;
 
 use App\Config\Config;
-
-use \LasseRafn\InitialAvatarGenerator\InitialAvatar as AvatarGenerator;
+use App\AvatarGenerator;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpNotFoundException;
 
 /**
  * The avatar controller is used to output avatars.
@@ -22,7 +21,7 @@ class AvatarController
     public function outputAvatar(
         Request $request,
         Response $response,
-        $filename,
+        string $filename,
     ) {
         // Get avatar filepath
         $filepath = Config::get('storage.path.avatar') . '/' . $filename;
@@ -54,8 +53,6 @@ class AvatarController
     /**
      * Avatar generation endpoint
      *
-     * @link https://packagist.org/packages/lasserafn/php-initial-avatar-generator
-     *
      * @param Request $request
      * @param Response $response
      * @param string $username
@@ -64,27 +61,31 @@ class AvatarController
     public function generateAvatarPng(
         Request $request,
         Response $response,
-        $size,
-        $username,
+        string $size,
+        string $username,
     ): Response {
         // Make sure username is legit
         if (!\preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9\.\_\-]+$/', $username)) {
             throw new HttpBadRequestException($request);
         }
 
+        // Make sure size is valid
+        if (is_numeric($size) == false) {
+            throw new HttpBadRequestException($request);
+        }
+
+        // Convert size to integer
+        $size = (int) $size;
+
         // Make sure size is not too small or too big
-        if (!is_int($size) || $size < 1 || $size > 512) {
+        if ($size < 1 || $size > 512) {
             $size = 256;
         }
 
-        // Create avatar
-        $avatar = new AvatarGenerator();
-        $image = $avatar
-            ->name($username)
-            ->font(APP_ROOT . '/public/font/nunito/static/Nunito-ExtraBold.ttf')
-            ->size($size)
-            ->autoColor()
-            ->generate();
+        // Generate the image
+        $font = APP_ROOT . '/public/font/nunito/static/Nunito-ExtraBold.ttf';
+        $generator = new AvatarGenerator($size, $username, $font);
+        $image = $generator->generate();
 
         // Set output headers
         $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
@@ -94,10 +95,12 @@ class AvatarController
             ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
             ->withHeader('Content-Type', 'image/png');
 
-        // Output PNG data
-        $response->getBody()->write(
-            $image->toPng()->toString()
-        );
+        // Output PNG data (using output buffering)
+        \ob_start();
+        \imagepng($image);
+        $image_data = \ob_get_clean();
+        $response->getBody()->write($image_data);
+
         return $response;
     }
 }
