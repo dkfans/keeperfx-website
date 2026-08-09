@@ -82,10 +82,10 @@ class AvatarController
             $size = 256;
         }
 
-        // Generate the image
         $font = APP_ROOT . '/public/font/nunito/static/Nunito-ExtraBold.ttf';
-        $generator = new AvatarGenerator($size, $username, $font);
-        $image = $generator->generate();
+
+        // Generate the image
+        $image = AvatarGenerator::generate($size, $username, $font);
 
         // Set output headers
         $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);

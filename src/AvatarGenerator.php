@@ -6,30 +6,24 @@ namespace App;
 
 class AvatarGenerator
 {
-    public function __construct(
-        private readonly int $size,
-        private readonly string $username,
-        private readonly string $font,
-    ) {
-        if (!file_exists($this->font)) {
-            throw new \InvalidArgumentException("Font file not found: {$this->font}");
-        }
-    }
-
     /**
      * Generates the avatar and returns the GD Image object.
      */
-    public function generate(): \GdImage
+    public static function generate(int $size, string $username, string $font): \GdImage
     {
-        $initials = $this->getInitials();
-        [$r, $g, $b] = $this->getBackgroundColor();
+        if (!file_exists($font)) {
+            throw new \InvalidArgumentException("Font file not found: {$font}");
+        }
+
+        $initials = self::getInitials($username);
+        [$r, $g, $b] = self::getBackgroundColor($username);
 
         // Create the canvas
-        $image = \imagecreatetruecolor($this->size, $this->size);
+        $image = \imagecreatetruecolor($size, $size);
 
         // Allocate colors
         $bgColor = \imagecolorallocate($image, $r, $g, $b);
-        $textColor = $this->isLight($r, $g, $b)
+        $textColor = self::isLight($r, $g, $b)
             ? \imagecolorallocate($image, 0, 0, 0)
             : \imagecolorallocate($image, 255, 255, 255);
 
@@ -37,21 +31,21 @@ class AvatarGenerator
         \imagefill($image, 0, 0, $bgColor);
 
         // Calculate font size (40% of the image size usually looks well-proportioned)
-        $fontSize = $this->size * 0.4;
+        $fontSize = $size * 0.4;
 
         // Calculate bounding box for perfect centering
-        $bbox = \imageftbbox($fontSize, 0, $this->font, $initials);
+        $bbox = \imageftbbox($fontSize, 0, $font, $initials);
 
         // $bbox array: 0=lower-left X, 1=lower-left Y, 2=lower-right X, 3=lower-right Y
         // 4=upper-right X, 5=upper-right Y, 6=upper-left X, 7=upper-left Y
         $textWidth = $bbox[2] - $bbox[0];
         $textHeight = $bbox[1] - $bbox[7];
 
-        $x = (int) (($this->size - $textWidth) / 2 - $bbox[0]);
-        $y = (int) (($this->size - $textHeight) / 2 - $bbox[7]);
+        $x = (int) (($size - $textWidth) / 2 - $bbox[0]);
+        $y = (int) (($size - $textHeight) / 2 - $bbox[7]);
 
         // Draw the text
-        \imagefttext($image, $fontSize, 0, $x, $y, $textColor, $this->font, $initials);
+        \imagefttext($image, $fontSize, 0, $x, $y, $textColor, $font, $initials);
 
         return $image;
     }
@@ -59,10 +53,10 @@ class AvatarGenerator
     /**
      * Splits the username by space, dot, dash, or underscore.
      */
-    private function getInitials(): string
+    private static function getInitials(string $username): string
     {
         // Split by the requested delimiters, ignoring empty strings
-        $parts = \preg_split('/[\s.\-_]+/', \trim($this->username), -1, PREG_SPLIT_NO_EMPTY);
+        $parts = \preg_split('/[\s.\-_]+/', \trim($username), -1, PREG_SPLIT_NO_EMPTY);
 
         if (count($parts) >= 2) {
             // Take the first letter of the first two parts
@@ -81,9 +75,9 @@ class AvatarGenerator
     /**
      * Hashes the username to create a consistent, unique RGB background.
      */
-    private function getBackgroundColor(): array
+    private static function getBackgroundColor(string $username): array
     {
-        $hash = \md5($this->username);
+        $hash = \md5($username);
 
         return [
             \hexdec(\substr($hash, 0, 2)), // Red
@@ -95,7 +89,7 @@ class AvatarGenerator
     /**
      * Calculates relative luminance to determine if text should be dark or light.
      */
-    private function isLight(int $r, int $g, int $b): bool
+    private static function isLight(int $r, int $g, int $b): bool
     {
         // Standard WCAG formula for perceived brightness
         $luminance = (0.299 * $r) + (0.587 * $g) + (0.114 * $b);
