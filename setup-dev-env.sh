@@ -38,7 +38,21 @@ else
 fi
 
 # Copy the compose override example configuration
-cp compose.override.yml.example compose.override.yml
+if [ ! -f "compose.override.yml" ]; then
+    cp compose.override.yml.example compose.override.yml
+fi
+
+# Remove volumes if they exist
+if docker volume inspect kfx_storage >/dev/null 2>&1; then
+    docker volume rm kfx_storage
+fi
+if docker volume inspect kfx_database >/dev/null 2>&1; then
+    docker volume rm kfx_database
+fi
+
+# Create required docker volumes
+docker volume create kfx_storage
+docker volume create kfx_database
 
 # Start the docker containers and wait for the healthcheck to pass
 echo ""

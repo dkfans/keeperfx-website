@@ -60,9 +60,3 @@ services:
             MP_SMTP_AUTH_ALLOW_INSECURE: 1
         profiles:
             - donotstart
-
-volumes:
-    kfx_storage:
-        external: false
-    kfx_database:
-        external: false
