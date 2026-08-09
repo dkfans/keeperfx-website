@@ -69,7 +69,7 @@
         "twig/twig": "^3.4",
         "vertisan/oauth2-twitch-helix": "^1.1",
         "vlucas/phpdotenv": "^5.5",
-        "wapmorgan/unified-archive": "^1.1",
+        "wapmorgan/unified-archive": "dev-master",
         "wohali/oauth2-discord-new": "^1.2",
         "xenokore/utility": "^2.0",
         "xenolope/quahog": "^3.0",
