@@ -72,6 +72,15 @@ docker compose exec -it -u www-data php ./console migrations:migrate --no-intera
 # Admin user details are admin:admin
 docker compose exec -it -u www-data php ./console dev:generate-mock-data
 
+echo ""
+echo "Retrieving all kinds of data for specific website functionality"
+docker compose exec -it -u www-data php ./console kfx:pull-repo
+docker compose exec -it -u www-data php ./console kfx:handle-commits
+docker compose exec -it -u www-data php ./console kfx:fetch-discord-info
+docker compose exec -it -u www-data php ./console kfx:fetch-forum-activity
+docker compose exec -it -u www-data php ./console kfx:fetch-wiki
+docker compose exec -it -u www-data php ./console website:cache-git-commits
+
 # Done!
 echo ""
 echo ""
