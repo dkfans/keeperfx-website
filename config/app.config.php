@@ -15,6 +15,10 @@ return [
         'editor'     => $_ENV['APP_DEV_WHOOPS_EDITOR'] ?? 'vscode',
     ],
 
+    'instantclick' => [
+        'is_enabled' => ((bool) $_ENV['APP_DEV_FORCE_INSTANTCLICK']) ? true : $_ENV['APP_ENV'] !== 'dev',
+    ],
+
     'workshop' => [
         'item_categories_without_difficulty' => [
             \App\Enum\WorkshopCategory::Creature,
