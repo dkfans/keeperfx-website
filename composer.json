@@ -24,7 +24,6 @@
         "php": "^8.0",
         "akrabat/ip-address-middleware": "^2.1",
         "amoschou/commonmark-alert-extension": "dev-main",
-        "appwrite/php-clamav": "^2.0",
         "compwright/php-session": "^3.1",
         "crunzphp/crunz": "^3.4",
         "doctrine/migrations": "^3.5",
@@ -73,6 +72,7 @@
         "wapmorgan/unified-archive": "^1.1",
         "wohali/oauth2-discord-new": "^1.2",
         "xenokore/utility": "^2.0",
+        "xenolope/quahog": "^3.0",
         "zeuxisoo/slim-whoops": "^0.7.3"
     },
     "require-dev": {

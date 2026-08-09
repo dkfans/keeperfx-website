@@ -50,27 +50,23 @@ class VirusScanWorkshopCommand extends Command
         // Setup client
         try {
 
+            // Make sure DSN string is valid
             $dsn = $_ENV['APP_CLAMAV_DSN'] ?? null;
-
             if (!\is_string($dsn)) {
-                $output->writeln("[-] Invalid ClamAV DSN string ('APP_CLAMAV_DSN')");
+                $output->writeln("[-] Invalid ClamAV DSN ('APP_CLAMAV_DSN')");
                 return Command::FAILURE;
             }
 
-            if (StringHelper::startsWith($dsn, 'unix://')) {
-                $clam = new Pipe(StringHelper::subtract($dsn, \strlen('unix://')));
-            } elseif (StringHelper::startsWith($dsn, 'tcp://')) {
-                $exp = \explode(':', StringHelper::subtract($dsn, \strlen('tcp://')));
-                if (\count($exp) !== 2) {
-                    $output->writeln("[-] Invalid ClamAV DSN string ('APP_CLAMAV_DSN')");
-                    return Command::FAILURE;
-                }
-                $clam = new Network($exp[0], $exp[1]);
-            } else {
-                $output->writeln("[-] Invalid ClamAV DSN string ('APP_CLAMAV_DSN')");
-                return Command::FAILURE;
-            }
+            // Setup the client
+            $socket = (new \Socket\Raw\Factory())->createClient($_ENV['APP_CLAMAV_DSN']);
+            $clam = new \Xenolope\Quahog\Client($socket, mode: \PHP_NORMAL_READ);
 
+            // Start a session
+            // The Quahog client library requires a session if accessing ClamAV multiple times
+            // Otherwise the socket already closes after grabbing the version
+            $clam->startSession();
+
+            // Grab the version
             $version = $clam->version();
         } catch (\Exception $ex) {
             $output->writeln("[-] Exception: {$ex->getMessage()}");
@@ -176,10 +172,10 @@ class VirusScanWorkshopCommand extends Command
                 // Scan file
                 // When using the default docker compose file we can scan the path directly
                 // because the volume is mapped exactly like it is in PHP.
-                $result = $clam->fileScan($path);
+                $result = $clam->scanFile($path);
 
                 // Virus found !!
-                if ($result === false) {
+                if ($result->isFound()) {
 
                     $output->writeln("\t[!] <error>Malware found!</error>");
 
@@ -195,7 +191,7 @@ class VirusScanWorkshopCommand extends Command
                     if (\file_exists($path)) {
                         $output->writeln("\t[-] <error>Failed to remove file from filesystem...</error>");
                     } else {
-                        $output->writeln("\t[+] File removed!");
+                        $output->writeln("\t[+] File removed from filesystem!");
                     }
 
                     // Notify admins
@@ -224,6 +220,8 @@ class VirusScanWorkshopCommand extends Command
                 $output->writeln("\t[>] Scan status reset");
             }
         }
+
+        $clam->endSession();
 
         $output->writeln("[>] Done!");
         return Command::SUCCESS;
