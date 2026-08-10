@@ -10,7 +10,7 @@ __MAINTENANCE_MODE_ACTIVE
 
 # Cache files (during dev)
 /cache/
-.cache
+.php-cs-fixer.cache
 
 # Logs (during dev)
 /logs/
