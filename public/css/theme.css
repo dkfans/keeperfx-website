@@ -1273,8 +1273,6 @@ a.user-link:hover span {
     user-select: none;
 }
 
-.image-widget-image-invisible {}
-
 .image-widget-upload-button {
     /* Plus icon */
     background: url('data:image/svg+xml,<svg color="hsl(0, 0%, 35%)" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 112v288M400 256H112"/></svg>') 50% 50% no-repeat;
