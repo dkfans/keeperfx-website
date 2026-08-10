@@ -10,7 +10,7 @@
     },
     "config": {
         "platform": {
-            "php": "8.4"
+            "php": "8.5"
         },
         "sort-packages": true
     },
@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.5",
         "akrabat/ip-address-middleware": "^2.1",
         "amoschou/commonmark-alert-extension": "dev-main",
         "compwright/php-session": "^3.1",
