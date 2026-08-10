@@ -51,8 +51,8 @@ class WorkshopItemController
         EntityManager $em,
         Account $account,
         NotificationCenter $nc,
-        $id,
-        $slug = null
+        string $id,
+        ?string $slug = null,
     ) {
         // Check if workshop item exists
         /** @var ?WorkshopItem $workshop_item */
@@ -62,7 +62,7 @@ class WorkshopItemController
         }
 
         // Make sure title slug is in URL and matches
-        if (URLify::slug($workshop_item->getName()) !== $slug) {
+        if (\URLify::slug($workshop_item->getName()) !== $slug) {
             $response = $response->withHeader(
                 'Location',
                 '/workshop/item/' . $workshop_item->getId() . '/' . URLify::slug($workshop_item->getName())
