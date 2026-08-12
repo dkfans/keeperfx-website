@@ -30,9 +30,16 @@ return new Config()
         // Prefix all core PHP functions with \ (e.g., \strlen())
         'native_function_invocation' => [
             'include' => ['@all'],
-            'scope'   => 'namespaced',
+            'scope'   => 'all',
             'strict'  => true,
         ],
+
+        // Add blank newlines after namespace and <?php tag
+        'blank_line_after_namespace'   => true,
+        'blank_line_after_opening_tag' => true,
+
+        // Do not touch `declare(strict_types)`
+        'declare_strict_types' => false,
 
         // Force global classes/objects (like \DateTime, \Exception) to be prefixed
         // inline rather than imported with a "use" statement at the top of the file.
@@ -90,6 +97,12 @@ return new Config()
             'operators' => [
                 '=>' => 'align_single_space_minimal',
             ],
+        ],
+
+        // Disable forcing @var comments to be correctly placed
+        // In some cases - like in the bootstrap files - we actually want to define it someplace else than the initial definition
+        'phpdoc_to_comment' => [
+            'ignored_tags' => ['var'],
         ],
     ])
     ->setFinder($finder);
