@@ -2,30 +2,25 @@
 
 namespace App\Controller;
 
-use URLify;
+use App\Entity\GithubAlphaBuild;
+use App\Entity\GithubRelease;
 use App\Entity\NewsArticle;
 use App\Entity\WorkshopItem;
-
-use App\Entity\GithubRelease;
-use Laminas\Feed\Writer\Feed;
-
-use Laminas\Feed\Writer\Entry;
+use App\Twig\Extension\Markdown\CustomMarkdownConverter;
 use Doctrine\ORM\EntityManager;
-use App\Entity\GithubAlphaBuild;
-
-use Twig\Environment as TwigEnvironment;
+use Laminas\Feed\Writer\Entry;
+use Laminas\Feed\Writer\Feed;
 use League\CommonMark\CommonMarkConverter;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Twig\Extension\Markdown\CustomMarkdownConverter;
+use Twig\Environment as TwigEnvironment;
 
 class RSSController
 {
-
     public function rssInfoIndex(
         Request $request,
         Response $response,
-        TwigEnvironment $twig
+        TwigEnvironment $twig,
     ) {
         $response->getBody()->write(
             $twig->render('rss-info.html.twig')
@@ -37,7 +32,7 @@ class RSSController
     public function newsFeed(
         Request $request,
         Response $response,
-        EntityManager $em
+        EntityManager $em,
     ) {
         /** @var NewsArticle[] $articles */
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 5);
@@ -90,7 +85,7 @@ class RSSController
     public function stableBuildFeed(
         Request $request,
         Response $response,
-        EntityManager $em
+        EntityManager $em,
     ) {
         $stable_builds = $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']);
 
@@ -130,7 +125,6 @@ class RSSController
 
         return $response->withHeader('Content-Type', 'application/rss+xml');
     }
-
 
     public function alphaPatchFeed(
         Request $request,
@@ -205,7 +199,7 @@ class RSSController
                 $entry = $feed->createEntry();
                 $entry
                     ->setTitle($item->getName())
-                    ->setLink($_ENV['APP_ROOT_URL'] . '/workshop/item/' . $item->getId() . '/' . URLify::slug($item->getName()))
+                    ->setLink($_ENV['APP_ROOT_URL'] . '/workshop/item/' . $item->getId() . '/' . \URLify::slug($item->getName()))
                     ->setDateCreated($item->getCreatedTimestamp());
 
                 // Get submitter username

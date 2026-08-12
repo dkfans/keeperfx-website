@@ -2,22 +2,17 @@
 
 namespace App\Console\Command\Workshop;
 
-use App\Entity\User;
 use App\Entity\WorkshopItem;
-use App\Entity\WorkshopTag;
 use App\Workshop\WorkshopHelper;
 use Doctrine\ORM\EntityManager;
-
 use Psr\Container\ContainerInterface as Container;
-
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
 class GenerateAllThumbnailsCommand extends Command
 {
-    /** @var Container $container */
+    /** @var Container */
     private $container;
 
     public function __construct(Container $container)
@@ -26,10 +21,10 @@ class GenerateAllThumbnailsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("workshop:generate-all-thumbnails")
-            ->setDescription("Generate thumbnails for all workshop items");
+        $this->setName('workshop:generate-all-thumbnails')
+            ->setDescription('Generate thumbnails for all workshop items');
     }
 
     protected function execute(Input $input, Output $output)
@@ -37,33 +32,33 @@ class GenerateAllThumbnailsCommand extends Command
         /** @var EntityManager $em */
         $em = $this->container->get(EntityManager::class);
 
-        $output->writeln("[>] Generating all workshop items thumbnails...");
+        $output->writeln('[>] Generating all workshop items thumbnails...');
 
         $items = $em->getRepository(WorkshopItem::class)->findAll();
 
-        foreach($items as $item){
+        foreach ($items as $item) {
 
             $output->writeln("[>] Processing workshop item: <info>{$item->getName()}</info>");
 
-            if($item->getThumbnail()){
+            if ($item->getThumbnail()) {
                 $thumbnail_filename = $item->getThumbnail();
-                if(WorkshopHelper::removeThumbnail($em, $item)){
+                if (WorkshopHelper::removeThumbnail($em, $item)) {
                     $output->writeln("[+] Thumbnail removed: <info>{$thumbnail_filename}</info>");
                 }
             }
 
             $images = $item->getImages();
-            if(\count($images) > 0) {
+            if (\count($images) > 0) {
 
-                if(WorkshopHelper::generateThumbnail($em, $item)){
+                if (WorkshopHelper::generateThumbnail($em, $item)) {
                     $output->writeln("[+] Thumbnail generated: <info>{$item->getThumbnail()}</info>");
                 }
             }
         }
 
         // Success
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Done!');
+
         return Command::SUCCESS;
     }
-
 }

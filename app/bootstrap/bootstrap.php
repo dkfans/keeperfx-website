@@ -1,19 +1,15 @@
 <?php
 
-use Dotenv\Dotenv;
-
 use App\Config\Config;
-use App\Kernel\ErrorLogger;
 use App\Kernel\ContainerFactory;
-
-use Monolog\Logger;
-use Monolog\ErrorHandler;
-use Monolog\Handler\StreamHandler;
+use App\Kernel\ErrorLogger;
+use Dotenv\Dotenv;
 use Monolog\Formatter\LineFormatter;
-
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
-/**
+/*
  * App bootstrap file
  *
  * This file loads the application.
@@ -22,7 +18,7 @@ use Psr\Log\LoggerInterface;
  */
 
 // Set app project root
-define('APP_ROOT', \realpath(__DIR__ . '/../../'));
+\define('APP_ROOT', \realpath(__DIR__ . '/../../'));
 
 // Load composer libraries
 require APP_ROOT . '/vendor/autoload.php';
@@ -34,8 +30,8 @@ Dotenv::createImmutable(APP_ROOT)->safeLoad();
 Config::loadDir(APP_ROOT . '/config');
 
 // Custom error handler to convert warnings and notices into exceptions
-if (!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int)$_ENV['APP_RAISE_EXCEPTION_ON_WARNING'] === 1) {
-    \set_error_handler(function ($severity, $message, $file, $line) {
+if (!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int) $_ENV['APP_RAISE_EXCEPTION_ON_WARNING'] === 1) {
+    \set_error_handler(static function ($severity, $message, $file, $line) {
         if (!(\error_reporting() & $severity)) {
             // This error code is not included in error_reporting
             return false;
@@ -49,8 +45,8 @@ if (!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int)$_ENV['APP_RAISE_EXC
 foreach (Config::get('storage.path') as $storage_name => $storage_path) {
     if (!empty($storage_path)) {
         try {
-            \Xenokore\Utility\Helper\DirectoryHelper::createIfNotExist($storage_path, 0777, true);
-        } catch (\Exception $ex) {
+            Xenokore\Utility\Helper\DirectoryHelper::createIfNotExist($storage_path, 0777, true);
+        } catch (Exception $ex) {
         }
     }
 }

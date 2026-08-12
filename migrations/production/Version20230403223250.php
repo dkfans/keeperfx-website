@@ -24,37 +24,36 @@ final class Version20230403223250 extends AbstractMigration
         $this->addSql('ALTER TABLE workshop_file ADD CONSTRAINT FK_B6181F57126F525E FOREIGN KEY (item_id) REFERENCES workshop_item (id)');
 
         // Move current files to new WorkshopFile entity
-        $items = $this->connection->fetchAllAssociative("SELECT * FROM workshop_item");
-        if($items && \is_iterable($items)){
-            foreach($items as $item){
+        $items = $this->connection->fetchAllAssociative('SELECT * FROM workshop_item');
+        if ($items && \is_iterable($items)) {
+            foreach ($items as $item) {
 
                 // Define storage dir
                 $storage_dir = Config::get('storage.path.workshop');
-                if($storage_dir === null)
-                {
-                    die('Invalid workshop storage dir');
+                if ($storage_dir === null) {
+                    exit('Invalid workshop storage dir');
                 }
 
                 // Define files directories
                 $storage_dir .= '/' . $item['id'];
-                $files_dir    = $storage_dir . '/files';
+                $files_dir = $storage_dir . '/files';
 
                 // Check if workshop dir exists
-                if(!\is_dir($storage_dir)){
+                if (!\is_dir($storage_dir)) {
                     continue;
                 }
 
                 // Create new files dir
-                if(!\is_dir($files_dir)){
+                if (!\is_dir($files_dir)) {
                     \mkdir($files_dir);
-                    if(!\is_dir($files_dir)){
+                    if (!\is_dir($files_dir)) {
                         throw new \Exception("failed to create 'files' dir: {$files_dir}");
                     }
                 }
 
                 // Get file
                 $file_path = $storage_dir . '/' . $item['filename'];
-                if(!\file_exists($file_path)){
+                if (!\file_exists($file_path)) {
                     continue;
                 }
 

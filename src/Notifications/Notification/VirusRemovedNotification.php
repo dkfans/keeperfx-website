@@ -3,13 +3,11 @@
 namespace App\Notifications\Notification;
 
 use App\Enum\UserRole;
-
 use App\Notifications\Notification;
 use App\Notifications\NotificationInterface;
 
 class VirusRemovedNotification extends Notification implements NotificationInterface
 {
-
     public function getRequiredUserRole(): UserRole
     {
         return UserRole::Admin;
@@ -17,7 +15,7 @@ class VirusRemovedNotification extends Notification implements NotificationInter
 
     public function getNotificationTitle(): string
     {
-        return "Virus removed";
+        return 'Virus removed';
     }
 
     public function getText(): string

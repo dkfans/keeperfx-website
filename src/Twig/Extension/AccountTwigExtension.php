@@ -9,10 +9,10 @@ use App\Account;
  */
 class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements \Twig\Extension\GlobalsInterface
 {
-
     public function __construct(
         private Account $account,
-    ) {}
+    ) {
+    }
 
     public function getName(): string
     {
@@ -21,7 +21,7 @@ class AccountTwigExtension extends \Twig\Extension\AbstractExtension implements 
 
     public function getGlobals(): array
     {
-        if(!$this->account->isLoggedIn()){
+        if (!$this->account->isLoggedIn()) {
             return [
                 'account' => null,
             ];

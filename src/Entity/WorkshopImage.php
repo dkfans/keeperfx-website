@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class WorkshopImage
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -34,13 +33,13 @@ class WorkshopImage
     private \DateTime $created_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -48,7 +47,7 @@ class WorkshopImage
     }
 
     /**
-     * Set the value of id
+     * Set the value of id.
      */
     public function setId(int $id): self
     {
@@ -58,7 +57,7 @@ class WorkshopImage
     }
 
     /**
-     * Get the value of item
+     * Get the value of item.
      */
     public function getItem(): WorkshopItem
     {
@@ -66,7 +65,7 @@ class WorkshopImage
     }
 
     /**
-     * Set the value of item
+     * Set the value of item.
      */
     public function setItem(WorkshopItem $item): self
     {
@@ -76,7 +75,7 @@ class WorkshopImage
     }
 
     /**
-     * Get the value of filename
+     * Get the value of filename.
      */
     public function getFilename(): string
     {
@@ -84,7 +83,7 @@ class WorkshopImage
     }
 
     /**
-     * Set the value of filename
+     * Set the value of filename.
      */
     public function setFilename(string $filename): self
     {
@@ -94,7 +93,7 @@ class WorkshopImage
     }
 
     /**
-     * Get the value of x
+     * Get the value of x.
      */
     public function getWidth(): ?int
     {
@@ -102,7 +101,7 @@ class WorkshopImage
     }
 
     /**
-     * Set the value of x
+     * Set the value of x.
      */
     public function setWidth(?int $width): self
     {
@@ -112,7 +111,7 @@ class WorkshopImage
     }
 
     /**
-     * Get the value of y
+     * Get the value of y.
      */
     public function getHeight(): ?int
     {
@@ -120,7 +119,7 @@ class WorkshopImage
     }
 
     /**
-     * Set the value of y
+     * Set the value of y.
      */
     public function setHeight(?int $height): self
     {
@@ -130,7 +129,7 @@ class WorkshopImage
     }
 
     /**
-     * Get the value of weight
+     * Get the value of weight.
      */
     public function getWeight(): int
     {
@@ -138,7 +137,7 @@ class WorkshopImage
     }
 
     /**
-     * Set the value of order
+     * Set the value of order.
      */
     public function setWeight(int $weight): self
     {
@@ -148,7 +147,7 @@ class WorkshopImage
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -156,7 +155,7 @@ class WorkshopImage
     }
 
     /**
-     * Set the value of created_timestamp
+     * Set the value of created_timestamp.
      */
     public function setCreatedTimestamp(\DateTime $created_timestamp): self
     {

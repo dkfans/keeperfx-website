@@ -2,26 +2,23 @@
 
 namespace App\Controller\ControlPanel;
 
-use App\Enum\OAuthProviderType;
-
-use App\Entity\UserOAuthToken;
-
 use App\Account;
+use App\Entity\UserOAuthToken;
+use App\Enum\OAuthProviderType;
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
-class ConnectionController {
-
+class ConnectionController
+{
     public function index(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
         Account $account,
-    ){
+    ) {
         $connections = [
             'discord' => [
                 'uid'          => null,
@@ -38,7 +35,7 @@ class ConnectionController {
             'provider_type' => OAuthProviderType::Discord,
         ]);
 
-        if($discord_token){
+        if ($discord_token) {
             $connections['discord'] = [
                 'uid'          => $discord_token->getUid(),
                 'is_connected' => true,
@@ -50,7 +47,7 @@ class ConnectionController {
             'provider_type' => OAuthProviderType::Twitch,
         ]);
 
-        if($twitch_token){
+        if ($twitch_token) {
             $connections['twitch'] = [
                 'uid'          => $twitch_token->getUid(),
                 'is_connected' => true,
@@ -59,11 +56,10 @@ class ConnectionController {
 
         $response->getBody()->write(
             $twig->render('cp/connections.cp.html.twig', [
-                'connections' => $connections
+                'connections' => $connections,
             ])
         );
 
         return $response;
     }
-
 }

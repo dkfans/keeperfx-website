@@ -9,7 +9,6 @@ use App\Enum\UserRole;
  */
 class RolesTwigExtension extends \Twig\Extension\AbstractExtension implements \Twig\Extension\GlobalsInterface
 {
-
     public function getName(): string
     {
         return 'roles_extension';
@@ -19,12 +18,12 @@ class RolesTwigExtension extends \Twig\Extension\AbstractExtension implements \T
     {
         $roles = [];
 
-        foreach(UserRole::cases() as $case){
+        foreach (UserRole::cases() as $case) {
             $roles[\strtolower($case->name)] = $case->value;
         }
 
         return [
-            'roles' => $roles
+            'roles' => $roles,
         ];
     }
 }

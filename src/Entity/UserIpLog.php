@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class UserIpLog
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -28,29 +27,29 @@ class UserIpLog
     private \DateTime $last_seen_timestamp;
 
     #[ORM\Column(nullable: true)]
-    private string|null $country = null;
+    private ?string $country = null;
 
     #[ORM\Column(nullable: true)]
-    private bool|null $is_proxy = null;
+    private ?bool $is_proxy = null;
 
     #[ORM\Column(nullable: true)]
-    private bool|null $is_hosting = null;
+    private ?bool $is_hosting = null;
 
     #[ORM\Column(nullable: true)]
-    private string|null $host_name = null;
+    private ?string $host_name = null;
 
     #[ORM\Column(nullable: true)]
-    private string|null $isp = null;
+    private ?string $isp = null;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->first_seen_timestamp = new \DateTime("now");
-        $this->last_seen_timestamp  = new \DateTime("now");
+        $this->first_seen_timestamp = new \DateTime('now');
+        $this->last_seen_timestamp  = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -58,7 +57,7 @@ class UserIpLog
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -66,7 +65,7 @@ class UserIpLog
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -76,7 +75,7 @@ class UserIpLog
     }
 
     /**
-     * Get the value of ip
+     * Get the value of ip.
      */
     public function getIp(): string
     {
@@ -84,7 +83,7 @@ class UserIpLog
     }
 
     /**
-     * Set the value of ip
+     * Set the value of ip.
      */
     public function setIp(string $ip): self
     {
@@ -94,7 +93,7 @@ class UserIpLog
     }
 
     /**
-     * Get the value of host_name
+     * Get the value of host_name.
      */
     public function getHostName(): ?string
     {
@@ -102,7 +101,7 @@ class UserIpLog
     }
 
     /**
-     * Set the value of host_name
+     * Set the value of host_name.
      */
     public function setHostName(?string $host_name): self
     {
@@ -112,7 +111,7 @@ class UserIpLog
     }
 
     /**
-     * Get the value of first_seen_timestamp
+     * Get the value of first_seen_timestamp.
      */
     public function getFirstSeenTimestamp(): \DateTime
     {
@@ -120,7 +119,7 @@ class UserIpLog
     }
 
     /**
-     * Set the value of first_seen_timestamp
+     * Set the value of first_seen_timestamp.
      */
     public function setFirstSeenTimestamp(\DateTime $first_seen_timestamp): self
     {
@@ -130,7 +129,7 @@ class UserIpLog
     }
 
     /**
-     * Get the value of last_seen_timestamp
+     * Get the value of last_seen_timestamp.
      */
     public function getLastSeenTimestamp(): \DateTime
     {
@@ -138,7 +137,7 @@ class UserIpLog
     }
 
     /**
-     * Set the value of last_seen_timestamp
+     * Set the value of last_seen_timestamp.
      */
     public function setLastSeenTimestamp(\DateTime $last_seen_timestamp): self
     {
@@ -148,7 +147,7 @@ class UserIpLog
     }
 
     /**
-     * Get the value of country
+     * Get the value of country.
      */
     public function getCountry(): ?string
     {
@@ -156,7 +155,7 @@ class UserIpLog
     }
 
     /**
-     * Set the value of country
+     * Set the value of country.
      */
     public function setCountry(?string $country): self
     {
@@ -166,7 +165,7 @@ class UserIpLog
     }
 
     /**
-     * Get the value of is_proxy
+     * Get the value of is_proxy.
      */
     public function isProxy(): ?bool
     {
@@ -174,7 +173,7 @@ class UserIpLog
     }
 
     /**
-     * Set the value of is_proxy
+     * Set the value of is_proxy.
      */
     public function setIsProxy(?bool $is_proxy): self
     {
@@ -184,7 +183,7 @@ class UserIpLog
     }
 
     /**
-     * Get the value of is_hosting
+     * Get the value of is_hosting.
      */
     public function isHosting(): ?bool
     {
@@ -192,7 +191,7 @@ class UserIpLog
     }
 
     /**
-     * Set the value of is_hosting
+     * Set the value of is_hosting.
      */
     public function setIsHosting(?bool $is_hosting): self
     {
@@ -202,7 +201,7 @@ class UserIpLog
     }
 
     /**
-     * Get the value of isp
+     * Get the value of isp.
      */
     public function getIsp(): ?string
     {
@@ -210,7 +209,7 @@ class UserIpLog
     }
 
     /**
-     * Set the value of isp
+     * Set the value of isp.
      */
     public function setIsp(?string $isp): self
     {

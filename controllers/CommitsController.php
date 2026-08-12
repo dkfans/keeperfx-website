@@ -4,23 +4,20 @@ namespace App\Controller;
 
 use App\Entity\GitCommit;
 use App\Entity\GithubRelease;
-
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
-use Slim\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
 class CommitsController
 {
-
     public function commitsIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-        $tag
+        $tag,
     ) {
 
         // Get release
@@ -32,7 +29,7 @@ class CommitsController
         // Get commits
         $commits = $em->getRepository(GitCommit::class)->findBy(['release' => $release], ['timestamp' => 'DESC']);
         if (!$commits) {
-            throw new HttpNotFoundException($request, "Commits not found");
+            throw new HttpNotFoundException($request, 'Commits not found');
         }
 
         // Response

@@ -2,45 +2,37 @@
 
 namespace App\Controller\AdminCP;
 
-use App\Enum\BanType;
-use App\Enum\UserRole;
-
+use App\BanChecker;
 use App\Entity\Ban;
 use App\Entity\User;
 use App\Entity\UserIpLog;
-
-use App\Account;
-use App\BanChecker;
+use App\Enum\BanType;
+use App\Enum\UserRole;
 use App\FlashMessage;
-use App\DiscordNotifier;
-
-use Slim\Csrf\Guard;
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
-use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Slim\Exception\HttpNotFoundException;
+use Psr\SimpleCache\CacheInterface;
+use Slim\Csrf\Guard;
 use Slim\Exception\HttpException;
 use Slim\Exception\HttpForbiddenException;
-
+use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 use Xenokore\Utility\Helper\StringHelper;
 
-class AdminBanController {
-
+class AdminBanController
+{
     public function bansIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-        EntityManager $em
-    ){
+        EntityManager $em,
+    ) {
         $bans = $em->getRepository(Ban::class)->findAll();
 
         $response->getBody()->write(
             $twig->render('admincp/bans/ban.list.admincp.html.twig', [
-                'bans' => $bans
+                'bans' => $bans,
             ])
         );
 
@@ -50,12 +42,13 @@ class AdminBanController {
     public function banAddIndex(
         Request $request,
         Response $response,
-        TwigEnvironment $twig
-    ){
+        TwigEnvironment $twig,
+    ) {
 
         $response->getBody()->write(
             $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
         );
+
         return $response;
     }
 
@@ -66,7 +59,7 @@ class AdminBanController {
         EntityManager $em,
         FlashMessage $flash,
         CacheInterface $cache,
-    ){
+    ) {
         // Get POST data
         $post    = $request->getParsedBody();
         $pattern = (string) ($post['pattern'] ?? null);
@@ -74,26 +67,28 @@ class AdminBanController {
 
         // Get ban type
         $type = BanType::tryFrom((int) ($post['type'] ?? null));
-        if($type === null){
+        if ($type === null) {
             $flash->warning('Missing or invalid type.');
             $response->getBody()->write(
                 $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
             );
+
             return $response;
         }
 
         // Make sure pattern is set
-        if(!$pattern){
+        if (!$pattern) {
             $flash->warning('Missing pattern.');
             $response->getBody()->write(
                 $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
             );
+
             return $response;
         }
 
         // Make sure IP pattern is not private/protected
-        if($type == BanType::IP) {
-            foreach([
+        if ($type == BanType::IP) {
+            foreach ([
                 '0.0.0.0',
                 '127.0.0.1',
                 '192.168.0.0',
@@ -102,13 +97,13 @@ class AdminBanController {
                 '::1',
                 'ff00::',
                 'fc00::',
-            ] as $protected_ip)
-            {
-                if(StringHelper::match($protected_ip, $pattern)){
+            ] as $protected_ip) {
+                if (StringHelper::match($protected_ip, $pattern)) {
                     $flash->warning('This IP pattern would affect a protected or private IP');
                     $response->getBody()->write(
                         $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
                     );
+
                     return $response;
                 }
             }
@@ -117,70 +112,67 @@ class AdminBanController {
         // Loop trough admins and make sure this wouldn't ban one of them
         $admins = $em->getRepository(User::class)->findBy(['role' => UserRole::Admin]);
         /** @var User $admin */
-        foreach($admins as $admin)
-        {
+        foreach ($admins as $admin) {
             // Loop trough IP logs
             $ip_logs = $admin->getIpLogs();
             /** @var UserIpLog $ip_log */
-            foreach($ip_logs as $ip_log)
-            {
+            foreach ($ip_logs as $ip_log) {
                 // Check if this IP log matches the new pattern
                 $matches_admin = false;
-                if($type == BanType::IP && $ip_log->getIp() !== null) {
-                    if(StringHelper::match($ip_log->getIp(), $pattern)){
+                if ($type == BanType::IP && $ip_log->getIp() !== null) {
+                    if (StringHelper::match($ip_log->getIp(), $pattern)) {
                         $matches_admin = true;
                     }
                 } elseif ($type == BanType::Hostname && $ip_log->getHostName() !== null) {
-                    if(StringHelper::match($ip_log->getHostName(), $pattern)){
+                    if (StringHelper::match($ip_log->getHostName(), $pattern)) {
                         $matches_admin = true;
                     }
                 }
 
                 // This would ban an admin
-                if($matches_admin === true) {
+                if ($matches_admin === true) {
                     $flash->warning('Unable to create a ban pattern that would affect an admin.');
                     $response->getBody()->write(
                         $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
                     );
+
                     return $response;
                 }
             }
         }
 
         // Check if we only want to preview this ban
-        if(\array_key_exists('preview', $post))
-        {
+        if (\array_key_exists('preview', $post)) {
             $matches = [];
 
             // Loop trough all IP logs
             $ip_logs = $em->getRepository(UserIpLog::class)->findAll();
             /** @var UserIpLog $ip_log */
-            foreach($ip_logs as $ip_log)
-            {
-                if($type == BanType::IP && $ip_log->getIp() !== null) {
-                    if(StringHelper::match($ip_log->getIp(), $pattern)){
+            foreach ($ip_logs as $ip_log) {
+                if ($type == BanType::IP && $ip_log->getIp() !== null) {
+                    if (StringHelper::match($ip_log->getIp(), $pattern)) {
                         $matches[] = $ip_log;
                     }
                 } elseif ($type == BanType::Hostname && $ip_log->getHostName() !== null) {
-                    if(StringHelper::match($ip_log->getHostName(), $pattern)){
+                    if (StringHelper::match($ip_log->getHostName(), $pattern)) {
                         $matches[] = $ip_log;
                     }
                 }
             }
 
-            if(\count($matches) === 0)
-            {
+            if (\count($matches) === 0) {
                 $flash->info('No IP logs match this ban pattern');
                 $response->getBody()->write(
                     $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
                 );
-                return $response;
-            } else {
-                $response->getBody()->write(
-                    $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases(), 'ip_logs' => $matches])
-                );
+
                 return $response;
             }
+            $response->getBody()->write(
+                $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases(), 'ip_logs' => $matches])
+            );
+
+            return $response;
         }
 
         // Create ban
@@ -189,7 +181,7 @@ class AdminBanController {
         $ban->setPattern($pattern);
 
         // Add optional reason
-        if($reason){
+        if ($reason) {
             $ban->setReason($reason);
         }
 
@@ -203,6 +195,7 @@ class AdminBanController {
         // Success
         $flash->success('Ban pattern created!');
         $response = $response->withHeader('Location', '/admin/ban/list')->withStatus(302);
+
         return $response;
     }
 
@@ -212,24 +205,26 @@ class AdminBanController {
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id
-    ){
+        $id,
+    ) {
 
         // Get article
         $ban = $em->getRepository(Ban::class)->find($id);
-        if(!$ban){
+        if (!$ban) {
             $flash->warning('Ban pattern not found.');
             $response = $response->withHeader('Location', '/admin/ban/list')->withStatus(302);
+
             return $response;
         }
 
         // Output
         $response->getBody()->write(
             $twig->render('admincp/bans/ban.edit.admincp.html.twig', [
-                'ban'   => $ban,
-                'ban_types' => BanType::cases()
+                'ban'       => $ban,
+                'ban_types' => BanType::cases(),
             ])
         );
+
         return $response;
     }
 
@@ -240,8 +235,8 @@ class AdminBanController {
         EntityManager $em,
         FlashMessage $flash,
         CacheInterface $cache,
-        $id
-    ){
+        $id,
+    ) {
         // Get POST data
         $post    = $request->getParsedBody();
         $pattern = (string) ($post['pattern'] ?? null);
@@ -249,26 +244,28 @@ class AdminBanController {
 
         // Get ban entity
         $ban = $em->getRepository(Ban::class)->find($id);
-        if(!$ban){
+        if (!$ban) {
             throw new HttpNotFoundException($request);
         }
 
         // Get ban type
         $type = BanType::tryFrom((int) ($post['type'] ?? null));
-        if($type === null){
+        if ($type === null) {
             $flash->warning('Missing or invalid type.');
             $response->getBody()->write(
                 $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
             );
+
             return $response;
         }
 
         // Make sure pattern is set
-        if(!$pattern){
+        if (!$pattern) {
             $flash->warning('Missing pattern.');
             $response->getBody()->write(
                 $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])
             );
+
             return $response;
         }
 
@@ -279,7 +276,7 @@ class AdminBanController {
         $ban->setPattern($pattern);
 
         // Update optional reason
-        if($reason){
+        if ($reason) {
             $ban->setReason($reason);
         } else {
             $ban->setReason(null);
@@ -294,6 +291,7 @@ class AdminBanController {
         // Success
         $flash->success('Ban pattern updated!');
         $response = $response->withHeader('Location', '/admin/ban/list')->withStatus(302);
+
         return $response;
     }
 
@@ -307,16 +305,16 @@ class AdminBanController {
         $id,
         $token_name,
         $token_value,
-    ){
+    ) {
         // Check for valid CSRF token
         $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
+        if (!$valid) {
             throw new HttpForbiddenException($request);
         }
 
         // Get ban
         $ban = $em->getRepository(Ban::class)->find($id);
-        if(!$ban){
+        if (!$ban) {
             throw new HttpException($request);
         }
 
@@ -330,7 +328,7 @@ class AdminBanController {
 
         // Response
         $response = $response->withHeader('Location', '/admin/ban/list')->withStatus(302);
+
         return $response;
     }
-
 }

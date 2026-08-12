@@ -2,32 +2,21 @@
 
 namespace App\Controller\DevCP;
 
-use App\Entity\CrashReport;
-
-use App\FlashMessage;
 use App\Config\Config;
-
+use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
-use Slim\Csrf\Guard as CsrfGuard;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Xenokore\Utility\Helper\DirectoryHelper;
-
-use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
 class ModerateBundledAssetsController
 {
-
     public function index(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         FlashMessage $flash,
-        EntityManager $em
+        EntityManager $em,
     ) {
 
         // Get directories
@@ -41,6 +30,7 @@ class ModerateBundledAssetsController
             $response->getBody()->write(
                 $twig->render('cp/_cp_layout.html.twig')
             );
+
             return $response;
         }
 
@@ -50,6 +40,7 @@ class ModerateBundledAssetsController
             $response->getBody()->write(
                 $twig->render('cp/_cp_layout.html.twig')
             );
+
             return $response;
         }
 
@@ -59,6 +50,7 @@ class ModerateBundledAssetsController
             $response->getBody()->write(
                 $twig->render('cp/_cp_layout.html.twig')
             );
+
             return $response;
         }
 
@@ -75,13 +67,13 @@ class ModerateBundledAssetsController
                 'prototype_tree'   => $prototype_tree,
             ])
         );
+
         return $response;
     }
 
     /**
-     * This function converts a directory into a `bootstrap-treeview.js` compatible array
+     * This function converts a directory into a `bootstrap-treeview.js` compatible array.
      *
-     * @param string $dir
      * @return void
      */
     private function buildWidgetFileTree(string $dir)
@@ -110,19 +102,17 @@ class ModerateBundledAssetsController
         }
 
         // Sort alphabetically
-        usort($return, function ($a, $b) {
+        \usort($return, static function ($a, $b) {
             return
                 \strtolower($a['text'])
-                <=>
-                \strtolower($b['text']);
+                <=> \strtolower($b['text']);
         });
 
         // Move directories up front
-        usort($return, function ($a, $b) {
+        \usort($return, static function ($a, $b) {
             return
                 (int) !isset($a['nodes'])
-                <=>
-                (int) !isset($b['nodes']);
+                <=> (int) !isset($b['nodes']);
         });
 
         return $return;

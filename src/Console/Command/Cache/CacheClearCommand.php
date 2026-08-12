@@ -3,15 +3,12 @@
 namespace App\Console\Command\Cache;
 
 use App\Config\Config;
-
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface as Input;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-
-use Psr\SimpleCache\CacheInterface;
-
 use Xenokore\Utility\Helper\StringHelper;
 
 class CacheClearCommand extends Command
@@ -25,10 +22,10 @@ class CacheClearCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("cache:clear")
-            ->setDescription("Clear the app cache and the cache directory")
+        $this->setName('cache:clear')
+            ->setDescription('Clear the app cache and the cache directory')
             ->addOption('ignore-sessions', '-i', InputOption::VALUE_NONE, 'Ignore sessions');
     }
 
@@ -58,11 +55,11 @@ class CacheClearCommand extends Command
         // Check if we need to ignore sessions in this cache
         // This makes it so users will not lose their logged in session or CSRF tokens
         if ($input->getOption('ignore-sessions')) {
-            $output->writeln("[>] Ignoring sessions in cache");
+            $output->writeln('[>] Ignoring sessions in cache');
 
             // Only ignore sessions in Redis cache
             if (Config::get('cache.adapter') === 'redis') {
-                $output->writeln("[>] Adapter: redis");
+                $output->writeln('[>] Adapter: redis');
 
                 // Get the prefix
                 $prefix = Config::get('cache.namespace') ?? Config::get('app.app_name');
@@ -77,8 +74,8 @@ class CacheClearCommand extends Command
                 foreach (new \Predis\Collection\Iterator\Keyspace($predis, $prefix . ':*') as $key) {
 
                     // Check if length of this key matches that of a session ID
-                    $key_name = substr($key, strlen($prefix) + 1);
-                    if (strlen($key_name) !== Config::get('session.sid_length')) {
+                    $key_name = \substr($key, \strlen($prefix) + 1);
+                    if (\strlen($key_name) !== Config::get('session.sid_length')) {
                         $predis->del($key);
                         continue;
                     }
@@ -118,21 +115,23 @@ class CacheClearCommand extends Command
                     }
 
                     // $output->writeln("[>] Session kept: <info>$key_name</info>");
-                    $session_kept_count++;
+                    ++$session_kept_count;
                 }
 
-                $output->writeln("[+] <info>CACHE CLEARED</info>");
+                $output->writeln('[+] <info>CACHE CLEARED</info>');
                 $output->writeln("[>] Sessions kept: <info>$session_kept_count</info>");
             } else {
-                $output->writeln("[-] Ignoring sessions in non redis caches is not implemented yet");
+                $output->writeln('[-] Ignoring sessions in non redis caches is not implemented yet');
+
                 return Command::FAILURE;
             }
         } else {
-            $output->writeln("[>] Clearing <info>FULL</info> cache");
+            $output->writeln('[>] Clearing <info>FULL</info> cache');
             if ($this->cache->clear()) {
-                $output->writeln("[+] <info>CACHE CLEARED</info>");
+                $output->writeln('[+] <info>CACHE CLEARED</info>');
             } else {
-                $output->writeln("[-] <error>CACHE CLEAR FAILED</error>");
+                $output->writeln('[-] <error>CACHE CLEAR FAILED</error>');
+
                 return Command::FAILURE;
             }
         }
@@ -140,10 +139,10 @@ class CacheClearCommand extends Command
         $output->writeln('[>] Clearing cache file directory: ' . Config::get('cache.file_storage_dir'));
 
         $iterator = new \RecursiveDirectoryIterator(Config::get('cache.file_storage_dir'), \RecursiveDirectoryIterator::SKIP_DOTS);
-        $files = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::CHILD_FIRST);
+        $files    = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::CHILD_FIRST);
 
-        $dir_count  = 0;
-        $file_count = 0;
+        $dir_count          = 0;
+        $file_count         = 0;
         $dir_count_deleted  = 0;
         $file_count_deleted = 0;
 
@@ -156,18 +155,18 @@ class CacheClearCommand extends Command
             }
 
             if ($file->isDir()) {
-                $dir_count++;
+                ++$dir_count;
                 if (@\rmdir($path)) {
-                    $dir_count_deleted++;
-                    // $output->writeln("[+] DIR: <info>{$path}</info> DELETED");
+                    ++$dir_count_deleted;
+                // $output->writeln("[+] DIR: <info>{$path}</info> DELETED");
                 } else {
                     $output->writeln("[-] DIR: <error>{$path}</error> FAILED");
                 }
             } else {
-                $file_count++;
+                ++$file_count;
                 if (@\unlink($path)) {
-                    $file_count_deleted++;
-                    // $output->writeln("[+] FILE: <info>{$path}</info> DELETED");
+                    ++$file_count_deleted;
+                // $output->writeln("[+] FILE: <info>{$path}</info> DELETED");
                 } else {
                     $output->writeln("[-] FILE: <error>{$path}</error> FAILED");
                 }
@@ -177,7 +176,7 @@ class CacheClearCommand extends Command
         $output->writeln("[>] Files deleted: {$file_count_deleted}/{$file_count}");
         $output->writeln("[>] Directories removed: {$dir_count_deleted}/{$dir_count}");
 
-        $output->writeln("[>] Done!");
+        $output->writeln('[>] Done!');
 
         return Command::SUCCESS;
     }

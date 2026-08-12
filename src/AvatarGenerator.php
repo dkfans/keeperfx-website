@@ -11,18 +11,18 @@ class AvatarGenerator
      */
     public static function generate(int $size, string $username, string $font): \GdImage
     {
-        if (!file_exists($font)) {
+        if (!\file_exists($font)) {
             throw new \InvalidArgumentException("Font file not found: {$font}");
         }
 
-        $initials = self::getInitials($username);
+        $initials    = self::getInitials($username);
         [$r, $g, $b] = self::getBackgroundColor($username);
 
         // Create the canvas
         $image = \imagecreatetruecolor($size, $size);
 
         // Allocate colors
-        $bgColor = \imagecolorallocate($image, $r, $g, $b);
+        $bgColor   = \imagecolorallocate($image, $r, $g, $b);
         $textColor = self::isLight($r, $g, $b)
             ? \imagecolorallocate($image, 0, 0, 0)
             : \imagecolorallocate($image, 255, 255, 255);
@@ -38,7 +38,7 @@ class AvatarGenerator
 
         // $bbox array: 0=lower-left X, 1=lower-left Y, 2=lower-right X, 3=lower-right Y
         // 4=upper-right X, 5=upper-right Y, 6=upper-left X, 7=upper-left Y
-        $textWidth = $bbox[2] - $bbox[0];
+        $textWidth  = $bbox[2] - $bbox[0];
         $textHeight = $bbox[1] - $bbox[7];
 
         $x = (int) (($size - $textWidth) / 2 - $bbox[0]);
@@ -56,12 +56,12 @@ class AvatarGenerator
     private static function getInitials(string $username): string
     {
         // Split by the requested delimiters, ignoring empty strings
-        $parts = \preg_split('/[\s.\-_]+/', \trim($username), -1, PREG_SPLIT_NO_EMPTY);
+        $parts = \preg_split('/[\s.\-_]+/', \trim($username), -1, \PREG_SPLIT_NO_EMPTY);
 
-        if (count($parts) >= 2) {
+        if (\count($parts) >= 2) {
             // Take the first letter of the first two parts
             $initials = \mb_substr($parts[0], 0, 1) . \mb_substr($parts[1], 0, 1);
-        } elseif (count($parts) === 1) {
+        } elseif (\count($parts) === 1) {
             // Take the first two letters of the single part
             $initials = \mb_substr($parts[0], 0, 2);
         } else {

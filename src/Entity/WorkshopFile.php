@@ -3,16 +3,12 @@
 namespace App\Entity;
 
 use App\Enum\WorkshopScanStatus;
-
-use App\Entity\User;
-
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class WorkshopFile
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -47,13 +43,13 @@ class WorkshopFile
     private \DateTime $created_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -61,7 +57,7 @@ class WorkshopFile
     }
 
     /**
-     * Set the value of id
+     * Set the value of id.
      */
     public function setId(int $id): self
     {
@@ -71,7 +67,7 @@ class WorkshopFile
     }
 
     /**
-     * Get the value of item
+     * Get the value of item.
      */
     public function getItem(): WorkshopItem
     {
@@ -79,7 +75,7 @@ class WorkshopFile
     }
 
     /**
-     * Set the value of item
+     * Set the value of item.
      */
     public function setItem(WorkshopItem $item): self
     {
@@ -89,7 +85,7 @@ class WorkshopFile
     }
 
     /**
-     * Get the value of filename
+     * Get the value of filename.
      */
     public function getFilename(): string
     {
@@ -97,7 +93,7 @@ class WorkshopFile
     }
 
     /**
-     * Set the value of filename
+     * Set the value of filename.
      */
     public function setFilename(string $filename): self
     {
@@ -107,7 +103,7 @@ class WorkshopFile
     }
 
     /**
-     * Get the value of storage_filename
+     * Get the value of storage_filename.
      */
     public function getStorageFilename(): string
     {
@@ -115,7 +111,7 @@ class WorkshopFile
     }
 
     /**
-     * Set the value of original_filename
+     * Set the value of original_filename.
      */
     public function setStorageFilename(string $storage_filename): self
     {
@@ -125,7 +121,7 @@ class WorkshopFile
     }
 
     /**
-     * Get the value of size
+     * Get the value of size.
      */
     public function getSize(): int
     {
@@ -133,7 +129,7 @@ class WorkshopFile
     }
 
     /**
-     * Set the value of size
+     * Set the value of size.
      */
     public function setSize(int $size): self
     {
@@ -143,7 +139,7 @@ class WorkshopFile
     }
 
     /**
-     * Get the value of weight
+     * Get the value of weight.
      */
     public function getWeight(): int
     {
@@ -151,7 +147,7 @@ class WorkshopFile
     }
 
     /**
-     * Set the value of weight
+     * Set the value of weight.
      */
     public function setWeight(int $weight): self
     {
@@ -161,7 +157,7 @@ class WorkshopFile
     }
 
     /**
-     * Get the value of download_count
+     * Get the value of download_count.
      */
     public function getDownloadCount(): int
     {
@@ -169,7 +165,7 @@ class WorkshopFile
     }
 
     /**
-     * Set the value of download_count
+     * Set the value of download_count.
      */
     public function setDownloadCount(int $download_count): self
     {
@@ -179,7 +175,7 @@ class WorkshopFile
     }
 
     /**
-     * Get the value of scan_status
+     * Get the value of scan_status.
      */
     public function getScanStatus(): WorkshopScanStatus
     {
@@ -187,7 +183,7 @@ class WorkshopFile
     }
 
     /**
-     * Set the value of scan_status
+     * Set the value of scan_status.
      */
     public function setScanStatus(WorkshopScanStatus $scan_status): self
     {
@@ -197,7 +193,7 @@ class WorkshopFile
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -205,7 +201,7 @@ class WorkshopFile
     }
 
     /**
-     * Set the value of created_timestamp
+     * Set the value of created_timestamp.
      */
     public function setCreatedTimestamp(\DateTime $created_timestamp): self
     {
@@ -215,7 +211,7 @@ class WorkshopFile
     }
 
     /**
-     * Get the value of is_broken
+     * Get the value of is_broken.
      */
     public function isBroken(): bool
     {
@@ -223,7 +219,7 @@ class WorkshopFile
     }
 
     /**
-     * Set the value of is_broken
+     * Set the value of is_broken.
      */
     public function setIsBroken(bool $is_broken): self
     {

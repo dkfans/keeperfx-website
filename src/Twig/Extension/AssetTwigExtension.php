@@ -22,10 +22,7 @@ class AssetTwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     /**
-     * Retrieve an asset URI
-     *
-     * @param string $var
-     * @return string
+     * Retrieve an asset URI.
      */
     public function getAssetUri(string $uri): string
     {

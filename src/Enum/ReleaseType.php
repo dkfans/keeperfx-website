@@ -5,5 +5,5 @@ namespace App\Enum;
 enum ReleaseType: string
 {
     case STABLE = 'stable';
-    case ALPHA = 'alpha';
+    case ALPHA  = 'alpha';
 }

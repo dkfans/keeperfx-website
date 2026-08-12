@@ -3,7 +3,6 @@
 use App\Config\Config;
 
 return [
-
     // Class definition files (and others)
     // -> File structure should be: '<name>.container.php'
     // -> File should return an array
@@ -11,7 +10,7 @@ return [
 
     // Compilation configuration
     // -> Never compiles in 'dev' env, regardless of it being enabled
-    'compilation'    => [
+    'compilation' => [
         'is_enabled' => true,
         'output_dir' => Config::get('cache.file_storage_dir') . '/container',
     ],
@@ -34,7 +33,7 @@ return [
             '*Exception.php',
             '*Helper.php',
             '*Interface.php',
-        ]
+        ],
 
         // TODO: ignore paths */Entities/*.php
         // So we can ignore doctrine entities autowiring

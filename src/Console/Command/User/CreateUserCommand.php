@@ -3,20 +3,17 @@
 namespace App\Console\Command\User;
 
 use App\Entity\User;
-
+use App\Enum\UserRole;
 use Doctrine\ORM\EntityManager;
-
 use Psr\Container\ContainerInterface as Container;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-use App\Enum\UserRole;
 
 class CreateUserCommand extends Command
 {
-    /** @var Container $container */
+    /** @var Container */
     private $container;
 
     public function __construct(Container $container)
@@ -26,10 +23,10 @@ class CreateUserCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("user:create")
-                ->setDescription("Create a user")
+        $this->setName('user:create')
+                ->setDescription('Create a user')
                 ->addArgument('username', InputArgument::REQUIRED, 'Username')
                 ->addArgument('password', InputArgument::OPTIONAL, 'Password')
                 ->addArgument('role', InputArgument::OPTIONAL, 'Role');
@@ -46,8 +43,9 @@ class CreateUserCommand extends Command
         $role     = $input->getArgument('role');
 
         // Check if user already exists
-        if($em->getRepository(User::class)->findOneBy(['username' => $username])){
+        if ($em->getRepository(User::class)->findOneBy(['username' => $username])) {
             $output->writeln("[-] User '{$username}' already exists");
+
             return Command::FAILURE;
         }
 
@@ -61,14 +59,14 @@ class CreateUserCommand extends Command
         }
 
         // Set role
-        if(\is_numeric($role)){
+        if (\is_numeric($role)) {
 
             $user->setRole($role);
 
         } elseif (\is_string($role)) {
 
             // Convert role name to its enum value (int)
-            switch(\strtolower($role)){
+            switch (\strtolower($role)) {
                 // case 'closed':
                 //     $role = UserRole::Closed;
                 //     break;
@@ -88,6 +86,7 @@ class CreateUserCommand extends Command
                     break;
                 default:
                     $output->writeln("[-] Invalid role: {$role}");
+
                     return Command::FAILURE;
                     break;
             }
@@ -101,7 +100,7 @@ class CreateUserCommand extends Command
 
         // Success
         $output->writeln("[+] User '{$username}' added!");
+
         return Command::SUCCESS;
     }
-
 }

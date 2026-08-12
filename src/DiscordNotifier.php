@@ -2,26 +2,22 @@
 
 namespace App;
 
-use App\Entity\NewsArticle;
-use App\Entity\WorkshopItem;
-use App\Entity\WorkshopImage;
-use App\Entity\GithubRelease;
 use App\Entity\GithubAlphaBuild;
-
-use URLify;
-use \DiscordWebhooks\Embed;
-use \DiscordWebhooks\Client;
-use Doctrine\ORM\EntityManager;
-use ByteUnits\Binary as BinaryFormatter;
+use App\Entity\GithubRelease;
+use App\Entity\NewsArticle;
+use App\Entity\WorkshopImage;
+use App\Entity\WorkshopItem;
 use App\Twig\Extension\EnumTwigExtension;
-
+use ByteUnits\Binary as BinaryFormatter;
+use DiscordWebhooks\Client;
+use DiscordWebhooks\Embed;
+use Doctrine\ORM\EntityManager;
 use Xenokore\Utility\Helper\StringHelper;
 
 // When APP_ROOT_URL points to a URL that is not publicly available and is not accessible
 // by Discord's servers, the images will not be shown. (which is a good thing)
 class DiscordNotifier
 {
-
     private const COLOR_NEW_WORKSHOP_ITEM = '212121';
     private const COLOR_NEW_NEWS_ARTICLE  = '02f4ec';
     private const COLOR_NEW_ALPHA_PATCH   = 'b402f4';
@@ -41,7 +37,7 @@ class DiscordNotifier
 
             // Make sure URL is a valid Discord webhook URL
             if (
-                \filter_var($url, FILTER_VALIDATE_URL) === false
+                \filter_var($url, \FILTER_VALIDATE_URL) === false
                 || !StringHelper::startsWith($url, 'https://discord.com/api/webhooks/')
             ) {
                 throw new \Exception('invalid discord webhook URL');
@@ -66,9 +62,6 @@ class DiscordNotifier
      * Send a message to the webhook.
      *
      * A webhook is always linked to a specific Discord channel.
-     *
-     * @param string $message
-     * @return boolean
      */
     public function sendMessage(string $message): bool
     {
@@ -92,9 +85,7 @@ class DiscordNotifier
      *
      * A webhook is always linked to a specific Discord channel.
      *
-     * @param Embed $embed
-     * @param string|null $message   An optional message to add to the Embed.
-     * @return boolean
+     * @param string|null $message an optional message to add to the Embed
      */
     public function sendEmbed(Embed $embed, ?string $message = null): bool
     {
@@ -106,7 +97,7 @@ class DiscordNotifier
             $hook = clone $this->webhook;
             $hook->embed($embed);
 
-            if (!is_null($message)) {
+            if ($message !== null) {
                 $hook->message($message);
             }
 
@@ -125,7 +116,7 @@ class DiscordNotifier
         }
 
         if ($item->getId() === null) {
-            throw new \Exception("workshop item does not have an ID yet");
+            throw new \Exception('workshop item does not have an ID yet');
         }
 
         // Create the Embed
@@ -133,7 +124,7 @@ class DiscordNotifier
         $embed->title(\htmlentities($item->getName()));
         $embed->color(self::COLOR_NEW_WORKSHOP_ITEM);
         $embed->timestamp($item->getCreatedTimestamp()->format('Y-m-d H:i'));
-        $embed->url($_ENV['APP_ROOT_URL'] . "/workshop/item/" . $item->getId() . "/" . URLify::slug($item->getName()));
+        $embed->url($_ENV['APP_ROOT_URL'] . '/workshop/item/' . $item->getId() . '/' . \URLify::slug($item->getName()));
         $embed->field(
             EnumTwigExtension::enumBeautify($item->getCategory()->name), // Little hack
             ''
@@ -143,7 +134,7 @@ class DiscordNotifier
         if ($item->getDescription()) {
             $description = $item->getDescription();
             if (\strlen($description) > 350) {
-                $description = substr($description, 0, 347) . '...';
+                $description = \substr($description, 0, 347) . '...';
             }
             $embed->description(\htmlentities($description));
         }
@@ -168,7 +159,7 @@ class DiscordNotifier
         }
 
         // Send the embed
-        return $this->sendEmbed($embed, "New workshop item!");
+        return $this->sendEmbed($embed, 'New workshop item!');
     }
 
     public function notifyNewNewsItem(NewsArticle $article): bool
@@ -183,7 +174,7 @@ class DiscordNotifier
         $embed->color(self::COLOR_NEW_NEWS_ARTICLE);
         $embed->timestamp($article->getCreatedTimestamp()->format('Y-m-d H:i'));
         $embed->url($_ENV['APP_ROOT_URL'] . '/news/' . $article->getId() . '/' . $article->getCreatedTimestamp()->format('Y-m-d') . '/' . $article->getTitleSlug());
-        $embed->footer("KeeperFX Team");
+        $embed->footer('KeeperFX Team');
 
         // Add excerpt
         if ($article->getExcerpt()) {
@@ -219,7 +210,7 @@ class DiscordNotifier
         $embed->footer(BinaryFormatter::bytes($alpha_build->getSizeInBytes())->format());
 
         // Send the embed
-        return $this->sendEmbed($embed, "New alpha patch!");
+        return $this->sendEmbed($embed, 'New alpha patch!');
     }
 
     public function notifyNewStableBuild(GithubRelease $github_release): bool
@@ -236,9 +227,9 @@ class DiscordNotifier
         $embed->url($github_release->getDownloadUrl());
         $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/download.png');
         $embed->footer(BinaryFormatter::bytes($github_release->getSizeInBytes())->format());
-        $embed->description("A new game update!");
+        $embed->description('A new game update!');
 
         // Send the embed
-        return $this->sendEmbed($embed, "New game update!");
+        return $this->sendEmbed($embed, 'New game update!');
     }
 }

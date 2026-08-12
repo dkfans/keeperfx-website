@@ -21,13 +21,13 @@ final class Version20230531181320 extends AbstractMigration
     {
         $this->addSql('ALTER TABLE workshop_item ADD creation_orderby_timestamp DATETIME NOT NULL');
 
-        $items = $this->connection->fetchAllAssociative("SELECT * FROM workshop_item");
-        if($items && \is_iterable($items)){
-            foreach($items as $item){
+        $items = $this->connection->fetchAllAssociative('SELECT * FROM workshop_item');
+        if ($items && \is_iterable($items)) {
+            foreach ($items as $item) {
 
                 $orderby_timestamp = $item['created_timestamp'];
 
-                if(isset($item['original_creation_date'])){
+                if (isset($item['original_creation_date'])) {
                     $orderby_timestamp = $item['original_creation_date'];
                 }
 

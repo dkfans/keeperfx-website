@@ -2,21 +2,18 @@
 
 namespace App\Controller\Api\v1;
 
-use App\Entity\NewsArticle;
-use App\Entity\GithubRelease;
 use App\Entity\GithubAlphaBuild;
-
-use Doctrine\ORM\QueryBuilder;
+use App\Entity\GithubRelease;
+use App\Entity\NewsArticle;
 use Doctrine\ORM\EntityManager;
-
-use Psr\SimpleCache\CacheInterface;
-use Slim\Exception\HttpNotFoundException;
+use Doctrine\ORM\QueryBuilder;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\SimpleCache\CacheInterface;
+use Slim\Exception\HttpNotFoundException;
 
 class ReleaseApiController
 {
-
     public function latestStable(
         Request $request,
         Response $response,
@@ -36,12 +33,13 @@ class ReleaseApiController
                     'timestamp'     => $release->getTimestamp()->format('c'), // ISO 8601 date
                     'download_url'  => $release->getDownloadUrl(),
                     'size_in_bytes' => $release->getSizeInBytes(),
-                ]
+                ],
             ])
         );
 
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
+
         return $response;
     }
 
@@ -56,7 +54,7 @@ class ReleaseApiController
 
         $response->getBody()->write(
             \json_encode([
-                'success' => true,
+                'success'     => true,
                 'alpha_build' => [
                     'artifact_id'     => $alpha_build->getArtifactId(),
                     'name'            => $alpha_build->getName(),
@@ -66,13 +64,14 @@ class ReleaseApiController
                     'filename'        => $alpha_build->getFilename(),
                     'timestamp'       => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
                     'size_in_bytes'   => $alpha_build->getSizeInBytes(),
-                    'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename())
-                ]
+                    'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename()),
+                ],
             ])
         );
 
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
+
         return $response;
     }
 
@@ -97,6 +96,7 @@ class ReleaseApiController
                     'error'   => 'VERSION_NOT_FOUND',
                 ])
             );
+
             return $response;
         }
 
@@ -110,9 +110,10 @@ class ReleaseApiController
             $response->getBody()->write(
                 \json_encode([
                     'success'     => true,
-                    'new_version' => false
+                    'new_version' => false,
                 ])
             );
+
             return $response;
         }
 
@@ -172,6 +173,7 @@ class ReleaseApiController
                     'error'   => 'INVALID_VERSION',
                 ])
             );
+
             return $response;
         }
 
@@ -185,11 +187,12 @@ class ReleaseApiController
                     'error'   => 'VERSION_NOT_FOUND',
                 ])
             );
+
             return $response;
         }
 
         // Get all the patches after this one
-        $qb = $em->getRepository(GithubAlphaBuild::class)->createQueryBuilder('g');
+        $qb            = $em->getRepository(GithubAlphaBuild::class)->createQueryBuilder('g');
         $alpha_patches = $qb->where('g.timestamp > :timestamp')
             ->andWhere('g.is_available = true')
             ->setParameter('timestamp', $alpha_patch->getTimestamp())
@@ -205,6 +208,7 @@ class ReleaseApiController
                     'new_version' => false,
                 ])
             );
+
             return $response;
         }
 
@@ -238,6 +242,7 @@ class ReleaseApiController
                 ],
             ])
         );
+
         return $response;
     }
 
@@ -245,7 +250,7 @@ class ReleaseApiController
         Request $request,
         Response $response,
         EntityManager $em,
-        string $build_id
+        string $build_id,
     ) {
         $response = $response->withHeader('Content-Type', 'application/json');
 
@@ -257,6 +262,7 @@ class ReleaseApiController
                     'error'   => 'INVALID_BUILD_ID',
                 ])
             );
+
             return $response;
         }
 
@@ -282,7 +288,7 @@ class ReleaseApiController
 
         $response->getBody()->write(
             \json_encode([
-                'success' => true,
+                'success'     => true,
                 'alpha_build' => [
                     'artifact_id'     => $alpha_build->getArtifactId(),
                     'name'            => $alpha_build->getName(),
@@ -292,8 +298,8 @@ class ReleaseApiController
                     'filename'        => $alpha_build->getFilename(),
                     'timestamp'       => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
                     'size_in_bytes'   => $alpha_build->getSizeInBytes(),
-                    'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename())
-                ]
+                    'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename()),
+                ],
             ])
         );
 

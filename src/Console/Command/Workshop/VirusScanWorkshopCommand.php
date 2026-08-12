@@ -8,14 +8,11 @@ use App\Enum\UserRole;
 use App\Enum\WorkshopScanStatus;
 use App\Notifications\Notification\VirusRemovedNotification;
 use App\Notifications\NotificationCenter;
-use Appwrite\ClamAV\Network;
-use Appwrite\ClamAV\Pipe;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-use Xenokore\Utility\Helper\StringHelper;
 
 class VirusScanWorkshopCommand extends Command
 {
@@ -27,10 +24,10 @@ class VirusScanWorkshopCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("workshop:virus-scan")
-            ->setDescription("Use ClamAV to scan workshop files.")
+        $this->setName('workshop:virus-scan')
+            ->setDescription('Use ClamAV to scan workshop files.')
             ->addArgument('target', InputArgument::REQUIRED, 'Target to scan (<id>|scanned|new|all)')
             ->addArgument('order', InputArgument::OPTIONAL, 'Order (ASC|DESC)');
     }
@@ -40,12 +37,13 @@ class VirusScanWorkshopCommand extends Command
         // Define workshop storage dir
         $storage_dir = Config::get('storage.path.workshop');
         if ($storage_dir === null) {
-            $output->writeln("[-] Workshop storage directory is not set");
+            $output->writeln('[-] Workshop storage directory is not set');
             $output->writeln("[>] ENV VAR: 'APP_WORKSHOP_STORAGE'");
+
             return Command::FAILURE;
         }
 
-        $output->writeln("[>] Setting up ClamAV client...");
+        $output->writeln('[>] Setting up ClamAV client...');
 
         // Setup client
         try {
@@ -54,12 +52,13 @@ class VirusScanWorkshopCommand extends Command
             $dsn = $_ENV['APP_CLAMAV_DSN'] ?? null;
             if (!\is_string($dsn)) {
                 $output->writeln("[-] Invalid ClamAV DSN ('APP_CLAMAV_DSN')");
+
                 return Command::FAILURE;
             }
 
             // Setup the client
             $socket = (new \Socket\Raw\Factory())->createClient($_ENV['APP_CLAMAV_DSN']);
-            $clam = new \Xenolope\Quahog\Client($socket, mode: \PHP_NORMAL_READ);
+            $clam   = new \Xenolope\Quahog\Client($socket, mode: \PHP_NORMAL_READ);
 
             // Start a session
             // The Quahog client library requires a session if accessing ClamAV multiple times
@@ -70,16 +69,17 @@ class VirusScanWorkshopCommand extends Command
             $version = $clam->version();
         } catch (\Exception $ex) {
             $output->writeln("[-] Exception: {$ex->getMessage()}");
-            $output->writeln("[-] Failed to setup ClamAV client!");
+            $output->writeln('[-] Failed to setup ClamAV client!');
+
             return Command::FAILURE;
         }
 
-        $output->writeln("[+] Successfully setup ClamAV client");
+        $output->writeln('[+] Successfully setup ClamAV client');
         $output->writeln("[+] ClamAV version: {$version}");
 
         // Get the order for this scan (only ASC and DESC allowed)
         $order = $input->getArgument('order');
-        if (empty($order) || !in_array(\strtoupper($order), ['ASC', 'DESC'])) {
+        if (empty($order) || !\in_array(\strtoupper($order), ['ASC', 'DESC'])) {
             $order = 'ASC';
         } else {
             $order = \strtoupper($order);
@@ -114,16 +114,17 @@ class VirusScanWorkshopCommand extends Command
 
             $ids = [];
 
-            foreach (explode(',', $target) as $id) {
+            foreach (\explode(',', $target) as $id) {
 
                 if (!\is_numeric($id)) {
                     $output->writeln("[-] Invalid ID or target to scan: {$id}");
+
                     return Command::FAILURE;
                 }
 
                 $id = (int) $id;
 
-                if (in_array($id, $ids)) {
+                if (\in_array($id, $ids)) {
                     $output->writeln("[?] Duplicate ID to scan: {$id} -> ignoring");
                     continue;
                 }
@@ -138,8 +139,9 @@ class VirusScanWorkshopCommand extends Command
         }
 
         if (!$files || \count($files) === 0) {
-            $output->writeln("[?] No files found to scan");
-            $output->writeln("[>] Done!");
+            $output->writeln('[?] No files found to scan');
+            $output->writeln('[>] Done!');
+
             return Command::SUCCESS;
         }
 
@@ -223,7 +225,8 @@ class VirusScanWorkshopCommand extends Command
 
         $clam->endSession();
 
-        $output->writeln("[>] Done!");
+        $output->writeln('[>] Done!');
+
         return Command::SUCCESS;
     }
 }

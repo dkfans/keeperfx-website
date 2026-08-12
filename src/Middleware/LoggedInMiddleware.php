@@ -5,7 +5,6 @@ namespace App\Middleware;
 use App\Account;
 use App\FlashMessage;
 use Compwright\PhpSession\Session;
-
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -18,15 +17,12 @@ class LoggedInMiddleware implements MiddlewareInterface
         private ResponseFactory $response_factory,
         private Account $account,
         private Session $session,
-        private FlashMessage $flash
-    ) {}
+        private FlashMessage $flash,
+    ) {
+    }
 
     /**
      * Process a server request and return a response.
-     *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -34,8 +30,8 @@ class LoggedInMiddleware implements MiddlewareInterface
         if (!$this->account->isLoggedIn()) {
 
             if (
-                $request->getHeaderLine('Content-Type') === "application/json" ||
-                $request->getHeaderLine('X-Requested-With') === "XMLHttpRequest"
+                $request->getHeaderLine('Content-Type')        === 'application/json'
+                || $request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest'
             ) {
 
                 $response = $this->response_factory->createResponse()
@@ -48,22 +44,22 @@ class LoggedInMiddleware implements MiddlewareInterface
                 ]));
 
                 return $response;
-            } else {
-
-                $this->flash->info('You need to be logged in to access this resource.');
-
-                $location = '/login';
-
-                // Remember path for redirection after login
-                $redirect = $request->getUri()->getPath();
-                if ($redirect) {
-                    $location .= '?redirect=' . $redirect;
-                }
-
-                return $this->response_factory->createResponse()
-                    ->withHeader('Location', $location)
-                    ->withStatus(302);
             }
+
+            $this->flash->info('You need to be logged in to access this resource.');
+
+            $location = '/login';
+
+            // Remember path for redirection after login
+            $redirect = $request->getUri()->getPath();
+            if ($redirect) {
+                $location .= '?redirect=' . $redirect;
+            }
+
+            return $this->response_factory->createResponse()
+                ->withHeader('Location', $location)
+                ->withStatus(302);
+
         }
 
         $response = $handler->handle($request);

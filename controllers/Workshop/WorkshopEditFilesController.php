@@ -2,29 +2,23 @@
 
 namespace App\Controller\Workshop;
 
-use App\Entity\WorkshopItem;
-use App\Entity\WorkshopFile;
-
 use App\Account;
-use App\FlashMessage;
 use App\Config\Config;
+use App\Entity\WorkshopFile;
+use App\Entity\WorkshopItem;
+use App\FlashMessage;
 use App\UploadSizeHelper;
 use App\Workshop\WorkshopBrokenFileHandler;
-
-use URLify;
 use Doctrine\ORM\EntityManager;
-use Slim\Csrf\Guard as CsrfGuard;
-use Twig\Environment as TwigEnvironment;
-
-use Slim\Psr7\UploadedFile;
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpForbiddenException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Csrf\Guard as CsrfGuard;
+use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
 class WorkshopEditFilesController
 {
-
     public function index(
         Request $request,
         Response $response,
@@ -32,7 +26,7 @@ class WorkshopEditFilesController
         TwigEnvironment $twig,
         Account $account,
         EntityManager $em,
-        $item_id
+        $item_id,
     ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
@@ -41,6 +35,7 @@ class WorkshopEditFilesController
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
+
             return $response;
         }
 
@@ -50,15 +45,17 @@ class WorkshopEditFilesController
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
+
             return $response;
         }
 
         // Show edit page
         $response->getBody()->write(
             $twig->render('workshop/edit.files.workshop.html.twig', [
-                'workshop_item' => $workshop_item
+                'workshop_item' => $workshop_item,
             ])
         );
+
         return $response;
     }
 
@@ -71,7 +68,7 @@ class WorkshopEditFilesController
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
         WorkshopBrokenFileHandler $broken_file_handler,
-        $item_id
+        $item_id,
     ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
@@ -80,6 +77,7 @@ class WorkshopEditFilesController
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
+
             return $response;
         }
 
@@ -89,6 +87,7 @@ class WorkshopEditFilesController
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
+
             return $response;
         }
 
@@ -96,11 +95,12 @@ class WorkshopEditFilesController
         $uploaded_files = $request->getUploadedFiles();
 
         // Make sure uploaded file is set
-        if (empty($uploaded_files['file']) || $uploaded_files['file']->getError() === UPLOAD_ERR_NO_FILE) {
+        if (empty($uploaded_files['file']) || $uploaded_files['file']->getError() === \UPLOAD_ERR_NO_FILE) {
             $flash->warning('No file was uploaded...');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
+
             return $response;
         }
 
@@ -114,6 +114,7 @@ class WorkshopEditFilesController
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
+
             return $response;
         }
 
@@ -123,7 +124,7 @@ class WorkshopEditFilesController
 
         // Make sure output directory exists
         if (!\is_dir($workshop_item_files_dir)) {
-            if (!@mkdir($workshop_item_files_dir, 0777, true)) {
+            if (!@\mkdir($workshop_item_files_dir, 0777, true)) {
                 throw new \Exception("Failed to create 'files' dir for workshop item with id {$workshop_item->getId()}.");
             }
         }
@@ -168,8 +169,8 @@ class WorkshopEditFilesController
 
         $flash->success('File uploaded!');
         $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId() . '/files')->withStatus(302);
-        return $response;
 
+        return $response;
         // Show edit page
         // $response->getBody()->write(
         //     $twig->render('workshop/edit.files.workshop.html.twig', [
@@ -271,6 +272,7 @@ class WorkshopEditFilesController
 
         // Redirect back to file list
         $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId() . '/files')->withStatus(302);
+
         return $response;
     }
 
@@ -329,6 +331,7 @@ class WorkshopEditFilesController
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
+
             return $response;
         }
 
@@ -338,6 +341,7 @@ class WorkshopEditFilesController
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
+
             return $response;
         }
 
@@ -366,6 +370,7 @@ class WorkshopEditFilesController
         // Show success and redirect back to file list
         $flash->success('The file has been successfully moved.');
         $response = $response->withHeader('Location', '/workshop/edit/' . $workshop_item->getId() . '/files')->withStatus(302);
+
         return $response;
     }
 
@@ -378,14 +383,14 @@ class WorkshopEditFilesController
         EntityManager $em,
         CsrfGuard $csrf_guard,
         $item_id,
-        $file_id
+        $file_id,
     ) {
 
         $post     = $request->getParsedBody();
         $new_name = \trim((string) ($post['name'] ?? null));
 
         // Make sure new name is valid
-        if (!$new_name || \strlen($new_name) > 64 || \strlen($new_name) < 1) {
+        if (!$new_name || \strlen($new_name) > 64 || $new_name === '') {
             return $request;
         }
 
@@ -441,7 +446,7 @@ class WorkshopEditFilesController
                         'value' => $csrf_guard->getTokenValueKey(),
                     ],
                     'name'  => $csrf_guard->getTokenName(),
-                    'value' => $csrf_guard->getTokenValue()
+                    'value' => $csrf_guard->getTokenValue(),
                 ],
             ])
         );

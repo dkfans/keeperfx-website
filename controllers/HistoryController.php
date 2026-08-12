@@ -2,17 +2,16 @@
 
 namespace App\Controller;
 
-use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
 class HistoryController
 {
-
     public function index(
         Request $request,
         Response $response,
-        TwigEnvironment $twig
+        TwigEnvironment $twig,
     ) {
         $response->getBody()->write(
             $twig->render('history.html.twig', ['history_entries' => [
@@ -34,8 +33,8 @@ class HistoryController
                     'date_format' => 'Y-m',
                     'description' => "Tomasz Lis, also known as Mefistotelis or Mefisto, started working on rewriting Dungeon Keeper because of his interest in rewriting Syndicate Wars. \n\n" .
                         "He was looking for _debug info_ in the Syndicate Wars files, but didn\'t find any. " .
-                        "So he started asking around forums, and the Keeper Klan community pointed him towards Dungeon Keeper because they both used the same code base. " .
-                        "He then found the _debug info_ he was after and started working on the project. " .
+                        'So he started asking around forums, and the Keeper Klan community pointed him towards Dungeon Keeper because they both used the same code base. ' .
+                        'He then found the _debug info_ he was after and started working on the project. ' .
                         "\n\nThe goal was to rewrite the code that was used in Syndicate Wars, but the Keeper Klan community got Mefisto into Dungeon Keeper. " .
                         "Mefisto\'s idea was to convert the original Dungeon Keeper executable into a DLL file, so other programs can execute its code.",
                 ],
@@ -55,8 +54,8 @@ class HistoryController
                     'title'       => 'KeeperFX gets its own subforum',
                     'date'        => new \DateTime('2009-09-04'),
                     'date_format' => 'Y-m-d',
-                    'description' => "Dotted created the new Keeper Klan forum and the community moved from the old InvisionFree forum to the new home. " .
-                        "During this move he created a KeeperFX subforum and made Mefisto its moderator.",
+                    'description' => 'Dotted created the new Keeper Klan forum and the community moved from the old InvisionFree forum to the new home. ' .
+                        'During this move he created a KeeperFX subforum and made Mefisto its moderator.',
                 ],
                 [
                     'title'       => 'Loobinex releases an unofficial version of KeeperFX',
@@ -134,43 +133,43 @@ class HistoryController
                     'title'       => 'New Keeper colors! Orange, Pink and Black',
                     'date'        => new \DateTime('2024-05-10'),
                     'date_format' => 'Y-m-d',
-                    'description' => "qqluqq implemented 3 new Keepers which can be played as and fought against. These Keepers use the colored icons that are made by Spatulade.",
+                    'description' => 'qqluqq implemented 3 new Keepers which can be played as and fought against. These Keepers use the colored icons that are made by Spatulade.',
                 ],
                 [
                     'title'       => 'First Linux compilation possible',
                     'date'        => new \DateTime('2024-09-24'),
                     'date_format' => 'Y-m-d',
-                    'description' => "xtremeqg shared his PR that allows KeeperFX to be natively compiled on Linux. It still needs a lot of work, but a Linux release is getting very close!",
+                    'description' => 'xtremeqg shared his PR that allows KeeperFX to be natively compiled on Linux. It still needs a lot of work, but a Linux release is getting very close!',
                 ],
                 [
                     'title'       => 'LUA support has been added',
                     'date'        => new \DateTime('2025-05-03'),
                     'date_format' => 'Y-m-d',
-                    'description' => "qqluqq has added support for the LUA scripting language to KeeperFX, opening the door to powerful new gameplay features, custom logic, and modding capabilities.",
+                    'description' => 'qqluqq has added support for the LUA scripting language to KeeperFX, opening the door to powerful new gameplay features, custom logic, and modding capabilities.',
                 ],
                 [
                     'title'       => 'New Launcher and Web Installer',
                     'date'        => new \DateTime('2025-07-20'),
                     'date_format' => 'Y-m-d',
-                    'description' => "Yani made a new and improved launcher for KeeperFX. It comes with a web installer that downloads and installs KeeperFX which should streamline the process for the less tech-savvy users.",
+                    'description' => 'Yani made a new and improved launcher for KeeperFX. It comes with a web installer that downloads and installs KeeperFX which should streamline the process for the less tech-savvy users.',
                 ],
                 [
                     'title'       => 'KeeperFX gets added to GOG',
                     'date'        => new \DateTime('2025-09-02'),
                     'date_format' => 'Y-m-d',
-                    'description' => "After some hard work from the GOG team and our own Loobinex, GingerNaTT and Spatulade, KeeperFX can now be installed with a single click using the GOG launcher.",
+                    'description' => 'After some hard work from the GOG team and our own Loobinex, GingerNaTT and Spatulade, KeeperFX can now be installed with a single click using the GOG launcher.',
                 ],
                 [
                     'title'       => 'Mod support',
                     'date'        => new \DateTime('2025-09-15'),
                     'date_format' => 'Y-m-d',
-                    'description' => "hzzdev made it so we can now have mods for KeeperFX. Before this change we had to use custom campaigns or even edit files directly, but now we can simply install a mod and enjoy it.",
+                    'description' => 'hzzdev made it so we can now have mods for KeeperFX. Before this change we had to use custom campaigns or even edit files directly, but now we can simply install a mod and enjoy it.',
                 ],
                 [
                     'title'       => 'Controller support',
                     'date'        => new \DateTime('2026-01-11'),
                     'date_format' => 'Y-m-d',
-                    'description' => "qqluqq has amazed us yet again with the addition of controller support for KeeperFX.",
+                    'description' => 'qqluqq has amazed us yet again with the addition of controller support for KeeperFX.',
                 ],
             ]])
         );

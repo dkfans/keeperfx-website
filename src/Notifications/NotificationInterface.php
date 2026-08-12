@@ -6,10 +6,9 @@ use App\Enum\UserRole;
 
 interface NotificationInterface
 {
+    public function __construct(?\DateTime $timestamp = null, ?array $data = null, bool $is_read = false);
 
-    public function __construct(\DateTime|null $timestamp = null, array|null $data = null, bool $is_read = false);
-
-    public function getTimestamp(): \DateTime|null;
+    public function getTimestamp(): ?\DateTime;
 
     public function getText(): string;
 
@@ -21,7 +20,7 @@ interface NotificationInterface
 
     public function getDefaultSettings(): array;
 
-    public function getData(): array|null;
+    public function getData(): ?array;
 
     public function isRead(): bool;
 }

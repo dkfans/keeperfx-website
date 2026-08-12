@@ -2,19 +2,18 @@
 
 namespace App\Controller;
 
-use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
 use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
-class SecurityIssuesController {
-
+class SecurityIssuesController
+{
     public function acknowledgments(
         Request $request,
         Response $response,
-        TwigEnvironment $twig
-    ){
+        TwigEnvironment $twig,
+    ) {
         // $acknowledgments = [
         //     'Yani' => [
         //         '2121-05-12: Super hack fix',
@@ -35,11 +34,11 @@ class SecurityIssuesController {
     public function securityTxt(
         Request $request,
         Response $response,
-        TwigEnvironment $twig
-    ){
+        TwigEnvironment $twig,
+    ) {
         $file = \APP_ROOT . '/security.txt';
 
-        if(!\file_exists($file)){
+        if (!\file_exists($file)) {
             throw new HttpNotFoundException($request);
         }
 

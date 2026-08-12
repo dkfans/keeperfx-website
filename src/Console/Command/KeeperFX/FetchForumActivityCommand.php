@@ -4,12 +4,10 @@ namespace App\Console\Command\KeeperFX;
 
 use App\SpamDetector;
 use Psr\SimpleCache\CacheInterface;
-use Symfony\Component\DomCrawler\Crawler;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-
+use Symfony\Component\DomCrawler\Crawler;
 use Xenokore\Utility\Helper\StringHelper;
 
 class FetchForumActivityCommand extends Command
@@ -21,10 +19,10 @@ class FetchForumActivityCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("kfx:fetch-forum-activity")
-            ->setDescription("Fetch the latest KeeperFX forum threads from Keeper Klan");
+        $this->setName('kfx:fetch-forum-activity')
+            ->setDescription('Fetch the latest KeeperFX forum threads from Keeper Klan');
     }
 
     protected function execute(Input $input, Output $output)
@@ -32,28 +30,30 @@ class FetchForumActivityCommand extends Command
 
         // Check if enabled
         if ($_ENV['APP_FORUM_ACTIVITY_ENABLED'] != 1) {
-            $output->writeln("[?] Fetching forum threads is disabled");
+            $output->writeln('[?] Fetching forum threads is disabled');
             $this->cache->delete('keeperfx_forum_threads');
+
             return Command::SUCCESS;
         }
 
         // Make sure URL is set
         if (empty($_ENV['APP_FORUM_ACTIVITY_URL'])) {
-            $output->writeln("[-] No forum activity URL set");
+            $output->writeln('[-] No forum activity URL set');
             $this->cache->delete('keeperfx_forum_threads');
+
             return Command::FAILURE;
         }
 
         // Get variables
-        $parts = \parse_url($_ENV['APP_FORUM_ACTIVITY_URL']);
-        $host = $parts['host']; // keeperklan.com
+        $parts    = \parse_url($_ENV['APP_FORUM_ACTIVITY_URL']);
+        $host     = $parts['host']; // keeperklan.com
         $base_url = $parts['scheme'] . '://' . $parts['host']; // https://keeperklan.com
-        $port = '443';
+        $port     = '443';
         if (isset($parts['port'])) {
             $port = $parts['port'];
             $base_url .= ':' . $port; // base + ":<port>"
         }
-        $thread_count = (int)$_ENV['APP_FORUM_ACTIVITY_THREAD_COUNT'];
+        $thread_count = (int) $_ENV['APP_FORUM_ACTIVITY_THREAD_COUNT'];
 
         // Show info
         $output->writeln("[>] Fetching threads: {$_ENV['APP_FORUM_ACTIVITY_URL']}");
@@ -67,7 +67,7 @@ class FetchForumActivityCommand extends Command
         // Check if we need to connect to IP instead (and pass the host)
         $ip = $_ENV['APP_FORUM_ACTIVITY_IP'] ?? null;
         if ($ip) {
-            $guzzle_config['curl'][CURLOPT_RESOLVE] = [$host . ':' . $port . ':' . $ip];
+            $guzzle_config['curl'][\CURLOPT_RESOLVE] = [$host . ':' . $port . ':' . $ip];
             $output->writeln("[>] Forcing custom IP for host: {$ip} => {$host}");
         }
 
@@ -81,27 +81,29 @@ class FetchForumActivityCommand extends Command
         } catch (\Exception $ex) {
 
             if ($ex->getCode() == 403) {
-                $output->writeln("[-] 403 Forbidden");
+                $output->writeln('[-] 403 Forbidden');
             } elseif ($ex->getCode() == 404) {
-                $output->writeln("[-] 404 Not found");
+                $output->writeln('[-] 404 Not found');
             } else {
-                $output->writeln("[-] Unknown problem");
+                $output->writeln('[-] Unknown problem');
             }
 
             $this->cache->delete('keeperfx_forum_threads');
+
             return Command::FAILURE;
         }
 
         $content = $res->getBody();
         if (!$content) {
-            $output->writeln("[-] Failed to grab content");
+            $output->writeln('[-] Failed to grab content');
             $this->cache->delete('keeperfx_forum_threads');
+
             return Command::FAILURE;
         }
 
-        $crawler = new Crawler((string)$content);
+        $crawler = new Crawler((string) $content);
 
-        $found_threads = $crawler->filter('#threads .threadbit:not(.moved)')->each(function (Crawler $node, $i) use ($base_url) {
+        $found_threads = $crawler->filter('#threads .threadbit:not(.moved)')->each(static function (Crawler $node, $i) use ($base_url) {
 
             // Get amount of replies
             $replies_str = $node->filter('.threadstats li')->first()->text();
@@ -124,8 +126,9 @@ class FetchForumActivityCommand extends Command
 
         $found_thread_count = \count($found_threads);
         if ($found_thread_count === 0) {
-            $output->writeln("[-] No threads found");
+            $output->writeln('[-] No threads found');
             $this->cache->delete('keeperfx_forum_threads');
+
             return Command::FAILURE;
         }
 
@@ -152,8 +155,8 @@ class FetchForumActivityCommand extends Command
 
         $this->cache->set('keeperfx_forum_threads', $threads);
 
-        $output->writeln("[+] Stored " . \count($threads) . " threads into cache");
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Stored ' . \count($threads) . ' threads into cache');
+        $output->writeln('[+] Done!');
 
         return Command::SUCCESS;
     }

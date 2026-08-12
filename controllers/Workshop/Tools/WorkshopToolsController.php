@@ -3,16 +3,13 @@
 namespace App\Controller\Workshop\Tools;
 
 use App\Entity\User;
-
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
 class WorkshopToolsController
 {
-
     public function index(
         Request $request,
         Response $response,
@@ -37,19 +34,19 @@ class WorkshopToolsController
                     'title'       => 'KeeperFX ENET Multiplayer Lobby Host Checker',
                     'url'         => '/workshop/tools/kfx-host-checker',
                     'description' => 'A tool to check if a KeeperFX ENET multiplayer lobby can be joined by other players.',
-                    'user'        => $yani
+                    'user'        => $yani,
                 ],
                 [
                     'title'       => 'KeeperFX CFG Diff Tool',
                     'url'         => '/workshop/tools/kfx-cfg-diff',
                     'description' => 'A tool to get the changes between two KeeperFX configuration files.',
-                    'user'        => $yani
+                    'user'        => $yani,
                 ],
                 [
                     'title'       => 'Training Level Curve Tool',
                     'url'         => '/workshop/tools/training-level-curve-tool',
                     'description' => 'A tool to generate a training level curve for creatures.',
-                    'user'        => $yani
+                    'user'        => $yani,
                 ],
             ]])
         );

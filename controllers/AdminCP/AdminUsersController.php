@@ -2,38 +2,32 @@
 
 namespace App\Controller\AdminCP;
 
-use App\Enum\UserRole;
-
 use App\Entity\User;
 use App\Entity\UserBio;
-
-use App\Mailer;
-use App\Account;
+use App\Enum\UserRole;
 use App\FlashMessage;
-
-use Slim\Csrf\Guard;
+use App\Mailer;
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Slim\Exception\HttpNotFoundException;
+use Slim\Csrf\Guard;
 use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
-class AdminUsersController {
-
+class AdminUsersController
+{
     public function usersIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-        EntityManager $em
-    ){
+        EntityManager $em,
+    ) {
         $users = $em->getRepository(User::class)->findAll();
 
         $response->getBody()->write(
             $twig->render('admincp/users/users.admincp.html.twig', [
-                'users' => $users
+                'users' => $users,
             ])
         );
 
@@ -43,8 +37,8 @@ class AdminUsersController {
     public function userAddIndex(
         Request $request,
         Response $response,
-        TwigEnvironment $twig
-    ){
+        TwigEnvironment $twig,
+    ) {
         $response->getBody()->write(
             $twig->render('admincp/users/users.add.admincp.html.twig')
         );
@@ -57,8 +51,8 @@ class AdminUsersController {
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-        FlashMessage $flash
-    ){
+        FlashMessage $flash,
+    ) {
         $success = true;
 
         $post     = $request->getParsedBody();
@@ -68,14 +62,14 @@ class AdminUsersController {
         $email = null;
 
         // Check username and password given
-        if(!$username || !$password){
+        if (!$username || !$password) {
             $flash->warning('You need to fill in a username and password.');
             $success = false;
         } else {
 
             // Username check
             $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
-            if($user){
+            if ($user) {
                 $flash->warning('A user with this username already exists');
                 $success = false;
             }
@@ -83,17 +77,17 @@ class AdminUsersController {
         }
 
         // Handle email address
-        if(isset($post['email']) && is_string($post['email']) && \strlen($post['email']) > 0){
+        if (isset($post['email']) && \is_string($post['email']) && $post['email'] !== '') {
 
             // Check valid email address
-            if(\filter_var($post['email'], \FILTER_VALIDATE_EMAIL) === false){
+            if (\filter_var($post['email'], \FILTER_VALIDATE_EMAIL) === false) {
                 $flash->error('Invalid email address.');
                 $success = false;
             } else {
 
                 // Check if email address already exists
                 $user_with_email = $em->getRepository(User::class)->findOneBy(['email' => $post['email']]);
-                if($user_with_email){
+                if ($user_with_email) {
                     $flash->warning('A user with this email address already exists');
                     $success = false;
                 } else {
@@ -104,16 +98,17 @@ class AdminUsersController {
 
         // Check valid role
         $role = UserRole::tryFrom((int) ($post['role'] ?? UserRole::User));
-        if($role === null){
+        if ($role === null) {
             $flash->error('Invalid user role.');
             $success = false;
         }
 
         // Return errors if one or more checks did not pass
-        if(!$success){
+        if (!$success) {
             $response->getBody()->write(
                 $twig->render('admincp/users/users.add.admincp.html.twig')
             );
+
             return $response;
         }
 
@@ -129,6 +124,7 @@ class AdminUsersController {
         $flash->success('User added!');
 
         $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
         return $response;
     }
 
@@ -138,14 +134,15 @@ class AdminUsersController {
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id
-    ){
+        $id,
+    ) {
 
         $user = $em->getRepository(User::class)->find($id);
 
-        if(!$user){
+        if (!$user) {
             $flash->warning('User not found.');
             $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
             return $response;
         }
 
@@ -164,17 +161,18 @@ class AdminUsersController {
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id
-    ){
+        $id,
+    ) {
         $success = true;
 
         $email = null;
 
         // Get user
         $user = $em->getRepository(User::class)->find($id);
-        if(!$user){
+        if (!$user) {
             $flash->warning('User not found.');
             $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
             return $response;
         }
 
@@ -184,17 +182,17 @@ class AdminUsersController {
         $password = (string) ($post['password'] ?? null);
 
         // Check if username is set
-        if(!$username){
+        if (!$username) {
             $flash->warning('You need to fill in the username');
             $success = false;
         } else {
 
             // Handle updated username
-            if($username !== $user->getUsername()){
+            if ($username !== $user->getUsername()) {
 
                 // Username check
                 $user_with_username = $em->getRepository(User::class)->findOneBy(['username' => $username]);
-                if($user_with_username && $user !== $user_with_username){
+                if ($user_with_username && $user !== $user_with_username) {
                     $flash->warning("A user with the username \"{$username}\" already exists");
                     $success = false;
                 }
@@ -202,21 +200,21 @@ class AdminUsersController {
         }
 
         // Handle email address
-        if(isset($post['email']) && is_string($post['email']) && $post['email'] !== ''){
+        if (isset($post['email']) && \is_string($post['email']) && $post['email'] !== '') {
             $email = $post['email'];
 
             // Check valid email address
-            if(\filter_var($email, \FILTER_VALIDATE_EMAIL) === false){
+            if (\filter_var($email, \FILTER_VALIDATE_EMAIL) === false) {
                 $flash->error('Invalid email address.');
                 $success = false;
             } else {
 
                 // Handle updated email address
-                if($email !== $user->getEmail()){
+                if ($email !== $user->getEmail()) {
 
                     // Check if email address already exists
                     $user_with_email = $em->getRepository(User::class)->findOneBy(['email' => $email]);
-                    if($user_with_email){
+                    if ($user_with_email) {
                         $flash->warning("A user with the email address \"{$email}\" already exists");
                         $success = false;
                     }
@@ -226,16 +224,17 @@ class AdminUsersController {
 
         // Check valid role
         $role = UserRole::tryFrom((int) ($post['role'] ?? 1));
-        if($role === null){
+        if ($role === null) {
             $flash->error('Invalid user role.');
             $success = false;
         }
 
         // Output errors if not successful
-        if(!$success){
+        if (!$success) {
             $response->getBody()->write(
                 $twig->render('admincp/users/user.admincp.html.twig', ['user' => $user])
             );
+
             return $response;
         }
 
@@ -245,7 +244,7 @@ class AdminUsersController {
         $user->setRole($role);
 
         // Update password if changed
-        if($password){
+        if ($password) {
             $user->setPassword($password);
         }
 
@@ -257,6 +256,7 @@ class AdminUsersController {
         $response->getBody()->write(
             $twig->render('admincp/users/user.admincp.html.twig', ['user' => $user])
         );
+
         return $response;
     }
 
@@ -266,33 +266,34 @@ class AdminUsersController {
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id
-    ){
+        $id,
+    ) {
         // Get user
         $user = $em->getRepository(User::class)->find($id);
-        if(!$user){
+        if (!$user) {
             $flash->warning('User not found.');
             $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
             return $response;
         }
 
         // Get post vars
-        $post  = $request->getParsedBody();
+        $post     = $request->getParsedBody();
         $about_me = (string) ($post['about_me'] ?? '');
 
         // Check if user has a bio
         $bio = $user->getBio();
-        if(empty($about_me)){
+        if (empty($about_me)) {
 
             // Handle removal
-            if($bio){
+            if ($bio) {
                 $em->remove($bio);
                 $em->flush();
             }
         } else {
 
             // Handle update/creation
-            if($bio){
+            if ($bio) {
                 $bio->setBio($about_me);
             } else {
                 $new_bio = new UserBio();
@@ -309,6 +310,7 @@ class AdminUsersController {
         $response->getBody()->write(
             $twig->render('admincp/users/user.admincp.html.twig', ['user' => $user])
         );
+
         return $response;
     }
 
@@ -321,16 +323,16 @@ class AdminUsersController {
         $id,
         $token_name,
         $token_value,
-    ){
+    ) {
 
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Find user
         $user = $em->getRepository(User::class)->find($id);
-        if(!$user){
+        if (!$user) {
             throw new HttpNotFoundException($request);
         }
 
@@ -341,6 +343,7 @@ class AdminUsersController {
 
         // Response
         $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
         return $response;
     }
 
@@ -350,29 +353,32 @@ class AdminUsersController {
         EntityManager $em,
         FlashMessage $flash,
         TwigEnvironment $twig,
-        $id
-    ){
+        $id,
+    ) {
         // Find user
         $user = $em->getRepository(User::class)->find($id);
-        if(!$user){
+        if (!$user) {
             $flash->warning('User not found.');
             $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
             return $response;
         }
 
         // User must have en email address
-        if($user->getEmail() == null){
-            $flash->warning("This user does not have an email address associated with their account.");
+        if ($user->getEmail() == null) {
+            $flash->warning('This user does not have an email address associated with their account.');
             $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
             return $response;
         }
 
         // Show mail page
         $response->getBody()->write(
             $twig->render('admincp/users/user.mail.admincp.html.twig', [
-                'user' => $user
+                'user' => $user,
             ])
         );
+
         return $response;
     }
 
@@ -383,20 +389,22 @@ class AdminUsersController {
         FlashMessage $flash,
         TwigEnvironment $twig,
         Mailer $mailer,
-        $id
-    ){
+        $id,
+    ) {
         // Find user
         $user = $em->getRepository(User::class)->find($id);
-        if(!$user){
+        if (!$user) {
             $flash->warning('User not found.');
             $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
             return $response;
         }
 
         // User must have en email address
-        if($user->getEmail() == null){
-            $flash->warning("This user does not have an email address associated with their account.");
+        if ($user->getEmail() == null) {
+            $flash->warning('This user does not have an email address associated with their account.');
             $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
             return $response;
         }
 
@@ -406,34 +414,36 @@ class AdminUsersController {
         $content = (string) ($post['content'] ?? '');
 
         // Mail must not be empty
-        if(empty($subject) || empty($content)){
-            $flash->warning("You need to enter a subject and contents");
+        if (empty($subject) || empty($content)) {
+            $flash->warning('You need to enter a subject and contents');
             $response->getBody()->write(
                 $twig->render('admincp/users/user.mail.admincp.html.twig', [
-                    'user' => $user
+                    'user' => $user,
                 ])
             );
+
             return $response;
         }
 
         // Send mail
         $mail_id = $mailer->createMailInQueue($user->getEmail(), $subject, $content);
-        if(!$mail_id){
+        if (!$mail_id) {
 
             // Show mail page on failure
-            $flash->error("Failed to add the mail to the mail queue");
+            $flash->error('Failed to add the mail to the mail queue');
             $response->getBody()->write(
                 $twig->render('admincp/users/user.mail.admincp.html.twig', [
-                    'user' => $user
+                    'user' => $user,
                 ])
             );
+
             return $response;
         }
 
         // Success!
-        $flash->success("The mail has been added to the queue and will be sent shortly.");
+        $flash->success('The mail has been added to the queue and will be sent shortly.');
         $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
         return $response;
     }
-
 }

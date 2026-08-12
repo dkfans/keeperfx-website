@@ -4,24 +4,22 @@ namespace App\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpNotFoundException;
 
 /**
  * The avatar controller is used to output avatars.
  * Updating an avatar is done in the AccountController.
  */
-class DebugBarAssetController {
-
+class DebugBarAssetController
+{
     public function outputAsset(
         Request $request,
         Response $response,
         $path,
-    ){
+    ) {
         // Only allowed in dev environment
-        if($_ENV['APP_ENV'] !== 'dev'){
+        if ($_ENV['APP_ENV'] !== 'dev') {
             throw new HttpForbiddenException($request);
         }
 
@@ -29,12 +27,12 @@ class DebugBarAssetController {
         $filepath = APP_ROOT . '/vendor/php-debugbar/php-debugbar/src/DebugBar/Resources/' . $path;
 
         // Check if file exists
-        if(!\file_exists($filepath)){
+        if (!\file_exists($filepath)) {
             throw new HttpNotFoundException($request, 'debugbar asset not found');
         }
 
         // Get content type of file based on file extension
-        switch(\pathinfo($filepath, \PATHINFO_EXTENSION)){
+        switch (\pathinfo($filepath, \PATHINFO_EXTENSION)) {
             case 'css':
                 $content_type = 'text/css';
                 break;

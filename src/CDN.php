@@ -3,8 +3,6 @@
 namespace App;
 
 use App\Config\Config;
-use Psr\Log\LoggerInterface;
-use Xenokore\Utility\Helper\FileHelper;
 
 class CDN
 {
@@ -20,13 +18,14 @@ class CDN
         $this->cdn_config = Config::load('cdn');
 
         $this->current_cdn_id = $this->cdn_config['default'];
-        $this->current_cdn = $this->cdn_config['endpoints'][$this->current_cdn_id];
+        $this->current_cdn    = $this->cdn_config['endpoints'][$this->current_cdn_id];
     }
 
-    public function setCdn(?string $cdn_id)
+    public function setCdn(?string $cdn_id): void
     {
         if ($cdn_id === null) {
             $this->setCdn($this->cdn_config['default']);
+
             return;
         }
 
@@ -39,11 +38,12 @@ class CDN
             // We just set it to the default because people might have specifically selected this one and
             // we don't want to throw an error or anything.
             $this->setCdn($this->cdn_config['default']);
+
             return;
         }
 
         $this->current_cdn_id = $cdn_id;
-        $this->current_cdn = $this->cdn_config['endpoints'][$cdn_id];
+        $this->current_cdn    = $this->cdn_config['endpoints'][$cdn_id];
     }
 
     public function setByCountryDefault(string $country): bool
@@ -52,6 +52,7 @@ class CDN
 
         if (\array_key_exists($country, $this->cdn_config['country_defaults'])) {
             $this->setCdn($this->cdn_config['country_defaults'][$country]);
+
             return true;
         }
 
@@ -73,7 +74,7 @@ class CDN
         return $this->current_cdn['url'];
     }
 
-    public function setUserChoice(?bool $is_user_choice = true)
+    public function setUserChoice(?bool $is_user_choice = true): void
     {
         $this->is_user_choice = $is_user_choice;
     }

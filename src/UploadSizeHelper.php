@@ -19,9 +19,9 @@ class UploadSizeHelper
     public function __construct()
     {
         // Get PHP upload limits
-        $this->php_max_upload        = (int)(\ini_get('upload_max_filesize')) * 1024 * 1024;
-        $this->php_max_post          = (int)(\ini_get('post_max_size')) * 1024 * 1024;
-        $this->php_memory_limit      = (int)(\ini_get('memory_limit')) * 1024 * 1024;
+        $this->php_max_upload   = (int) \ini_get('upload_max_filesize') * 1024 * 1024;
+        $this->php_max_post     = (int) \ini_get('post_max_size')       * 1024 * 1024;
+        $this->php_memory_limit = (int) \ini_get('memory_limit')        * 1024 * 1024;
 
         // Determine max PHP upload size per file
         $this->max_calculated_file_upload = \min(
@@ -41,7 +41,7 @@ class UploadSizeHelper
         if ($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false) {
             $this->news_image_max_upload_size = $this->max_calculated_file_upload;
         } else {
-            $this->news_image_max_upload_size = \min($val, $this->max_calculated_file_upload);;
+            $this->news_image_max_upload_size = \min($val, $this->max_calculated_file_upload);
         }
 
         // Determine max Avatar upload size
@@ -49,7 +49,7 @@ class UploadSizeHelper
         if ($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false) {
             $this->avatar_max_upload_size = $this->max_calculated_file_upload;
         } else {
-            $this->avatar_max_upload_size = \min($val, $this->max_calculated_file_upload);;
+            $this->avatar_max_upload_size = \min($val, $this->max_calculated_file_upload);
         }
 
         // Determine max Workshop upload size
@@ -57,7 +57,7 @@ class UploadSizeHelper
         if ($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false) {
             $this->workshop_item_max_upload_size = $this->max_calculated_file_upload;
         } else {
-            $this->workshop_item_max_upload_size = \min($val, $this->max_calculated_file_upload);;
+            $this->workshop_item_max_upload_size = \min($val, $this->max_calculated_file_upload);
         }
 
         // Determine max image (thumbnail & screenshot) size
@@ -65,14 +65,12 @@ class UploadSizeHelper
         if ($val === null || \filter_var($val, \FILTER_VALIDATE_INT) === false) {
             $this->workshop_image_max_upload_size = $this->max_calculated_file_upload;
         } else {
-            $this->workshop_image_max_upload_size = \min($val, $this->max_calculated_file_upload);;
+            $this->workshop_image_max_upload_size = \min($val, $this->max_calculated_file_upload);
         }
     }
 
     /**
-     * Get final news image max upload filesize in bytes
-     *
-     * @return integer
+     * Get final news image max upload filesize in bytes.
      */
     public function getFinalNewsImageUploadSize(): int
     {
@@ -80,9 +78,7 @@ class UploadSizeHelper
     }
 
     /**
-     * Get final avatar max upload filesize in bytes
-     *
-     * @return integer
+     * Get final avatar max upload filesize in bytes.
      */
     public function getFinalAvatarUploadSize(): int
     {
@@ -90,9 +86,7 @@ class UploadSizeHelper
     }
 
     /**
-     * Get final workshop file max upload filesize in bytes
-     *
-     * @return integer
+     * Get final workshop file max upload filesize in bytes.
      */
     public function getFinalWorkshopItemUploadSize(): int
     {
@@ -100,9 +94,7 @@ class UploadSizeHelper
     }
 
     /**
-     * Get final workshop image max upload filesize in bytes
-     *
-     * @return integer
+     * Get final workshop image max upload filesize in bytes.
      */
     public function getFinalWorkshopImageUploadSize(): int
     {
@@ -110,7 +102,7 @@ class UploadSizeHelper
     }
 
     /**
-     * Get the value of php_max_upload
+     * Get the value of php_max_upload.
      */
     public function getPhpMaxUpload(): int
     {
@@ -118,7 +110,7 @@ class UploadSizeHelper
     }
 
     /**
-     * Get the value of php_max_post
+     * Get the value of php_max_post.
      */
     public function getPhpMaxPost(): int
     {
@@ -126,7 +118,7 @@ class UploadSizeHelper
     }
 
     /**
-     * Get the value of php_memory_limit
+     * Get the value of php_memory_limit.
      */
     public function getPhpMemoryLimit(): int
     {
@@ -134,7 +126,7 @@ class UploadSizeHelper
     }
 
     /**
-     * Get the value of max_calculated_upload
+     * Get the value of max_calculated_upload.
      */
     public function getMaxCalculatedFileUpload(): int
     {
@@ -142,7 +134,7 @@ class UploadSizeHelper
     }
 
     /**
-     * Get the value of max_calculated_upload
+     * Get the value of max_calculated_upload.
      */
     public function getMaxCalculatedTotalUpload(): int
     {

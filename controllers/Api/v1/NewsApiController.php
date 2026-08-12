@@ -3,17 +3,14 @@
 namespace App\Controller\Api\v1;
 
 use App\Entity\NewsArticle;
-
-use Doctrine\ORM\EntityManager;
 use App\Twig\Extension\Markdown\CustomMarkdownConverter;
-
-use Psr\SimpleCache\CacheInterface;
+use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\SimpleCache\CacheInterface;
 
 class NewsApiController
 {
-
     public function listLatest(
         Request $request,
         Response $response,
@@ -21,7 +18,7 @@ class NewsApiController
         CustomMarkdownConverter $md_converter,
         // TODO: CacheInterface $cache,
     ) {
-        $articles = [];
+        $articles         = [];
         $article_entities = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 3);
         if ($article_entities) {
             foreach ($article_entities as $article_entity) {
@@ -46,10 +43,10 @@ class NewsApiController
                     'excerpt_html'     => $excerpt_with_html,
                     'excerpt'          => $excerpt_text_only,
 
-                    'url'               => $_ENV['APP_ROOT_URL'] . '/news/' . $article_entity->getId() .
+                    'url' => $_ENV['APP_ROOT_URL'] . '/news/' . $article_entity->getId() .
                         '/' . $article_entity->getCreatedTimestamp()->format('Y-m-d') .
                         '/' . $article_entity->getTitleSlug(),
-                    'image'             => $article_entity->getImage() ?
+                    'image' => $article_entity->getImage() ?
                         $_ENV['APP_ROOT_URL'] . '/news/image/' . $article_entity->getImage() :
                         $_ENV['APP_ROOT_URL'] . '/img/horny-face-256.png',
                 ];

@@ -2,14 +2,11 @@
 
 namespace App\Entity;
 
-use App\Enum\UserNotificationType;
-
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 class UserNotificationSetting
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -29,7 +26,7 @@ class UserNotificationSetting
     private bool $email_enabled = true;
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -37,7 +34,7 @@ class UserNotificationSetting
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -45,7 +42,7 @@ class UserNotificationSetting
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -55,7 +52,7 @@ class UserNotificationSetting
     }
 
     /**
-     * Get the value of class
+     * Get the value of class.
      */
     public function getClass(): string
     {
@@ -63,7 +60,7 @@ class UserNotificationSetting
     }
 
     /**
-     * Set the value of type
+     * Set the value of type.
      */
     public function setClass(string $class): self
     {
@@ -73,7 +70,7 @@ class UserNotificationSetting
     }
 
     /**
-     * Get the value of website_enabled
+     * Get the value of website_enabled.
      */
     public function isWebsiteEnabled(): bool
     {
@@ -81,7 +78,7 @@ class UserNotificationSetting
     }
 
     /**
-     * Set the value of website_enabled
+     * Set the value of website_enabled.
      */
     public function setWebsiteEnabled(bool $website_enabled): self
     {
@@ -91,7 +88,7 @@ class UserNotificationSetting
     }
 
     /**
-     * Get the value of email_enabled
+     * Get the value of email_enabled.
      */
     public function isEmailEnabled(): bool
     {
@@ -99,7 +96,7 @@ class UserNotificationSetting
     }
 
     /**
-     * Set the value of email_enabled
+     * Set the value of email_enabled.
      */
     public function setEmailEnabled(bool $email_enabled): self
     {

@@ -5,7 +5,6 @@ namespace App\Middleware;
 use App\Account;
 use App\FlashMessage;
 use Compwright\PhpSession\Session;
-
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -15,27 +14,22 @@ use Slim\Psr7\Factory\ResponseFactory;
 /**
  * Stores the IP in our session and if it changes we try logging it again.
  */
-class UserIpChangeLoggerMiddleware implements MiddlewareInterface {
-
-    /** @var ResponseFactory $response_factory */
+class UserIpChangeLoggerMiddleware implements MiddlewareInterface
+{
+    /** @var ResponseFactory */
     public $response_factory;
 
-    /** @var Account $account */
+    /** @var Account */
     public $account;
 
-    /** @var Session $session */
+    /** @var Session */
     public $session;
 
-    /** @var FlashMessage $flash */
+    /** @var FlashMessage */
     public $flash;
 
     /**
-     * Constructor
-     *
-     * @param ResponseFactory $response_factory
-     * @param Account $account
-     * @param Session $session
-     * @param FlashMessage $flash
+     * Constructor.
      */
     public function __construct(ResponseFactory $response_factory, Account $account, Session $session, FlashMessage $flash)
     {
@@ -47,10 +41,6 @@ class UserIpChangeLoggerMiddleware implements MiddlewareInterface {
 
     /**
      * Process a server request and return a response.
-     *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -58,10 +48,10 @@ class UserIpChangeLoggerMiddleware implements MiddlewareInterface {
         $ip = $request->getAttribute('ip_address');
 
         // Only for logged in users (with a valid IP)
-        if($this->account->isLoggedIn() && $ip !== null){
+        if ($this->account->isLoggedIn() && $ip !== null) {
 
             // Check if the IP is not yet stored in the session
-            if(empty($this->session['ip']) || \is_null($this->session['ip'])){
+            if (empty($this->session['ip']) || $this->session['ip'] === null) {
 
                 // Remember IP address for this session
                 $this->session['ip'] = $ip;
@@ -69,7 +59,7 @@ class UserIpChangeLoggerMiddleware implements MiddlewareInterface {
             } else {
 
                 // Check if the IP has changed
-                if($this->session['ip'] !== $ip){
+                if ($this->session['ip'] !== $ip) {
 
                     // Log the IP
                     $this->account->logIp($ip);
@@ -82,6 +72,7 @@ class UserIpChangeLoggerMiddleware implements MiddlewareInterface {
 
         // Continue handling the request
         $response = $handler->handle($request);
+
         return $response;
     }
 }

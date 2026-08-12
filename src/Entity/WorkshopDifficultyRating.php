@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class WorkshopDifficultyRating
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -32,20 +31,20 @@ class WorkshopDifficultyRating
     private \DateTime $updated_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
-        $this->updated_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
+        $this->updated_timestamp = new \DateTime('now');
     }
 
     #[ORM\PreUpdate]
-    public function onPreUpdate()
+    public function onPreUpdate(): void
     {
-        $this->updated_timestamp = new \DateTime("now");
+        $this->updated_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -53,7 +52,7 @@ class WorkshopDifficultyRating
     }
 
     /**
-     * Get the value of item
+     * Get the value of item.
      */
     public function getItem(): WorkshopItem
     {
@@ -61,7 +60,7 @@ class WorkshopDifficultyRating
     }
 
     /**
-     * Set the value of item
+     * Set the value of item.
      */
     public function setItem(WorkshopItem $item): self
     {
@@ -71,7 +70,7 @@ class WorkshopDifficultyRating
     }
 
     /**
-     * Get the value of score
+     * Get the value of score.
      */
     public function getScore(): int
     {
@@ -79,7 +78,7 @@ class WorkshopDifficultyRating
     }
 
     /**
-     * Set the value of score
+     * Set the value of score.
      */
     public function setScore(int $score): self
     {
@@ -89,7 +88,7 @@ class WorkshopDifficultyRating
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -97,7 +96,7 @@ class WorkshopDifficultyRating
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -107,7 +106,7 @@ class WorkshopDifficultyRating
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -115,7 +114,7 @@ class WorkshopDifficultyRating
     }
 
     /**
-     * Get the value of updated_timestamp
+     * Get the value of updated_timestamp.
      */
     public function getUpdatedTimestamp(): \DateTime
     {

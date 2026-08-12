@@ -2,31 +2,21 @@
 
 namespace App\Controller\DevCP;
 
-use App\Entity\CrashReport;
-use App\Entity\GithubRelease;
-use App\Entity\GithubAlphaBuild;
-
-use App\FlashMessage;
 use App\Config\Config;
-
+use App\Entity\CrashReport;
+use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
-use Slim\Csrf\Guard as CsrfGuard;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
 class ModerateCrashReportController
 {
-
     public function listIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-        EntityManager $em
+        EntityManager $em,
     ) {
         $response->getBody()->write(
             $twig->render('devcp/crash-report/crash-report.list.devcp.html.twig', [
@@ -43,7 +33,7 @@ class ModerateCrashReportController
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id
+        $id,
     ) {
         // Separated error var
         $error = [
@@ -56,16 +46,16 @@ class ModerateCrashReportController
         if (!$crash_report) {
             $flash->warning('Crash report not found.');
             $response = $response->withHeader('Location', '/dev/crash-report/list')->withStatus(302);
+
             return $response;
         }
-
 
         // Check if there is a game log
         $game_log = $crash_report->getGameLog();
         if ($game_log) {
 
             // Clear old crash lines
-            $game_log = preg_replace('/^=== Crash ===\R?/m', '', $game_log);
+            $game_log = \preg_replace('/^=== Crash ===\R?/m', '', $game_log);
 
             // Check for error pattern
             $error_pattern = '/Exception ([0-9xa-fA-F]+) thrown\: ([0-9_A-Za-f]+)[\n\r]+Error\: (.+)/';
@@ -79,11 +69,11 @@ class ModerateCrashReportController
 
             // Check for trace
             $trace_pattern = '/\[\#(\d+)\s?\]\s(.+)$/m';
-            if (\preg_match_all($trace_pattern, $game_log, $trace_matches, PREG_PATTERN_ORDER)) {
+            if (\preg_match_all($trace_pattern, $game_log, $trace_matches, \PREG_PATTERN_ORDER)) {
 
                 $trace = [];
-                for ($i = 0; $i < \count($trace_matches[0]); $i++) {
-                    $trace[(int)$trace_matches[1][$i]] = (string)$trace_matches[2][$i];
+                for ($i = 0; $i < \count($trace_matches[0]); ++$i) {
+                    $trace[(int) $trace_matches[1][$i]] = (string) $trace_matches[2][$i];
                 }
 
                 $error['trace'] = $trace;
@@ -97,6 +87,7 @@ class ModerateCrashReportController
                 'error'        => $error,
             ])
         );
+
         return $response;
     }
 
@@ -106,13 +97,14 @@ class ModerateCrashReportController
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id
+        $id,
     ) {
         // Find crash report
         $crash_report = $em->getRepository(CrashReport::class)->find($id);
         if (!$crash_report) {
             $flash->warning('Crash report not found.');
             $response = $response->withHeader('Location', '/dev/crash-report/list')->withStatus(302);
+
             return $response;
         }
 
@@ -137,6 +129,7 @@ class ModerateCrashReportController
         // Navigate back to list
         $flash->success('Crash report removed.');
         $response = $response->withHeader('Location', '/dev/crash-report/list')->withStatus(302);
+
         return $response;
     }
 }

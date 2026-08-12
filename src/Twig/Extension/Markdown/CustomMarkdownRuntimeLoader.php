@@ -11,9 +11,10 @@ class CustomMarkdownRuntimeLoader implements RuntimeLoaderInterface
 {
     public function load($class)
     {
-        if (MarkdownRuntime::class === $class) {
+        if ($class === MarkdownRuntime::class) {
             return new MarkdownRuntime(new CustomMarkdownConverter());
         }
+
         return null;
     }
 }

@@ -2,21 +2,13 @@
 
 namespace App\Controller\DevCP;
 
-use App\Entity\CrashReport;
-
-use App\FlashMessage;
-use App\Config\Config;
 use App\Entity\GameFileIndex;
+use App\Enum\ReleaseType;
 use Doctrine\ORM\EntityManager;
-use Slim\Csrf\Guard as CsrfGuard;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
-use App\Enum\ReleaseType;
+use Twig\Environment as TwigEnvironment;
 
 class ModerateGameFilesController
 {
@@ -26,7 +18,7 @@ class ModerateGameFilesController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-        EntityManager $em
+        EntityManager $em,
     ) {
         $response->getBody()->write(
             $twig->render('devcp/game-files/game-files.list.devcp.html.twig', [
@@ -44,7 +36,7 @@ class ModerateGameFilesController
         TwigEnvironment $twig,
         EntityManager $em,
         $type,
-        $version
+        $version,
     ) {
 
         // Try and get the release type
@@ -72,11 +64,12 @@ class ModerateGameFilesController
                 ),
             ])
         );
+
         return $response;
     }
 
     /**
-     * Converts filemap (path => checksum) to widget tree format
+     * Converts filemap (path => checksum) to widget tree format.
      */
     private function buildWidgetFileTreeFromFilemap(array $filemap, ?string $base_url = null): array
     {
@@ -84,10 +77,10 @@ class ModerateGameFilesController
 
         foreach ($filemap as $path => $checksum) {
             // Normalize path and split into parts
-            $normalized = ltrim($path, '/');
-            $parts = $normalized === '' ? [] : explode('/', $normalized);
-            $filename = array_pop($parts);
-            $current = &$root;
+            $normalized = \ltrim($path, '/');
+            $parts      = $normalized === '' ? [] : \explode('/', $normalized);
+            $filename   = \array_pop($parts);
+            $current    = &$root;
 
             // Traverse/create directory structure
             foreach ($parts as $dir) {
@@ -95,35 +88,36 @@ class ModerateGameFilesController
                 foreach ($current as &$node) {
                     if ($node['text'] === $dir) {
                         $current = &$node['nodes'];
-                        $found = true;
+                        $found   = true;
                         break;
                     }
                 }
                 if (!$found) {
-                    $newNode = ['text' => $dir, 'nodes' => []];
+                    $newNode   = ['text' => $dir, 'nodes' => []];
                     $current[] = $newNode;
-                    $current = &$current[count($current) - 1]['nodes'];
+                    $current   = &$current[\count($current) - 1]['nodes'];
                 }
             }
 
             // Add the file with checksum tag
             $current[] = [
                 'text' => $base_url != null ? "<a href='{$base_url}/{$normalized}' download target='_blank'>{$filename}</a>" : $filename,
-                'tags' => [$checksum]
+                'tags' => [$checksum],
             ];
         }
 
         // Sort: directories first, then files, case-insensitive
         $this->sortWidgetTree($root);
+
         return $root;
     }
 
     /**
-     * Recursively sorts tree: dirs before files, case-insensitive
+     * Recursively sorts tree: dirs before files, case-insensitive.
      */
     private function sortWidgetTree(array &$nodes): void
     {
-        usort($nodes, function ($a, $b) {
+        \usort($nodes, static function ($a, $b) {
             $aIsDir = isset($a['nodes']);
             $bIsDir = isset($b['nodes']);
 
@@ -133,7 +127,7 @@ class ModerateGameFilesController
             }
 
             // Same type: sort by text case-insensitively
-            return strcasecmp($a['text'], $b['text']);
+            return \strcasecmp($a['text'], $b['text']);
         });
 
         foreach ($nodes as &$node) {

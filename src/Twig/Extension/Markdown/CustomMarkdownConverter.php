@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Twig\Extension\Markdown;
 
 use AMoschou\CommonMark\Alert\AlertExtension;
-use Twig\Extra\Markdown\MarkdownInterface;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
+use Twig\Extra\Markdown\MarkdownInterface;
 
 class CustomMarkdownConverter implements MarkdownInterface
 {
@@ -16,14 +16,14 @@ class CustomMarkdownConverter implements MarkdownInterface
     {
         $this->converter = new GithubFlavoredMarkdownConverter([
             'heading_permalink' => [
-                'html_class' => 'header-link',
-                'id_prefix' => '',
-                'fragment_prefix' => '',
-                'insert' => 'after',
-                'title' => 'Permalink',
-                'symbol' => '🔗',
+                'html_class'          => 'header-link',
+                'id_prefix'           => '',
+                'fragment_prefix'     => '',
+                'insert'              => 'after',
+                'title'               => 'Permalink',
+                'symbol'              => '🔗',
                 'apply_id_to_heading' => true,
-            ]
+            ],
         ]);
 
         $environment = $this->converter->getEnvironment();
@@ -57,11 +57,12 @@ class CustomMarkdownConverter implements MarkdownInterface
     {
         return \preg_replace_callback(
             '/\[\[youtube:(.+?)\]\]/',
-            function (array $matches): string {
-                $url = trim($matches[1]);
+            static function (array $matches): string {
+                $url = \trim($matches[1]);
                 if (\preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|v/|shorts/))([\w\-]{11})~', $url, $ytMatch)) {
-                    $id = htmlspecialchars($ytMatch[1], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                    return sprintf(
+                    $id = \htmlspecialchars($ytMatch[1], \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
+
+                    return \sprintf(
                         '<div class="youtube-wrapper" data-video-id="%s">
                             <noscript>
                                 <span class="youtube-wrapper-javascript-warning">You need to enable javascript for the YouTube embed to work</span>
@@ -71,6 +72,7 @@ class CustomMarkdownConverter implements MarkdownInterface
                         $id
                     );
                 }
+
                 return '';
             },
             $content

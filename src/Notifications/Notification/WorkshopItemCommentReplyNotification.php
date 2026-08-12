@@ -2,13 +2,11 @@
 
 namespace App\Notifications\Notification;
 
-use Doctrine\ORM\EntityManager;
-
 use App\Notifications\Notification;
 use App\Notifications\NotificationInterface;
 
-class WorkshopItemCommentReplyNotification extends Notification implements NotificationInterface {
-
+class WorkshopItemCommentReplyNotification extends Notification implements NotificationInterface
+{
     public function getText(): string
     {
         return "@{$this->data['username']} replied to your comment on **{$this->data['item_name']}**";
@@ -21,7 +19,7 @@ class WorkshopItemCommentReplyNotification extends Notification implements Notif
 
     public function getNotificationTitle(): string
     {
-        return "New reply on your workshop comment";
+        return 'New reply on your workshop comment';
     }
 
     public function getDefaultSettings(): array
@@ -31,5 +29,4 @@ class WorkshopItemCommentReplyNotification extends Notification implements Notif
             'email'   => true,
         ];
     }
-
 }

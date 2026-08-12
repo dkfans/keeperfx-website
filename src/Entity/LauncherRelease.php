@@ -8,11 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class LauncherRelease
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    private int|null $id = null;
+    private ?int $id = null;
 
     #[ORM\Column]
     private string $tag;
@@ -30,7 +29,7 @@ class LauncherRelease
     private bool $is_available = true;
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): ?int
     {
@@ -38,7 +37,7 @@ class LauncherRelease
     }
 
     /**
-     * Get the value of tag
+     * Get the value of tag.
      */
     public function getTag(): string
     {
@@ -46,7 +45,7 @@ class LauncherRelease
     }
 
     /**
-     * Set the value of tag
+     * Set the value of tag.
      */
     public function setTag(string $tag): self
     {
@@ -56,7 +55,7 @@ class LauncherRelease
     }
 
     /**
-     * Get the value of name
+     * Get the value of name.
      */
     public function getName(): string
     {
@@ -64,7 +63,7 @@ class LauncherRelease
     }
 
     /**
-     * Set the value of name
+     * Set the value of name.
      */
     public function setName(string $name): self
     {
@@ -74,7 +73,7 @@ class LauncherRelease
     }
 
     /**
-     * Get the value of size_in_bytes
+     * Get the value of size_in_bytes.
      */
     public function getSizeInBytes(): int
     {
@@ -82,7 +81,7 @@ class LauncherRelease
     }
 
     /**
-     * Set the value of size_in_bytes
+     * Set the value of size_in_bytes.
      */
     public function setSizeInBytes(int $size_in_bytes): self
     {
@@ -92,7 +91,7 @@ class LauncherRelease
     }
 
     /**
-     * Get the value of timestamp
+     * Get the value of timestamp.
      */
     public function getTimestamp(): \DateTime
     {
@@ -100,7 +99,7 @@ class LauncherRelease
     }
 
     /**
-     * Set the value of timestamp
+     * Set the value of timestamp.
      */
     public function setTimestamp(\DateTime $timestamp): self
     {
@@ -110,7 +109,7 @@ class LauncherRelease
     }
 
     /**
-     * Get the value of is_available
+     * Get the value of is_available.
      */
     public function isAvailable(): bool
     {
@@ -118,7 +117,7 @@ class LauncherRelease
     }
 
     /**
-     * Set the value of is_available
+     * Set the value of is_available.
      */
     public function setIsAvailable(bool $is_available): self
     {

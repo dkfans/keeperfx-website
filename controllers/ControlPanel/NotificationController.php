@@ -2,28 +2,23 @@
 
 namespace App\Controller\ControlPanel;
 
+use App\Account;
 use App\Entity\UserNotification;
 use App\Entity\UserNotificationSetting;
-
-use App\Account;
 use App\FlashMessage;
-use Slim\Csrf\Guard as CsrfGuard;
-use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
 use App\Notifications\NotificationCenter;
-use App\Notifications\NotificationSettings;
 use App\Notifications\NotificationInterface;
-
+use App\Notifications\NotificationSettings;
+use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Slim\Exception\HttpNotFoundException;
+use Slim\Csrf\Guard as CsrfGuard;
 use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
 class NotificationController
 {
-
     public function read(
         Request $request,
         Response $response,
@@ -56,11 +51,11 @@ class NotificationController
         // Get URL
         /** @var NotificationInterface $object */
         $object = $nc->createNotificationObject($notification);
-        $url = $object->getUri();
+        $url    = $object->getUri();
 
         // Add hashbang to scroll into view if the URL does not have a hashbang yet
         if (\stripos($url, '#') === false) {
-            $url = $url . '#nav-top';
+            $url .= '#nav-top';
         }
 
         // Clear user cache because this notification is read
@@ -68,6 +63,7 @@ class NotificationController
 
         // Redirect user to URL
         $response = $response->withHeader('Location', $url)->withStatus(302);
+
         return $response;
     }
 
@@ -101,7 +97,7 @@ class NotificationController
         TwigEnvironment $twig,
     ) {
         // Get user notification settings
-        $user_settings = [];
+        $user_settings         = [];
         $notification_settings = $nc->getNotificationSettings();
         foreach ($notification_settings as $class_name => $settings) {
             /** @var NotificationInterface $class */
@@ -128,14 +124,12 @@ class NotificationController
         // Response
         $response->getBody()->write(
             $twig->render('cp/notification.settings.cp.html.twig', [
-                'settings' => $user_settings
+                'settings' => $user_settings,
             ])
         );
 
         return $response;
     }
-
-
 
     public function updateSettings(
         Request $request,
@@ -169,7 +163,7 @@ class NotificationController
             }
 
             $is_website_enabled = isset($post['settings'][$class]['website']);
-            $is_email_enabled = isset($post['settings'][$class]['email']);
+            $is_email_enabled   = isset($post['settings'][$class]['email']);
 
             $notification_setting->setWebsiteEnabled($is_website_enabled);
             $notification_setting->setEmailEnabled($is_email_enabled);
@@ -179,6 +173,7 @@ class NotificationController
 
         $flash->success('Notification settings updated!');
         $response = $response->withHeader('Location', '/account/notifications/settings')->withStatus(302);
+
         return $response;
     }
 
@@ -213,6 +208,7 @@ class NotificationController
         // Show success and navigate to notifications list
         $flash->success('All notifications have been marked as read.');
         $response = $response->withHeader('Location', '/account/notifications')->withStatus(302);
+
         return $response;
     }
 }

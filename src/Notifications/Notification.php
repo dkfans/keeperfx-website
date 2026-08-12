@@ -6,20 +6,20 @@ use App\Enum\UserRole;
 
 class Notification
 {
-    protected \DateTime|null $timestamp;
+    protected ?\DateTime $timestamp;
 
-    protected array|null $data;
+    protected ?array $data;
 
     protected bool $is_read;
 
-    public function __construct(\DateTime|null $timestamp = null, array|null $data = null, bool $is_read = false)
+    public function __construct(?\DateTime $timestamp = null, ?array $data = null, bool $is_read = false)
     {
         $this->timestamp = $timestamp;
         $this->data      = $data;
         $this->is_read   = $is_read;
     }
 
-    public function getTimestamp(): \DateTime|null
+    public function getTimestamp(): ?\DateTime
     {
         return $this->timestamp;
     }
@@ -42,7 +42,7 @@ class Notification
         ];
     }
 
-    public function getData(): array|null
+    public function getData(): ?array
     {
         return $this->data;
     }

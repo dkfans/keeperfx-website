@@ -2,20 +2,15 @@
 
 namespace App\Controller\Api\v1\Workshop;
 
-use URLify;
-
 use App\Entity\WorkshopItem;
-
-use Doctrine\ORM\EntityManager;
-use Psr\SimpleCache\CacheInterface;
 use App\Twig\Extension\Markdown\CustomMarkdownConverter;
-
+use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\SimpleCache\CacheInterface;
 
 class WorkshopBrowseApiController
 {
-
     public function listLatest(
         Request $request,
         Response $response,
@@ -23,7 +18,7 @@ class WorkshopBrowseApiController
         CustomMarkdownConverter $md_converter,
         // TODO: CacheInterface $cache,
     ) {
-        $workshop_items = [];
+        $workshop_items         = [];
         $workshop_item_entities = $em->getRepository(WorkshopItem::class)->findBy(['is_last_file_broken' => false], ['creation_orderby_timestamp' => 'DESC'], 10);
 
         if ($workshop_item_entities) {
@@ -52,13 +47,13 @@ class WorkshopBrowseApiController
                     'description_html'     => $description_with_html,
                     'description'          => $description_text_only,
 
-                    'url'                  => $_ENV['APP_ROOT_URL'] . '/workshop/item/' . $entity->getId() . '/' . URLify::slug($entity->getName()),
+                    'url' => $_ENV['APP_ROOT_URL'] . '/workshop/item/' . $entity->getId() . '/' . \URLify::slug($entity->getName()),
 
-                    'image'                => \count($entity->getImages()) > 0 ?
+                    'image' => \count($entity->getImages()) > 0 ?
                         $_ENV['APP_ROOT_URL'] . '/workshop/image/' . $entity->getId() . '/' . $entity->getImages()[0]->getFilename() :
                         $_ENV['APP_ROOT_URL'] . '/img/no-image-256.png',
 
-                    'thumbnail'             => $entity->getThumbnail() ?
+                    'thumbnail' => $entity->getThumbnail() ?
                         $_ENV['APP_ROOT_URL'] . '/workshop/image/' . $entity->getId() . '/' . $entity->getThumbnail() :
                         null,
 

@@ -2,36 +2,32 @@
 
 namespace App\Controller;
 
-use App\Enum\UserRole;
-
-use App\Entity\User;
-
 use App\Account;
 use App\BanChecker;
+use App\Entity\User;
+use App\Enum\UserRole;
 use App\FlashMessage;
-
-use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
-use Twig\Environment as TwigEnvironment;
 use Dflydev\FigCookies\FigResponseCookies;
-
+use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
 class LoginController
 {
-
     public function loginIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         Account $account,
-        FlashMessage $flash
+        FlashMessage $flash,
     ) {
 
         // Only logged-out guests allowed
         if ($account->isLoggedIn()) {
             $response = $response->withHeader('Location', '/')->withStatus(302);
+
             // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
         }
@@ -39,7 +35,7 @@ class LoginController
         $params = $request->getQueryParams();
 
         if (isset($params['msg'])) {
-            switch ((string)$params['msg']) {
+            switch ((string) $params['msg']) {
                 case 'workshop-rate':
                     $flash->info('You need to be logged in to rate workshop items.');
                     break;
@@ -52,7 +48,6 @@ class LoginController
 
         return $response;
     }
-
 
     public function login(
         Request $request,
@@ -68,15 +63,16 @@ class LoginController
         // Only logged-out guests allowed
         if ($account->isLoggedIn()) {
             $response = $response->withHeader('Location', '/')->withStatus(302);
+
             // $response = $response->withHeader('Location', '/dashboard')->withStatus(302);
             return $response;
         }
 
         // Get the IP and hostname
-        $ip = $request->getAttribute('ip_address');
+        $ip       = $request->getAttribute('ip_address');
         $hostname = \gethostbyaddr($ip);
 
-        $post = $request->getParsedBody();
+        $post     = $request->getParsedBody();
         $username = (string) ($post['username'] ?? '');
         $password = (string) ($post['password'] ?? '');
         $redirect = (string) ($post['redirect'] ?? '');
@@ -95,7 +91,7 @@ class LoginController
                         \sleep(1 + \random_int(0, 3));
 
                         // Show a banned message
-                        $flash->error("You have been banned.");
+                        $flash->error('You have been banned.');
 
                         // Show login screen again
                         $response->getBody()->write(
@@ -112,7 +108,7 @@ class LoginController
                         \sleep(1 + \random_int(0, 3));
 
                         // Ambiguous message
-                        $flash->error("Something went wrong.");
+                        $flash->error('Something went wrong.');
 
                         // Show login screen again
                         $response->getBody()->write(
@@ -137,7 +133,7 @@ class LoginController
                         $_ENV['APP_PASSWORD_HASH'],
                         [
                             // BCRYPT
-                            'cost'        => $_ENV['APP_PASSWORD_HASH_BCRYPT_COST'],
+                            'cost' => $_ENV['APP_PASSWORD_HASH_BCRYPT_COST'],
                             // Argon2
                             'memory_cost' => $_ENV['APP_PASSWORD_HASH_ARGON2_MAX_MEMORY_COST'],
                             'time_cost'   => $_ENV['APP_PASSWORD_HASH_ARGON2_MAX_TIME_COST'],
@@ -167,6 +163,7 @@ class LoginController
 
                     // Redirect
                     $response = $response->withHeader('Location', $redirect_location)->withStatus(302);
+
                     return $response;
                 }
             }

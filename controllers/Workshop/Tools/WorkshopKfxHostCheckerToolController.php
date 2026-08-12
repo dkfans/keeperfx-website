@@ -2,15 +2,9 @@
 
 namespace App\Controller\Workshop\Tools;
 
-use App\FlashMessage;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpBadRequestException;
-use Xenokore\Utility\Helper\StringHelper;
+use Twig\Environment as TwigEnvironment;
 
 /**
  * A tool to compare CFGs and show the differences.
@@ -18,7 +12,6 @@ use Xenokore\Utility\Helper\StringHelper;
  */
 class WorkshopKfxHostCheckerToolController
 {
-
     public function index(
         Request $request,
         Response $response,
@@ -28,7 +21,7 @@ class WorkshopKfxHostCheckerToolController
         $ip = $request->getAttribute('ip_address');
 
         // Make sure IP is valid IPv4 address
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) == false) {
+        if (\filter_var($ip, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4) == false) {
             $ip = null;
         }
 
@@ -36,6 +29,7 @@ class WorkshopKfxHostCheckerToolController
         $response->getBody()->write(
             $twig->render('workshop/tools/kfx_host_checker_tool.html.twig', ['ip' => $ip])
         );
+
         return $response;
     }
 
@@ -44,86 +38,89 @@ class WorkshopKfxHostCheckerToolController
         Response $response,
         string $ip,
     ) {
-        if (filter_var($ip, FILTER_VALIDATE_IP) == false) {
+        if (\filter_var($ip, \FILTER_VALIDATE_IP) == false) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
-                    'error' => 'INVALID_IP'
+                    'error'   => 'INVALID_IP',
                 ])
             );
+
             return $response;
         }
 
-
         // Check for IP protocol version
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) == true) {
+        if (\filter_var($ip, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4) == true) {
 
             // IPv4
-            $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-        } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) == true) {
+            $socket = \socket_create(\AF_INET, \SOCK_DGRAM, \SOL_UDP);
+        } elseif (\filter_var($ip, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV6) == true) {
 
             // IPv6
-            $socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
+            $socket = \socket_create(\AF_INET6, \SOCK_DGRAM, \SOL_UDP);
         } else {
 
             // Can this even happen?
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
-                    'error' => 'UNKNOWN_IP_VERSION'
+                    'error'   => 'UNKNOWN_IP_VERSION',
                 ])
             );
+
             return $response;
         }
 
         // Create a UDP socket
         if (!$socket) {
-            die("Could not create socket\n");
+            exit("Could not create socket\n");
         }
 
         // Set a 5-second timeout for sending and receiving (10 sec total)
-        socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 5, 'usec' => 0]);
-        socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 5, 'usec' => 0]);
+        \socket_set_option($socket, \SOL_SOCKET, \SO_SNDTIMEO, ['sec' => 5, 'usec' => 0]);
+        \socket_set_option($socket, \SOL_SOCKET, \SO_RCVTIMEO, ['sec' => 5, 'usec' => 0]);
 
         // Raw packet data (excluding IP and UDP headers)
         // This is an ENET handshake packet because it's the only way to get a response from the server
-        $packet = hex2bin('8fff864b82ff00010000ffff0000057800010000000000020000000000000000000013880000000200000002ec5093d400000000');
+        $packet = \hex2bin('8fff864b82ff00010000ffff0000057800010000000000020000000000000000000013880000000200000002ec5093d400000000');
 
         // Default KeeperFX ENET lobby port port
         $port = 5556;
 
         // Send the binary payload to the server
-        if (socket_sendto($socket, $packet, strlen($packet), 0, $ip, $port) === false) {
+        if (\socket_sendto($socket, $packet, \strlen($packet), 0, $ip, $port) === false) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
-                    'error' => 'SOCKET_ERROR'
+                    'error'   => 'SOCKET_ERROR',
                 ])
             );
+
             return $response;
         }
 
         // Receive response from the server
         $port = 0;
-        if (socket_recvfrom($socket, $buffer, 2048, 0, $address, $port) === false) {
-            $error = socket_last_error($socket);
-            if ($error == SOCKET_EWOULDBLOCK || $error == SOCKET_ETIMEDOUT) {
+        if (\socket_recvfrom($socket, $buffer, 2048, 0, $address, $port) === false) {
+            $error = \socket_last_error($socket);
+            if ($error == \SOCKET_EWOULDBLOCK || $error == \SOCKET_ETIMEDOUT) {
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
-                        'error' => 'TIMED_OUT'
+                        'error'   => 'TIMED_OUT',
                     ])
                 );
-                return $response;
-            } else {
-                $response->getBody()->write(
-                    \json_encode([
-                        'success' => false,
-                        'error' => 'FAILED_TO_RECEIVE_DATA'
-                    ])
-                );
+
                 return $response;
             }
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'FAILED_TO_RECEIVE_DATA',
+                ])
+            );
+
+            return $response;
         }
 
         // Close the socket
@@ -132,9 +129,10 @@ class WorkshopKfxHostCheckerToolController
         // Return
         $response->getBody()->write(
             \json_encode([
-                'success' => true
+                'success' => true,
             ])
         );
+
         return $response;
     }
 }

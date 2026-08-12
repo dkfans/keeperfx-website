@@ -2,13 +2,12 @@
 
 use Monolog\Level;
 
-/**
+/*
  * Logger configuration
  *
  * Monolog Reference: https://seldaek.github.io/monolog/doc/01-usage.html
  */
 return [
-
     'logs' => [
 
         'default_log' => [

@@ -7,7 +7,6 @@ namespace App\Twig\Extension;
  */
 class RequestVarTwigExtension extends \Twig\Extension\AbstractExtension
 {
-
     public function getName(): string
     {
         return 'request_extension';
@@ -21,20 +20,22 @@ class RequestVarTwigExtension extends \Twig\Extension\AbstractExtension
         ];
     }
 
-    public function getPostVar(string $name, $default = ''){
+    public function getPostVar(string $name, $default = '')
+    {
 
         $return = $_POST[$name] ?? $default;
-        if(\is_array($return)){
+        if (\is_array($return)) {
             return $default;
         }
 
         return (string) $return;
     }
 
-    public function getQueryParam(string $name, $default = ''){
+    public function getQueryParam(string $name, $default = '')
+    {
 
         $return = $_GET[$name] ?? $default;
-        if(\is_array($return)){
+        if (\is_array($return)) {
             return $default;
         }
 

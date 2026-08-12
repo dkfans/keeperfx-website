@@ -8,11 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class CrashReport
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    private int|null $id = null;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'text')]
     private string $description;
@@ -30,28 +29,28 @@ class CrashReport
     private string $game_output;
 
     #[ORM\Column(nullable: true)]
-    private string|null $contact_details = null;
+    private ?string $contact_details = null;
 
     #[ORM\Column(nullable: true)]
-    private string|null $save_filename = null;
+    private ?string $save_filename = null;
 
     #[ORM\Column(nullable: true)]
-    private string|null $source = null; // The source of the crash report
+    private ?string $source = null; // The source of the crash report
 
     #[ORM\Column(nullable: true)]
-    private string|null $exception_source_function = null;
+    private ?string $exception_source_function = null;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): ?int
     {
@@ -59,7 +58,7 @@ class CrashReport
     }
 
     /**
-     * Get the value of description
+     * Get the value of description.
      */
     public function getDescription(): string
     {
@@ -67,7 +66,7 @@ class CrashReport
     }
 
     /**
-     * Set the value of description
+     * Set the value of description.
      */
     public function setDescription(string $description): self
     {
@@ -77,7 +76,7 @@ class CrashReport
     }
 
     /**
-     * Get the value of game_version
+     * Get the value of game_version.
      */
     public function getGameVersion(): string
     {
@@ -85,7 +84,7 @@ class CrashReport
     }
 
     /**
-     * Set the value of game_version
+     * Set the value of game_version.
      */
     public function setGameVersion(string $game_version): self
     {
@@ -95,7 +94,7 @@ class CrashReport
     }
 
     /**
-     * Get the value of game_config
+     * Get the value of game_config.
      */
     public function getGameConfig(): string
     {
@@ -103,7 +102,7 @@ class CrashReport
     }
 
     /**
-     * Set the value of game_config
+     * Set the value of game_config.
      */
     public function setGameConfig(string $game_config): self
     {
@@ -113,7 +112,7 @@ class CrashReport
     }
 
     /**
-     * Get the value of game_log
+     * Get the value of game_log.
      */
     public function getGameLog(): string
     {
@@ -121,7 +120,7 @@ class CrashReport
     }
 
     /**
-     * Set the value of game_log
+     * Set the value of game_log.
      */
     public function setGameLog(string $game_log): self
     {
@@ -131,7 +130,7 @@ class CrashReport
     }
 
     /**
-     * Get the value of game_output
+     * Get the value of game_output.
      */
     public function getGameOutput(): string
     {
@@ -139,7 +138,7 @@ class CrashReport
     }
 
     /**
-     * Set the value of game_output
+     * Set the value of game_output.
      */
     public function setGameOutput(string $game_output): self
     {
@@ -149,7 +148,7 @@ class CrashReport
     }
 
     /**
-     * Get the value of contact_details
+     * Get the value of contact_details.
      */
     public function getContactDetails(): ?string
     {
@@ -157,7 +156,7 @@ class CrashReport
     }
 
     /**
-     * Set the value of contact_details
+     * Set the value of contact_details.
      */
     public function setContactDetails(?string $contact_details): self
     {
@@ -167,7 +166,7 @@ class CrashReport
     }
 
     /**
-     * Get the value of save_filename
+     * Get the value of save_filename.
      */
     public function getSaveFilename(): ?string
     {
@@ -175,7 +174,7 @@ class CrashReport
     }
 
     /**
-     * Set the value of save_filename
+     * Set the value of save_filename.
      */
     public function setSaveFilename(?string $save_filename): self
     {
@@ -185,7 +184,7 @@ class CrashReport
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -193,7 +192,7 @@ class CrashReport
     }
 
     /**
-     * Set the value of created_timestamp
+     * Set the value of created_timestamp.
      */
     public function setCreatedTimestamp(\DateTime $created_timestamp): self
     {
@@ -203,7 +202,7 @@ class CrashReport
     }
 
     /**
-     * Get the value of source
+     * Get the value of source.
      */
     public function getSource(): ?string
     {
@@ -211,7 +210,7 @@ class CrashReport
     }
 
     /**
-     * Set the value of source
+     * Set the value of source.
      */
     public function setSource(?string $source): self
     {
@@ -221,7 +220,7 @@ class CrashReport
     }
 
     /**
-     * Get the value of exception_source_function
+     * Get the value of exception_source_function.
      */
     public function getExceptionSourceFunction(): ?string
     {
@@ -229,7 +228,7 @@ class CrashReport
     }
 
     /**
-     * Set the value of exception_source_function
+     * Set the value of exception_source_function.
      */
     public function setExceptionSourceFunction(?string $exception_source_function): self
     {

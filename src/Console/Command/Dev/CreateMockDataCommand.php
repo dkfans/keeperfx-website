@@ -2,16 +2,14 @@
 
 namespace App\Console\Command\Dev;
 
+use App\Entity\NewsArticle;
 use App\Entity\User;
-use App\Enum\UserRole;
-
 use App\Entity\UserBio;
 use App\Entity\UserIpLog;
-use App\Entity\NewsArticle;
-use App\Entity\WorkshopItem;
 use App\Entity\UserOAuthToken;
-
+use App\Entity\WorkshopItem;
 use App\Enum\OAuthProviderType;
+use App\Enum\UserRole;
 use App\Enum\WorkshopCategory;
 use App\Workshop\WorkshopCache;
 use Doctrine\ORM\EntityManager;
@@ -21,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 
 class CreateMockDataCommand extends Command
 {
-    const ISP_LIST = [
+    public const ISP_LIST = [
         'Comcast',
         'AT&T',
         'Verizon',
@@ -36,10 +34,10 @@ class CreateMockDataCommand extends Command
         'Telstra',
         'Shaw',
         'Rogers',
-        'Bell Canada'
+        'Bell Canada',
     ];
 
-    const NEWS_LIST = [
+    public const NEWS_LIST = [
         'We have reached a new milestone',
         'Yay! Another news item',
         'KeeperFX is absolutely amazing',
@@ -47,7 +45,7 @@ class CreateMockDataCommand extends Command
         'Yani is the best',
     ];
 
-    const WORKSHOP_TITLE_STRINGS = [
+    public const WORKSHOP_TITLE_STRINGS = [
         'Imp',
         'Troll',
         'Demon',
@@ -81,10 +79,10 @@ class CreateMockDataCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("dev:generate-mock-data")
-            ->setDescription("Generate fake data for use during development");
+        $this->setName('dev:generate-mock-data')
+            ->setDescription('Generate fake data for use during development');
     }
 
     protected function execute(Input $input, Output $output)
@@ -93,7 +91,7 @@ class CreateMockDataCommand extends Command
         $faker = \Faker\Factory::create();
 
         // Use cheaper password hashing costs
-        $_ENV['APP_PASSWORD_HASH'] = '2y';
+        $_ENV['APP_PASSWORD_HASH']             = '2y';
         $_ENV['APP_PASSWORD_HASH_BCRYPT_COST'] = 7;
 
         // Make an admin if there isn't one yet
@@ -112,12 +110,12 @@ class CreateMockDataCommand extends Command
             $this->em->persist($admin_user);
             $this->em->persist($admin_bio);
 
-            $output->writeln("[+] Added <info>admin</info> user");
+            $output->writeln('[+] Added <info>admin</info> user');
         }
 
         // Make users
         $users = [$admin_user];
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
 
             $user = new User();
             $user->setUsername($faker->userName());
@@ -162,7 +160,7 @@ class CreateMockDataCommand extends Command
             }
 
             // Generate some IP logs
-            for ($x = 0; $x < \random_int(1, 4); $x++) {
+            for ($x = 0; $x < \random_int(1, 4); ++$x) {
                 $ip_log = new UserIpLog();
                 $ip_log->setUser($user);
                 if (\random_int(0, 1) == 0) {
@@ -197,7 +195,7 @@ class CreateMockDataCommand extends Command
         }
 
         $workshop_items = [];
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 30; ++$i) {
 
             $workshop_item = new WorkshopItem();
             $workshop_item->setSubmitter($faker->randomElement($users));
@@ -217,7 +215,7 @@ class CreateMockDataCommand extends Command
 
             $workshop_item->setName(
                 \ucwords(
-                    \join(
+                    \implode(
                         ' ',
                         $faker->randomElements(
                             self::WORKSHOP_TITLE_STRINGS,
@@ -247,7 +245,8 @@ class CreateMockDataCommand extends Command
         $this->workshop_cache->clearAllCachedBrowsePageData();
 
         // Success
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Done!');
+
         return Command::SUCCESS;
     }
 }

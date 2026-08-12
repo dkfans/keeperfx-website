@@ -9,7 +9,6 @@ use Twig\TwigTest;
  */
 class InstanceOfTwigExtension extends \Twig\Extension\AbstractExtension
 {
-
     public function getName(): string
     {
         return 'instanceof_extension';
@@ -18,17 +17,15 @@ class InstanceOfTwigExtension extends \Twig\Extension\AbstractExtension
     public function getTests()
     {
         return [
-            new TwigTest('instanceof', [$this, 'isInstanceof'])
+            new TwigTest('instanceof', [$this, 'isInstanceof']),
         ];
     }
 
     /**
-     * @param $var
-     * @param $instance
      * @return bool
      */
     public function isInstanceof($var, $instance)
     {
-        return  $var instanceof $instance;
+        return $var instanceof $instance;
     }
 }

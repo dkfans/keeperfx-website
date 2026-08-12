@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Twig\Extension\Markdown;
 
-use League\CommonMark\Node\Node;
 use League\CommonMark\Event\DocumentParsedEvent;
-use League\CommonMark\Node\StringContainerInterface;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\HeadingPermalink\HeadingPermalink;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Node\StringContainerInterface;
 
 class CustomHeadingPermalinkProcessor
 {
@@ -37,6 +37,7 @@ class CustomHeadingPermalinkProcessor
         $slug = \strtolower($text);
         $slug = \str_replace(' ', '-', $slug);
         $slug = \preg_replace('/[^A-Za-z0-9_-]/', '', $slug);
+
         return $slug;
     }
 
@@ -48,6 +49,7 @@ class CustomHeadingPermalinkProcessor
                 $text .= $child->getLiteral();
             }
         }
+
         return $text;
     }
 
@@ -56,7 +58,7 @@ class CustomHeadingPermalinkProcessor
         if (!isset($this->headingCounts[$slug])) {
             $this->headingCounts[$slug] = 0;
         } else {
-            $this->headingCounts[$slug]++;
+            ++$this->headingCounts[$slug];
             $slug .= '-' . $this->headingCounts[$slug];
         }
 

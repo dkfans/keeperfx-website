@@ -2,18 +2,17 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class GithubRelease
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    private int|null $id = null;
+    private ?int $id = null;
 
     #[ORM\Column]
     private string $tag;
@@ -37,16 +36,16 @@ class GithubRelease
     private bool $commits_handled = false;
 
     #[ORM\ManyToOne(targetEntity: NewsArticle::class)]
-    private NewsArticle|null $linked_news_post = null;
+    private ?NewsArticle $linked_news_post = null;
 
-    #[ORM\OneToMany(targetEntity: GitCommit::class, mappedBy: "release")]
+    #[ORM\OneToMany(targetEntity: GitCommit::class, mappedBy: 'release')]
     private Collection $commits;
 
-    #[ORM\OneToMany(targetEntity: ReleaseMirror::class, mappedBy: "release")]
+    #[ORM\OneToMany(targetEntity: ReleaseMirror::class, mappedBy: 'release')]
     private Collection $mirrors;
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId()
     {
@@ -54,7 +53,7 @@ class GithubRelease
     }
 
     /**
-     * Get the value of name
+     * Get the value of name.
      */
     public function getName()
     {
@@ -62,9 +61,9 @@ class GithubRelease
     }
 
     /**
-     * Set the value of name
+     * Set the value of name.
      *
-     * @return  self
+     * @return self
      */
     public function setName($name)
     {
@@ -74,7 +73,7 @@ class GithubRelease
     }
 
     /**
-     * Get the value of tag
+     * Get the value of tag.
      */
     public function getTag()
     {
@@ -82,9 +81,9 @@ class GithubRelease
     }
 
     /**
-     * Set the value of tag
+     * Set the value of tag.
      *
-     * @return  self
+     * @return self
      */
     public function setTag($tag)
     {
@@ -94,7 +93,7 @@ class GithubRelease
     }
 
     /**
-     * Get the value of timestamp
+     * Get the value of timestamp.
      */
     public function getTimestamp()
     {
@@ -102,9 +101,9 @@ class GithubRelease
     }
 
     /**
-     * Set the value of timestamp
+     * Set the value of timestamp.
      *
-     * @return  self
+     * @return self
      */
     public function setTimestamp($timestamp)
     {
@@ -114,7 +113,7 @@ class GithubRelease
     }
 
     /**
-     * Get the value of download_url
+     * Get the value of download_url.
      */
     public function getDownloadUrl()
     {
@@ -122,9 +121,9 @@ class GithubRelease
     }
 
     /**
-     * Set the value of download_url
+     * Set the value of download_url.
      *
-     * @return  self
+     * @return self
      */
     public function setDownloadUrl($download_url)
     {
@@ -134,7 +133,7 @@ class GithubRelease
     }
 
     /**
-     * Get the value of size_in_bytes
+     * Get the value of size_in_bytes.
      */
     public function getSizeInBytes()
     {
@@ -142,9 +141,9 @@ class GithubRelease
     }
 
     /**
-     * Set the value of size_in_bytes
+     * Set the value of size_in_bytes.
      *
-     * @return  self
+     * @return self
      */
     public function setSizeInBytes($size_in_bytes)
     {
@@ -154,7 +153,7 @@ class GithubRelease
     }
 
     /**
-     * Get the value of commits_handled
+     * Get the value of commits_handled.
      */
     public function getCommitsHandled(): bool
     {
@@ -162,9 +161,9 @@ class GithubRelease
     }
 
     /**
-     * Set the value of commits_handled
+     * Set the value of commits_handled.
      *
-     * @return  self
+     * @return self
      */
     public function setCommitsHandled(bool $commits_handled)
     {
@@ -174,7 +173,7 @@ class GithubRelease
     }
 
     /**
-     * Get the value of commits
+     * Get the value of commits.
      */
     public function getCommits()
     {
@@ -182,7 +181,7 @@ class GithubRelease
     }
 
     /**
-     * Get the value of linked_news_post
+     * Get the value of linked_news_post.
      */
     public function getLinkedNewsPost(): ?NewsArticle
     {
@@ -190,7 +189,7 @@ class GithubRelease
     }
 
     /**
-     * Set the value of linked_news_post
+     * Set the value of linked_news_post.
      */
     public function setLinkedNewsPost(?NewsArticle $linked_news_post): self
     {
@@ -200,7 +199,7 @@ class GithubRelease
     }
 
     /**
-     * Get the value of version
+     * Get the value of version.
      */
     public function getVersion(): ?string
     {
@@ -208,7 +207,7 @@ class GithubRelease
     }
 
     /**
-     * Set the value of version
+     * Set the value of version.
      */
     public function setVersion(?string $version): self
     {
@@ -218,7 +217,7 @@ class GithubRelease
     }
 
     /**
-     * Get the value of mirrors
+     * Get the value of mirrors.
      */
     public function getMirrors()
     {
@@ -231,9 +230,9 @@ class GithubRelease
 
         if (\is_string($version) && \preg_match('/([0-9]+)\.([0-9]+)\.([0-9]+)/', $version, $matches)) {
             return [
-                'major' => (int)$matches[1],
-                'minor' => (int)$matches[2],
-                'patch' => (int)$matches[3],
+                'major' => (int) $matches[1],
+                'minor' => (int) $matches[2],
+                'patch' => (int) $matches[3],
             ];
         }
 

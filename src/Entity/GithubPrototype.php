@@ -7,13 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class GithubPrototype
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    private int|null $id = null;
+    private ?int $id = null;
 
-    #[ORM\Column(type: "bigint", nullable: true)]
+    #[ORM\Column(type: 'bigint', nullable: true)]
     private int $artifact_id;
 
     #[ORM\Column]
@@ -22,8 +21,8 @@ class GithubPrototype
     #[ORM\Column]
     private string $workflow_title;
 
-    #[ORM\Column(type: "bigint", nullable: true)]
-    private null|string $workflow_run_id;
+    #[ORM\Column(type: 'bigint', nullable: true)]
+    private ?string $workflow_run_id;
 
     #[ORM\Column]
     private string $filename;
@@ -38,7 +37,7 @@ class GithubPrototype
     private bool $is_available = true;
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId()
     {
@@ -46,7 +45,7 @@ class GithubPrototype
     }
 
     /**
-     * Get the value of artifact_id
+     * Get the value of artifact_id.
      */
     public function getArtifactId()
     {
@@ -54,9 +53,9 @@ class GithubPrototype
     }
 
     /**
-     * Set the value of artifact_id
+     * Set the value of artifact_id.
      *
-     * @return  self
+     * @return self
      */
     public function setArtifactId($artifact_id)
     {
@@ -66,7 +65,7 @@ class GithubPrototype
     }
 
     /**
-     * Get the value of name
+     * Get the value of name.
      */
     public function getName()
     {
@@ -74,9 +73,9 @@ class GithubPrototype
     }
 
     /**
-     * Set the value of name
+     * Set the value of name.
      *
-     * @return  self
+     * @return self
      */
     public function setName($name)
     {
@@ -86,7 +85,7 @@ class GithubPrototype
     }
 
     /**
-     * Get the value of filename
+     * Get the value of filename.
      */
     public function getFilename()
     {
@@ -94,9 +93,9 @@ class GithubPrototype
     }
 
     /**
-     * Set the value of filename
+     * Set the value of filename.
      *
-     * @return  self
+     * @return self
      */
     public function setFilename($filename)
     {
@@ -106,7 +105,7 @@ class GithubPrototype
     }
 
     /**
-     * Get the value of timestamp
+     * Get the value of timestamp.
      */
     public function getTimestamp()
     {
@@ -114,9 +113,9 @@ class GithubPrototype
     }
 
     /**
-     * Set the value of timestamp
+     * Set the value of timestamp.
      *
-     * @return  self
+     * @return self
      */
     public function setTimestamp($timestamp)
     {
@@ -126,7 +125,7 @@ class GithubPrototype
     }
 
     /**
-     * Get the value of size_in_bytes
+     * Get the value of size_in_bytes.
      */
     public function getSizeInBytes()
     {
@@ -134,9 +133,9 @@ class GithubPrototype
     }
 
     /**
-     * Set the value of size_in_bytes
+     * Set the value of size_in_bytes.
      *
-     * @return  self
+     * @return self
      */
     public function setSizeInBytes($size_in_bytes)
     {
@@ -146,7 +145,7 @@ class GithubPrototype
     }
 
     /**
-     * Get the value of workflow_title
+     * Get the value of workflow_title.
      */
     public function getWorkflowTitle()
     {
@@ -154,9 +153,9 @@ class GithubPrototype
     }
 
     /**
-     * Set the value of workflow_title
+     * Set the value of workflow_title.
      *
-     * @return  self
+     * @return self
      */
     public function setWorkflowTitle($workflow_title)
     {
@@ -166,7 +165,7 @@ class GithubPrototype
     }
 
     /**
-     * Get the value of is_available
+     * Get the value of is_available.
      */
     public function getIsAvailable()
     {
@@ -174,9 +173,9 @@ class GithubPrototype
     }
 
     /**
-     * Set the value of is_available
+     * Set the value of is_available.
      *
-     * @return  self
+     * @return self
      */
     public function setIsAvailable($is_available)
     {
@@ -186,17 +185,17 @@ class GithubPrototype
     }
 
     /**
-     * Get the value of workflow_run_id
+     * Get the value of workflow_run_id.
      */
-    public function getWorkflowRunId(): null|string
+    public function getWorkflowRunId(): ?string
     {
         return $this->workflow_run_id;
     }
 
     /**
-     * Set the value of workflow_run_id
+     * Set the value of workflow_run_id.
      */
-    public function setWorkflowRunId(null|string $workflow_run_id): self
+    public function setWorkflowRunId(?string $workflow_run_id): self
     {
         $this->workflow_run_id = $workflow_run_id;
 

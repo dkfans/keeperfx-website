@@ -6,7 +6,6 @@ use Twig\TwigFilter;
 
 class StringUniqueColorTwigExtension extends \Twig\Extension\AbstractExtension
 {
-
     public function getName(): string
     {
         return 'string_unique_color_extension';
@@ -20,14 +19,12 @@ class StringUniqueColorTwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     /**
-     * Generate a unique color for this specific string
-     *
-     * @param string $string
-     * @return string
+     * Generate a unique color for this specific string.
      */
     public function unique_color(string $string): string
     {
         $color_hex = \substr(\md5($string), 0, 6);
+
         return "<span style='color:#{$color_hex}'>{$string}</span>";
     }
 }

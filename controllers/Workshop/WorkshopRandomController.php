@@ -2,30 +2,23 @@
 
 namespace App\Controller\Workshop;
 
-use App\Enum\WorkshopCategory;
-
-use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
-use App\Entity\GithubRelease;
-
-use URLify;
+use App\Enum\WorkshopCategory;
 use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
 class WorkshopRandomController
 {
-
     public function navRandomItem(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        string $item_category
+        string $item_category,
     ) {
         $category = match ($item_category) {
             default    => WorkshopCategory::Map,
@@ -48,10 +41,11 @@ class WorkshopRandomController
         if ($count === 0) {
             $flash->warning('Random workshop item not found.');
             $response->getBody()->write($twig->render('workshop/alert.workshop.html.twig'));
+
             return $response;
         }
 
-        $offset = random_int(0, $count - 1);
+        $offset = \random_int(0, $count - 1);
 
         $item = $em->getRepository(WorkshopItem::class)
             ->createQueryBuilder('w')
@@ -68,7 +62,7 @@ class WorkshopRandomController
 
         $response = $response->withHeader(
             'Location',
-            '/workshop/item/' . $item->getId() . '/' . URLify::slug($item->getName()) . '#nav-top'
+            '/workshop/item/' . $item->getId() . '/' . \URLify::slug($item->getName()) . '#nav-top'
         )->withStatus(302);
 
         return $response;

@@ -2,4 +2,6 @@
 
 namespace App\Notifications\Exception;
 
-class NotificationClassNotFoundException extends NotificationException {}
+class NotificationClassNotFoundException extends NotificationException
+{
+}

@@ -2,14 +2,13 @@
 
 namespace App\Twig;
 
+use App\Config\Config;
+use App\Twig\Exception\TwigExtensionLoaderException;
 use Psr\Container\ContainerInterface;
 use Twig\Extension\ExtensionInterface;
 
-use App\Twig\Exception\TwigExtensionLoaderException;
-use App\Config\Config;
-
-class TwigExtensionLoader {
-
+class TwigExtensionLoader
+{
     private ContainerInterface $container;
 
     public function __construct(ContainerInterface $container)
@@ -22,11 +21,11 @@ class TwigExtensionLoader {
         $extensions = [];
 
         // Get extensions
-        foreach(Config::get('twig.extensions') as $index => $definition) {
+        foreach (Config::get('twig.extensions') as $index => $definition) {
 
             // Convert extension definition to extension class
             $extension = $this->handleExtensionDefinition($definition);
-            if(!is_object($extension) || !($extension instanceof ExtensionInterface)){
+            if (!\is_object($extension) || !($extension instanceof ExtensionInterface)) {
                 throw new TwigExtensionLoaderException("Invalid Twig extension. (index: {$index})");
             }
 
@@ -34,12 +33,12 @@ class TwigExtensionLoader {
         }
 
         // Get debug extensions if Twig is in debug mode
-        if(Config::get('twig.options.debug') === true) {
-            foreach(Config::get('twig.debug_extensions') as $index => $definition) {
+        if (Config::get('twig.options.debug') === true) {
+            foreach (Config::get('twig.debug_extensions') as $index => $definition) {
 
                 // Convert debug extension definition to extension class
                 $extension = $this->handleExtensionDefinition($definition);
-                if(!is_object($extension) || !($extension instanceof ExtensionInterface)){
+                if (!\is_object($extension) || !($extension instanceof ExtensionInterface)) {
                     throw new TwigExtensionLoaderException("Invalid Twig debug extension. (index: {$index})");
                 }
 
@@ -52,15 +51,13 @@ class TwigExtensionLoader {
 
     public function handleExtensionDefinition(mixed $definition)
     {
-        if(\is_object($definition)) {
+        if (\is_object($definition)) {
             return $definition;
-
-        } elseif(\is_callable($definition)) {
+        } elseif (\is_callable($definition)) {
             return $definition();
+        } elseif (\is_string($definition)) {
 
-        } elseif(\is_string($definition)){
-
-            if($this->container->has($definition)){
+            if ($this->container->has($definition)) {
                 return $this->container->get($definition);
             }
 

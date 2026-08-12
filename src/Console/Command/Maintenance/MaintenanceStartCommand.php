@@ -10,19 +10,19 @@ class MaintenanceStartCommand extends Command
 {
     private const MAINTENANCE_FILE = APP_ROOT . '/__MAINTENANCE_MODE_ACTIVE';
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("maintenance:start")
-            ->setDescription("Start maintenance mode. Disables any client interaction with the app.");
+        $this->setName('maintenance:start')
+            ->setDescription('Start maintenance mode. Disables any client interaction with the app.');
     }
 
     protected function execute(Input $input, Output $output)
     {
-        if(\touch(self::MAINTENANCE_FILE)){
-            $output->writeln("[+] Maintenance mode started");
+        if (\touch(self::MAINTENANCE_FILE)) {
+            $output->writeln('[+] Maintenance mode started');
         } else {
-            $output->writeln("[-] Maintenance mode failed to start");
-            $output->writeln("[-] Unable to touch file: " . self::MAINTENANCE_FILE);
+            $output->writeln('[-] Maintenance mode failed to start');
+            $output->writeln('[-] Unable to touch file: ' . self::MAINTENANCE_FILE);
         }
 
         return Command::SUCCESS;

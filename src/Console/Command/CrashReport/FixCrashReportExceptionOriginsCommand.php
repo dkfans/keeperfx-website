@@ -4,18 +4,15 @@ namespace App\Console\Command\CrashReport;
 
 use App\Entity\CrashReport;
 use Doctrine\ORM\EntityManager;
-
-use Xenokore\Utility\Helper\StringHelper;
-
-use Symfony\Component\Console\Command\Command;
 use Psr\Container\ContainerInterface as Container;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
+use Xenokore\Utility\Helper\StringHelper;
 
 class FixCrashReportExceptionOriginsCommand extends Command
 {
-    /** @var Container $container */
+    /** @var Container */
     private $container;
 
     public function __construct(Container $container)
@@ -25,15 +22,15 @@ class FixCrashReportExceptionOriginsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("crash-report:fix-exception-origins")
-            ->setDescription("Grab and set all exception origin in crash reports");
+        $this->setName('crash-report:fix-exception-origins')
+            ->setDescription('Grab and set all exception origin in crash reports');
     }
 
     protected function execute(Input $input, Output $output)
     {
-        $output->writeln("[+] Fixing the exception origin for crash reports...");
+        $output->writeln('[+] Fixing the exception origin for crash reports...');
 
         /** @var EntityManager $em */
         $em = $this->container->get(EntityManager::class);
@@ -41,8 +38,9 @@ class FixCrashReportExceptionOriginsCommand extends Command
         // Get crash reports
         /** @var array[CrashReport] $crash_reports */
         $crash_reports = $em->getRepository(CrashReport::class)->findAll();
-        if (!$crash_reports || !is_array($crash_reports) || \count($crash_reports) <= 0) {
-            $output->writeln("[?] No crash reports found");
+        if (!$crash_reports || !\is_array($crash_reports) || \count($crash_reports) <= 0) {
+            $output->writeln('[?] No crash reports found');
+
             return Command::INVALID;
         }
 
@@ -71,7 +69,8 @@ class FixCrashReportExceptionOriginsCommand extends Command
         $em->flush();
 
         // Success
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Done!');
+
         return Command::SUCCESS;
     }
 }

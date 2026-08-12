@@ -6,17 +6,17 @@ use Gumlet\ImageResize;
 
 class ThumbnailHelper
 {
-
     /**
      * Create a thumbnail for the given image.
      *
      * The thumbnail will be created in the same directory.
      *
-     * @param string $image_filepath        Path to the original image
-     * @param integer $height               Height of the created thumbnail
-     * @param integer $width                Width of the created thumbnail
-     * @param int $crop_position            ImageResize crop position (check the code)
-     * @return string|false                 The filename of the thumbnail on success. False on failure
+     * @param string $image_filepath Path to the original image
+     * @param int    $height         Height of the created thumbnail
+     * @param int    $width          Width of the created thumbnail
+     * @param int    $crop_position  ImageResize crop position (check the code)
+     *
+     * @return string|false The filename of the thumbnail on success. False on failure
      */
     public static function createThumbnail(string $image_filepath, int $height, int $width, int $crop_position = ImageResize::CROPCENTER): false|string
     {
@@ -50,7 +50,7 @@ class ThumbnailHelper
 
         // Generate thumbnail
         try {
-            $thumbnail = new ImageResize($image_filepath);
+            $thumbnail            = new ImageResize($image_filepath);
             $thumbnail->interlace = 0;
             $thumbnail->crop($height, $width, false, $crop_position);
             $thumbnail->save($thumbnail_filepath);
@@ -64,8 +64,9 @@ class ThumbnailHelper
         }
 
         // Make sure thumbnail is actually smaller in filesize if the original image was not a gif
-        if ($image_extension !== 'gif' && \filesize($thumbnail_filepath) >= filesize($image_filepath)) {
+        if ($image_extension !== 'gif' && \filesize($thumbnail_filepath) >= \filesize($image_filepath)) {
             @\unlink($thumbnail_filepath);
+
             return false;
         }
 

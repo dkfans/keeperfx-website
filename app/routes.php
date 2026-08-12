@@ -2,24 +2,23 @@
 
 namespace App\Controller;
 
-use Slim\Routing\RouteCollectorProxy;
-
-use App\Middleware\CdnMiddleware;
-use App\Middleware\LoggedInMiddleware;
+use App\Middleware\AuthAdminCPMiddleware;
 use App\Middleware\AuthDevCPMiddleware;
 use App\Middleware\AuthModCPMiddleware;
-use App\Middleware\AuthAdminCPMiddleware;
+use App\Middleware\CdnMiddleware;
+use App\Middleware\LoggedInMiddleware;
+use Slim\Routing\RouteCollectorProxy;
 
 /** @var \Slim\App $app */
 /** @var \Psr\Container\ContainerInterface $container */
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////// Application routes
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ///// Application routes
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CSRF middleware group
 // This is made a route group so the CSRF Guard Middleware will only be added to the front-end Application
-$app->group('', function (RouteCollectorProxy $group) use ($container) {
+$app->group('', static function (RouteCollectorProxy $group) {
 
     $group->get('/', [IndexController::class, 'index']);
     $group->get('/screenshots', [ScreenshotController::class, 'screenshotsIndex']);
@@ -79,13 +78,13 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/assets/debugbar/{path:.+}', [DebugBarAssetController::class, 'outputAsset']);
 
     // LOGGED IN USERS
-    $group->group('', function (RouteCollectorProxy $group) use ($container) {
+    $group->group('', static function (RouteCollectorProxy $group) {
 
         $group->get('/dashboard', [ControlPanel\DashboardController::class, 'dashboardIndex']);
         $group->get('/logout/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'logout']);
 
         // Users: Control Panel
-        $group->group('/account', function (RouteCollectorProxy $group) use ($container) {
+        $group->group('/account', static function (RouteCollectorProxy $group) {
 
             // Account settings
             $group->get('', [ControlPanel\AccountController::class, 'accountSettingsIndex']);
@@ -116,10 +115,10 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         });
 
         // AUTH: ADMIN
-        $group->group('/admin', function (RouteCollectorProxy $group) use ($container) {
+        $group->group('/admin', static function (RouteCollectorProxy $group) {
 
             // Admin: NEWS
-            $group->group('/news', function (RouteCollectorProxy $group) use ($container) {
+            $group->group('/news', static function (RouteCollectorProxy $group) {
                 $group->get('/list', [AdminCP\AdminNewsController::class, 'newsIndex']);
                 $group->get('/add', [AdminCP\AdminNewsController::class, 'newsAddIndex']);
                 $group->post('/add', [AdminCP\AdminNewsController::class, 'newsAdd']);
@@ -130,7 +129,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             });
 
             // Admin: USERS
-            $group->group('/user', function (RouteCollectorProxy $group) use ($container) {
+            $group->group('/user', static function (RouteCollectorProxy $group) {
                 $group->get('/list', [AdminCP\AdminUsersController::class, 'usersIndex']);
                 $group->get('/add', [AdminCP\AdminUsersController::class, 'userAddIndex']);
                 $group->post('/add', [AdminCP\AdminUsersController::class, 'userAdd']);
@@ -143,28 +142,28 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
             });
 
             // Admin: UPLOADS
-            $group->group('/uploads', function (RouteCollectorProxy $group) use ($container) {
+            $group->group('/uploads', static function (RouteCollectorProxy $group) {
                 $group->get('', [AdminCP\AdminUploadController::class, 'uploadIndex']);
                 $group->post('/upload', [AdminCP\AdminUploadController::class, 'upload']);
                 $group->get('/{filename}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminUploadController::class, 'delete']);
             });
 
             // Admin: RELEASES
-            $group->group('/releases', function (RouteCollectorProxy $group) use ($container) {
+            $group->group('/releases', static function (RouteCollectorProxy $group) {
                 $group->get('/list', [AdminCP\AdminReleasesController::class, 'releasesIndex']);
                 $group->get('/{id:\d+}', [AdminCP\AdminReleasesController::class, 'releaseEditIndex']);
                 $group->post('/{id:\d+}', [AdminCP\AdminReleasesController::class, 'releaseEdit']);
             });
 
             // Admin: IP LOOKUP
-            $group->group('/ip-lookup', function (RouteCollectorProxy $group) use ($container) {
+            $group->group('/ip-lookup', static function (RouteCollectorProxy $group) {
                 $group->get('/logs', [AdminCP\AdminIpLookupController::class, 'logsIndex']);
                 $group->get('/associations', [AdminCP\AdminIpLookupController::class, 'associationsIndex']);
                 $group->get('/{type}/{string:.+}', [AdminCP\AdminIpLookupController::class, 'lookup']);
             });
 
             // Admin: BANS
-            $group->group('/ban', function (RouteCollectorProxy $group) use ($container) {
+            $group->group('/ban', static function (RouteCollectorProxy $group) {
                 $group->get('/list', [AdminCP\AdminBanController::class, 'bansIndex']);
                 $group->get('/add', [AdminCP\AdminBanController::class, 'banAddIndex']);
                 $group->post('/add', [AdminCP\AdminBanController::class, 'banAdd']);
@@ -178,10 +177,10 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         })->add(AuthAdminCPMiddleware::class);
 
         // AUTH: MODERATOR
-        $group->group('/moderate', function (RouteCollectorProxy $group) use ($container) {
+        $group->group('/moderate', static function (RouteCollectorProxy $group) {
 
             // Moderate: WORKSHOP
-            $group->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
+            $group->group('/workshop', static function (RouteCollectorProxy $group) {
                 $group->get('/list', [ModCP\Workshop\ModerateWorkshopController::class, 'listIndex']);
 
                 $group->get('/upload', [ModCP\Workshop\ModerateWorkshopUploadController::class, 'index']);
@@ -206,7 +205,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         })->add(AuthModCPMiddleware::class);
 
         // AUTH: DEVELOPER
-        $group->group('/dev', function (RouteCollectorProxy $group) use ($container) {
+        $group->group('/dev', static function (RouteCollectorProxy $group) {
 
             // Moderate (dev) Alpha Patches
             $group->get('/alpha-patches/list', [DevCP\ModerateAlphaPatchController::class, 'listIndex']);
@@ -235,7 +234,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     })->add(LoggedInMiddleware::class);
 
     // Workshop
-    $group->group('/workshop', function (RouteCollectorProxy $group) use ($container) {
+    $group->group('/workshop', static function (RouteCollectorProxy $group) {
 
         // Public view
         $group->get('/item/{id:\d+}[/{slug}]', [Workshop\WorkshopItemController::class, 'itemIndex'])->add(CdnMiddleware::class);
@@ -252,7 +251,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->post('/upload', [Workshop\WorkshopUploadController::class, 'upload'])->add(LoggedInMiddleware::class);
 
         // Workshop edit (LOGGED IN)
-        $group->group('/edit', function (RouteCollectorProxy $group) use ($container) {
+        $group->group('/edit', static function (RouteCollectorProxy $group) {
 
             // Workshop item edit
             $group->get('/{id:\d+}', [Workshop\WorkshopEditController::class, 'editIndex']);
@@ -296,7 +295,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->redirect('[/]', '/workshop/browse', 302);
 
         // Workshop report
-        $group->group('/report', function (RouteCollectorProxy $group) use ($container) {
+        $group->group('/report', static function (RouteCollectorProxy $group) {
 
             // Comment report
             $group->post('/comment/{comment_id:\d+}', [Workshop\WorkshopReportController::class, 'reportComment']); // AJAX
@@ -308,7 +307,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
         $group->get('/activity', [Workshop\WorkshopActivityController::class, 'listIndex']);
 
         // Workshop Tools
-        $group->group('/tools', function (RouteCollectorProxy $group) use ($container) {
+        $group->group('/tools', static function (RouteCollectorProxy $group) {
 
             $group->get('', [Workshop\Tools\WorkshopToolsController::class, 'index']);
 
@@ -342,7 +341,7 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
 
     // RSS
     $group->get('/rss-info', [RSSController::class, 'rssInfoIndex']);
-    $group->group('/rss', function (RouteCollectorProxy $group) use ($container) {
+    $group->group('/rss', static function (RouteCollectorProxy $group) {
         $group->get('/news', [RSSController::class, 'newsFeed']);
         $group->get('/stable', [RSSController::class, 'stableBuildFeed']);
         $group->get('/alpha', [RSSController::class, 'alphaPatchFeed']);
@@ -356,11 +355,11 @@ $app->group('', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/website-changelog', [WebsiteChangelogController::class, 'index']);
 })->add(\Slim\Csrf\Guard::class);
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////// API
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ///// API
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$app->group('/api', function (RouteCollectorProxy $group) use ($container) {
+$app->group('/api', static function (RouteCollectorProxy $group) {
 
     // API: News
     $group->get('/v1/news/latest', [Api\v1\NewsApiController::class, 'listLatest']);
@@ -393,12 +392,11 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($container) {
     $group->get('/v1/moonphase', [Api\v1\MoonPhaseApiController::class, 'outputInfo']);
 });
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////// Redirects
-/////// - 301 -> Permanently moved
-/////// - 302 -> Temporary redirect
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ///// Redirects
+// ///// - 301 -> Permanently moved
+// ///// - 302 -> Temporary redirect
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // April fools 2024
 $app->redirect('/giveaways/dk3-beta-key', 'https://youtu.be/ceWFU2pBOPo', 302);
@@ -415,9 +413,10 @@ $app->redirect('/api/v1/stable/check/{version}', '/api/v1/release/stable/check/{
 $app->redirect('/api/v1/alpha/check/{version}', '/api/v1/release/alpha/check/{version}', 301);
 
 // Add '/download/' after '/game-files/'
-$app->get('/game-files/{version:alpha|stable}/{rest:.*}', function ($request, $response) {
+$app->get('/game-files/{version:alpha|stable}/{rest:.*}', static function ($request, $response) {
     $version = $request->getAttribute('version');
-    $rest = $request->getAttribute('rest');
+    $rest    = $request->getAttribute('rest');
+
     return $response
         ->withHeader('Location', "/game-files/download/$version/$rest")
         ->withStatus(301);

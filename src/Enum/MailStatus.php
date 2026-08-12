@@ -2,7 +2,8 @@
 
 namespace App\Enum;
 
-enum MailStatus: int {
+enum MailStatus: int
+{
     case FAILURE      = -1;
     case NOT_SENT_YET = 0;
     case SENDING      = 1;

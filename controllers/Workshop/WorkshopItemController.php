@@ -2,47 +2,23 @@
 
 namespace App\Controller\Workshop;
 
-use App\Enum\UserRole;
-use App\Enum\WorkshopCategory;
-
-use App\Entity\WorkshopTag;
-use App\Entity\WorkshopFile;
-use App\Entity\WorkshopItem;
-use App\Entity\GithubRelease;
+use App\Account;
 use App\Entity\User;
-use App\Entity\WorkshopRating;
-use App\Entity\WorkshopComment;
 use App\Entity\UserNotification;
 use App\Entity\WorkshopDifficultyRating;
-
-use App\Account;
+use App\Entity\WorkshopItem;
+use App\Entity\WorkshopRating;
 use App\FlashMessage;
-use App\Config\Config;
-use App\UploadSizeHelper;
-use App\Notifications\NotificationCenter;
 use App\Notifications\Notification\WorkshopItemNotification;
-use App\Notifications\Notification\WorkshopItemCommentNotification;
-
-use URLify;
+use App\Notifications\NotificationCenter;
 use Doctrine\ORM\EntityManager;
-use Slim\Csrf\Guard as CsrfGuard;
-use geertw\IpAnonymizer\IpAnonymizer;
-use Twig\Environment as TwigEnvironment;
-use ByteUnits\Binary as BinaryFormatter;
-
-use Slim\Psr7\UploadedFile;
-use Psr\SimpleCache\CacheInterface;
-use GuzzleHttp\Psr7\LazyOpenStream;
-use Slim\Exception\HttpNotFoundException;
-use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Xenokore\Utility\Helper\DirectoryHelper;
+use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
 class WorkshopItemController
 {
-
     public function itemIndex(
         Request $request,
         Response $response,
@@ -65,8 +41,9 @@ class WorkshopItemController
         if (\URLify::slug($workshop_item->getName()) !== $slug) {
             $response = $response->withHeader(
                 'Location',
-                '/workshop/item/' . $workshop_item->getId() . '/' . URLify::slug($workshop_item->getName())
+                '/workshop/item/' . $workshop_item->getId() . '/' . \URLify::slug($workshop_item->getName())
             )->withStatus(302);
+
             return $response;
         }
 
@@ -77,7 +54,7 @@ class WorkshopItemController
             if ($notifications) {
                 foreach ($notifications as $notification_id => $notification) {
                     if ($notification instanceof WorkshopItemNotification) {
-                        if ($notification->getData()['item_id'] === (int)$id) {
+                        if ($notification->getData()['item_id'] === (int) $id) {
                             $notification = $em->getRepository(UserNotification::class)->find($notification_id);
                             if ($notification) {
                                 $notification->setRead(true);
@@ -97,6 +74,7 @@ class WorkshopItemController
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
+
             return $response;
         }
 
@@ -107,13 +85,13 @@ class WorkshopItemController
         // Get user rating
         $user_rating = $em->getRepository(WorkshopRating::class)->findOneBy([
             'item' => $workshop_item,
-            'user' => $account?->getUser()
+            'user' => $account?->getUser(),
         ])?->getScore();
 
         // Get user difficulty rating
         $user_difficulty_rating = $em->getRepository(WorkshopDifficultyRating::class)->findOneBy([
             'item' => $workshop_item,
-            'user' => $account?->getUser()
+            'user' => $account?->getUser(),
         ])?->getScore();
 
         // Get other workshop items for "more items by this user"

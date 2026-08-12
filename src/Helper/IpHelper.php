@@ -4,15 +4,11 @@ namespace App\Helper;
 
 class IpHelper
 {
-
     /**
      * Validate an IP address regardless of it being IPv4 or IPv6.
-     *
-     * @param string $ip
-     * @return boolean
      */
     public static function isValidIp(string $ip): bool
     {
-        return (\filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) !== false);
+        return \filter_var($ip, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4 | \FILTER_FLAG_IPV6) !== false;
     }
 }

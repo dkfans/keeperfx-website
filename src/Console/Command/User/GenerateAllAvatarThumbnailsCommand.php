@@ -2,21 +2,18 @@
 
 namespace App\Console\Command\User;
 
-use App\Entity\User;
 use App\Config\Config;
+use App\Entity\User;
 use App\Helper\ThumbnailHelper;
 use Doctrine\ORM\EntityManager;
-
 use Psr\Container\ContainerInterface as Container;
-
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
 class GenerateAllAvatarThumbnailsCommand extends Command
 {
-    /** @var Container $container */
+    /** @var Container */
     private $container;
 
     public function __construct(Container $container)
@@ -25,10 +22,10 @@ class GenerateAllAvatarThumbnailsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("user:generate-all-avatar-thumbnails")
-            ->setDescription("Generate thumbnails for all user avatars");
+        $this->setName('user:generate-all-avatar-thumbnails')
+            ->setDescription('Generate thumbnails for all user avatars');
     }
 
     protected function execute(Input $input, Output $output)
@@ -36,15 +33,16 @@ class GenerateAllAvatarThumbnailsCommand extends Command
         // Define workshop storage dir
         $storage_dir = Config::get('storage.path.avatar');
         if ($storage_dir == null) {
-            $output->writeln("[-] Avatar storage directory is not set");
+            $output->writeln('[-] Avatar storage directory is not set');
             $output->writeln("[>] ENV VAR: 'APP_AVATAR_STORAGE'");
+
             return Command::FAILURE;
         }
 
         /** @var EntityManager $em */
         $em = $this->container->get(EntityManager::class);
 
-        $output->writeln("[>] Generating all user avatar thumbnails...");
+        $output->writeln('[>] Generating all user avatar thumbnails...');
 
         $users = $em->getRepository(User::class)->findAll();
         foreach ($users as $user) {
@@ -71,7 +69,8 @@ class GenerateAllAvatarThumbnailsCommand extends Command
         $em->flush();
 
         // Success
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Done!');
+
         return Command::SUCCESS;
     }
 }

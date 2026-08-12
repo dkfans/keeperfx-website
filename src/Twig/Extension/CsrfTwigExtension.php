@@ -8,7 +8,7 @@ use Slim\Csrf\Guard;
  * CSRF Twig Extension.
  * Template for views:
  *      <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
- *      <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+ *      <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">.
  */
 class CsrfTwigExtension extends \Twig\Extension\AbstractExtension implements \Twig\Extension\GlobalsInterface
 {
@@ -30,14 +30,14 @@ class CsrfTwigExtension extends \Twig\Extension\AbstractExtension implements \Tw
     public function getGlobals(): array
     {
         return [
-            'csrf'   => [
+            'csrf' => [
                 'keys' => [
                     'name'  => $this->csrf->getTokenNameKey(),
-                    'value' => $this->csrf->getTokenValueKey()
+                    'value' => $this->csrf->getTokenValueKey(),
                 ],
                 'name'  => $this->csrf->getTokenName(),
-                'value' => $this->csrf->getTokenValue()
-            ]
+                'value' => $this->csrf->getTokenValue(),
+            ],
         ];
     }
 }

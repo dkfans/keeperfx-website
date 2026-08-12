@@ -2,11 +2,10 @@
 
 use App\Config\Config;
 
-/**
+/*
  * Doctrine configuration file
  */
 return [
-
     'connection' => [
         'host'      => $_ENV['APP_DB_HOST'],
         'port'      => $_ENV['APP_DB_PORT'],
@@ -26,13 +25,13 @@ return [
 
     'cache_dir' => Config::get('cache.file_storage_dir') . '/doctrine', // If using 'filesystem' cache
 
-    'orm_naming_strategy' => new \Doctrine\ORM\Mapping\UnderscoreNamingStrategy(CASE_LOWER),
+    'orm_naming_strategy' => new Doctrine\ORM\Mapping\UnderscoreNamingStrategy(\CASE_LOWER),
 
     'proxy_dir' => Config::get('cache.file_storage_dir') . '/doctrine/proxy',
 
     'proxy_class_generation' => $_ENV['APP_ENV'] === 'dev' ?
-        \Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_ALWAYS :
-        \Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS,
+        Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_ALWAYS :
+        Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS,
 
     'enable_query_cache' => true, // Cache the conversion of DQL to SQL
 
@@ -58,17 +57,17 @@ return [
     ],
 
     'migration_commands' => [
-        \Doctrine\Migrations\Tools\Console\Command\CurrentCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\DiffCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\DumpSchemaCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\ExecuteCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\GenerateCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\LatestCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\ListCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\MigrateCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\RollupCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\StatusCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\SyncMetadataCommand::class,
-        \Doctrine\Migrations\Tools\Console\Command\VersionCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\CurrentCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\DiffCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\DumpSchemaCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\ExecuteCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\GenerateCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\LatestCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\ListCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\MigrateCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\RollupCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\StatusCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\SyncMetadataCommand::class,
+        Doctrine\Migrations\Tools\Console\Command\VersionCommand::class,
     ],
 ];

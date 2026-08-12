@@ -3,16 +3,16 @@
 namespace App\Twig\Extension;
 
 use App\Account;
-use Twig\TwigFilter;
 use App\Notifications\NotificationCenter;
+use Twig\TwigFilter;
 
 class NotificationTwigExtension extends \Twig\Extension\AbstractExtension implements \Twig\Extension\GlobalsInterface
 {
-
     public function __construct(
         private Account $account,
         private NotificationCenter $nc,
-    ) {}
+    ) {
+    }
 
     public function getName(): string
     {
@@ -27,10 +27,7 @@ class NotificationTwigExtension extends \Twig\Extension\AbstractExtension implem
     }
 
     /**
-     * Render notification text
-     *
-     * @param string $string
-     * @return string
+     * Render notification text.
      */
     public function notificationRender(string $string): string
     {

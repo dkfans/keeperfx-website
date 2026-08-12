@@ -2,23 +2,20 @@
 
 namespace App\Controller\Api\v1;
 
-use App\Enum\OAuthProviderType;
-
 use App\Entity\User;
 use App\Entity\UserOAuthToken;
-
+use App\Enum\OAuthProviderType;
 use Doctrine\ORM\EntityManager;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class UserApiController {
-
+class UserApiController
+{
     public function search(
         Request $request,
         Response $response,
         EntityManager $em,
-    ){
+    ) {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
 
@@ -26,14 +23,14 @@ class UserApiController {
         $q = $request->getQueryParams();
 
         // Check for a Discord ID
-        if(!empty($q['discord_id']) && \is_numeric($q['discord_id'])){
+        if (!empty($q['discord_id']) && \is_numeric($q['discord_id'])) {
 
             $token = $em->getRepository(UserOAuthToken::class)->findOneBy([
                 'provider_type' => OAuthProviderType::Discord->value,
                 'uid'           => $q['discord_id'],
             ]);
 
-            if($token){
+            if ($token) {
 
                 /** @var User $user */
                 $user = $token->getUser();
@@ -41,7 +38,7 @@ class UserApiController {
                 $response->getBody()->write(
                     \json_encode([
                         'success' => true,
-                        'user' => [
+                        'user'    => [
                             'username'                => $user->getUsername(),
                             'avatar'                  => $user->getAvatar(),
                             'bio'                     => $user->getBio()?->getBio(),
@@ -54,18 +51,16 @@ class UserApiController {
                 );
 
                 return $response;
-
-            } else {
-
-                $response->getBody()->write(
-                    \json_encode([
-                        'success' => false,
-                        'error'   => 'DISCORD_UID_NOT_FOUND',
-                    ])
-                );
-
-                return $response;
             }
+
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'DISCORD_UID_NOT_FOUND',
+                ])
+            );
+
+            return $response;
         }
 
         // Return output
@@ -78,5 +73,4 @@ class UserApiController {
 
         return $response;
     }
-
 }

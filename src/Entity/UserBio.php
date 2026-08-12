@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class UserBio
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -25,19 +24,19 @@ class UserBio
     private \DateTime $updated_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->updated_timestamp = new \DateTime("now");
+        $this->updated_timestamp = new \DateTime('now');
     }
 
     #[ORM\PreUpdate]
-    public function onPreUpdate()
+    public function onPreUpdate(): void
     {
-        $this->updated_timestamp = new \DateTime("now");
+        $this->updated_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -45,7 +44,7 @@ class UserBio
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -53,7 +52,7 @@ class UserBio
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -63,7 +62,7 @@ class UserBio
     }
 
     /**
-     * Get the value of bio
+     * Get the value of bio.
      */
     public function getBio(): string
     {
@@ -71,7 +70,7 @@ class UserBio
     }
 
     /**
-     * Set the value of bio
+     * Set the value of bio.
      */
     public function setBio(string $bio): self
     {
@@ -81,7 +80,7 @@ class UserBio
     }
 
     /**
-     * Get the value of updated_timestamp
+     * Get the value of updated_timestamp.
      */
     public function getUpdatedTimestamp(): \DateTime
     {

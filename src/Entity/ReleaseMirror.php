@@ -4,17 +4,14 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use App\Entity\GithubRelease;
-
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class ReleaseMirror
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    private int|null $id = null;
+    private ?int $id = null;
 
     #[ORM\Column]
     private string $url;
@@ -24,7 +21,7 @@ class ReleaseMirror
     private GithubRelease $release;
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): ?int
     {
@@ -32,7 +29,7 @@ class ReleaseMirror
     }
 
     /**
-     * Set the value of id
+     * Set the value of id.
      */
     public function setId(?int $id): self
     {
@@ -42,7 +39,7 @@ class ReleaseMirror
     }
 
     /**
-     * Get the value of url
+     * Get the value of url.
      */
     public function getUrl(): string
     {
@@ -50,7 +47,7 @@ class ReleaseMirror
     }
 
     /**
-     * Set the value of url
+     * Set the value of url.
      */
     public function setUrl(string $url): self
     {
@@ -60,7 +57,7 @@ class ReleaseMirror
     }
 
     /**
-     * Get the value of release
+     * Get the value of release.
      */
     public function getRelease(): GithubRelease
     {
@@ -68,7 +65,7 @@ class ReleaseMirror
     }
 
     /**
-     * Set the value of release
+     * Set the value of release.
      */
     public function setRelease(GithubRelease $release): self
     {

@@ -2,4 +2,6 @@
 
 namespace App\Workshop\Exception;
 
-class WorkshopException extends \Exception {}
+class WorkshopException extends \Exception
+{
+}

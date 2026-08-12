@@ -3,13 +3,9 @@
 namespace App\Controller\Workshop\Tools;
 
 use App\FlashMessage;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpBadRequestException;
+use Twig\Environment as TwigEnvironment;
 use Xenokore\Utility\Helper\StringHelper;
 
 /**
@@ -18,7 +14,6 @@ use Xenokore\Utility\Helper\StringHelper;
  */
 class WorkshopKfxCfgDiffToolController
 {
-
     /**
      * Sections that need to be hard copied.
      *
@@ -46,15 +41,16 @@ class WorkshopKfxCfgDiffToolController
     ) {
         // Get post vars
         $post  = $request->getParsedBody();
-        $left  = (string) $post['left'] ?? '';
+        $left  = (string) $post['left']  ?? '';
         $right = (string) $post['right'] ?? '';
 
         // Make sure data is posted
         if (empty($left) || empty($right)) {
-            $flash->warning("Both the left and right side need to be given.");
+            $flash->warning('Both the left and right side need to be given.');
             $response->getBody()->write(
                 $twig->render('workshop/tools/kfx_cfg_diff_tool.html.twig')
             );
+
             return $response;
         }
 
@@ -64,7 +60,7 @@ class WorkshopKfxCfgDiffToolController
 
         // Create differences
         $duplicate_properties = [];
-        $diff = [];
+        $diff                 = [];
         foreach ($right_data as $section => $properties) {
 
             // Hard copy specific sections
@@ -75,9 +71,9 @@ class WorkshopKfxCfgDiffToolController
 
             foreach ($properties as $property => $value) {
 
-                if (is_array($value)) {
+                if (\is_array($value)) {
                     $string = "[$section] $property";
-                    if (!in_array($string, $duplicate_properties)) {
+                    if (!\in_array($string, $duplicate_properties)) {
                         $duplicate_properties[] = $string;
                     }
                     continue;
@@ -102,7 +98,7 @@ class WorkshopKfxCfgDiffToolController
             foreach ($duplicate_properties as $duplicate_property) {
                 $error_string .= "- <code>$duplicate_property</code><br />\n";
             }
-            $error_string .= "<br />" . "Please remove these duplicate properties and try again.";
+            $error_string .= '<br />Please remove these duplicate properties and try again.';
 
             // Show error
             $flash->error($error_string);
@@ -111,6 +107,7 @@ class WorkshopKfxCfgDiffToolController
             $response->getBody()->write(
                 $twig->render('workshop/tools/kfx_cfg_diff_tool.html.twig')
             );
+
             return $response;
         }
 
@@ -130,14 +127,14 @@ class WorkshopKfxCfgDiffToolController
         // Move 'attributes->Name' for creature configs
         if (!empty($left_data['attributes']) && !empty($left_data['attributes']['Name'])) {
             $diff['attributes']['Name'] = $left_data['attributes']['Name'];
-            //$diff = ['attributes' => ['Name' => $left_data['attributes']['Name']]] + $diff;
+            // $diff = ['attributes' => ['Name' => $left_data['attributes']['Name']]] + $diff;
         }
 
         // Create diff string output
-        $diff_output = "";
+        $diff_output = '';
         foreach ($diff as $section => $properties) {
             // Add section
-            $diff_output .= "[{$section}]" . PHP_EOL;
+            $diff_output .= "[{$section}]" . \PHP_EOL;
 
             // Move 'Name' property to top if it exists
             if (!empty($properties['Name'])) {
@@ -147,16 +144,16 @@ class WorkshopKfxCfgDiffToolController
             // Add all the properties
             foreach ($properties as $property => $value) {
 
-                if (is_array($value)) {
+                if (\is_array($value)) {
                     foreach ($value as $value2) {
-                        $diff_output .= "{$property} = {$value2}" . PHP_EOL;
+                        $diff_output .= "{$property} = {$value2}" . \PHP_EOL;
                     }
                 } else {
-                    $diff_output .= "{$property} = {$value}" . PHP_EOL;
+                    $diff_output .= "{$property} = {$value}" . \PHP_EOL;
                 }
             }
 
-            $diff_output .= PHP_EOL;
+            $diff_output .= \PHP_EOL;
         }
 
         // Trim trailing newlines
@@ -165,9 +162,10 @@ class WorkshopKfxCfgDiffToolController
         // Output back to user
         $response->getBody()->write(
             $twig->render('workshop/tools/kfx_cfg_diff_tool.html.twig', [
-                'diff_output' => $diff_output
+                'diff_output' => $diff_output,
             ])
         );
+
         return $response;
     }
 
@@ -192,7 +190,7 @@ class WorkshopKfxCfgDiffToolController
 
             // Start a section
             if (\preg_match("/^\[(.+)\].*?$/", $line, $matches)) {
-                $current_section = $matches[1];
+                $current_section    = $matches[1];
                 $array[$matches[1]] = [];
                 continue;
             }
@@ -220,8 +218,8 @@ class WorkshopKfxCfgDiffToolController
                 } else {
 
                     // Convert duplicate property into an array
-                    if (!is_array($array[$current_section][$property])) {
-                        $existing_value = $array[$current_section][$property];
+                    if (!\is_array($array[$current_section][$property])) {
+                        $existing_value                     = $array[$current_section][$property];
                         $array[$current_section][$property] = [$existing_value];
                     }
 

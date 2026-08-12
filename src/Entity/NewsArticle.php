@@ -3,18 +3,15 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\User;
-use URLify;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class NewsArticle
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    private int|null $id = null;
+    private ?int $id = null;
 
     #[ORM\Column]
     private string $title;
@@ -24,7 +21,7 @@ class NewsArticle
     private User $author;
 
     #[ORM\Column(nullable: true)]
-    private string|null $image = null;
+    private ?string $image = null;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
@@ -36,13 +33,13 @@ class NewsArticle
     private string $excerpt;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId()
     {
@@ -50,7 +47,7 @@ class NewsArticle
     }
 
     /**
-     * Get the value of title
+     * Get the value of title.
      */
     public function getTitle()
     {
@@ -58,9 +55,9 @@ class NewsArticle
     }
 
     /**
-     * Set the value of title
+     * Set the value of title.
      *
-     * @return  self
+     * @return self
      */
     public function setTitle($title)
     {
@@ -70,7 +67,7 @@ class NewsArticle
     }
 
     /**
-     * Get the value of author
+     * Get the value of author.
      */
     public function getAuthor(): User
     {
@@ -78,9 +75,9 @@ class NewsArticle
     }
 
     /**
-     * Set the value of author
+     * Set the value of author.
      *
-     * @return  self
+     * @return self
      */
     public function setAuthor(User $author)
     {
@@ -90,7 +87,7 @@ class NewsArticle
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -98,9 +95,9 @@ class NewsArticle
     }
 
     /**
-     * Set the value of created_timestamp
+     * Set the value of created_timestamp.
      *
-     * @return  self
+     * @return self
      */
     public function setCreatedTimestamp($created_timestamp)
     {
@@ -111,11 +108,11 @@ class NewsArticle
 
     public function getTitleSlug(): string
     {
-        return URLify::slug($this->title);
+        return \URLify::slug($this->title);
     }
 
     /**
-     * Get the value of contents
+     * Get the value of contents.
      */
     public function getContents(): string
     {
@@ -123,7 +120,7 @@ class NewsArticle
     }
 
     /**
-     * Set the value of contents
+     * Set the value of contents.
      */
     public function setContents(string $contents): self
     {
@@ -133,7 +130,7 @@ class NewsArticle
     }
 
     /**
-     * Get the value of excerpt
+     * Get the value of excerpt.
      */
     public function getExcerpt(): string
     {
@@ -141,7 +138,7 @@ class NewsArticle
     }
 
     /**
-     * Set the value of excerpt
+     * Set the value of excerpt.
      */
     public function setExcerpt(string $excerpt): self
     {
@@ -151,7 +148,7 @@ class NewsArticle
     }
 
     /**
-     * Get the value of image
+     * Get the value of image.
      */
     public function getImage(): ?string
     {
@@ -159,7 +156,7 @@ class NewsArticle
     }
 
     /**
-     * Set the value of image
+     * Set the value of image.
      */
     public function setImage(?string $image): self
     {

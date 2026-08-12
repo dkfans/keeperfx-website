@@ -2,28 +2,20 @@
 
 namespace App\Controller\Workshop\Tools;
 
-use App\Enum\WorkshopCategory;
-
-use App\Entity\WorkshopTag;
 use App\Entity\WorkshopItem;
-use App\Entity\GithubRelease;
-
-use URLify;
-use App\FlashMessage;
+use App\Enum\WorkshopCategory;
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
 class WorkshopMapNumberListToolController
 {
-
     public function index(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-        EntityManager $em
+        EntityManager $em,
     ) {
         $items = $em->getRepository(WorkshopItem::class)->findBy(['category' => WorkshopCategory::Map], ['map_number' => 'ASC']);
         foreach ($items as $item) {

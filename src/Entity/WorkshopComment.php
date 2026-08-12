@@ -2,17 +2,14 @@
 
 namespace App\Entity;
 
-use App\Entity\User;
-
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class WorkshopComment
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -35,16 +32,16 @@ class WorkshopComment
     #[ORM\Column]
     private \DateTime $updated_timestamp;
 
-    #[ORM\ManyToOne(targetEntity: WorkshopComment::class, inversedBy: 'replies')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'replies')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
-    private WorkshopComment|null $parent = null;
+    private ?WorkshopComment $parent = null;
 
-    #[ORM\OneToMany(targetEntity: WorkshopComment::class, mappedBy: 'parent')]
-    #[ORM\OrderBy(["created_timestamp" => "DESC"])]
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    #[ORM\OrderBy(['created_timestamp' => 'DESC'])]
     private Collection $replies;
 
     #[ORM\OneToMany(targetEntity: WorkshopCommentReport::class, mappedBy: 'comment')]
-    #[ORM\OrderBy(["created_timestamp" => "DESC"])]
+    #[ORM\OrderBy(['created_timestamp' => 'DESC'])]
     private Collection $reports;
 
     public function __construct()
@@ -54,20 +51,20 @@ class WorkshopComment
     }
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
-        $this->updated_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
+        $this->updated_timestamp = new \DateTime('now');
     }
 
     #[ORM\PreUpdate]
-    public function onPreUpdate()
+    public function onPreUpdate(): void
     {
-        $this->updated_timestamp = new \DateTime("now");
+        $this->updated_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -75,7 +72,7 @@ class WorkshopComment
     }
 
     /**
-     * Get the value of item
+     * Get the value of item.
      */
     public function getItem(): WorkshopItem
     {
@@ -83,7 +80,7 @@ class WorkshopComment
     }
 
     /**
-     * Set the value of item
+     * Set the value of item.
      */
     public function setItem(WorkshopItem $item): self
     {
@@ -93,7 +90,7 @@ class WorkshopComment
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -101,7 +98,7 @@ class WorkshopComment
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -111,7 +108,7 @@ class WorkshopComment
     }
 
     /**
-     * Get the value of content
+     * Get the value of content.
      */
     public function getContent(): string
     {
@@ -119,7 +116,7 @@ class WorkshopComment
     }
 
     /**
-     * Set the value of content
+     * Set the value of content.
      */
     public function setContent(string $content): self
     {
@@ -129,7 +126,7 @@ class WorkshopComment
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -137,7 +134,7 @@ class WorkshopComment
     }
 
     /**
-     * Get the value of updated_timestamp
+     * Get the value of updated_timestamp.
      */
     public function getUpdatedTimestamp(): \DateTime
     {
@@ -145,7 +142,7 @@ class WorkshopComment
     }
 
     /**
-     * Get the value of replies
+     * Get the value of replies.
      */
     public function getReplies(): Collection
     {
@@ -153,17 +150,17 @@ class WorkshopComment
     }
 
     /**
-     * Get the value of parent
+     * Get the value of parent.
      */
-    public function getParent(): ?WorkshopComment
+    public function getParent(): ?self
     {
         return $this->parent;
     }
 
     /**
-     * Set the value of parent
+     * Set the value of parent.
      */
-    public function setParent(?WorkshopComment $parent): self
+    public function setParent(?self $parent): self
     {
         $this->parent = $parent;
 
@@ -171,7 +168,7 @@ class WorkshopComment
     }
 
     /**
-     * Get the value of reports
+     * Get the value of reports.
      */
     public function getReports(): Collection
     {

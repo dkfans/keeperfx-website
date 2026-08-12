@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class UserLog
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -31,13 +30,13 @@ class UserLog
     private \DateTime $timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->timestamp = new \DateTime("now");
+        $this->timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -45,7 +44,7 @@ class UserLog
     }
 
     /**
-     * Set the value of id
+     * Set the value of id.
      */
     public function setId(int $id): self
     {
@@ -55,7 +54,7 @@ class UserLog
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -63,7 +62,7 @@ class UserLog
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -73,7 +72,7 @@ class UserLog
     }
 
     /**
-     * Get the value of log_type
+     * Get the value of log_type.
      */
     public function getLogType(): string
     {
@@ -81,7 +80,7 @@ class UserLog
     }
 
     /**
-     * Set the value of log_type
+     * Set the value of log_type.
      */
     public function setLogType(string $log_type): self
     {
@@ -91,7 +90,7 @@ class UserLog
     }
 
     /**
-     * Get the value of variables
+     * Get the value of variables.
      */
     public function getVariables(): array
     {
@@ -99,7 +98,7 @@ class UserLog
     }
 
     /**
-     * Set the value of variables
+     * Set the value of variables.
      */
     public function setVariables(array $variables): self
     {
@@ -109,7 +108,7 @@ class UserLog
     }
 
     /**
-     * Get the value of ip
+     * Get the value of ip.
      */
     public function getIp(): string
     {
@@ -117,7 +116,7 @@ class UserLog
     }
 
     /**
-     * Set the value of ip
+     * Set the value of ip.
      */
     public function setIp(string $ip): self
     {
@@ -127,7 +126,7 @@ class UserLog
     }
 
     /**
-     * Get the value of timestamp
+     * Get the value of timestamp.
      */
     public function getTimestamp(): \DateTime
     {

@@ -2,27 +2,24 @@
 
 namespace App\Controller\ModCP\Workshop;
 
-use App\Entity\WorkshopItem;
-use App\Entity\WorkshopFile;
-
 use App\Account;
-use App\FlashMessage;
 use App\Config\Config;
+use App\Entity\WorkshopFile;
+use App\Entity\WorkshopItem;
+use App\FlashMessage;
 use App\UploadSizeHelper;
-use App\Workshop\WorkshopCache;
 use App\Workshop\WorkshopBrokenFileHandler;
-
+use App\Workshop\WorkshopCache;
 use Doctrine\ORM\EntityManager;
-use Slim\Csrf\Guard as CsrfGuard;
-use Twig\Environment as TwigEnvironment;
-
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpForbiddenException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Csrf\Guard as CsrfGuard;
+use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
-class ModerateWorkshopEditFilesController {
-
+class ModerateWorkshopEditFilesController
+{
     public function index(
         Request $request,
         Response $response,
@@ -30,24 +27,26 @@ class ModerateWorkshopEditFilesController {
         TwigEnvironment $twig,
         Account $account,
         EntityManager $em,
-        $item_id
-    ){
+        $item_id,
+    ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             $flash->warning('The requested workshop item could not be found.');
             $response->getBody()->write(
                 $twig->render('workshop/alert.workshop.html.twig')
             );
+
             return $response;
         }
 
         // Show edit page
         $response->getBody()->write(
             $twig->render('modcp/workshop/edit.files.workshop.modcp.html.twig', [
-                'workshop_item' => $workshop_item
+                'workshop_item' => $workshop_item,
             ])
         );
+
         return $response;
     }
 
@@ -60,12 +59,11 @@ class ModerateWorkshopEditFilesController {
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
         WorkshopBrokenFileHandler $broken_file_handler,
-        $item_id
-    )
-    {
+        $item_id,
+    ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
@@ -73,9 +71,10 @@ class ModerateWorkshopEditFilesController {
         $uploaded_files = $request->getUploadedFiles();
 
         // Make sure uploaded file is set
-        if(empty($uploaded_files['file']) || $uploaded_files['file']->getError() === UPLOAD_ERR_NO_FILE){
+        if (empty($uploaded_files['file']) || $uploaded_files['file']->getError() === \UPLOAD_ERR_NO_FILE) {
             $flash->warning('No file was uploaded...');
             $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
+
             return $response;
         }
 
@@ -84,9 +83,10 @@ class ModerateWorkshopEditFilesController {
         $filename = $file->getClientFilename();
 
         // Make sure upload file does not exceed file size
-        if($file->getSize() > $upload_size_helper->getFinalWorkshopItemUploadSize()){
+        if ($file->getSize() > $upload_size_helper->getFinalWorkshopItemUploadSize()) {
             $flash->warning('File upload size is too big.');
             $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
+
             return $response;
         }
 
@@ -95,8 +95,8 @@ class ModerateWorkshopEditFilesController {
         $workshop_item_files_dir = $workshop_item_dir . '/files';
 
         // Make sure output directory exists
-        if(!\is_dir($workshop_item_files_dir)){
-            if(!@mkdir($workshop_item_files_dir, 0777, true)){
+        if (!\is_dir($workshop_item_files_dir)) {
+            if (!@\mkdir($workshop_item_files_dir, 0777, true)) {
                 throw new \Exception("Failed to create 'files' dir for workshop item with id {$workshop_item->getId()}.");
             }
         }
@@ -109,7 +109,7 @@ class ModerateWorkshopEditFilesController {
 
         // Move uploaded file to storage
         $file->moveTo($storage_path);
-        if(!\file_exists($storage_path)){
+        if (!\file_exists($storage_path)) {
             throw new \Exception('Failed to move workshop item file');
         }
 
@@ -142,6 +142,7 @@ class ModerateWorkshopEditFilesController {
         // Show notice and navigate back to edit page
         $flash->success('File uploaded!');
         $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
+
         return $response;
     }
 
@@ -157,22 +158,21 @@ class ModerateWorkshopEditFilesController {
         $file_id,
         $token_name,
         $token_value,
-    )
-    {
+    ) {
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if workshop file exists
         $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
-        if(!$workshop_file){
+        if (!$workshop_file) {
             throw new HttpNotFoundException($request);
         }
 
@@ -183,13 +183,13 @@ class ModerateWorkshopEditFilesController {
         $workshop_file_path      = $workshop_item_files_dir . '/' . $workshop_file->getStorageFilename();
 
         // Make sure file exists
-        if(!\file_exists($workshop_file_path)){
+        if (!\file_exists($workshop_file_path)) {
             throw new \Exception("Workshop file does not exist: '{$workshop_file_path}'");
         }
 
         // Remove file and double check
         @\unlink($workshop_file_path);
-        if(\file_exists($workshop_file_path)){
+        if (\file_exists($workshop_file_path)) {
             throw new \Exception("Workshop file still exists after removal...: '{$workshop_file_path}'");
         }
 
@@ -220,6 +220,7 @@ class ModerateWorkshopEditFilesController {
 
         // Redirect back to file list
         $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
+
         return $response;
     }
 
@@ -238,46 +239,47 @@ class ModerateWorkshopEditFilesController {
         $direction,
         $token_name,
         $token_value,
-    )
-    {
+    ) {
         // Check for valid direction
-        if(!\in_array($direction, ['up', 'down'])){
+        if (!\in_array($direction, ['up', 'down'])) {
             throw new HttpNotFoundException($request);
         }
 
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if workshop file exists
         $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
-        if(!$workshop_file){
+        if (!$workshop_file) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if file is attached to item
-        if($workshop_file->getItem() !== $workshop_item){
+        if ($workshop_file->getItem() !== $workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Make sure we can move up
-        if($direction === 'up' && $workshop_file->getWeight() <= 0){
+        if ($direction === 'up' && $workshop_file->getWeight() <= 0) {
             $flash->error('Failed to move workshop file.');
             $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
+
             return $response;
         }
 
         // Make sure we can move down
-        if($direction === 'down' && $workshop_file->getWeight() >= (\count($workshop_item->getFiles()) - 1)){
+        if ($direction === 'down' && $workshop_file->getWeight() >= (\count($workshop_item->getFiles()) - 1)) {
             $flash->error('Failed to move workshop file.');
             $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
+
             return $response;
         }
 
@@ -286,7 +288,7 @@ class ModerateWorkshopEditFilesController {
 
         // Check if we can change with the file with the wanted weight
         $workshop_file_at_wanted_weight = $em->getRepository(WorkshopFile::class)->findOneBy(['item' => $workshop_item, 'weight' => $wanted_weight]);
-        if(!$workshop_file_at_wanted_weight || $workshop_file_at_wanted_weight == $workshop_file){
+        if (!$workshop_file_at_wanted_weight || $workshop_file_at_wanted_weight == $workshop_file) {
             throw new \Exception('something went wrong..');
         }
 
@@ -303,8 +305,8 @@ class ModerateWorkshopEditFilesController {
         // Redirect back to file list
         $flash->success('The file has been successfully moved.');
         $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
-        return $response;
 
+        return $response;
     }
 
     public function rename(
@@ -316,32 +318,31 @@ class ModerateWorkshopEditFilesController {
         EntityManager $em,
         CsrfGuard $csrf_guard,
         $item_id,
-        $file_id
-    )
-    {
+        $file_id,
+    ) {
 
         $post     = $request->getParsedBody();
         $new_name = \trim((string) ($post['name'] ?? null));
 
         // Make sure new name is valid
-        if(!$new_name || \strlen($new_name) > 64 || \strlen($new_name) < 1){
+        if (!$new_name || \strlen($new_name) > 64 || $new_name === '') {
             return $request;
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if workshop file exists
         $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
-        if(!$workshop_file){
+        if (!$workshop_file) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if file is attached to item
-        if($workshop_file->getItem() !== $workshop_item){
+        if ($workshop_file->getItem() !== $workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
@@ -369,7 +370,7 @@ class ModerateWorkshopEditFilesController {
                         'value' => $csrf_guard->getTokenValueKey(),
                     ],
                     'name'  => $csrf_guard->getTokenName(),
-                    'value' => $csrf_guard->getTokenValue()
+                    'value' => $csrf_guard->getTokenValue(),
                 ],
             ])
         );
@@ -395,24 +396,24 @@ class ModerateWorkshopEditFilesController {
     ) {
 
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if workshop file exists
         $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
-        if(!$workshop_file){
+        if (!$workshop_file) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if file is attached to item
-        if($workshop_file->getItem() !== $workshop_item){
+        if ($workshop_file->getItem() !== $workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
@@ -425,6 +426,7 @@ class ModerateWorkshopEditFilesController {
         // Redirect back to file list
         $flash->success('The file has been successfully marked as broken.');
         $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
+
         return $response;
     }
 
@@ -443,24 +445,24 @@ class ModerateWorkshopEditFilesController {
     ) {
 
         // Check for valid CSRF token
-        if(!$csrf_guard->validateToken($token_name, $token_value)){
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if workshop file exists
         $workshop_file = $em->getRepository(WorkshopFile::class)->find($file_id);
-        if(!$workshop_file){
+        if (!$workshop_file) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if file is attached to item
-        if($workshop_file->getItem() !== $workshop_item){
+        if ($workshop_file->getItem() !== $workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
@@ -473,6 +475,7 @@ class ModerateWorkshopEditFilesController {
         // Redirect back to file list
         $flash->success('The file has been successfully unmarked as broken.');
         $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId() . '/files')->withStatus(302);
+
         return $response;
     }
 }

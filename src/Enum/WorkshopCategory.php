@@ -8,8 +8,8 @@ namespace App\Enum;
  * If a new category is added and it should not have a difficulty rating:
  *      Update the config value: `app.workshop.item_categories_without_difficulty`
  */
-enum WorkshopCategory: int {
-
+enum WorkshopCategory: int
+{
     // With difficulty rating
     case Map                = 10;
     case MapPack            = 15;

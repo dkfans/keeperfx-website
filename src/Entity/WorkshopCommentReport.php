@@ -2,15 +2,12 @@
 
 namespace App\Entity;
 
-use App\Entity\User;
-
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class WorkshopCommentReport
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -31,13 +28,13 @@ class WorkshopCommentReport
     private \DateTime $created_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -45,7 +42,7 @@ class WorkshopCommentReport
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -53,7 +50,7 @@ class WorkshopCommentReport
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -63,7 +60,7 @@ class WorkshopCommentReport
     }
 
     /**
-     * Get the value of reason
+     * Get the value of reason.
      */
     public function getReason(): string
     {
@@ -71,7 +68,7 @@ class WorkshopCommentReport
     }
 
     /**
-     * Set the value of reason
+     * Set the value of reason.
      */
     public function setReason(string $reason): self
     {
@@ -81,7 +78,7 @@ class WorkshopCommentReport
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -89,7 +86,7 @@ class WorkshopCommentReport
     }
 
     /**
-     * Get the value of comment
+     * Get the value of comment.
      */
     public function getComment(): WorkshopComment
     {
@@ -97,7 +94,7 @@ class WorkshopCommentReport
     }
 
     /**
-     * Set the value of comment
+     * Set the value of comment.
      */
     public function setComment(WorkshopComment $comment): self
     {

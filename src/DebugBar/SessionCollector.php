@@ -3,8 +3,8 @@
 namespace App\DebugBar;
 
 use Compwright\PhpSession\Session;
-use DebugBar\DataCollector\Renderable;
 use DebugBar\DataCollector\DataCollector;
+use DebugBar\DataCollector\Renderable;
 use Psr\Container\ContainerInterface;
 
 // 2. Implement the interface
@@ -12,7 +12,8 @@ class SessionCollector extends DataCollector implements Renderable
 {
     public function __construct(
         private ContainerInterface $container,
-    ) {}
+    ) {
+    }
 
     public function collect()
     {
@@ -33,12 +34,12 @@ class SessionCollector extends DataCollector implements Renderable
     public function getWidgets()
     {
         return [
-            "session" => [
-                "icon" => "tags",
-                "widget" => "PhpDebugBar.Widgets.VariableListWidget",
-                "map" => "session",
-                "default" => "{}",
-                "badge" => \count($this->container->get(Session::class))
+            'session' => [
+                'icon'    => 'tags',
+                'widget'  => 'PhpDebugBar.Widgets.VariableListWidget',
+                'map'     => 'session',
+                'default' => '{}',
+                'badge'   => \count($this->container->get(Session::class)),
             ],
         ];
     }

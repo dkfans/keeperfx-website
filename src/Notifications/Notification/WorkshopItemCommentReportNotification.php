@@ -3,14 +3,11 @@
 namespace App\Notifications\Notification;
 
 use App\Enum\UserRole;
-
-use Doctrine\ORM\EntityManager;
-
 use App\Notifications\Notification;
 use App\Notifications\NotificationInterface;
 
-class WorkshopItemCommentReportNotification extends Notification implements NotificationInterface {
-
+class WorkshopItemCommentReportNotification extends Notification implements NotificationInterface
+{
     public function getRequiredUserRole(): UserRole
     {
         return UserRole::Moderator;
@@ -28,7 +25,7 @@ class WorkshopItemCommentReportNotification extends Notification implements Noti
 
     public function getNotificationTitle(): string
     {
-        return "New workshop comment report";
+        return 'New workshop comment report';
     }
 
     public function getDefaultSettings(): array
@@ -38,5 +35,4 @@ class WorkshopItemCommentReportNotification extends Notification implements Noti
             'email'   => true,
         ];
     }
-
 }

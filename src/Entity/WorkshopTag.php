@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class WorkshopTag
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -17,7 +16,7 @@ class WorkshopTag
     private string $name;
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId()
     {
@@ -25,7 +24,7 @@ class WorkshopTag
     }
 
     /**
-     * Get the value of name
+     * Get the value of name.
      */
     public function getName()
     {
@@ -33,9 +32,9 @@ class WorkshopTag
     }
 
     /**
-     * Set the value of name
+     * Set the value of name.
      *
-     * @return  self
+     * @return self
      */
     public function setName($name)
     {

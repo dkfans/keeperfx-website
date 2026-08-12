@@ -6,13 +6,13 @@ use App\FlashMessage;
 
 class FlashMessageTwigExtension extends \Twig\Extension\AbstractExtension
 {
-    /** @var FlashMessage $flash */
+    /** @var FlashMessage */
     private $flash;
 
     /**
-     * Bootstrap alert index
+     * Bootstrap alert index.
      *
-     * @var integer
+     * @var int
      */
     private $index = 0;
 
@@ -51,13 +51,12 @@ class FlashMessageTwigExtension extends \Twig\Extension\AbstractExtension
         $str = '<div class="alert alert-solid alert-' . $type;
         $str .= '" role="alert" data-alert-index="' . $this->index++ . '">';
         $str .= $message . '</div>';
+
         return $str;
     }
 
     /**
-     * Render all flash messages which have not been displayed yet
-     *
-     * @return string
+     * Render all flash messages which have not been displayed yet.
      */
     public function renderFlashMessages(): string
     {

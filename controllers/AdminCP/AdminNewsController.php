@@ -2,43 +2,38 @@
 
 namespace App\Controller\AdminCP;
 
-use App\Entity\NewsArticle;
-
 use App\Account;
-use App\FlashMessage;
 use App\Config\Config;
 use App\DiscordNotifier;
-use App\UploadSizeHelper;
+use App\Entity\NewsArticle;
+use App\FlashMessage;
 use App\Helper\ThumbnailHelper;
-use App\Notifications\NotificationCenter;
 use App\Notifications\Notification\NewsPostNotification;
-
-use Slim\Csrf\Guard;
-use Doctrine\ORM\EntityManager;
+use App\Notifications\NotificationCenter;
+use App\UploadSizeHelper;
 use ByteUnits\Binary as BinaryFormatter;
-use Twig\Environment as TwigEnvironment;
-
-use Psr\Http\Message\UploadedFileInterface;
+use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpBadRequestException;
+use Psr\Http\Message\UploadedFileInterface;
+use Slim\Csrf\Guard;
 use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
-class AdminNewsController {
-
+class AdminNewsController
+{
     public function newsIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-        EntityManager $em
-    ){
+        EntityManager $em,
+    ) {
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC']);
 
         $response->getBody()->write(
             $twig->render('admincp/news/news.admincp.html.twig', [
-                'articles' => $articles
+                'articles' => $articles,
             ])
         );
 
@@ -48,8 +43,8 @@ class AdminNewsController {
     public function newsAddIndex(
         Request $request,
         Response $response,
-        TwigEnvironment $twig
-    ){
+        TwigEnvironment $twig,
+    ) {
         $response->getBody()->write(
             $twig->render('admincp/news/news.add.admincp.html.twig')
         );
@@ -67,7 +62,7 @@ class AdminNewsController {
         DiscordNotifier $discord_notifier,
         UploadSizeHelper $upload_size_helper,
         NotificationCenter $nc,
-    ){
+    ) {
 
         // Get POST data
         $post     = $request->getParsedBody();
@@ -76,11 +71,12 @@ class AdminNewsController {
         $excerpt  = (string) ($post['excerpt'] ?? null);
 
         // Make sure title and contents are set
-        if(!$contents || !$title){
+        if (!$contents || !$title) {
             $flash->warning('Missing title or contents.');
             $response->getBody()->write(
                 $twig->render('admincp/news/news.add.admincp.html.twig')
             );
+
             return $response;
         }
 
@@ -91,7 +87,7 @@ class AdminNewsController {
         $article->setAuthor($account->getUser());
 
         // Add an excerpt
-        if($excerpt){
+        if ($excerpt) {
             $article->setExcerpt($excerpt);
         } else {
             $article->setExcerpt($contents);
@@ -99,11 +95,11 @@ class AdminNewsController {
 
         // Check if we need to upload an image for this news article
         $news_image_dir = Config::get('storage.path.news-img');
-        if($news_image_dir !== null){
+        if ($news_image_dir !== null) {
 
             // Check if news image upload directory exists and create it if it doesn't
-            if(!is_dir($news_image_dir)){
-                if(!\mkdir($news_image_dir)){
+            if (!\is_dir($news_image_dir)) {
+                if (!\mkdir($news_image_dir)) {
                     throw new \Exception('Failed to create news image storage directory: \'' . $news_image_dir . '\'');
                 }
             }
@@ -111,21 +107,22 @@ class AdminNewsController {
             // Get image file
             $files = $request->getUploadedFiles();
             $file  = $files['image'] ?? null;
-            if($file !== null && ($file instanceof UploadedFileInterface) && $file->getError() !== \UPLOAD_ERR_NO_FILE){
+            if ($file !== null && ($file instanceof UploadedFileInterface) && $file->getError() !== \UPLOAD_ERR_NO_FILE) {
 
                 // Check image file extension
-                $filename = $file->getClientFilename();
+                $filename       = $file->getClientFilename();
                 $file_extension = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-                if(!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])){
+                if (!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
                     $flash->warning('Invalid image file. Allowed file types: jpg, jpeg, png, gif, webp');
                     $response->getBody()->write(
                         $twig->render('admincp/news/news.add.admincp.html.twig')
                     );
+
                     return $response;
                 }
 
                 // Check filesize
-                if($file->getSize() > $upload_size_helper->getFinalNewsImageUploadSize()){
+                if ($file->getSize() > $upload_size_helper->getFinalNewsImageUploadSize()) {
                     $flash->warning(
                         'Maximum upload filesize for news image exceeded. (' .
                         BinaryFormatter::bytes($upload_size_helper->getFinalNewsImageUploadSize())->format() .
@@ -134,27 +131,28 @@ class AdminNewsController {
                     $response->getBody()->write(
                         $twig->render('admincp/news/news.add.admincp.html.twig')
                     );
+
                     return $response;
                 }
 
                 // Create variables for this image
-                $image_filename  = md5($title . time()) . '.' . $file_extension;
+                $image_filename  = \md5($title . \time()) . '.' . $file_extension;
                 $news_image_path = $news_image_dir . '/' . $image_filename;
 
                 // Make sure image does not exist yet
-                if(\file_exists($news_image_path)){
+                if (\file_exists($news_image_path)) {
                     throw new \Exception("news image filename already exists: {$image_filename}");
                 }
 
                 // Move uploaded image
                 $file->moveTo($news_image_path);
-                if(!\file_exists($news_image_path)){
+                if (!\file_exists($news_image_path)) {
                     throw new \Exception('Failed to move uploaded news image');
                 }
 
                 // Create a thumbnail
                 $thumbnail_filename = ThumbnailHelper::createThumbnail($news_image_path, 256, 256);
-                if($thumbnail_filename){
+                if ($thumbnail_filename) {
                     $image_filename = $thumbnail_filename;
 
                     // Remove original image
@@ -177,7 +175,7 @@ class AdminNewsController {
             'id'          => $article->getId(),
             'title'       => $article->getTitle(),
             'title_slug'  => $article->getTitleSlug(),
-            'date_string' => $article->getCreatedTimestamp()->format("Y-m-d"),
+            'date_string' => $article->getCreatedTimestamp()->format('Y-m-d'),
         ]);
 
         // Send a notification on Discord
@@ -186,6 +184,7 @@ class AdminNewsController {
         // Success
         $flash->success('News article posted!');
         $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
+
         return $response;
     }
 
@@ -195,14 +194,15 @@ class AdminNewsController {
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id
-    ){
+        $id,
+    ) {
 
         // Get article
         $article = $em->getRepository(NewsArticle::class)->find($id);
-        if(!$article){
+        if (!$article) {
             $flash->warning('News article not found.');
             $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
+
             return $response;
         }
 
@@ -212,6 +212,7 @@ class AdminNewsController {
                 'article' => $article,
             ])
         );
+
         return $response;
     }
 
@@ -222,8 +223,8 @@ class AdminNewsController {
         EntityManager $em,
         FlashMessage $flash,
         UploadSizeHelper $upload_size_helper,
-        $id
-    ){
+        $id,
+    ) {
 
         // Get POST vars
         $post     = $request->getParsedBody();
@@ -233,9 +234,10 @@ class AdminNewsController {
 
         // Get the article
         $article = $em->getRepository(NewsArticle::class)->find($id);
-        if(!$article){
+        if (!$article) {
             $flash->warning('News article not found.');
             $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
+
             return $response;
         }
 
@@ -244,7 +246,7 @@ class AdminNewsController {
         $article->setContents($contents);
 
         // Add excerpt
-        if($excerpt){
+        if ($excerpt) {
             $article->setExcerpt($excerpt);
         } else {
             $article->setExcerpt($contents);
@@ -252,11 +254,11 @@ class AdminNewsController {
 
         // Check if we need to upload an image for this news article
         $news_image_dir = Config::get('storage.path.news-img');
-        if($news_image_dir !== null){
+        if ($news_image_dir !== null) {
 
             // Check if news image upload directory exists and create it if it doesn't
-            if(!is_dir($news_image_dir)){
-                if(!\mkdir($news_image_dir)){
+            if (!\is_dir($news_image_dir)) {
+                if (!\mkdir($news_image_dir)) {
                     throw new \Exception('Failed to create news image storage directory: \'' . $news_image_dir . '\'');
                 }
             }
@@ -264,57 +266,59 @@ class AdminNewsController {
             // Get image file
             $files = $request->getUploadedFiles();
             $file  = $files['image'] ?? null;
-            if($file !== null && ($file instanceof UploadedFileInterface) && $file->getError() !== \UPLOAD_ERR_NO_FILE){
+            if ($file !== null && ($file instanceof UploadedFileInterface) && $file->getError() !== \UPLOAD_ERR_NO_FILE) {
 
                 // Check image file extension
-                $filename = $file->getClientFilename();
+                $filename       = $file->getClientFilename();
                 $file_extension = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
-                if(!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])){
+                if (!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
                     $flash->warning('Invalid image file. Allowed file types: jpg, jpeg, png, gif, webp');
                     $response = $response->withHeader('Location', '/admin/news/' . $article->getId())->withStatus(302);
+
                     return $response;
                 }
 
                 // Check filesize
-                if($file->getSize() > $upload_size_helper->getFinalNewsImageUploadSize()){
+                if ($file->getSize() > $upload_size_helper->getFinalNewsImageUploadSize()) {
                     $flash->warning(
                         'Maximum upload filesize for news image exceeded. (' .
                         BinaryFormatter::bytes($upload_size_helper->getFinalNewsImageUploadSize())->format() .
                         ')'
                     );
                     $response = $response->withHeader('Location', '/admin/news/' . $article->getId())->withStatus(302);
+
                     return $response;
                 }
 
                 // Check if there is already an image added to this news article
                 $existing_image = $article->getImage();
-                if($existing_image){
+                if ($existing_image) {
 
                     // Check if image exists and remove it if it does
                     $existing_image_path = Config::get('storage.path.news-img') . '/' . $existing_image;
-                    if(\file_exists($existing_image_path)){
+                    if (\file_exists($existing_image_path)) {
                         @\unlink($existing_image_path);
                     }
                 }
 
                 // Create variables for this image
-                $image_filename  = md5($title . time()) . '.' . $file_extension;
+                $image_filename  = \md5($title . \time()) . '.' . $file_extension;
                 $news_image_path = $news_image_dir . '/' . $image_filename;
 
                 // Make sure image does not exist yet
-                if(\file_exists($news_image_path)){
+                if (\file_exists($news_image_path)) {
                     throw new \Exception("news image filename already exists: {$image_filename}");
                 }
 
                 // Move uploaded image
                 $file->moveTo($news_image_path);
-                if(!\file_exists($news_image_path)){
+                if (!\file_exists($news_image_path)) {
                     throw new \Exception('Failed to move uploaded news image');
                 }
 
                 // Create a thumbnail
                 $thumbnail_filename = ThumbnailHelper::createThumbnail($news_image_path, 256, 256);
-                if($thumbnail_filename){
+                if ($thumbnail_filename) {
                     $image_filename = $thumbnail_filename;
 
                     // Remove original image
@@ -333,6 +337,7 @@ class AdminNewsController {
         // Success
         $flash->success('News article updated!');
         $response = $response->withHeader('Location', '/admin/news/' . $article->getId())->withStatus(302);
+
         return $response;
     }
 
@@ -346,17 +351,17 @@ class AdminNewsController {
         $id,
         $token_name,
         $token_value,
-    ){
+    ) {
 
         // Check for valid CSRF token
         $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
+        if (!$valid) {
             throw new HttpForbiddenException($request);
         }
 
         // Get article
         $article = $em->getRepository(NewsArticle::class)->find($id);
-        if($article){
+        if ($article) {
 
             // Delete article
             $em->remove($article);
@@ -366,6 +371,7 @@ class AdminNewsController {
 
         // Response
         $response = $response->withHeader('Location', '/admin/news/list')->withStatus(302);
+
         return $response;
     }
 
@@ -379,25 +385,26 @@ class AdminNewsController {
         $id,
         $token_name,
         $token_value,
-    ){
+    ) {
 
         // Check for valid CSRF token
         $valid = $csrf_guard->validateToken($token_name, $token_value);
-        if(!$valid){
+        if (!$valid) {
             throw new HttpForbiddenException($request);
         }
 
         // Get the article
         $article = $em->getRepository(NewsArticle::class)->find($id);
-        if(!$article){
+        if (!$article) {
             throw new HttpNotFoundException($request);
         }
 
         // Get the image
         $image = $article->getImage();
-        if($image === null){
+        if ($image === null) {
             $flash->error('Article does not have an image to delete');
             $response = $response->withHeader('Location', '/admin/news/' . $article->getId())->withStatus(302);
+
             return $response;
         }
 
@@ -405,7 +412,7 @@ class AdminNewsController {
         $image_path = Config::get('storage.path.news-img') . '/' . $image;
 
         // Remove the image file if it exists
-        if(\file_exists($image_path)){
+        if (\file_exists($image_path)) {
             @\unlink($image_path);
         }
 
@@ -416,7 +423,7 @@ class AdminNewsController {
         // Success
         $flash->success('News image has been removed!');
         $response = $response->withHeader('Location', '/admin/news/' . $article->getId())->withStatus(302);
+
         return $response;
     }
-
 }

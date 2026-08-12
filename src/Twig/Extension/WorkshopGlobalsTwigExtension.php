@@ -2,24 +2,21 @@
 
 namespace App\Twig\Extension;
 
-use App\Enum\WorkshopCategory;
-
-use App\Entity\WorkshopTag;
-use App\Entity\GithubRelease;
-
 use App\Config\Config;
-use Doctrine\ORM\EntityManager;
+use App\Entity\GithubRelease;
+use App\Entity\WorkshopTag;
+use App\Enum\WorkshopCategory;
 use App\Workshop\WorkshopHelper;
-
+use Doctrine\ORM\EntityManager;
 use Psr\SimpleCache\CacheInterface;
 
 class WorkshopGlobalsTwigExtension extends \Twig\Extension\AbstractExtension implements \Twig\Extension\GlobalsInterface
 {
-
     public function __construct(
         private EntityManager $em,
         private CacheInterface $cache,
-    ) {}
+    ) {
+    }
 
     public function getName(): string
     {
@@ -46,7 +43,7 @@ class WorkshopGlobalsTwigExtension extends \Twig\Extension\AbstractExtension imp
         // Get the latest minors of the stable releases
         // Example: 1.2.2, 1.1.5, 1.0.1
         $latest_minor_releases = $this->cache->get('latest-stable-minor-releases', null);
-        if (is_null($latest_minor_releases)) {
+        if ($latest_minor_releases === null) {
 
             $stable_releases = [];
 
@@ -61,7 +58,7 @@ class WorkshopGlobalsTwigExtension extends \Twig\Extension\AbstractExtension imp
                     $minor = $version_parts['minor'];
                     $patch = $version_parts['patch'];
 
-                    $news_post = null;
+                    $news_post        = null;
                     $news_post_entity = $entity->getLinkedNewsPost();
                     if ($news_post_entity) {
                         $news_post = [
@@ -71,7 +68,7 @@ class WorkshopGlobalsTwigExtension extends \Twig\Extension\AbstractExtension imp
                         ];
                     }
 
-                    $mirrors = [];
+                    $mirrors         = [];
                     $mirror_entities = $entity->getMirrors();
                     if ($mirror_entities) {
                         foreach ($mirror_entities as $mirror_entity) {
@@ -117,10 +114,10 @@ class WorkshopGlobalsTwigExtension extends \Twig\Extension\AbstractExtension imp
                 'categories'                    => WorkshopCategory::cases(),
                 'categories_without_difficulty' => Config::get('app.workshop.item_categories_without_difficulty'),
                 'categories_map'                => $categories_map,
-                //'tags'                          => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-                'stable_builds'                 => $stable_builds_map,
-                'latest_stable_minor_releases'  => $latest_minor_releases,
-            ]
+                // 'tags'                          => $this->em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+                'stable_builds'                => $stable_builds_map,
+                'latest_stable_minor_releases' => $latest_minor_releases,
+            ],
         ];
     }
 }

@@ -3,19 +3,17 @@
 namespace App\Console\Command\Controller;
 
 use Symfony\Component\Console\Command\Command;
-
-use Symfony\Component\Console\Input\InputInterface as Input;
-use Symfony\Component\Console\Output\OutputInterface as Output;
-
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface as Output;
 
 class ControllerCreateCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("controller:create")
-            ->setDescription("Create a new blank controller")
+        $this->setName('controller:create')
+            ->setDescription('Create a new blank controller')
             ->addArgument('name', InputArgument::REQUIRED, 'Controller name (without the Controller affix)')
             ->addOption('twig', '-t', InputOption::VALUE_NONE, 'Add Twig');
     }
@@ -30,25 +28,26 @@ class ControllerCreateCommand extends Command
 
         $file_path = $controller_dir . '/' . $controller_name . '.php';
 
-        if(\file_exists($file_path)){
+        if (\file_exists($file_path)) {
             $output->writeln("[-] <error>{$file_path}</error> ALREADY EXISTS");
+
             return Command::FAILURE;
         }
 
-        $str_twig1 = '';
-        $str_twig2 = '';
-        $str_contents = '$response->getBody()->write(\'Controller working!\');' . PHP_EOL .
+        $str_twig1    = '';
+        $str_twig2    = '';
+        $str_contents = '$response->getBody()->write(\'Controller working!\');' . \PHP_EOL .
                 '        return $response;';
 
-        if($input->getOption('twig')){
+        if ($input->getOption('twig')) {
 
-            $output->writeln("[>] Adding Twig");
+            $output->writeln('[>] Adding Twig');
 
-            $str_twig1 = PHP_EOL . 'use Twig\Environment as TwigEnvironment;';
-            $str_twig2 = ',' . PHP_EOL . '        TwigEnvironment $twig';
-            $str_contents = '$response->getBody()->write(' . PHP_EOL .
-                '            $twig->render(\'template.html.twig\')' . PHP_EOL .
-                '        );' . PHP_EOL . PHP_EOL .
+            $str_twig1    = \PHP_EOL . 'use Twig\Environment as TwigEnvironment;';
+            $str_twig2    = ',' . \PHP_EOL . '        TwigEnvironment $twig';
+            $str_contents = '$response->getBody()->write(' . \PHP_EOL .
+                '            $twig->render(\'template.html.twig\')' . \PHP_EOL .
+                '        );' . \PHP_EOL . \PHP_EOL .
                 '        return $response;';
         }
 
@@ -73,13 +72,14 @@ class $controller_name {
 
 EOT;
 
-    if(!\file_put_contents($file_path, $contents)){
-        $output->writeln("[-] <error>{$file_path}</error> CREATION FAILED");
-        return Command::FAILURE;
-    }
+        if (!\file_put_contents($file_path, $contents)) {
+            $output->writeln("[-] <error>{$file_path}</error> CREATION FAILED");
 
-    $output->writeln("[+] <info>{$file_path}</info> CREATED!");
-    $output->writeln("[>] Done!");
+            return Command::FAILURE;
+        }
+
+        $output->writeln("[+] <info>{$file_path}</info> CREATED!");
+        $output->writeln('[>] Done!');
 
         return Command::SUCCESS;
     }

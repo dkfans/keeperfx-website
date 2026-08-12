@@ -4,17 +4,14 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use App\Entity\GithubRelease;
-
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class GitCommit
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    private int|null $id = null;
+    private ?int $id = null;
 
     #[ORM\Column]
     private string $hash;
@@ -30,7 +27,7 @@ class GitCommit
     private string $message;
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId()
     {
@@ -38,7 +35,7 @@ class GitCommit
     }
 
     /**
-     * Get the value of hash
+     * Get the value of hash.
      */
     public function getHash()
     {
@@ -46,9 +43,9 @@ class GitCommit
     }
 
     /**
-     * Set the value of hash
+     * Set the value of hash.
      *
-     * @return  self
+     * @return self
      */
     public function setHash($hash)
     {
@@ -58,7 +55,7 @@ class GitCommit
     }
 
     /**
-     * Get the value of release
+     * Get the value of release.
      */
     public function getRelease()
     {
@@ -66,9 +63,9 @@ class GitCommit
     }
 
     /**
-     * Set the value of release
+     * Set the value of release.
      *
-     * @return  self
+     * @return self
      */
     public function setRelease(GithubRelease $release)
     {
@@ -78,7 +75,7 @@ class GitCommit
     }
 
     /**
-     * Get the value of timestamp
+     * Get the value of timestamp.
      */
     public function getTimestamp(): \DateTime
     {
@@ -86,9 +83,9 @@ class GitCommit
     }
 
     /**
-     * Set the value of timestamp
+     * Set the value of timestamp.
      *
-     * @return  self
+     * @return self
      */
     public function setTimestamp(\DateTime $timestamp)
     {
@@ -98,7 +95,7 @@ class GitCommit
     }
 
     /**
-     * Get the value of message
+     * Get the value of message.
      */
     public function getMessage()
     {
@@ -106,9 +103,9 @@ class GitCommit
     }
 
     /**
-     * Set the value of message
+     * Set the value of message.
      *
-     * @return  self
+     * @return self
      */
     public function setMessage(string $message)
     {

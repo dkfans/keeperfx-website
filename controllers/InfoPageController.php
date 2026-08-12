@@ -2,17 +2,17 @@
 
 namespace App\Controller;
 
-use Twig\Environment as TwigEnvironment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
-class InfoPageController {
-
+class InfoPageController
+{
     public function termsOfServiceIndex(
         Request $request,
         Response $response,
-        TwigEnvironment $twig
-    ){
+        TwigEnvironment $twig,
+    ) {
         $response->getBody()->write(
             $twig->render('terms-of-service.html.twig')
         );
@@ -23,13 +23,12 @@ class InfoPageController {
     public function privacyPolicyIndex(
         Request $request,
         Response $response,
-        TwigEnvironment $twig
-    ){
+        TwigEnvironment $twig,
+    ) {
         $response->getBody()->write(
             $twig->render('privacy-policy.html.twig')
         );
 
         return $response;
     }
-
 }

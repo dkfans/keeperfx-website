@@ -2,29 +2,24 @@
 
 namespace App;
 
-use App\Enum\UserRole;
-
+use App\Config\Config;
 use App\Entity\User;
-use App\Entity\UserLog;
-use App\Entity\UserIpLog;
-use App\Entity\UserOAuthToken;
 use App\Entity\UserCookieToken;
 use App\Entity\UserEmailVerification;
-
-use App\Config\Config;
-use Doctrine\ORM\EntityManager;
-use Compwright\PhpSession\Session;
-
-use Dflydev\FigCookies\SetCookie;
-use Dflydev\FigCookies\Modifier\SameSite;
-
+use App\Entity\UserIpLog;
+use App\Entity\UserLog;
+use App\Entity\UserOAuthToken;
+use App\Enum\UserRole;
 use App\Helper\IpHelper;
+use Compwright\PhpSession\Session;
+use Dflydev\FigCookies\Modifier\SameSite;
+use Dflydev\FigCookies\SetCookie;
+use Doctrine\ORM\EntityManager;
 use Xenokore\Utility\Helper\StringHelper;
 
 class Account
 {
-
-    private User|null $user = null;
+    private ?User $user = null;
 
     public function __construct(
         private Session $session,
@@ -35,7 +30,7 @@ class Account
         private FlashMessage $flash,
     ) {
         // Check if current user is logged in
-        if (isset($session['uid']) && !is_null($session['uid'])) {
+        if (isset($session['uid']) && $session['uid'] !== null) {
 
             // Search this user in the DB
             // In case a user has a session without a valid user account
@@ -46,10 +41,11 @@ class Account
                 if ($user->getRole() == UserRole::Banned) {
 
                     // Show message
-                    $this->flash->error("You have been banned.");
+                    $this->flash->error('You have been banned.');
 
                     // Don't login
                     $session['uid'] = null;
+
                     return;
                 }
 
@@ -80,7 +76,7 @@ class Account
         $cookie_token = null;
         while ($cookie_token === null) {
             $cookie_token_new = StringHelper::generate(64);
-            $existing_token = $this->em->getRepository(UserCookieToken::class)->findOneBy(['token' => $cookie_token_new]);
+            $existing_token   = $this->em->getRepository(UserCookieToken::class)->findOneBy(['token' => $cookie_token_new]);
             if ($existing_token === null) {
                 $cookie_token = $cookie_token_new;
             }
@@ -101,15 +97,16 @@ class Account
         $this->em->flush();
 
         // Add cookie to response
-        $max_age      = (int) ($_ENV['APP_REMEMBER_ME_TIME'] ?? 31560000);
-        $expires      = \gmdate('D, d M Y H:i:s T', time() + $max_age);
+        $max_age = (int) ($_ENV['APP_REMEMBER_ME_TIME'] ?? 31560000);
+        $expires = \gmdate('D, d M Y H:i:s T', \time() + $max_age);
+
         return SetCookie::create('user_cookie_token', $cookie_token)
             ->withDomain($_ENV['APP_COOKIE_DOMAIN'] ?? null)
-            ->withPath($_ENV['APP_COOKIE_PATH'] ?? "/")
+            ->withPath($_ENV['APP_COOKIE_PATH'] ?? '/')
             ->withExpires($expires)
             ->withMaxAge($max_age)
-            ->withSecure((bool)$_ENV['APP_COOKIE_TLS_ONLY'])
-            ->withHttpOnly((bool)$_ENV['APP_COOKIE_HTTP_ONLY'])
+            ->withSecure((bool) $_ENV['APP_COOKIE_TLS_ONLY'])
+            ->withHttpOnly((bool) $_ENV['APP_COOKIE_HTTP_ONLY'])
             ->withSameSite(
                 SameSite::fromString($_ENV['APP_COOKIE_SAMESITE'])
             );
@@ -120,13 +117,13 @@ class Account
      *
      * Returns false on failure and the email ID on success.
      *
-     * @return integer|false Email ID on success or false on failure.
+     * @return int|false email ID on success or false on failure
      */
     public function createEmailVerification(): int|false
     {
         // Make sure user is logged in
         if (!$this->isLoggedIn()) {
-            throw new \Exception("need to be logged in to check if we need email verification");
+            throw new \Exception('need to be logged in to check if we need email verification');
         }
 
         // Create the verification in the DB
@@ -142,7 +139,7 @@ class Account
     {
         // Create a mail
         // TODO: add template functionality
-        $email_body = "Please verify your email address for KeeperFX using the following link: " . PHP_EOL;
+        $email_body = 'Please verify your email address for KeeperFX using the following link: ' . \PHP_EOL;
         $email_body .= $_ENV['APP_ROOT_URL'] . '/verify-email/' . $this->user->getId() . '/' . $verification->getToken();
 
         // Create the mail in the mail queue and return the mail ID or FALSE on failure
@@ -158,10 +155,11 @@ class Account
     public function hasPendingEmailVerification(): bool
     {
         if (!$this->isLoggedIn()) {
-            throw new \Exception("need to be logged in to check if we need email verification");
+            throw new \Exception('need to be logged in to check if we need email verification');
         }
 
         $verification = $this->user->getEmailVerification();
+
         return $verification !== null;
     }
 
@@ -169,7 +167,7 @@ class Account
     {
         // User needs to be logged in
         if (!$this->isLoggedIn()) {
-            throw new \Exception("need to be logged in to check if we need to remove email verification");
+            throw new \Exception('need to be logged in to check if we need to remove email verification');
         }
 
         // Check if there is a verification pending
@@ -184,11 +182,11 @@ class Account
 
     public function isLoggedIn(): bool
     {
-        return !is_null($this->user);
+        return $this->user !== null;
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): ?User
     {
@@ -196,9 +194,9 @@ class Account
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      *
-     * @return  self
+     * @return self
      */
     public function setUser(?User $user)
     {
@@ -207,7 +205,7 @@ class Account
         return $this;
     }
 
-    public function setCurrentLoggedInUser(User $user)
+    public function setCurrentLoggedInUser(User $user): void
     {
         $this->setUser($user);
         $this->session['uid'] = $user->getId();
@@ -216,9 +214,9 @@ class Account
         $this->theme->setTheme($user->getTheme());
     }
 
-    public function clearCurrentLoggedInUser()
+    public function clearCurrentLoggedInUser(): void
     {
-        $this->user = null;
+        $this->user           = null;
         $this->session['uid'] = null;
     }
 
@@ -239,8 +237,9 @@ class Account
         if ($existing_ip_log) {
 
             // Update the last seen timestamp
-            $existing_ip_log->setLastSeenTimestamp(new \DateTime("now"));
+            $existing_ip_log->setLastSeenTimestamp(new \DateTime('now'));
             $this->em->flush();
+
             return;
         }
 
@@ -256,7 +255,7 @@ class Account
 
     public function log(string $ip, string $log_type, array $variables = []): void
     {
-        if (array_key_exists($log_type, Config::load('user_log')) === false) {
+        if (\array_key_exists($log_type, Config::load('user_log')) === false) {
             throw new \Exception("invalid user log type: '{$log_type}'");
         }
 
@@ -277,7 +276,7 @@ class Account
         foreach ($variables as $name => $data) {
             if (\is_object($data) && \method_exists($data, 'getId')) {
                 $variables[$name] = [
-                    '_class' => \get_class($data),
+                    '_class' => $data::class,
                     '_id'    => $data->getId(),
                 ];
             }

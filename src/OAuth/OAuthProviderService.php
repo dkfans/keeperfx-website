@@ -4,8 +4,8 @@ namespace App\OAuth;
 
 use App\Enum\OAuthProviderType;
 
-class OAuthProviderService {
-
+class OAuthProviderService
+{
     public const CLASSES = [
         'discord' => \Wohali\OAuth2\Client\Provider\Discord::class,
         'twitch'  => \Vertisan\OAuth2\Client\Provider\TwitchHelix::class,
@@ -20,11 +20,11 @@ class OAuthProviderService {
 
     public function getProvider(OAuthProviderType $provider)
     {
-        if(isset($this->providers[$provider->value])){
+        if (isset($this->providers[$provider->value])) {
             return $this->providers[$provider];
         }
 
-        if(!isset(self::CLASSES[$provider->value])){
+        if (!isset(self::CLASSES[$provider->value])) {
             throw new \Exception("OAuthProviderType '{$provider->value}' does not have a class assigned to it");
         }
 
@@ -41,7 +41,7 @@ class OAuthProviderService {
         $class->setHttpClient(new \GuzzleHttp\Client([
             'defaults' => [
                 \GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 5,
-                \GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true
+                \GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,
             ],
             \GuzzleHttp\RequestOptions::VERIFY => false,
         ]));
@@ -51,11 +51,10 @@ class OAuthProviderService {
         return $class;
     }
 
-
     public function getScopes(OAuthProviderType $provider): array
     {
 
-        if(!isset(self::SCOPES[$provider->value])){
+        if (!isset(self::SCOPES[$provider->value])) {
             throw new \Exception("OAuthProviderType '{$provider->value}' does not have scopes assigned to it");
         }
 

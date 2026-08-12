@@ -2,23 +2,19 @@
 
 namespace App;
 
-use App\Enum\ReleaseType;
-
-use App\Entity\GithubRelease;
+use App\Config\Config;
 use App\Entity\GameFileIndex;
 use App\Entity\LauncherRelease;
-use App\Entity\GithubAlphaBuild;
-
-use App\Config\Config;
+use App\Enum\ReleaseType;
 use Doctrine\ORM\EntityManager;
-
 use Xenokore\Utility\Helper\DirectoryHelper;
 
 class GameFileHandler
 {
     public function __construct(
-        private EntityManager $em
-    ) {}
+        private EntityManager $em,
+    ) {
+    }
 
     public static function generateIndexFromPath(string $path): array|false
     {
@@ -34,7 +30,7 @@ class GameFileHandler
 
         foreach ($iterator as $file) {
             if ($file->isFile()) {
-                $relative_path = \DIRECTORY_SEPARATOR . \ltrim(\substr($file->getPathname(), \strlen($path)), \DIRECTORY_SEPARATOR);
+                $relative_path         = \DIRECTORY_SEPARATOR . \ltrim(\substr($file->getPathname(), \strlen($path)), \DIRECTORY_SEPARATOR);
                 $index[$relative_path] = \hash_file('crc32b', $file->getPathname());
             }
         }
@@ -83,7 +79,7 @@ class GameFileHandler
         DirectoryHelper::create($dest_path);
 
         // Move files
-        $file_count = 0;
+        $file_count   = 0;
         $dir_iterator = new \RecursiveDirectoryIterator($source_path, \RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator     = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
         foreach ($iterator as $item) {
@@ -95,9 +91,9 @@ class GameFileHandler
             } else {
                 $item_filepath = $dest_path . \DIRECTORY_SEPARATOR . \ltrim(\substr($item->getPathname(), \strlen($source_path)), \DIRECTORY_SEPARATOR);
                 if (\copy($item, $item_filepath) === true) {
-                    $file_count++;
+                    ++$file_count;
                 } else {
-                    throw new \Exception("failed to copy file");
+                    throw new \Exception('failed to copy file');
                 }
             }
         }
@@ -108,7 +104,7 @@ class GameFileHandler
             $launcher_files_dir = Config::get('storage.path.launcher') . '/' . $latest_launcher->getName() . '/files';
             if (DirectoryHelper::isAccessible($launcher_files_dir)) {
                 // Add launcher files
-                foreach (scandir($launcher_files_dir) as $file) {
+                foreach (\scandir($launcher_files_dir) as $file) {
                     if ($file != '.' && $file != '..') {
                         $source_file = $launcher_files_dir . '/' . $file;
 
@@ -116,7 +112,7 @@ class GameFileHandler
                         if (\copy($source_file, $dest_path . '/' . $file)) {
 
                             // Add launcher file to file map
-                            $relative_path = \DIRECTORY_SEPARATOR . $file;
+                            $relative_path              = \DIRECTORY_SEPARATOR . $file;
                             $file_index[$relative_path] = \hash_file('crc32b', $source_file);
                         }
                     }
@@ -140,11 +136,11 @@ class GameFileHandler
                     } else {
                         $item_filepath = $dest_path . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
                         if (\copy($item, $item_filepath) === false) {
-                            throw new \Exception("failed to copy bundled file");
+                            throw new \Exception('failed to copy bundled file');
                         }
 
                         // Add copied file to filemap
-                        $relative_path = \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                        $relative_path              = \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
                         $file_index[$relative_path] = \hash_file('crc32b', $item_filepath);
                     }
                 }

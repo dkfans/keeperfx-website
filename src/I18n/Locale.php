@@ -4,8 +4,8 @@ namespace App\I18n;
 
 use App\I18n\Exception\LocaleException;
 
-class Locale {
-
+class Locale
+{
     private const I18N_DIR = APP_ROOT . '/i18n';
 
     private string $code;
@@ -26,12 +26,12 @@ class Locale {
         $this->load($code);
     }
 
-    public function load(string $code)
+    public function load(string $code): void
     {
         $config_path = self::I18N_DIR . "/{$code}/{$code}.locale.php";
         $config      = require $config_path;
 
-        if(!\is_array($config)){
+        if (!\is_array($config)) {
             throw new LocaleException("Invalid locale config: '{$config_path}'. Must return an array.");
         }
 
@@ -51,7 +51,7 @@ class Locale {
     }
 
     /**
-     * Get the date format for use with \DateTime
+     * Get the date format for use with \DateTime.
      */
     public function getDateFormat(): string
     {
@@ -59,7 +59,7 @@ class Locale {
     }
 
     /**
-     * Set the date format for use with \DateTime
+     * Set the date format for use with \DateTime.
      */
     public function setDateFormat(string $date_format): self
     {
@@ -69,7 +69,7 @@ class Locale {
     }
 
     /**
-     * Get the long date format for use with \DateTime
+     * Get the long date format for use with \DateTime.
      */
     public function getDateFormatLong(): string
     {
@@ -77,7 +77,7 @@ class Locale {
     }
 
     /**
-     * Set the long date format for use with \DateTime
+     * Set the long date format for use with \DateTime.
      */
     public function setDateFormatLong(string $date_format_long)
     {
@@ -87,7 +87,7 @@ class Locale {
     }
 
     /**
-     * Get the datetime format for use with \DateTime
+     * Get the datetime format for use with \DateTime.
      */
     public function getDatetime_format(): string
     {
@@ -95,7 +95,7 @@ class Locale {
     }
 
     /**
-     * Set the datetime format for use with \DateTime
+     * Set the datetime format for use with \DateTime.
      */
     public function setDatetimeFormat(string $datetime_format): self
     {
@@ -105,7 +105,7 @@ class Locale {
     }
 
     /**
-     * Get the long datetime format for use with \DateTime
+     * Get the long datetime format for use with \DateTime.
      */
     public function getDatetimeFormatLong(): string
     {
@@ -113,7 +113,7 @@ class Locale {
     }
 
     /**
-     * Set the long datetime format for use with \DateTime
+     * Set the long datetime format for use with \DateTime.
      */
     public function setDatetime_format_long(string $datetime_format_long): self
     {
@@ -123,7 +123,7 @@ class Locale {
     }
 
     /**
-     * Get time format for use with \DateTime
+     * Get time format for use with \DateTime.
      */
     public function getTime12hrFormat(): string
     {
@@ -131,7 +131,7 @@ class Locale {
     }
 
     /**
-     * Set time format for use with \DateTime
+     * Set time format for use with \DateTime.
      */
     public function setTime12hrFormat(string $time_12hr_format): self
     {
@@ -141,7 +141,7 @@ class Locale {
     }
 
     /**
-     * Get time format for use with \DateTime
+     * Get time format for use with \DateTime.
      */
     public function getTime24hrFormat(): string
     {
@@ -149,7 +149,7 @@ class Locale {
     }
 
     /**
-     * Set time format for use with \DateTime
+     * Set time format for use with \DateTime.
      */
     public function setTime24hrFormat(string $time_24hr_format): self
     {
@@ -159,7 +159,7 @@ class Locale {
     }
 
     /**
-     * Get whether or not to display 24hr timestamps or not
+     * Get whether or not to display 24hr timestamps or not.
      */
     public function getTimeIs24hr(): bool
     {
@@ -167,7 +167,7 @@ class Locale {
     }
 
     /**
-     * Set whether or not to display 24hr timestamps or not
+     * Set whether or not to display 24hr timestamps or not.
      */
     public function setTimeIs24hr(bool $time_is_24hr): self
     {

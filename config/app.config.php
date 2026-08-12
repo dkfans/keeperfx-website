@@ -1,10 +1,9 @@
 <?php
 
 return [
-
     'app_name' => 'keeperfx-web',
 
-    /**
+    /*
      * Whoops error handler
      * Creates fancy error pages for development
      *
@@ -21,9 +20,9 @@ return [
 
     'workshop' => [
         'item_categories_without_difficulty' => [
-            \App\Enum\WorkshopCategory::Creature,
-            \App\Enum\WorkshopCategory::Application,
-            \App\Enum\WorkshopCategory::Other,
+            App\Enum\WorkshopCategory::Creature,
+            App\Enum\WorkshopCategory::Application,
+            App\Enum\WorkshopCategory::Other,
         ],
     ],
 

@@ -2,22 +2,16 @@
 
 namespace App\Controller\Workshop;
 
-use App\Enum\WorkshopCategory;
-
-use App\Entity\WorkshopItem;
-
 use App\Account;
+use App\Entity\WorkshopItem;
 use App\FlashMessage;
-
-use URLify;
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
-class WorkshopMyItemsController {
-
+class WorkshopMyItemsController
+{
     public function index(
         Request $request,
         Response $response,
@@ -25,7 +19,7 @@ class WorkshopMyItemsController {
         EntityManager $em,
         FlashMessage $flash,
         Account $account,
-    ){
+    ) {
         // Get users workshop items
         $items = $em->getRepository(WorkshopItem::class)->findBy(['submitter' => $account->getUser()]);
 
@@ -38,5 +32,4 @@ class WorkshopMyItemsController {
 
         return $response;
     }
-
 }

@@ -2,7 +2,6 @@
 
 namespace App\Twig\Extension;
 
-use App\Account;
 use Compwright\PhpSession\Session;
 
 /**
@@ -10,10 +9,10 @@ use Compwright\PhpSession\Session;
  */
 class EmailTwigExtension extends \Twig\Extension\AbstractExtension
 {
-
     public function __construct(
         private Session $session,
-    ) {}
+    ) {
+    }
 
     public function getName(): string
     {
@@ -34,8 +33,8 @@ class EmailTwigExtension extends \Twig\Extension\AbstractExtension
     {
         // Check if we need to create an ajax request on this page to send an email
         // We do it like this so the user does not need to wait a minute until it is checked in the backend
-        if(isset($this->session->send_email)){
-            if(\is_int($this->session->send_email)){
+        if (isset($this->session->send_email)) {
+            if (\is_int($this->session->send_email)) {
 
                 // Remember ID to add to the output HTML page
                 $id = $this->session->send_email;

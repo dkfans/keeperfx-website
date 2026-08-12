@@ -19,11 +19,11 @@ if (\file_exists(__DIR__ . '/../__MAINTENANCE_MODE_ACTIVE')) {
     \header('Pragma: no-cache');
 
     // Serve correct maintenance page
-    $content_type = $_SERVER["CONTENT_TYPE"] ?? '';
+    $content_type = $_SERVER['CONTENT_TYPE'] ?? '';
     if ($content_type == 'application/json') {
         \header('Content-Type: application/json');
         echo \json_encode([
-            'error' => 'MAINTENANCE_MODE',
+            'error'   => 'MAINTENANCE_MODE',
             'message' => 'Website maintenance mode is active. Try again later.',
         ]);
     } else {
@@ -37,12 +37,12 @@ if (\file_exists(__DIR__ . '/../__MAINTENANCE_MODE_ACTIVE')) {
 require __DIR__ . '/../app/bootstrap/bootstrap.php';
 
 // Create Slim App (with PHP-DI bridge)
-$app = \DI\Bridge\Slim\Bridge::create($container);
+$app = DI\Bridge\Slim\Bridge::create($container);
 
 // Add Global Whoops handler
 if (Config::get('app.whoops.is_enabled') === true) {
-    $whoops = new \Whoops\Run;
-    $pretty_page_handler = new \Whoops\Handler\PrettyPageHandler();
+    $whoops              = new Whoops\Run();
+    $pretty_page_handler = new Whoops\Handler\PrettyPageHandler();
     $pretty_page_handler->setEditor(Config::get('app.whoops.editor'));
     $whoops->pushHandler($pretty_page_handler);
     $whoops->register();
@@ -67,7 +67,7 @@ if (Config::get('app.whoops.is_enabled') === false) {
 if (Config::get('app.whoops.is_enabled') === true) {
     $app->add(new Zeuxisoo\Whoops\Slim\WhoopsMiddleware([
         // Set IDE to open the source file from the error page
-        'editor' => Config::get('app.whoops.editor')
+        'editor' => Config::get('app.whoops.editor'),
     ]));
 }
 
@@ -76,28 +76,28 @@ if (Config::get('app.whoops.is_enabled') === true) {
 if ($_ENV['APP_ENV'] === 'dev') {
 
     // Get the debugbar
-    $debugbar = $container->get(\DebugBar\StandardDebugBar::class);
+    $debugbar = $container->get(DebugBar\StandardDebugBar::class);
 
     // Monolog collector
     $debugbar->addCollector(new DebugBar\Bridge\MonologCollector($logger));
 
     // Doctrine collector
-    $em = $container->get(\Doctrine\ORM\EntityManager::class);
+    $em          = $container->get(Doctrine\ORM\EntityManager::class);
     $debug_stack = new Doctrine\DBAL\Logging\DebugStack();
     $em->getConnection()->getConfiguration()->setSQLLogger($debug_stack);
-    $debugbar->addCollector(new \DebugBar\Bridge\DoctrineCollector($debug_stack));
+    $debugbar->addCollector(new DebugBar\Bridge\DoctrineCollector($debug_stack));
 
     // Session collector
-    $debugbar->addCollector(new \App\DebugBar\SessionCollector($container));
+    $debugbar->addCollector(new App\DebugBar\SessionCollector($container));
 }
 
 // Add Session (Compwright\PhpSession) middlewares.
 // We need to add these last because the middlewares are executed in reverse order. (Slim router)
 // The order here is really important.
 // $app->add(\Compwright\PhpSession\Middleware\SessionCacheControlMiddleware::class);
-$app->add(\Compwright\PhpSession\Middleware\SessionMiddleware::class);
-$app->add(\Compwright\PhpSession\Middleware\SessionCookieMiddleware::class);
-$app->add(\Compwright\PhpSession\Middleware\SessionBeforeMiddleware::class);
+$app->add(Compwright\PhpSession\Middleware\SessionMiddleware::class);
+$app->add(Compwright\PhpSession\Middleware\SessionCookieMiddleware::class);
+$app->add(Compwright\PhpSession\Middleware\SessionBeforeMiddleware::class);
 
 // Add routes
 require APP_ROOT . '/app/routes.php';
@@ -119,16 +119,16 @@ if (Config::get('app.whoops.is_enabled') === true) {
     // Catch any exceptions that aren't caught by the Error Middleware
     try {
         $app->run();
-    } catch (\Exception $ex) {
+    } catch (Exception $ex) {
 
         // 500 response
         \http_response_code(500);
 
         // Log the error
         $logger->error(
-            sprintf(
+            \sprintf(
                 "%s: %s in %s:%d\n%s",
-                get_class($ex),
+                $ex::class,
                 $ex->getMessage(),
                 $ex->getFile(),
                 $ex->getLine(),
@@ -137,20 +137,20 @@ if (Config::get('app.whoops.is_enabled') === true) {
         );
 
         // Check for database error
-        if ($ex instanceof \PDOException || $ex instanceof \Doctrine\DBAL\Driver\PDO\Exception || $ex instanceof \Doctrine\DBAL\Exception\ConnectionException) {
+        if ($ex instanceof PDOException || $ex instanceof Doctrine\DBAL\Driver\PDO\Exception || $ex instanceof Doctrine\DBAL\Exception\ConnectionException) {
 
             // Database connection error message
             $json_error_string = 'DATABASE_CONNECTION_ERROR';
-            $view_filename = 'database-connection-error.html';
+            $view_filename     = 'database-connection-error.html';
         } else {
 
             // Default error message
             $json_error_string = 'INTERNAL_SERVER_ERROR';
-            $view_filename = 'something-went-wrong.html';
+            $view_filename     = 'something-went-wrong.html';
         }
 
         // Check if we need to return JSON
-        $content_type = $_SERVER["CONTENT_TYPE"] ?? '';
+        $content_type = $_SERVER['CONTENT_TYPE'] ?? '';
         if ($content_type == 'application/json') {
 
             // Return JSON
@@ -158,13 +158,15 @@ if (Config::get('app.whoops.is_enabled') === true) {
             echo \json_encode([
                 'success'    => false,
                 'error_code' => 500,
-                'error'      => $json_error_string
+                'error'      => $json_error_string,
             ]);
+
             return;
         }
 
         // Return HTML view
         echo \file_get_contents(__DIR__ . '/../views/' . $view_filename);
+
         return;
     }
 }

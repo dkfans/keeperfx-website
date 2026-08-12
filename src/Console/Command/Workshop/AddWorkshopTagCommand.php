@@ -5,9 +5,7 @@ namespace App\Console\Command\Workshop;
 use App\Entity\User;
 use App\Entity\WorkshopTag;
 use Doctrine\ORM\EntityManager;
-
 use Psr\Container\ContainerInterface as Container;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
@@ -15,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 
 class AddWorkshopTagCommand extends Command
 {
-    /** @var Container $container */
+    /** @var Container */
     private $container;
 
     public function __construct(Container $container)
@@ -25,10 +23,10 @@ class AddWorkshopTagCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("workshop:add-tag")
-                ->setDescription("Add a workshop tag")
+        $this->setName('workshop:add-tag')
+                ->setDescription('Add a workshop tag')
                 ->addArgument('tag_name', InputArgument::REQUIRED, 'Name');
     }
 
@@ -41,8 +39,9 @@ class AddWorkshopTagCommand extends Command
         $tag_name = (string) $input->getArgument('tag_name');
 
         // Check if tag already exists
-        if($em->getRepository(WorkshopTag::class)->findOneBy(['name' => $tag_name])){
+        if ($em->getRepository(WorkshopTag::class)->findOneBy(['name' => $tag_name])) {
             $output->writeln("[-] Workshop tag '{$tag_name}' already exists");
+
             return Command::FAILURE;
         }
 
@@ -56,7 +55,7 @@ class AddWorkshopTagCommand extends Command
 
         // Success
         $output->writeln("[+] Workshop tag '{$tag_name}' added!");
+
         return Command::SUCCESS;
     }
-
 }

@@ -2,17 +2,12 @@
 
 namespace App\Entity;
 
-use App\Enum\WorkshopCategory;
-
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class WorkshopBrokenFile
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -20,7 +15,7 @@ class WorkshopBrokenFile
 
     #[ORM\ManyToOne(targetEntity: WorkshopItem::class, inversedBy: 'broken_file')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private WorkshopItem|null $original_item = null;
+    private ?WorkshopItem $original_item = null;
 
     #[ORM\Column]
     private string $original_filename;
@@ -32,13 +27,13 @@ class WorkshopBrokenFile
     private \DateTime $created_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -46,17 +41,17 @@ class WorkshopBrokenFile
     }
 
     /**
-     * Get the value of item
+     * Get the value of item.
      */
-    public function getOriginalItem(): WorkshopItem|null
+    public function getOriginalItem(): ?WorkshopItem
     {
         return $this->original_item;
     }
 
     /**
-     * Set the value of item
+     * Set the value of item.
      */
-    public function setOriginalItem(WorkshopItem|null $item): self
+    public function setOriginalItem(?WorkshopItem $item): self
     {
         $this->original_item = $item;
 
@@ -64,7 +59,7 @@ class WorkshopBrokenFile
     }
 
     /**
-     * Get the value of original_filename
+     * Get the value of original_filename.
      */
     public function getOriginalFilename(): string
     {
@@ -72,7 +67,7 @@ class WorkshopBrokenFile
     }
 
     /**
-     * Set the value of original_filename
+     * Set the value of original_filename.
      */
     public function setOriginalFilename(string $original_filename): self
     {
@@ -82,7 +77,7 @@ class WorkshopBrokenFile
     }
 
     /**
-     * Get the value of hash
+     * Get the value of hash.
      */
     public function getHash(): string
     {
@@ -90,7 +85,7 @@ class WorkshopBrokenFile
     }
 
     /**
-     * Set the value of hash
+     * Set the value of hash.
      */
     public function setHash(string $hash): self
     {
@@ -100,7 +95,7 @@ class WorkshopBrokenFile
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -108,7 +103,7 @@ class WorkshopBrokenFile
     }
 
     /**
-     * Set the value of created_timestamp
+     * Set the value of created_timestamp.
      */
     public function setCreatedTimestamp(\DateTime $created_timestamp): self
     {

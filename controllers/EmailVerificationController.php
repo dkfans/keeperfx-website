@@ -2,19 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-
 use App\Account;
+use App\Entity\User;
 use App\FlashMessage;
 use Compwright\PhpSession\Session;
-use Twig\Environment as TwigEnvironment;
 use Doctrine\ORM\EntityManager;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
-class EmailVerificationController {
-
+class EmailVerificationController
+{
     public function verify(
         Request $request,
         Response $response,
@@ -25,33 +23,36 @@ class EmailVerificationController {
         Session $session,
         int $user_id,
         string $token,
-    ){
+    ) {
         // Get user
         /** @var User $user */
         $user = $em->getRepository(User::class)->find($user_id);
-        if(!$user){
+        if (!$user) {
             $flash->warning('Invalid email verification token.');
             $response->getBody()->write(
                 $twig->render('email.verification.html.twig')
             );
+
             return $response;
         }
 
         // Make sure that this token does not belong to another user
-        if($account->isLoggedIn() && $account->getUser() !== $user){
+        if ($account->isLoggedIn() && $account->getUser() !== $user) {
             $flash->warning('Invalid email verification token.');
             $response->getBody()->write(
                 $twig->render('email.verification.html.twig')
             );
+
             return $response;
         }
 
         // Check if user already has a verified email address
-        if($user->isEmailVerified()){
+        if ($user->isEmailVerified()) {
             $flash->info('Already verified.');
             $response->getBody()->write(
                 $twig->render('email.verification.html.twig')
             );
+
             return $response;
         }
 
@@ -59,11 +60,12 @@ class EmailVerificationController {
         $verification = $user->getEmailVerification();
 
         // Verify the token
-        if($verification === null || $verification->getToken() !== $token){
+        if ($verification === null || $verification->getToken() !== $token) {
             $flash->warning('Invalid email verification token.');
             $response->getBody()->write(
                 $twig->render('email.verification.html.twig')
             );
+
             return $response;
         }
 
@@ -73,7 +75,7 @@ class EmailVerificationController {
         $em->flush();
 
         // If we are not logged in yet we'll log in
-        if($account->isLoggedIn() === false){
+        if ($account->isLoggedIn() === false) {
             $account->setCurrentLoggedInUser($user);
             $session['uid'] = $user->getId();
             $flash->success('Your email address has been verified! You are now logged in.');
@@ -83,7 +85,7 @@ class EmailVerificationController {
 
         // Navigate user to the account page
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
-
 }

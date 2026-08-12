@@ -6,7 +6,6 @@ use Xenokore\Utility\Helper\StringHelper;
 
 class SpamDetector
 {
-
     private $blacklisted_words = [];
 
     public function __construct()
@@ -31,17 +30,13 @@ class SpamDetector
     }
 
     /**
-     * Check if a string has emojis
+     * Check if a string has emojis.
      *
      * Source: https://stackoverflow.com/a/71559156
-     *
-     * @param string $string
-     * @return boolean
      */
     public function detectEmojis(string $string): bool
     {
-        $emojis_regex =
-            '/[\x{0080}-\x{02AF}'
+        $emojis_regex = '/[\x{0080}-\x{02AF}'
             . '\x{0300}-\x{03FF}'
             . '\x{0600}-\x{06FF}'
             . '\x{0C00}-\x{0C7F}'
@@ -68,6 +63,7 @@ class SpamDetector
             . '\x{1F910}-\x{1F96B}'
             . '\x{1F980}-\x{1F9E0}]/u';
         \preg_match($emojis_regex, $string, $matches);
+
         return !empty($matches);
     }
 }

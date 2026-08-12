@@ -2,22 +2,16 @@
 
 namespace App\Console\Command\User;
 
-use App\Entity\User;
 use App\Entity\UserNotification;
-use App\Entity\UserPasswordResetToken;
 use Doctrine\ORM\EntityManager;
-
 use Psr\Container\ContainerInterface as Container;
-
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-use App\Enum\UserRole;
 
 class ClearOldNotificationsCommand extends Command
 {
-    /** @var Container $container */
+    /** @var Container */
     private $container;
 
     public function __construct(Container $container)
@@ -27,10 +21,10 @@ class ClearOldNotificationsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("user:clear-old-notifications")
-                ->setDescription("Clear old notifications");
+        $this->setName('user:clear-old-notifications')
+                ->setDescription('Clear old notifications');
     }
 
     protected function execute(Input $input, Output $output)
@@ -48,8 +42,8 @@ class ClearOldNotificationsCommand extends Command
             ->getQuery()
             ->getResult();
 
-        if($result){
-            foreach($result as $entity){
+        if ($result) {
+            foreach ($result as $entity) {
                 $em->remove($entity);
                 $output->writeln("[+] Removed <info>#{$entity->getId()}</info>");
             }
@@ -67,8 +61,8 @@ class ClearOldNotificationsCommand extends Command
             ->getQuery()
             ->getResult();
 
-        if($result){
-            foreach($result as $entity){
+        if ($result) {
+            foreach ($result as $entity) {
                 $em->remove($entity);
                 $output->writeln("[+] Removed <info>#{$entity->getId()}</info> (not read)");
             }
@@ -77,8 +71,8 @@ class ClearOldNotificationsCommand extends Command
         }
 
         // Success
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Done!');
+
         return Command::SUCCESS;
     }
-
 }

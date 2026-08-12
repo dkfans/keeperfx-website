@@ -42,6 +42,7 @@ class Theme
         $theme_id = \strtolower($theme_id);
         if (\in_array($theme_id, \array_keys($this->themes))) {
             $this->current_theme_id = $theme_id;
+
             return true;
         }
 

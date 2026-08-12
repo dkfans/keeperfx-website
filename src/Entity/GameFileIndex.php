@@ -3,17 +3,16 @@
 namespace App\Entity;
 
 use App\Enum\ReleaseType;
-
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class GameFileIndex {
-
+class GameFileIndex
+{
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    private int|null $id = null;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', enumType: ReleaseType::class)]
     private ReleaseType $release_type;
@@ -25,7 +24,7 @@ class GameFileIndex {
     private string $data;
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): ?int
     {
@@ -33,7 +32,7 @@ class GameFileIndex {
     }
 
     /**
-     * Set the value of id
+     * Set the value of id.
      */
     public function setId(?int $id): self
     {
@@ -43,7 +42,7 @@ class GameFileIndex {
     }
 
     /**
-     * Get the value of release_type
+     * Get the value of release_type.
      */
     public function getReleaseType(): ReleaseType
     {
@@ -51,7 +50,7 @@ class GameFileIndex {
     }
 
     /**
-     * Set the value of release_type
+     * Set the value of release_type.
      */
     public function setReleaseType(ReleaseType $release_type): self
     {
@@ -61,7 +60,7 @@ class GameFileIndex {
     }
 
     /**
-     * Get the value of version
+     * Get the value of version.
      */
     public function getVersion(): string
     {
@@ -69,7 +68,7 @@ class GameFileIndex {
     }
 
     /**
-     * Set the value of version
+     * Set the value of version.
      */
     public function setVersion(string $version): self
     {
@@ -79,7 +78,7 @@ class GameFileIndex {
     }
 
     /**
-     * Get the value of data
+     * Get the value of data.
      */
     public function getData(): array|string|null
     {
@@ -87,9 +86,9 @@ class GameFileIndex {
     }
 
     /**
-     * Set the value of data
+     * Set the value of data.
      */
-    public function setData(array|null $data): self
+    public function setData(?array $data): self
     {
         $this->data = \json_encode($data);
 

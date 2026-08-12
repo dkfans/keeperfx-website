@@ -2,21 +2,16 @@
 
 namespace App\Console\Command\User;
 
-use App\Entity\User;
 use App\Entity\UserPasswordResetToken;
 use Doctrine\ORM\EntityManager;
-
 use Psr\Container\ContainerInterface as Container;
-
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-use App\Enum\UserRole;
 
 class ClearOldPasswordResetTokensCommand extends Command
 {
-    /** @var Container $container */
+    /** @var Container */
     private $container;
 
     public function __construct(Container $container)
@@ -26,10 +21,10 @@ class ClearOldPasswordResetTokensCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("user:clear-old-password-reset")
-                ->setDescription("Clear old password reset tokens");
+        $this->setName('user:clear-old-password-reset')
+                ->setDescription('Clear old password reset tokens');
     }
 
     protected function execute(Input $input, Output $output)
@@ -46,8 +41,8 @@ class ClearOldPasswordResetTokensCommand extends Command
             ->getQuery()
             ->getResult();
 
-        if($result){
-            foreach($result as $entity){
+        if ($result) {
+            foreach ($result as $entity) {
                 $em->remove($entity);
                 $output->writeln("[+] Removed: {$entity->getToken()}");
             }
@@ -56,8 +51,8 @@ class ClearOldPasswordResetTokensCommand extends Command
         }
 
         // Success
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Done!');
+
         return Command::SUCCESS;
     }
-
 }

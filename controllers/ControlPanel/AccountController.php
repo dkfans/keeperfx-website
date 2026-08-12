@@ -2,42 +2,34 @@
 
 namespace App\Controller\ControlPanel;
 
+use App\Account;
+use App\CDN;
+use App\Config\Config;
 use App\Entity\User;
 use App\Entity\UserBio;
 use App\Entity\UserCookieToken;
-use App\Entity\UserEmailVerification;
-
-use App\CDN;
-use App\Theme;
-use App\Account;
 use App\FlashMessage;
-use App\Config\Config;
-use App\UploadSizeHelper;
 use App\Helper\ThumbnailHelper;
+use App\Theme;
+use App\UploadSizeHelper;
 use App\Workshop\WorkshopCache;
-
-use Fgribreau\MailChecker;
-use Doctrine\ORM\EntityManager;
-use Slim\Csrf\Guard as CsrfGuard;
-use Compwright\PhpSession\Session;
-use Twig\Environment as TwigEnvironment;
 use ByteUnits\Binary as BinaryFormatter;
-use Crunz\HttpClient\HttpClientException;
-
-use Dflydev\FigCookies\SetCookie;
-use Dflydev\FigCookies\Modifier\SameSite;
+use Compwright\PhpSession\Session;
 use Dflydev\FigCookies\FigResponseCookies;
-
-use Psr\Http\Message\UploadedFileInterface;
+use Dflydev\FigCookies\Modifier\SameSite;
+use Dflydev\FigCookies\SetCookie;
+use Doctrine\ORM\EntityManager;
+use Fgribreau\MailChecker;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\SimpleCache\CacheInterface;
-use Slim\Exception\HttpNotFoundException;
+use Slim\Csrf\Guard as CsrfGuard;
 use Slim\Exception\HttpForbiddenException;
+use Twig\Environment as TwigEnvironment;
 
 class AccountController
 {
-
     public function accountSettingsIndex(
         Request $request,
         Response $response,
@@ -51,7 +43,7 @@ class AccountController
         // Response
         $response->getBody()->write(
             $twig->render('cp/account-settings.cp.html.twig', [
-                'user' => $account->getUser(),
+                'user'          => $account->getUser(),
                 'website_theme' => [
                     'current' => $theme->getCurrentTheme(),
                     'all'     => $theme->getAllThemes(),
@@ -71,7 +63,7 @@ class AccountController
         Response $response,
         Account $account,
         EntityManager $em,
-        FlashMessage $flash
+        FlashMessage $flash,
     ) {
         // Get country list [XX => emoji flag]
         $countries = require APP_ROOT . '/config/country.flag.config.php';
@@ -84,7 +76,7 @@ class AccountController
         $original_country = $account->getUser()->getCountry();
 
         // Make sure country exists
-        if (strlen($country_code) !== 2 || \array_key_exists($country_code, $countries) === false) {
+        if (\strlen($country_code) !== 2 || \array_key_exists($country_code, $countries) === false) {
             $country_code = null;
         }
 
@@ -104,6 +96,7 @@ class AccountController
 
         // Redirect user back to account page
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
 
@@ -113,14 +106,14 @@ class AccountController
         Account $account,
         EntityManager $em,
         CDN $cdn,
-        FlashMessage $flash
+        FlashMessage $flash,
     ) {
         // Get post vars
         $post   = $request->getParsedBody();
         $cdn_id = (string) $post['cdn'] ?? '';
 
         // Update country code
-        if($cdn->isValidCdn($cdn_id) === false){
+        if ($cdn->isValidCdn($cdn_id) === false) {
             throw new HttpForbiddenException($request);
         }
 
@@ -138,6 +131,7 @@ class AccountController
 
         // Redirect user back to account page
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
 
@@ -146,10 +140,10 @@ class AccountController
         Response $response,
         Account $account,
         EntityManager $em,
-        FlashMessage $flash
+        FlashMessage $flash,
     ) {
         // Get post vars
-        $post  = $request->getParsedBody();
+        $post     = $request->getParsedBody();
         $about_me = (string) ($post['about_me'] ?? '');
 
         // Check if user has a bio
@@ -177,6 +171,7 @@ class AccountController
 
         $flash->success('About-me updated!.');
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
 
@@ -186,7 +181,7 @@ class AccountController
         Account $account,
         EntityManager $em,
         Session $session,
-        FlashMessage $flash
+        FlashMessage $flash,
     ) {
         // Get post vars
         $post  = $request->getParsedBody();
@@ -196,6 +191,7 @@ class AccountController
         if (empty($email) || !\filter_var($email, \FILTER_VALIDATE_EMAIL)) {
             $flash->error('Invalid email address.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
@@ -203,6 +199,7 @@ class AccountController
         if (!MailChecker::isValid($email)) {
             $flash->warning('Invalid email address.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
@@ -211,6 +208,7 @@ class AccountController
         if ($existing_email) {
             $flash->warning('This email address is already in use.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
@@ -232,6 +230,7 @@ class AccountController
 
         // Move back to user account page
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
 
@@ -244,7 +243,7 @@ class AccountController
         Session $session,
         CacheInterface $cache,
         $token_name,
-        $token_value
+        $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
@@ -255,6 +254,7 @@ class AccountController
         if ($account->getUser()->isEmailVerified()) {
             $flash->warning('Your email address has already been verified.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
@@ -274,6 +274,7 @@ class AccountController
             // Show sent and return
             $flash->success('Verification email sent!');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
@@ -282,6 +283,7 @@ class AccountController
         if ($cache->has($cache_key)) {
             $flash->warning('Please wait a few minutes before resending the verification email.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
@@ -301,6 +303,7 @@ class AccountController
 
         // Return
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
 
@@ -312,7 +315,7 @@ class AccountController
         FlashMessage $flash,
         CsrfGuard $csrf_guard,
         $token_name,
-        $token_value
+        $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
@@ -333,6 +336,7 @@ class AccountController
         $flash->success('Your email address has been removed!');
 
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
 
@@ -341,13 +345,13 @@ class AccountController
         Response $response,
         Account $account,
         EntityManager $em,
-        FlashMessage $flash
+        FlashMessage $flash,
     ) {
         // Get post vars
         $post             = $request->getParsedBody();
         $current_password = (string) $post['current_password'] ?? '';
-        $new_password     = (string) $post['new_password'] ?? '';
-        $repeat_password  = (string) $post['repeat_password'] ?? '';
+        $new_password     = (string) $post['new_password']     ?? '';
+        $repeat_password  = (string) $post['repeat_password']  ?? '';
 
         // Check if current account has a password set
         // Some accounts do not have passwords because they are creation by an OAuth connection
@@ -357,6 +361,7 @@ class AccountController
             if (!\password_verify($current_password, $account->getUser()->getPassword())) {
                 $flash->error('Your current password is not correct.');
                 $response = $response->withHeader('Location', '/account')->withStatus(302);
+
                 return $response;
             }
 
@@ -364,6 +369,7 @@ class AccountController
             if ($new_password !== $repeat_password) {
                 $flash->warning('The given passwords did not match.');
                 $response = $response->withHeader('Location', '/account')->withStatus(302);
+
                 return $response;
             }
         }
@@ -374,6 +380,7 @@ class AccountController
 
         $flash->success('You successfully updated your password!');
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
 
@@ -394,12 +401,14 @@ class AccountController
         if ($account->updateTheme($theme_id) === false) {
             $flash->error('Failed to update theme');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
         // Return success
         $flash->success('Theme updated!');
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
 
@@ -420,15 +429,17 @@ class AccountController
         if (!($file instanceof UploadedFileInterface) || $file->getError() === \UPLOAD_ERR_NO_FILE) {
             $flash->error('Missing or invalid avatar file upload.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
         // Check file extension
-        $filename = $file->getClientFilename();
+        $filename       = $file->getClientFilename();
         $file_extension = \strtolower(\pathinfo($filename, \PATHINFO_EXTENSION));
         if (!\in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
             $flash->warning('Invalid avatar image file. Allowed file types: jpg, jpeg, png, gif, webp');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
@@ -440,6 +451,7 @@ class AccountController
                     ')'
             );
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
@@ -449,7 +461,7 @@ class AccountController
         if (empty($avatar_dir)) {
             throw new \Exception('Avatar storage directory not set: \'APP_AVATAR_STORAGE\'');
         }
-        if (!is_dir($avatar_dir)) {
+        if (!\is_dir($avatar_dir)) {
             if (!\mkdir($avatar_dir)) {
                 throw new \Exception('Failed to create avatar storage directory: \'' . $avatar_dir . '\'');
             }
@@ -478,8 +490,8 @@ class AccountController
         }
 
         // Create avatar filename & path
-        $avatar_filename = $account->getUser()->getId() . '-' . md5(\microtime(true) . $filename) . '.' . $file_extension;
-        $avatar_path = $avatar_dir . '/' . $avatar_filename;
+        $avatar_filename = $account->getUser()->getId() . '-' . \md5(\microtime(true) . $filename) . '.' . $file_extension;
+        $avatar_path     = $avatar_dir . '/' . $avatar_filename;
 
         // Move screenshot
         $file->moveTo($avatar_path);
@@ -504,6 +516,7 @@ class AccountController
 
         $flash->success('You have successfully updated your avatar!');
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
 
@@ -516,7 +529,7 @@ class AccountController
         CsrfGuard $csrf_guard,
         WorkshopCache $workshop_cache,
         $token_name,
-        $token_value
+        $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
@@ -527,6 +540,7 @@ class AccountController
         if ($account->getUser()->getAvatar() === null) {
             $flash->warning('You do not have an avatar.');
             $response = $response->withHeader('Location', '/account')->withStatus(302);
+
             return $response;
         }
 
@@ -535,7 +549,7 @@ class AccountController
         if (empty($avatar_dir)) {
             throw new \Exception('Avatar storage directory not set: \'APP_AVATAR_STORAGE\'');
         }
-        if (!is_dir($avatar_dir)) {
+        if (!\is_dir($avatar_dir)) {
             throw new \Exception("Avatar storage directory does not exist: '{$avatar_dir}'");
         }
 
@@ -566,6 +580,7 @@ class AccountController
         // Success
         $flash->success('Your avatar has been successfully removed!');
         $response = $response->withHeader('Location', '/account')->withStatus(302);
+
         return $response;
     }
 
@@ -589,7 +604,7 @@ class AccountController
 
         // Check if 'remember me' token is set (and valid)
         $cookies = $request->getCookieParams();
-        $token = (string) ($cookies['user_cookie_token'] ?? '');
+        $token   = (string) ($cookies['user_cookie_token'] ?? '');
         if ($token && \preg_match('~^[a-zA-Z0-9]+$~', $token)) {
 
             // Find token in DB
@@ -607,15 +622,16 @@ class AccountController
             $response,
             SetCookie::create('user_cookie_token', '')
                 ->withDomain($_ENV['APP_COOKIE_DOMAIN'] ?? null)
-                ->withPath($_ENV['APP_COOKIE_PATH'] ?? "/")
-                ->withSecure((bool)$_ENV['APP_COOKIE_TLS_ONLY'])
-                ->withHttpOnly((bool)$_ENV['APP_COOKIE_HTTP_ONLY'])
+                ->withPath($_ENV['APP_COOKIE_PATH'] ?? '/')
+                ->withSecure((bool) $_ENV['APP_COOKIE_TLS_ONLY'])
+                ->withHttpOnly((bool) $_ENV['APP_COOKIE_HTTP_ONLY'])
                 ->withSameSite(SameSite::fromString($_ENV['APP_COOKIE_SAMESITE']))
                 ->expire()
         );
 
         // Redirect back to homepage
         $response = $response->withHeader('Location', '/')->withStatus(302);
+
         return $response;
     }
 }

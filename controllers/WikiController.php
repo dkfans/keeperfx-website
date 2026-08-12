@@ -2,21 +2,17 @@
 
 namespace App\Controller;
 
-use App\FlashMessage;
 use App\Config\Config;
-
-use Twig\Environment as TwigEnvironment;
-
+use App\FlashMessage;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpNotFoundException;
-
+use Twig\Environment as TwigEnvironment;
 use Xenokore\Utility\Helper\StringHelper;
 
 class WikiController
 {
-
     private function fixMarkdownHeaderTagsSEO(string $content): string
     {
         return \preg_replace(
@@ -25,7 +21,7 @@ class WikiController
                 '/^\#{4} /m',
                 '/^\#{3} /m',
                 '/^\#{2} /m',
-                '/^\#{1} /m'
+                '/^\#{1} /m',
             ],
             [
                 '###### ',
@@ -54,6 +50,7 @@ class WikiController
         // Redirect to the "/wiki/home" if no page is given
         if ($page === null) {
             $response = $response->withHeader('Location', '/wiki/home')->withStatus(302);
+
             return $response;
         }
 
@@ -61,13 +58,14 @@ class WikiController
         // Redirect the user if it isn't
         if (\strtolower($page) !== $page) {
             $response = $response->withHeader('Location', '/wiki/' . \strtolower($page))->withStatus(302);
+
             return $response;
         }
 
         // Get the markdown file
         $file = null;
         foreach (\glob($wiki_dir . '/*.md') as $file_path) {
-            if (strtolower(\basename($file_path)) === strtolower($page) . '.md') {
+            if (\strtolower(\basename($file_path)) === \strtolower($page) . '.md') {
                 $file = $file_path;
                 break;
             }
@@ -91,7 +89,7 @@ class WikiController
         // Get 'sidebar' contents
         $sidebar_contents = \file_get_contents($wiki_dir . '/_Sidebar.md');
         if ($sidebar_contents === false) {
-            throw new \Exception("Sidebar markdown file not found");
+            throw new \Exception('Sidebar markdown file not found');
         }
 
         // Get a nice array structure of the sidebar
@@ -104,16 +102,16 @@ class WikiController
                     'page_title'    => $page_title,
                     'page_contents' => $page_contents,
                     'sidebar'       => $sidebar,
-                ]
+                ],
             ])
         );
+
         return $response;
     }
 
     private function makeGithubUrlsLowercase(string $string): string
     {
-        return \preg_replace_callback("~\[(.+?)\]\((.+?)\)~", function ($matches) {
-
+        return \preg_replace_callback("~\[(.+?)\]\((.+?)\)~", static function ($matches) {
             // Only lowercase URLs without a slash
             // This should work against any absolute URLs as well as "subdirectory-URLs".
             if (\str_contains($matches[2], '/') === false) {
@@ -122,14 +120,14 @@ class WikiController
 
                 // Handle hash-bang
                 if (\str_contains($url, '#') === true) {
-                    $exp = explode('#', $url);
-                    $url = strtolower($exp[0]) . '#' . $exp[1];
+                    $exp = \explode('#', $url);
+                    $url = \strtolower($exp[0]) . '#' . $exp[1];
                 } else {
-                    $url = strtolower($url);
+                    $url = \strtolower($url);
                 }
 
                 // Return the new markdown
-                return \sprintf("[%s](%s)", $matches[1], $url);
+                return \sprintf('[%s](%s)', $matches[1], $url);
             }
 
             return $matches[0];
@@ -138,11 +136,11 @@ class WikiController
 
     private function getWikiURLStructure(string $contents): array
     {
-        $array = [];
+        $array        = [];
         $current_menu = null;
 
         // Loop trough the sidebar menu contents
-        $lines = \explode(PHP_EOL, $contents);
+        $lines = \explode(\PHP_EOL, $contents);
         foreach ($lines as $line) {
             $line = \trim($line);
 
@@ -165,7 +163,7 @@ class WikiController
 
             // If this is a menu title
             if (StringHelper::startsWith($line, '#### ')) {
-                $name = substr($line, 5);
+                $name         = \substr($line, 5);
                 $current_menu = $name;
                 continue;
             }

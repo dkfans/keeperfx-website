@@ -9,7 +9,6 @@ use Xenokore\Utility\Helper\StringHelper;
 #[ORM\HasLifecycleCallbacks]
 class UserEmailVerification
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -29,14 +28,14 @@ class UserEmailVerification
     private \DateTime $created_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
-        $this->token = StringHelper::generate(32);
+        $this->created_timestamp = new \DateTime('now');
+        $this->token             = StringHelper::generate(32);
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -44,7 +43,7 @@ class UserEmailVerification
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -52,7 +51,7 @@ class UserEmailVerification
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -62,7 +61,7 @@ class UserEmailVerification
     }
 
     /**
-     * Get the value of token
+     * Get the value of token.
      */
     public function getToken(): string
     {
@@ -70,7 +69,7 @@ class UserEmailVerification
     }
 
     /**
-     * Set the value of token
+     * Set the value of token.
      */
     public function setToken(string $token): self
     {
@@ -80,7 +79,7 @@ class UserEmailVerification
     }
 
     /**
-     * Get the value of sent
+     * Get the value of sent.
      */
     public function isSent(): bool
     {
@@ -88,7 +87,7 @@ class UserEmailVerification
     }
 
     /**
-     * Set the value of sent
+     * Set the value of sent.
      */
     public function setSent(bool $sent): self
     {
@@ -98,7 +97,7 @@ class UserEmailVerification
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {

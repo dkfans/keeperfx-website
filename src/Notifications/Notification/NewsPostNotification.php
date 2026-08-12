@@ -2,19 +2,14 @@
 
 namespace App\Notifications\Notification;
 
-use App\Enum\UserRole;
-
-use Doctrine\ORM\EntityManager;
-
 use App\Notifications\Notification;
 use App\Notifications\NotificationInterface;
-use App\Notifications\Exception\NotificationDataException;
 
-class NewsPostNotification extends Notification implements NotificationInterface {
-
+class NewsPostNotification extends Notification implements NotificationInterface
+{
     public function getNotificationTitle(): string
     {
-        return "New news post";
+        return 'New news post';
     }
 
     public function getText(): string

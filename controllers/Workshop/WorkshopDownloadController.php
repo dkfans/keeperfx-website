@@ -2,32 +2,24 @@
 
 namespace App\Controller\Workshop;
 
-
-use App\Enum\UserRole;
-
-use App\Entity\WorkshopItem;
-use App\Entity\WorkshopFile;
-
 use App\Account;
-use App\FlashMessage;
 use App\Config\Config;
-
+use App\Entity\WorkshopFile;
+use App\Entity\WorkshopItem;
+use App\Enum\UserRole;
+use App\FlashMessage;
 use Doctrine\ORM\EntityManager;
-use GuzzleHttp\Psr7\LazyOpenStream;
 use geertw\IpAnonymizer\IpAnonymizer;
-use Twig\Environment as TwigEnvironment;
+use GuzzleHttp\Psr7\LazyOpenStream;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
-
-use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use Xenokore\Utility\Helper\DirectoryHelper;
-
+use Psr\SimpleCache\CacheInterface;
 use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
-class WorkshopDownloadController {
-
+class WorkshopDownloadController
+{
     public function download(
         Request $request,
         Response $response,
@@ -38,39 +30,38 @@ class WorkshopDownloadController {
         CacheInterface $cache,
         $item_id,
         $file_id,
-        $filename
-    )
-    {
+        $filename,
+    ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if workshop item has been published
         // Users with a role of moderator or higher can always download workshop items
-        if(
+        if (
             $workshop_item->isPublished() !== true
             && ($account->getUser() === null || $account->getUser()->getRole()->value < UserRole::Moderator->value)
-        ){
+        ) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if file id is found
         $file = $em->getRepository(WorkshopFile::class)->findOneBy(['id' => $file_id, 'item' => $workshop_item]);
-        if(!$file){
+        if (!$file) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if filename matches the one in DB
-        if($file->getFilename() !== $filename){
+        if ($file->getFilename() !== $filename) {
             throw new HttpNotFoundException($request);
         }
 
         $filepath = Config::get('storage.path.workshop') . '/' . $workshop_item->getId() . '/files/' . $file->getStorageFilename();
 
         // Check if file exists
-        if(!\file_exists($filepath)){
+        if (!\file_exists($filepath)) {
             throw new HttpNotFoundException($request);
         }
 
@@ -87,16 +78,16 @@ class WorkshopDownloadController {
 
             // If this anonymized data is not in our cache,
             // then this user has not downloaded something recently and should be counted
-            if($cache->get($dl_cache_key, null) === null){
+            if ($cache->get($dl_cache_key, null) === null) {
 
                 // Increase the download count on the workshop item
                 $download_total_count = $workshop_item->getDownloadCount();
-                $download_total_count++;
+                ++$download_total_count;
                 $workshop_item->setDownloadCount($download_total_count);
 
                 // Increase the download count on the file
                 $download_count = $file->getDownloadCount();
-                $download_count++;
+                ++$download_count;
                 $file->setDownloadCount($download_count);
 
                 // Add to DB

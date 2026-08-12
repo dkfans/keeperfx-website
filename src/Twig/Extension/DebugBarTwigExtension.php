@@ -2,13 +2,11 @@
 
 namespace App\Twig\Extension;
 
-use DebugBar\StandardDebugBar;
 use DebugBar\JavascriptRenderer;
-
+use DebugBar\StandardDebugBar;
 
 class DebugBarTwigExtension extends \Twig\Extension\AbstractExtension
 {
-
     private JavascriptRenderer $js_renderer;
 
     public function __construct(StandardDebugBar $debug_bar)

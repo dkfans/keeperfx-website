@@ -2,18 +2,15 @@
 
 namespace App\Console\Command\KeeperFX;
 
+use App\Config\Config;
 use App\Entity\GitCommit;
 use App\Entity\GithubRelease;
-
-use App\Config\Config;
+use App\Helper\GitHelper;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Process\Process;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-
-use App\Helper\GitHelper;
+use Symfony\Component\Process\Process;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
 class HandleCommitsCommand extends Command
@@ -26,29 +23,31 @@ class HandleCommitsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("kfx:handle-commits")
-            ->setDescription("Handle the commit history of the KeeperFX project");
+        $this->setName('kfx:handle-commits')
+            ->setDescription('Handle the commit history of the KeeperFX project');
     }
 
     protected function execute(Input $input, Output $output)
     {
         $commits_handled = false;
-        $output->writeln("[>] Handling project commits...");
+        $output->writeln('[>] Handling project commits...');
 
         // Get local keeperfx repo dir
         // TODO: make CLI chroot accessible
         $kfx_repo_dir = Config::get('storage.path.kfx-repo');
         if (empty($kfx_repo_dir)) {
-            $output->writeln("[-] KeeperFX Repo dir not configured (APP_KFX_REPO_STORAGE)");
+            $output->writeln('[-] KeeperFX Repo dir not configured (APP_KFX_REPO_STORAGE)');
+
             return Command::FAILURE;
         }
 
         // Make sure project directory exists
         if (!DirectoryHelper::isAccessible($kfx_repo_dir)) {
-            $output->writeln("[-] Directory does not exist: " . $kfx_repo_dir);
+            $output->writeln('[-] Directory does not exist: ' . $kfx_repo_dir);
             $output->writeln("[>] Run the 'kfx:pull-repo' command first");
+
             return Command::FAILURE;
         }
 
@@ -86,7 +85,8 @@ class HandleCommitsCommand extends Command
             // Run the process
             $process->run();
             if (!$process->isSuccessful()) {
-                $output->writeln("[-] Failed to get git log");
+                $output->writeln('[-] Failed to get git log');
+
                 return Command::FAILURE;
             }
 
@@ -113,7 +113,7 @@ class HandleCommitsCommand extends Command
             if (($commit_count = \count($parsed_commits)) > 0) {
                 $output->writeln("[+] Handled {$commit_count} commits!");
             } else {
-                $output->writeln("[?] No commits handled");
+                $output->writeln('[?] No commits handled');
             }
 
             // Make this release as handled
@@ -126,13 +126,13 @@ class HandleCommitsCommand extends Command
 
         // If we handled commits we'll have to flush the DB changes
         if ($commits_handled) {
-            $output->writeln("[>] Writing changes to database...");
+            $output->writeln('[>] Writing changes to database...');
             $this->em->flush();
         } else {
-            $output->writeln("[*] No commits were handled");
+            $output->writeln('[*] No commits were handled');
         }
 
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Done!');
 
         return Command::SUCCESS;
     }

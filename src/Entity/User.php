@@ -3,16 +3,14 @@
 namespace App\Entity;
 
 use App\Enum\UserRole;
-
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class User
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -22,34 +20,34 @@ class User
     private string $username;
 
     #[ORM\Column(nullable: true)]
-    private string|null $password;
+    private ?string $password;
 
     #[ORM\Column(nullable: true)]
-    private string|null $email = null;
+    private ?string $email = null;
 
     #[ORM\Column]
     private bool $email_verified = false;
 
     #[ORM\Column(nullable: true)]
-    private string|null $avatar = null;
+    private ?string $avatar = null;
 
     #[ORM\Column(nullable: true)]
-    private string|null $avatar_small = null;
+    private ?string $avatar_small = null;
 
     #[ORM\Column(type: 'integer', enumType: UserRole::class)]
     private UserRole $role = UserRole::User;
 
     #[ORM\Column(nullable: true)]
-    private string|null $country = null;
+    private ?string $country = null;
 
     #[ORM\OneToOne(targetEntity: UserBio::class, mappedBy: 'user')]
-    private UserBio|null $bio = null;
+    private ?UserBio $bio = null;
 
     #[ORM\Column(nullable: true)]
-    private string|null $cdn = null;
+    private ?string $cdn = null;
 
     #[ORM\OneToOne(targetEntity: UserEmailVerification::class, mappedBy: 'user')]
-    private UserEmailVerification|null $email_verification = null;
+    private ?UserEmailVerification $email_verification = null;
 
     #[ORM\Column]
     private string $theme = 'default';
@@ -91,11 +89,11 @@ class User
     private Collection $workshop_difficulty_ratings;
 
     #[ORM\OneToMany(targetEntity: UserIpLog::class, mappedBy: 'user')]
-    #[ORM\OrderBy(["last_seen_timestamp" => "DESC"])]
+    #[ORM\OrderBy(['last_seen_timestamp' => 'DESC'])]
     private Collection $ip_logs;
 
     #[ORM\OneToMany(targetEntity: UserLog::class, mappedBy: 'user')]
-    #[ORM\OrderBy(["timestamp" => "DESC"])]
+    #[ORM\OrderBy(['timestamp' => 'DESC'])]
     private Collection $user_logs;
 
     public function __construct()
@@ -116,13 +114,13 @@ class User
     }
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId()
     {
@@ -130,7 +128,7 @@ class User
     }
 
     /**
-     * Get the value of username
+     * Get the value of username.
      */
     public function getUsername()
     {
@@ -138,9 +136,9 @@ class User
     }
 
     /**
-     * Set the value of username
+     * Set the value of username.
      *
-     * @return  self
+     * @return self
      */
     public function setUsername($username)
     {
@@ -150,23 +148,24 @@ class User
     }
 
     /**
-     * Get the value of password
+     * Get the value of password.
      */
-    public function getPassword(): string|null
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
     /**
-     * Set the value of password
+     * Set the value of password.
      *
-     * @return  self
+     * @return self
      */
-    public function setPassword(string|null $password)
+    public function setPassword(?string $password)
     {
         // NULL password
-        if (\is_null($password)) {
+        if ($password === null) {
             $this->password = null;
+
             return $this;
         }
 
@@ -176,7 +175,7 @@ class User
             $_ENV['APP_PASSWORD_HASH'],
             [
                 // BCRYPT
-                'cost'        => $_ENV['APP_PASSWORD_HASH_BCRYPT_COST'],
+                'cost' => $_ENV['APP_PASSWORD_HASH_BCRYPT_COST'],
                 // Argon2
                 'memory_cost' => $_ENV['APP_PASSWORD_HASH_ARGON2_MAX_MEMORY_COST'],
                 'time_cost'   => $_ENV['APP_PASSWORD_HASH_ARGON2_MAX_TIME_COST'],
@@ -188,7 +187,7 @@ class User
     }
 
     /**
-     * Get the value of email
+     * Get the value of email.
      */
     public function getEmail()
     {
@@ -196,11 +195,9 @@ class User
     }
 
     /**
-     * Set the value of email
-     *
-     * @return  self
+     * Set the value of email.
      */
-    public function setEmail(string|null $email): self
+    public function setEmail(?string $email): self
     {
         // Empty email addresses should become NULL
         if (empty($email)) {
@@ -213,7 +210,7 @@ class User
     }
 
     /**
-     * Get the value of email_verified
+     * Get the value of email_verified.
      */
     public function isEmailVerified(): bool
     {
@@ -221,7 +218,7 @@ class User
     }
 
     /**
-     * Set the value of email_verified
+     * Set the value of email_verified.
      */
     public function setEmailVerified(bool $email_verified): self
     {
@@ -231,19 +228,17 @@ class User
     }
 
     /**
-     * Get the value of avatar
+     * Get the value of avatar.
      */
-    public function getAvatar(): string|null
+    public function getAvatar(): ?string
     {
         return $this->avatar;
     }
 
     /**
-     * Set the value of avatar
-     *
-     * @return  self
+     * Set the value of avatar.
      */
-    public function setAvatar(string|null $avatar): self
+    public function setAvatar(?string $avatar): self
     {
         $this->avatar = $avatar;
 
@@ -251,7 +246,7 @@ class User
     }
 
     /**
-     * Get the value of role
+     * Get the value of role.
      */
     public function getRole(): UserRole
     {
@@ -259,9 +254,7 @@ class User
     }
 
     /**
-     * Set the value of role
-     *
-     * @return  self
+     * Set the value of role.
      */
     public function setRole(UserRole $role): self
     {
@@ -271,7 +264,7 @@ class User
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp()
     {
@@ -279,9 +272,9 @@ class User
     }
 
     /**
-     * Set the value of created_timestamp
+     * Set the value of created_timestamp.
      *
-     * @return  self
+     * @return self
      */
     public function setCreatedTimestamp($created_timestamp)
     {
@@ -291,7 +284,7 @@ class User
     }
 
     /**
-     * Get the value of news_articles
+     * Get the value of news_articles.
      */
     public function getNewsArticles(): Collection
     {
@@ -299,7 +292,7 @@ class User
     }
 
     /**
-     * Get the value of connection_tokens
+     * Get the value of connection_tokens.
      */
     public function getConnectionTokens(): Collection
     {
@@ -307,7 +300,7 @@ class User
     }
 
     /**
-     * Get the value of cookie_tokens
+     * Get the value of cookie_tokens.
      */
     public function getCookieTokens(): Collection
     {
@@ -315,7 +308,7 @@ class User
     }
 
     /**
-     * Get the value of notifications
+     * Get the value of notifications.
      */
     public function getNotifications(): Collection
     {
@@ -323,7 +316,7 @@ class User
     }
 
     /**
-     * Get the value of notification_settings
+     * Get the value of notification_settings.
      */
     public function getNotificationSettings(): Collection
     {
@@ -331,7 +324,7 @@ class User
     }
 
     /**
-     * Get the value of workshop_items
+     * Get the value of workshop_items.
      */
     public function getWorkshopItems(): Collection
     {
@@ -339,7 +332,7 @@ class User
     }
 
     /**
-     * Get the value of workshop_comments
+     * Get the value of workshop_comments.
      */
     public function getWorkshopComments(): Collection
     {
@@ -347,7 +340,7 @@ class User
     }
 
     /**
-     * Get the value of workshop_ratings
+     * Get the value of workshop_ratings.
      */
     public function getWorkshopRatings(): Collection
     {
@@ -355,7 +348,7 @@ class User
     }
 
     /**
-     * Get the value of workshop_difficulty_ratings
+     * Get the value of workshop_difficulty_ratings.
      */
     public function getWorkshopDifficultyRatings(): Collection
     {
@@ -363,7 +356,7 @@ class User
     }
 
     /**
-     * Get the IP logs
+     * Get the IP logs.
      */
     public function getIpLogs(): Collection
     {
@@ -371,7 +364,7 @@ class User
     }
 
     /**
-     * Get the user logs
+     * Get the user logs.
      */
     public function getLogs(): Collection
     {
@@ -379,7 +372,7 @@ class User
     }
 
     /**
-     * Get the value of avatar_small
+     * Get the value of avatar_small.
      */
     public function getAvatarSmall(): ?string
     {
@@ -387,7 +380,7 @@ class User
     }
 
     /**
-     * Set the value of avatar_small
+     * Set the value of avatar_small.
      */
     public function setAvatarSmall(?string $avatar_small): self
     {
@@ -397,7 +390,7 @@ class User
     }
 
     /**
-     * Get the value of country
+     * Get the value of country.
      */
     public function getCountry(): ?string
     {
@@ -405,7 +398,7 @@ class User
     }
 
     /**
-     * Set the value of country
+     * Set the value of country.
      */
     public function setCountry(?string $country): self
     {
@@ -415,7 +408,7 @@ class User
     }
 
     /**
-     * Get the value of bio
+     * Get the value of bio.
      */
     public function getBio(): ?UserBio
     {
@@ -423,7 +416,7 @@ class User
     }
 
     /**
-     * Set the value of bio
+     * Set the value of bio.
      */
     public function setBio(?UserBio $bio): self
     {
@@ -433,7 +426,7 @@ class User
     }
 
     /**
-     * Get the value of password_reset_tokens
+     * Get the value of password_reset_tokens.
      */
     public function getPasswordResetTokens(): Collection
     {
@@ -441,7 +434,7 @@ class User
     }
 
     /**
-     * Get the value of email_verification
+     * Get the value of email_verification.
      */
     public function getEmailVerification(): ?UserEmailVerification
     {
@@ -449,7 +442,7 @@ class User
     }
 
     /**
-     * Set the value of email_verification
+     * Set the value of email_verification.
      */
     public function setEmailVerification(?UserEmailVerification $email_verification): self
     {
@@ -459,7 +452,7 @@ class User
     }
 
     /**
-     * Get the value of theme
+     * Get the value of theme.
      */
     public function getTheme(): string
     {
@@ -467,7 +460,7 @@ class User
     }
 
     /**
-     * Set the value of theme
+     * Set the value of theme.
      */
     public function setTheme(string $theme): self
     {
@@ -477,7 +470,7 @@ class User
     }
 
     /**
-     * Get the value of workshop_comment_reports
+     * Get the value of workshop_comment_reports.
      */
     public function getWorkshopCommentReports(): Collection
     {
@@ -485,7 +478,7 @@ class User
     }
 
     /**
-     * Get the value of cdn
+     * Get the value of cdn.
      */
     public function getCdn(): ?string
     {
@@ -493,7 +486,7 @@ class User
     }
 
     /**
-     * Set the value of cdn
+     * Set the value of cdn.
      */
     public function setCdn(?string $cdn): self
     {

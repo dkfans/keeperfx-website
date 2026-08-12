@@ -2,17 +2,14 @@
 
 namespace App\Workshop;
 
-use App\Entity\WorkshopItem;
-
 use App\Config\Config;
-use Doctrine\ORM\EntityManager;
-
+use App\Entity\WorkshopItem;
 use App\Helper\ThumbnailHelper;
+use Doctrine\ORM\EntityManager;
 
 class WorkshopHelper
 {
-
-    public const int RATING_QUALITY = 1;
+    public const int RATING_QUALITY    = 1;
     public const int RATING_DIFFICULTY = 2;
 
     public static function generateThumbnail(EntityManager $em, WorkshopItem $item): bool
@@ -71,7 +68,7 @@ class WorkshopHelper
 
         // Get thumbnail filepath
         $thumbnail_filepath = $item_images_dir . '/' . $thumbnail_filename;
-        if (file_exists($thumbnail_filepath)) {
+        if (\file_exists($thumbnail_filepath)) {
             @\unlink($thumbnail_filepath);
         }
 
@@ -83,10 +80,6 @@ class WorkshopHelper
      *
      * Returns an array with the 'score' and 'count' keys.
      * 'score' can be null
-     *
-     * @param WorkshopItem $workshop_item
-     * @param int $type
-     * @return array
      */
     public static function calculateRatingScore(WorkshopItem $workshop_item, int $type = self::RATING_QUALITY): array
     {
@@ -95,7 +88,7 @@ class WorkshopHelper
         // Check what kind of rating we are handling
         if ($type === self::RATING_QUALITY) {
             $ratings = $workshop_item->getRatings();
-        } else if ($type === self::RATING_DIFFICULTY) {
+        } elseif ($type === self::RATING_DIFFICULTY) {
             $ratings = $workshop_item->getDifficultyRatings();
         } else {
             throw new \InvalidArgumentException("'type' parameter should be either 'quality' or 'difficulty'");
@@ -111,10 +104,10 @@ class WorkshopHelper
             }
 
             // Calculate the average
-            $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
+            $rating_average = \array_sum($rating_scores) / \count($rating_scores);
 
             // Round the average
-            $rating_score  = \round($rating_average, 2);
+            $rating_score = \round($rating_average, 2);
         }
 
         return [
@@ -126,22 +119,23 @@ class WorkshopHelper
     /**
      * Sorts the nested [major][minor][patch] array.
      *
-     * @param array $releases The input array: $releases[$major][$minor][$patch] = $entity
+     * @param array $releases   The input array: $releases[$major][$minor][$patch] = $entity
      * @param bool  $descending If true, sorts newest-first (e.g., 3.2.1 before 1.0.0)
-     * @return array Sorted array with the same nesting.
+     *
+     * @return array sorted array with the same nesting
      */
     public static function sortStableReleases(array $releases, bool $descending = false): array
     {
         $func = $descending ? 'krsort' : 'ksort';
 
-        $func($releases, SORT_NUMERIC);
+        $func($releases, \SORT_NUMERIC);
 
         foreach ($releases as &$minors) {
 
-            $func($minors, SORT_NUMERIC);
+            $func($minors, \SORT_NUMERIC);
 
             foreach ($minors as &$patches) {
-                $func($patches, SORT_NUMERIC);
+                $func($patches, \SORT_NUMERIC);
             }
 
             unset($patches);

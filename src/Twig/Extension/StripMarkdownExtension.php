@@ -2,16 +2,16 @@
 
 namespace App\Twig\Extension;
 
-use Twig\TwigFilter;
-use Twig\Extension\AbstractExtension;
 use App\Twig\Extension\Markdown\CustomMarkdownConverter;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 class StripMarkdownExtension extends AbstractExtension
 {
-
     public function __construct(
         private CustomMarkdownConverter $md_converter,
-    ) {}
+    ) {
+    }
 
     public function getName(): string
     {
@@ -26,37 +26,34 @@ class StripMarkdownExtension extends AbstractExtension
     }
 
     /**
-     * Strip the markdown from the string
-     *
-     * @param string $string
-     * @return string
+     * Strip the markdown from the string.
      */
     public function stripMarkdown(string $string): string
     {
         $string = $this->md_converter->convert($string);
 
         // Normalize line endings
-        $string = preg_replace("/\r\n?/", "\n", $string);
+        $string = \preg_replace("/\r\n?/", "\n", $string);
 
         // Replace block tags with double newlines
-        $string = preg_replace('#<\s*(p|div|section|article|header|footer|aside)[^>]*>#i', "\n\n", $string);
+        $string = \preg_replace('#<\s*(p|div|section|article|header|footer|aside)[^>]*>#i', "\n\n", $string);
 
         // Replace <br> with single newline
-        $string = preg_replace('#<\s*br\s*/?>#i', "\n", $string);
+        $string = \preg_replace('#<\s*br\s*/?>#i', "\n", $string);
 
         // Handle list items
-        $string = preg_replace('#<\s*li[^>]*>#i', "- ", $string);
-        $string = preg_replace('#</\s*li>#i', "", $string);
-        $string = preg_replace('#<\s*/?(ul|ol)[^>]*>#i', "\n", $string);
+        $string = \preg_replace('#<\s*li[^>]*>#i', '- ', $string);
+        $string = \preg_replace('#</\s*li>#i', '', $string);
+        $string = \preg_replace('#<\s*/?(ul|ol)[^>]*>#i', "\n", $string);
 
         // Strip remaining tags
-        $text = strip_tags($string);
+        $text = \strip_tags($string);
 
         // Clean up whitespace
-        $text = preg_replace('/[ \t]+/', ' ', $text);
-        $text = preg_replace('/ *\n */', "\n", $text);
-        $text = preg_replace("/\n{3,}/", "\n\n", $text);
+        $text = \preg_replace('/[ \t]+/', ' ', $text);
+        $text = \preg_replace('/ *\n */', "\n", $text);
+        $text = \preg_replace("/\n{3,}/", "\n\n", $text);
 
-        return trim($text);
+        return \trim($text);
     }
 }

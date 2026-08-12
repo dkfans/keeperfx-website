@@ -2,18 +2,14 @@
 
 namespace App\Console\Command\Lubiki;
 
+use App\Config\Config;
+use App\Entity\GithubRelease;
+use App\Entity\WorkshopFile;
+use App\Entity\WorkshopImage;
+use App\Entity\WorkshopItem;
 use App\Enum\WorkshopCategory;
 use App\Enum\WorkshopScanStatus;
-
-use App\Entity\WorkshopItem;
-use App\Entity\WorkshopFile;
-use App\Entity\GithubRelease;
-use App\Entity\WorkshopImage;
-
-use URLify;
-use App\Config\Config;
 use Doctrine\ORM\EntityManager;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
@@ -32,17 +28,17 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("lubiki:add-file-dump-to-workshop")
-            ->setDescription("Add Lubiki file dump to Workshop")
+        $this->setName('lubiki:add-file-dump-to-workshop')
+            ->setDescription('Add Lubiki file dump to Workshop')
             ->addArgument('path', InputArgument::REQUIRED, 'Directory containing Lubiki stuff');
     }
 
-    private function getKfxReleaseByString(string $string): GithubRelease|null
+    private function getKfxReleaseByString(string $string): ?GithubRelease
     {
         foreach ($this->kfx_releases as $name => $gh_release) {
-            if (\strpos(\strtolower($name), \strtolower($string)) !== false) {
+            if (\str_contains(\strtolower($name), \strtolower($string))) {
                 return $gh_release;
             }
         }
@@ -57,6 +53,7 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
         $string = \preg_replace('/\h{2,}/', ' ', $string);
         $string = \preg_replace('/,{2,}/', ',', $string);
         $string = \trim($string, ", \t\n\r\0\x0B");
+
         return $string;
     }
 
@@ -86,7 +83,7 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
         }
 
         if (\preg_match('/Author\: .+?\, Created (on )?([\w\ ]+)/', $contents, $matches)) {
-            $date = \DateTime::createFromFormat("d M Y", $matches[2]);
+            $date = \DateTime::createFromFormat('d M Y', $matches[2]);
             if ($date) {
                 $data['creation_date'] = $date;
             }
@@ -110,15 +107,15 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
             $description = $matches[1];
 
             if (\preg_match('/Required version\: (.+)/s', $description, $matches)) {
-                $gh_release = $this->getKfxReleaseByString(trim($matches[1]));
+                $gh_release = $this->getKfxReleaseByString(\trim($matches[1]));
                 if ($gh_release) {
                     $data['min_game_build'] = $gh_release->getId();
                 }
 
-                $description = str_replace($matches[0], '', $description);
+                $description = \str_replace($matches[0], '', $description);
             }
 
-            if (strpos($description, 'No description.') === false) {
+            if (!\str_contains($description, 'No description.')) {
                 $description = \preg_replace('/\h{2,}/', ' ', $description);
                 $description = \preg_replace('/,{2,}/', ',', $description);
                 $description = \trim($description);
@@ -135,16 +132,18 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
         // Define workshop storage dir
         $storage_dir = Config::get('storage.path.workshop');
         if ($storage_dir === null) {
-            $output->writeln("[-] Workshop storage directory is not set");
+            $output->writeln('[-] Workshop storage directory is not set');
             $output->writeln("[>] ENV VAR: 'APP_WORKSHOP_STORAGE'");
+
             return Command::FAILURE;
         }
 
-        $output->writeln("[>] Getting stable releases from DB");
+        $output->writeln('[>] Getting stable releases from DB');
 
         $gh_releases = $this->em->getRepository(GithubRelease::class)->findAll();
         if (!$gh_releases) {
-            $output->writeln("[-] <error>No KFX stable releases in DB...</error>");
+            $output->writeln('[-] <error>No KFX stable releases in DB...</error>');
+
             return Command::FAILURE;
         }
         foreach ($gh_releases as $gh_release) {
@@ -157,26 +156,29 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
             $this->kfx_releases[$gh_release->getName()] = $gh_release;
         }
 
-        $output->writeln("[>] Handling Lubiki stuff");
+        $output->writeln('[>] Handling Lubiki stuff');
 
         // Get path
         $path = \rtrim((string) $input->getArgument('path'), ' \\/');
         if (!$path) {
-            $output->writeln("[-] <error>No path set</error>");
+            $output->writeln('[-] <error>No path set</error>');
+
             return Command::FAILURE;
         }
         $output->writeln("[+] Path: {$path}");
 
         // Check path
-        if (!is_dir($path) || !\is_readable($path)) {
-            $output->writeln("[-] <error>Not found or accessible!</error>");
+        if (!\is_dir($path) || !\is_readable($path)) {
+            $output->writeln('[-] <error>Not found or accessible!</error>');
+
             return Command::FAILURE;
         }
 
         // Make sure DK1 maps are present
         $map_dir = $path . '/dk1_maps';
-        if (!is_dir($map_dir) || !\is_readable($map_dir)) {
+        if (!\is_dir($map_dir) || !\is_readable($map_dir)) {
             $output->writeln("[-] <error>'dk1_maps' directory not found or accessible!</error>");
+
             return Command::FAILURE;
         }
         $output->writeln("[+] 'dk1_maps' directory found");
@@ -185,21 +187,22 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
         $nfo_file_list       = \glob($map_dir . '/*.nfo');
         $nfo_file_list_count = \count($nfo_file_list);
         if ($nfo_file_list_count < 1) {
-            $output->writeln("[-] No maps found...");
+            $output->writeln('[-] No maps found...');
+
             return Command::FAILURE;
         }
         $output->writeln("[+] Maps: {$nfo_file_list_count}");
 
         foreach ($nfo_file_list as $nfo_file) {
-            $filename_nfo = \basename($nfo_file);
+            $filename_nfo  = \basename($nfo_file);
             $filename_name = \pathinfo($filename_nfo, \PATHINFO_FILENAME);
             $output->writeln("[>] Handling: '<info>{$filename_name}</info>'");
 
             // Get map number
             $filename_exp = \explode('_', $filename_name);
-            $map_number = (int) $filename_exp[0];
+            $map_number   = (int) $filename_exp[0];
             if ($map_number < 100 || $map_number > 32000) {
-                $output->writeln("[-] Unable to grab normal map number");
+                $output->writeln('[-] Unable to grab normal map number');
                 continue;
             }
             $output->writeln("[+] Map number: <info>{$map_number}</info>");
@@ -234,13 +237,13 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
 
             $description = '';
             if ($nfo['description']) {
-                $description = $nfo['description'] . PHP_EOL . PHP_EOL;
+                $description = $nfo['description'] . \PHP_EOL . \PHP_EOL;
             }
             if ($nfo['pool'] || $nfo['objects']) {
                 if ($nfo['pool']) {
                     $description .= '- **Creature Pool**: ' . $nfo['pool'];
                     if ($nfo['objects']) {
-                        $description .= PHP_EOL;
+                        $description .= \PHP_EOL;
                     }
                 }
                 if ($nfo['objects']) {
@@ -248,13 +251,13 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
                 }
             }
 
-            $workshop_item->setDescription(trim($description));
+            $workshop_item->setDescription(\trim($description));
             $workshop_item->setInstallInstructions('Read the [Playing Custom Maps](/wiki/Playing-Custom-Maps) documentation page for information on how to play this map.');
 
             // Add to DB
             $this->em->persist($workshop_item);
             $this->em->flush();
-            $output->writeln("[+] Added to database!");
+            $output->writeln('[+] Added to database!');
 
             // Define directories for files
             $workshop_item_dir        = $storage_dir . '/' . $workshop_item->getId();
@@ -272,19 +275,18 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
                 throw new \Exception('Failed to create workshop item images dir');
             }
 
-
             // Generate storage filename and path
-            $storage_filename = md5(time()) . '__zip';
-            $storage_path = $workshop_item_files_dir . '/' . $storage_filename;
+            $storage_filename = \md5(\time()) . '__zip';
+            $storage_path     = $workshop_item_files_dir . '/' . $storage_filename;
 
             // Copy file
             if (!\copy($file, $storage_path)) {
-                $output->writeln("[-] <error>Failed to copy file</error>");
+                $output->writeln('[-] <error>Failed to copy file</error>');
                 continue;
             }
 
             // Generate new fancy download name
-            $download_filename = URLify::slug($nfo['name']);
+            $download_filename = \URLify::slug($nfo['name']);
             if ($nfo['version']) {
                 $download_filename .= '_v' . $nfo['version'];
             }
@@ -306,11 +308,11 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
             $image_new_path = $workshop_item_images_dir . '/' . $image_filename;
 
             // Check if image exists
-            if (file_exists($image_path)) {
+            if (\file_exists($image_path)) {
 
                 // Copy image
                 if (!\copy($image_path, $image_new_path)) {
-                    $output->writeln("[-] <error>Failed to copy image</error>");
+                    $output->writeln('[-] <error>Failed to copy image</error>');
                     continue;
                 }
 

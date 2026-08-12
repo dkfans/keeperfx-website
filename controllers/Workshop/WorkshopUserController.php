@@ -2,27 +2,21 @@
 
 namespace App\Controller\Workshop;
 
-use App\Enum\WorkshopCategory;
-
+use App\Account;
+use App\Config\Config;
 use App\Entity\User;
 use App\Entity\WorkshopTag;
-use App\Entity\WorkshopItem;
-use App\Entity\GithubRelease;
-
-use App\Account;
+use App\Enum\WorkshopCategory;
 use App\FlashMessage;
-use App\Config\Config;
 use App\Workshop\WorkshopCache;
-
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 
-class WorkshopUserController {
-
+class WorkshopUserController
+{
     public function userIndex(
         Request $request,
         Response $response,
@@ -32,11 +26,11 @@ class WorkshopUserController {
         Account $account,
         FlashMessage $flash,
         string $username,
-    ){
+    ) {
 
         // Get user
         $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
-        if(!$user){
+        if (!$user) {
             throw new HttpNotFoundException($request);
         }
 
@@ -45,12 +39,13 @@ class WorkshopUserController {
 
         // Check if this page is already cached
         $cached_view_data = $workshop_cache->getCachedBrowsePageData($user_cache_id);
-        if($cached_view_data){
+        if ($cached_view_data) {
             $response->getBody()->write(
                 $twig->render('workshop/user.workshop.html.twig',
                     \array_merge($cached_view_data, ['user' => $user]) // User needs to be dynamic
                 )
             );
+
             return $response;
         }
 
@@ -59,17 +54,17 @@ class WorkshopUserController {
 
         // Serialize workshop items
         $workshop_items_serialized = [];
-        foreach($workshop_items as $workshop_item){
+        foreach ($workshop_items as $workshop_item) {
 
             // Ignore non published ones
-            if($workshop_item->isPublished() === false){
+            if ($workshop_item->isPublished() === false) {
                 continue;
             }
 
             // Serialize
             $workshop_items_serialized[] = [
-                'id' => $workshop_item->getId(),
-                'name' => $workshop_item->getName(),
+                'id'        => $workshop_item->getId(),
+                'name'      => $workshop_item->getName(),
                 'submitter' => $workshop_item->getSubmitter() === null ? null : [
                     'id'          => $workshop_item->getSubmitter()->getId(),
                     'username'    => $workshop_item->getSubmitter()->getUsername(),
@@ -88,13 +83,13 @@ class WorkshopUserController {
                 'images'                  => \count($workshop_item->getImages()) === 0 ? [] : [
                     0 => [
                         'filename' => $workshop_item->getImages()->first()->getFilename(),
-                    ]
+                    ],
                 ],
-                'ratingScore'             => $workshop_item->getRatingScore(),
-                'difficultyRatingScore'   => $workshop_item->getDifficultyRatingScore(),
-                'comment_count'           => \count($workshop_item->getComments()),
-                'minGameBuild'            => $workshop_item->getMinGameBuild(),
-                'isLastFileBroken'        => $workshop_item->isLastFileBroken(),
+                'ratingScore'           => $workshop_item->getRatingScore(),
+                'difficultyRatingScore' => $workshop_item->getDifficultyRatingScore(),
+                'comment_count'         => \count($workshop_item->getComments()),
+                'minGameBuild'          => $workshop_item->getMinGameBuild(),
+                'isLastFileBroken'      => $workshop_item->isLastFileBroken(),
             ];
         }
 

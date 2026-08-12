@@ -2,44 +2,36 @@
 
 namespace App\Controller\ModCP\Workshop;
 
-use App\Enum\WorkshopCategory;
-
-use App\Entity\User;
-use App\Entity\WorkshopItem;
-use App\Entity\GithubRelease;
-use App\Entity\WorkshopImage;
-
 use App\Account;
-use App\FlashMessage;
 use App\Config\Config;
+use App\Entity\GithubRelease;
+use App\Entity\User;
+use App\Entity\WorkshopImage;
+use App\Entity\WorkshopItem;
+use App\Enum\WorkshopCategory;
+use App\FlashMessage;
 use App\UploadSizeHelper;
+use App\Workshop\Exception\WorkshopException;
 use App\Workshop\WorkshopCache;
 use App\Workshop\WorkshopHelper;
-
 use Doctrine\ORM\EntityManager;
-use Slim\Csrf\Guard as CsrfGuard;
-use Twig\Environment as TwigEnvironment;
-
-use Psr\Log\LoggerInterface;
-use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpForbiddenException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
+use Psr\Log\LoggerInterface;
+use Slim\Csrf\Guard as CsrfGuard;
+use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpNotFoundException;
+use Twig\Environment as TwigEnvironment;
 use Xenokore\Utility\Helper\DirectoryHelper;
-
-use App\Workshop\Exception\WorkshopException;
 
 class ModerateWorkshopEditController
 {
-
-
     public function index(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-        $id
+        $id,
     ) {
         // Get workshop item
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
@@ -77,7 +69,7 @@ class ModerateWorkshopEditController
         Account $account,
         UploadSizeHelper $upload_size_helper,
         WorkshopCache $workshop_cache,
-        $id
+        $id,
     ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
@@ -85,17 +77,17 @@ class ModerateWorkshopEditController
             throw new HttpNotFoundException($request);
         }
 
-        $post           = $request->getParsedBody();
+        $post = $request->getParsedBody();
 
-        $name                  = \trim((string) ($post['name'] ?? null));
-        $description           = \trim((string) ($post['description'] ?? null));
-        $install_instructions  = \trim((string) ($post['install_instructions'] ?? null));
+        $name                 = \trim((string) ($post['name'] ?? null));
+        $description          = \trim((string) ($post['description'] ?? null));
+        $install_instructions = \trim((string) ($post['install_instructions'] ?? null));
 
-        $original_author        = $post['original_author'] ?? null;
+        $original_author        = $post['original_author']        ?? null;
         $original_creation_date = $post['original_creation_date'] ?? null;
 
-        $submitter          = null;
-        $submitter_value    = $post['submitter'] ?? null;
+        $submitter       = null;
+        $submitter_value = $post['submitter'] ?? null;
 
         // Handle submitter
         if (!\in_array($submitter_value, ['current_user', 'kfx', 'username'])) {
@@ -116,18 +108,19 @@ class ModerateWorkshopEditController
                 if (empty($submitter_username)) {
                     $flash->warning('No username given for custom submitter.');
                     $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
+
                     return $response;
-                } else {
-                    // Search user
-                    $submitter_user = $em->getRepository(User::class)->findOneBy(['username' => $submitter_username]);
-                    if (!$submitter_user) {
-                        $flash->warning("User '{$submitter_username}' not found ");
-                        $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
-                        return $response;
-                    } else {
-                        $submitter = $submitter_user;
-                    }
                 }
+                // Search user
+                $submitter_user = $em->getRepository(User::class)->findOneBy(['username' => $submitter_username]);
+                if (!$submitter_user) {
+                    $flash->warning("User '{$submitter_username}' not found ");
+                    $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
+
+                    return $response;
+                }
+                $submitter = $submitter_user;
+
             } else {
                 // Invalid submitter value
                 throw new WorkshopException('invalid submitter');
@@ -142,7 +135,7 @@ class ModerateWorkshopEditController
 
         // Get and validate image data
         $image_post_data = $post['image-widget'] ?? '{}';
-        $image_data = @\json_decode($image_post_data, true);
+        $image_data      = @\json_decode($image_post_data, true);
         if (!\is_array($image_data)) {
             throw new WorkshopException('invalid image data');
         }
@@ -157,25 +150,26 @@ class ModerateWorkshopEditController
             if ($check_map_number < 202 || $check_map_number > 32767) {
                 $flash->warning('Invalid map number');
                 $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
-                return $response;
-            } else {
 
-                // Check if map with this map number already exists
-                $map_number_existing_item = $em->getRepository(WorkshopItem::class)->findOneBy([
-                    'category'   => WorkshopCategory::Map,
-                    'map_number' => $check_map_number
-                ]);
-                if ($map_number_existing_item !== null && $workshop_item !== $map_number_existing_item) {
-                    $flash->warning('Map number already in use');
-                    $response = $response->withHeader(
-                        'Location',
-                        '/moderate/workshop/' . $workshop_item->getId()
-                    )->withStatus(302);
-                    return $response;
-                } else {
-                    $map_number = $check_map_number;
-                }
+                return $response;
             }
+
+            // Check if map with this map number already exists
+            $map_number_existing_item = $em->getRepository(WorkshopItem::class)->findOneBy([
+                'category'   => WorkshopCategory::Map,
+                'map_number' => $check_map_number,
+            ]);
+            if ($map_number_existing_item !== null && $workshop_item !== $map_number_existing_item) {
+                $flash->warning('Map number already in use');
+                $response = $response->withHeader(
+                    'Location',
+                    '/moderate/workshop/' . $workshop_item->getId()
+                )->withStatus(302);
+
+                return $response;
+            }
+            $map_number = $check_map_number;
+
         }
 
         $workshop_item->setName($name);
@@ -215,21 +209,21 @@ class ModerateWorkshopEditController
         // Handle images
         foreach ($image_data as $weight => $image_obj) {
 
-            $current_weight++;
+            ++$current_weight;
 
             // Check if object is legit
             if (
-                !\array_key_exists('id', $image_obj) || (!is_null($image_obj['id']) && !is_int($image_obj['id'])) // id will be set or NULL
-                || !\array_key_exists('name', $image_obj) || !is_string($image_obj['name'])
+                !\array_key_exists('id', $image_obj) || ($image_obj['id'] !== null && !\is_int($image_obj['id'])) // id will be set or NULL
+                                                     || !\array_key_exists('name', $image_obj) || !\is_string($image_obj['name'])
                 // || !property_exists($image_obj, 'size') || !is_int($image_obj->size)
-                || !\array_key_exists('src', $image_obj) || (!is_null($image_obj['src']) && !is_string($image_obj['src'])) // src will be set or NULL
-                || !\array_key_exists('data', $image_obj) || (!is_null($image_obj['data']) && !is_string($image_obj['data'])) // data will be set or NULL
+                || !\array_key_exists('src', $image_obj) || ($image_obj['src'] !== null && !\is_string($image_obj['src'])) // src will be set or NULL
+                || !\array_key_exists('data', $image_obj) || ($image_obj['data'] !== null && !\is_string($image_obj['data'])) // data will be set or NULL
             ) {
                 continue;
             }
 
             // Add image
-            if (\is_null($image_obj['id'])) {
+            if ($image_obj['id'] === null) {
 
                 // TODO: Check $image_obj['data']
 
@@ -245,7 +239,7 @@ class ModerateWorkshopEditController
                 $path           = $workshop_item_images_dir . '/' . $image_filename;
 
                 // Get image blob
-                $base64 = explode(',', $image_obj['data'])[1];
+                $base64 = \explode(',', $image_obj['data'])[1];
                 $blob   = \base64_decode($base64);
 
                 // Filesize check
@@ -286,7 +280,7 @@ class ModerateWorkshopEditController
             }
 
             // Delete image
-            if (\is_null($image_obj['src']) && \is_null($image_obj['data'])) {
+            if ($image_obj['src'] === null && $image_obj['data'] === null) {
 
                 // Remove file
                 $path = $workshop_item_images_dir . '/' . $image->getFilename();
@@ -298,14 +292,14 @@ class ModerateWorkshopEditController
                 $em->remove($image);
 
                 // Set the weight one back as this one is gone now
-                $current_weight--;
+                --$current_weight;
 
                 continue;
             }
 
             // Update image
             // Only the weight of the image will be updated as the position might have changed
-            if (!\is_null($image_obj['src'])) {
+            if ($image_obj['src'] !== null) {
                 $image->setWeight($current_weight);
             }
         }
@@ -345,6 +339,7 @@ class ModerateWorkshopEditController
 
         $flash->success('Workshop item updated!');
         $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
+
         return $response;
     }
 
@@ -399,6 +394,7 @@ class ModerateWorkshopEditController
 
         $flash->success('The workshop item has been removed.');
         $response = $response->withHeader('Location', '/moderate/workshop/list')->withStatus(302);
+
         return $response;
     }
 }

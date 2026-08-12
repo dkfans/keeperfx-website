@@ -2,27 +2,23 @@
 
 namespace App\Controller\Workshop;
 
-use App\Enum\WorkshopCategory;
-
-use App\Entity\User;
-use App\Entity\WorkshopTag;
-use App\Entity\WorkshopItem;
-use App\Entity\GithubRelease;
-
 use App\Account;
-use App\FlashMessage;
 use App\Config\Config;
+use App\Entity\GithubRelease;
+use App\Entity\User;
+use App\Entity\WorkshopItem;
+use App\Entity\WorkshopTag;
+use App\Enum\WorkshopCategory;
+use App\FlashMessage;
 use App\Workshop\WorkshopCache;
 use DebugBar\StandardDebugBar;
 use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
 class WorkshopBrowseController
 {
-
     public function browseIndex(
         Request $request,
         Response $response,
@@ -43,6 +39,7 @@ class WorkshopBrowseController
             $response->getBody()->write(
                 $twig->render('workshop/browse.workshop.html.twig', $cached_view_data)
             );
+
             return $response;
         }
 
@@ -65,10 +62,10 @@ class WorkshopBrowseController
 
         // Get show item limit
         // TODO: make this user configurable
-        $limit     = 50;
+        $limit = 50;
 
         // Set variables for author so we can show nice pages for them
-        $submitter = null;
+        $submitter       = null;
         $original_author = null;
 
         // Get order by param
@@ -80,46 +77,46 @@ class WorkshopBrowseController
         // Decide 'ORDER BY'
         switch (\strtolower($order_by_param)) {
             case 'name':
-                $query = $query->orderBy('item.name', 'ASC');
+                $query                  = $query->orderBy('item.name', 'ASC');
                 $url_params['order_by'] = 'name';
                 break;
             case 'most-downloaded':
-                $query = $query->orderBy('item.download_count', 'DESC');
+                $query                  = $query->orderBy('item.download_count', 'DESC');
                 $url_params['order_by'] = 'most-downloaded';
                 break;
             case 'least-downloaded':
-                $query = $query->orderBy('item.download_count', 'ASC');
+                $query                  = $query->orderBy('item.download_count', 'ASC');
                 $url_params['order_by'] = 'least-downloaded';
                 break;
             case 'highest-rated-simple':
-                $query = $query->orderBy('item.rating_score', 'DESC');
-                $query = $query->andWhere($query->expr()->isNotNull('item.rating_score'));
+                $query                  = $query->orderBy('item.rating_score', 'DESC');
+                $query                  = $query->andWhere($query->expr()->isNotNull('item.rating_score'));
                 $url_params['order_by'] = 'highest-rated-simple';
                 break;
             case 'lowest-rated-simple':
-                $query = $query->orderBy('item.rating_score', 'ASC');
-                $query = $query->andWhere($query->expr()->isNotNull('item.rating_score'));
+                $query                  = $query->orderBy('item.rating_score', 'ASC');
+                $query                  = $query->andWhere($query->expr()->isNotNull('item.rating_score'));
                 $url_params['order_by'] = 'lowest-rated-simple';
                 break;
             case 'most-difficult':
-                $query = $query->orderBy('item.difficulty_rating_score', 'DESC');
-                $query = $query->andWhere($query->expr()->isNotNull('item.difficulty_rating_score'));
-                $query = $query->andWhere('item.difficulty_rating_enabled = 1');
+                $query                  = $query->orderBy('item.difficulty_rating_score', 'DESC');
+                $query                  = $query->andWhere($query->expr()->isNotNull('item.difficulty_rating_score'));
+                $query                  = $query->andWhere('item.difficulty_rating_enabled = 1');
                 $url_params['order_by'] = 'most-difficult';
                 break;
             case 'least-difficult':
-                $query = $query->orderBy('item.difficulty_rating_score', 'ASC');
-                $query = $query->andWhere($query->expr()->isNotNull('item.difficulty_rating_score'));
-                $query = $query->andWhere('item.difficulty_rating_enabled = 1');
+                $query                  = $query->orderBy('item.difficulty_rating_score', 'ASC');
+                $query                  = $query->andWhere($query->expr()->isNotNull('item.difficulty_rating_score'));
+                $query                  = $query->andWhere('item.difficulty_rating_enabled = 1');
                 $url_params['order_by'] = 'least-difficult';
                 break;
             case 'oldest':
-                $query = $query->orderBy('item.creation_orderby_timestamp', 'ASC');
+                $query                  = $query->orderBy('item.creation_orderby_timestamp', 'ASC');
                 $url_params['order_by'] = 'oldest';
                 break;
             default:
             case 'latest':
-                $query = $query->orderBy('item.creation_orderby_timestamp', 'DESC');
+                $query                  = $query->orderBy('item.creation_orderby_timestamp', 'DESC');
                 $url_params['order_by'] = 'latest';
                 break;
             case 'last-updated':
@@ -135,7 +132,7 @@ class WorkshopBrowseController
                 // Aggregate AVG and COUNT of ratings, then apply Wilson formula.
                 // z_score = 1.96 (≈95% confidence)
                 $z_score = 1.96;
-                $query = $query
+                $query   = $query
                     ->leftJoin('item.ratings', 'r')
                     ->addSelect('AVG(r.score) AS HIDDEN avg_score')
                     ->addSelect('COUNT(r.id) AS HIDDEN rating_count')
@@ -159,8 +156,8 @@ class WorkshopBrowseController
         // Add search criteria
         if (isset($q['search']) && \is_string($q['search'])) {
             $url_params['search'] = $q['search'];
-            $query = $query->leftJoin('item.submitter', 'submitter');
-            $search_params = \explode(" ", $q['search']);
+            $query                = $query->leftJoin('item.submitter', 'submitter');
+            $search_params        = \explode(' ', $q['search']);
             foreach ($search_params as $i => $search_param) {
                 $query = $query->andWhere($query->expr()->orX(
                     $query->expr()->like('item.name', ':search' . $i),
@@ -182,9 +179,9 @@ class WorkshopBrowseController
             $username = $q['user'];
 
             if ($username === 'keeperfx-team') {
-                $query                 = $query->andWhere('item.submitter IS NULL');
-                $submitter             = 'KeeperFX Team';
-                $url_params['user']    = 'keeperfx-team';
+                $query              = $query->andWhere('item.submitter IS NULL');
+                $submitter          = 'KeeperFX Team';
+                $url_params['user'] = 'keeperfx-team';
             } else {
 
                 $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);
@@ -192,18 +189,19 @@ class WorkshopBrowseController
                     $flash->warning('User not found.');
                     $response->getBody()->write(
                         $twig->render('workshop/alert.workshop.html.twig', [
-                            'categories'          => WorkshopCategory::cases(),
-                            'tags'           => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-                            'builds'         => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
+                            'categories' => WorkshopCategory::cases(),
+                            'tags'       => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
+                            'builds'     => $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']),
                         ])
                     );
+
                     return $response;
                 }
 
-                $query                       = $query->andWhere('item.submitter = ' . $user->getId());
-                $query                       = $query->andWhere('item.original_author IS NULL');
-                $submitter                   = $user->getUsername();
-                $url_params['user']          = $user->getUsername();
+                $query              = $query->andWhere('item.submitter = ' . $user->getId());
+                $query              = $query->andWhere('item.original_author IS NULL');
+                $submitter          = $user->getUsername();
+                $url_params['user'] = $user->getUsername();
 
                 // When we are checking a single user, we want to hide broken items except if we are looking at our own items
                 // NOTE: queries are cached so this is useless. We'll do this in the view instead
@@ -211,13 +209,11 @@ class WorkshopBrowseController
                 //     $query = $query->andWhere('item.is_last_file_broken = 0');
                 // }
             }
-        } else {
-
-            // Always hide broken items when not on a single user page
-            // NOTE: queries are cached so this is useless. We'll do this in the view instead
-            // $query = $query->andWhere('item.is_last_file_broken = 0');
-
         }
+
+        // Always hide broken items when not on a single user page
+        // NOTE: queries are cached so this is useless. We'll do this in the view instead
+        // $query = $query->andWhere('item.is_last_file_broken = 0');
 
         // Add original author criteria
         if (!isset($q['user']) && isset($q['original_author']) && \is_string($q['original_author'])) {
@@ -231,7 +227,7 @@ class WorkshopBrowseController
         $workshop_item_count = (clone $query)->select('count(DISTINCT item.id)')->resetDQLPart('groupBy')->getQuery()->getSingleScalarResult();
 
         // Get total pages
-        $total_pages = \intval(\ceil($workshop_item_count / $limit));
+        $total_pages = (int) \ceil($workshop_item_count / $limit);
 
         // Calculate offset
         $offset = $limit * ($page - 1);
@@ -242,18 +238,19 @@ class WorkshopBrowseController
                 'Location',
                 '/workshop/browse?' . \http_build_query($url_params + ['page' => 1]),
             )->withStatus(302);
+
             return $response;
         }
 
         // Create pagination
         $pagination = [];
         if ($total_pages <= 5) {
-            for ($i = 1; $i <= $total_pages; $i++) {
+            for ($i = 1; $i <= $total_pages; ++$i) {
                 $pagination[] = [
-                    'label' => (string) $i,
-                    'active' => $page === $i,
+                    'label'    => (string) $i,
+                    'active'   => $page === $i,
                     'disabled' => false,
-                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $i]),
+                    'url'      => '/workshop/browse?' . \http_build_query($url_params + ['page' => $i]),
                 ];
             }
         } else {
@@ -261,72 +258,72 @@ class WorkshopBrowseController
             if ($page >= 3) {
 
                 $pagination[] = [
-                    'label' => '1',
-                    'active' => $page === 1,
+                    'label'    => '1',
+                    'active'   => $page === 1,
                     'disabled' => false,
-                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => 1]),
+                    'url'      => '/workshop/browse?' . \http_build_query($url_params + ['page' => 1]),
                 ];
 
                 if ($page > 3) {
                     $pagination[] = [
-                        'label' => '...',
-                        'active' => false,
+                        'label'    => '...',
+                        'active'   => false,
                         'disabled' => true,
-                        'url'    => null,
+                        'url'      => null,
                     ];
                 }
             }
 
             if ($page !== 1) {
                 $pagination[] = [
-                    'label' => (string) ($page - 1),
-                    'active' => false,
+                    'label'    => (string) ($page - 1),
+                    'active'   => false,
                     'disabled' => false,
-                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page - 1]),
+                    'url'      => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page - 1]),
                 ];
             }
 
             if ($page !== $total_pages) {
                 $pagination[] = [
-                    'label' => (string) $page,
-                    'active' => true,
+                    'label'    => (string) $page,
+                    'active'   => true,
                     'disabled' => false,
-                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page]),
+                    'url'      => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page]),
                 ];
             }
 
             if ($page < $total_pages - 1) {
                 $pagination[] = [
-                    'label' => (string) ($page + 1),
-                    'active' => false,
+                    'label'    => (string) ($page + 1),
+                    'active'   => false,
                     'disabled' => false,
-                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page + 1]),
+                    'url'      => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page + 1]),
                 ];
             }
 
             if ($page === 1) {
                 $pagination[] = [
-                    'label' => (string) ($page + 2),
-                    'active' => false,
+                    'label'    => (string) ($page + 2),
+                    'active'   => false,
                     'disabled' => false,
-                    'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page + 2]),
+                    'url'      => '/workshop/browse?' . \http_build_query($url_params + ['page' => $page + 2]),
                 ];
             }
 
             if ($page < $total_pages - 2) {
                 $pagination[] = [
-                    'label' => '...',
-                    'active' => false,
+                    'label'    => '...',
+                    'active'   => false,
                     'disabled' => true,
-                    'url'    => null,
+                    'url'      => null,
                 ];
             }
 
             $pagination[] = [
-                'label' => (string) $total_pages,
-                'active' => $page === $total_pages,
+                'label'    => (string) $total_pages,
+                'active'   => $page === $total_pages,
                 'disabled' => false,
-                'url'    => '/workshop/browse?' . \http_build_query($url_params + ['page' => $total_pages]),
+                'url'      => '/workshop/browse?' . \http_build_query($url_params + ['page' => $total_pages]),
             ];
         }
 
@@ -335,11 +332,11 @@ class WorkshopBrowseController
 
         // Get workshop items
         $workshop_items = [];
-        $result = $query->getQuery()->getResult();
+        $result         = $query->getQuery()->getResult();
         foreach ($result as $workshop_item) {
             $workshop_items[] = [
-                'id' => $workshop_item->getId(),
-                'name' => $workshop_item->getName(),
+                'id'        => $workshop_item->getId(),
+                'name'      => $workshop_item->getName(),
                 'submitter' => $workshop_item->getSubmitter() === null ? null : [
                     'id'          => $workshop_item->getSubmitter()->getId(),
                     'username'    => $workshop_item->getSubmitter()->getUsername(),
@@ -358,13 +355,13 @@ class WorkshopBrowseController
                 'images'                  => \count($workshop_item->getImages()) === 0 ? [] : [
                     0 => [
                         'filename' => $workshop_item->getImages()->first()->getFilename(),
-                    ]
+                    ],
                 ],
-                'ratingScore'             => $workshop_item->getRatingScore(),
-                'difficultyRatingScore'   => $workshop_item->getDifficultyRatingScore(),
-                'comment_count'           => \count($workshop_item->getComments()),
-                'minGameBuild'            => $workshop_item->getMinGameBuild(),
-                'isLastFileBroken'        => $workshop_item->isLastFileBroken(),
+                'ratingScore'           => $workshop_item->getRatingScore(),
+                'difficultyRatingScore' => $workshop_item->getDifficultyRatingScore(),
+                'comment_count'         => \count($workshop_item->getComments()),
+                'minGameBuild'          => $workshop_item->getMinGameBuild(),
+                'isLastFileBroken'      => $workshop_item->isLastFileBroken(),
             ];
         }
 
@@ -374,9 +371,9 @@ class WorkshopBrowseController
             'categories'                    => WorkshopCategory::cases(),
             'categories_without_difficulty' => Config::get('app.workshop.item_categories_without_difficulty'),
             // 'tags'                          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
-            'pagination'                    => $pagination,
-            'submitter'                     => $submitter,
-            'original_author'               => $original_author,
+            'pagination'      => $pagination,
+            'submitter'       => $submitter,
+            'original_author' => $original_author,
         ];
 
         // Stop measure

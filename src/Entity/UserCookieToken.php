@@ -2,15 +2,12 @@
 
 namespace App\Entity;
 
-use App\Enum\UserRole;
-
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class UserCookieToken
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -24,19 +21,19 @@ class UserCookieToken
     private string $token;
 
     #[ORM\ManyToOne(targetEntity: UserOAuthToken::class)]
-    private UserOAuthToken|null $oauth_token = null;
+    private ?UserOAuthToken $oauth_token = null;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -44,7 +41,7 @@ class UserCookieToken
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -52,7 +49,7 @@ class UserCookieToken
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -62,7 +59,7 @@ class UserCookieToken
     }
 
     /**
-     * Get the value of token
+     * Get the value of token.
      */
     public function getToken(): string
     {
@@ -70,7 +67,7 @@ class UserCookieToken
     }
 
     /**
-     * Set the value of token
+     * Set the value of token.
      */
     public function setToken(string $token): self
     {
@@ -80,7 +77,7 @@ class UserCookieToken
     }
 
     /**
-     * Get the value of oauth_token
+     * Get the value of oauth_token.
      */
     public function getOAuthToken(): ?UserOAuthToken
     {
@@ -88,7 +85,7 @@ class UserCookieToken
     }
 
     /**
-     * Set the value of oauth_token
+     * Set the value of oauth_token.
      */
     public function setOAuthToken(?UserOAuthToken $oauth_token): self
     {
@@ -98,7 +95,7 @@ class UserCookieToken
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -106,7 +103,7 @@ class UserCookieToken
     }
 
     /**
-     * Set the value of created_timestamp
+     * Set the value of created_timestamp.
      */
     public function setCreatedTimestamp(\DateTime $created_timestamp): self
     {

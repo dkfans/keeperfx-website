@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Config\Config;
 use App\AvatarGenerator;
-
+use App\Config\Config;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
 
@@ -17,7 +15,6 @@ use Slim\Exception\HttpNotFoundException;
  */
 class AvatarController
 {
-
     public function outputAvatar(
         Request $request,
         Response $response,
@@ -37,11 +34,11 @@ class AvatarController
         \finfo_close($finfo);
 
         // Return avatar
-        $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
-        $response = $response
+        $cache_time = (int) ($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
+        $response   = $response
             ->withHeader('Pragma', 'public')
             ->withHeader('Cache-Control', 'max-age=' . $cache_time)
-            ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
+            ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', \time() + $cache_time))
             ->withHeader('Content-Type', $content_type);
         $response->getBody()->write(
             \file_get_contents($filepath)
@@ -51,11 +48,8 @@ class AvatarController
     }
 
     /**
-     * Avatar generation endpoint
+     * Avatar generation endpoint.
      *
-     * @param Request $request
-     * @param Response $response
-     * @param string $username
      * @return Response $response
      */
     public function generateAvatarPng(
@@ -70,7 +64,7 @@ class AvatarController
         }
 
         // Make sure size is valid
-        if (is_numeric($size) == false) {
+        if (\is_numeric($size) == false) {
             throw new HttpBadRequestException($request);
         }
 
@@ -88,11 +82,11 @@ class AvatarController
         $image = AvatarGenerator::generate($size, $username, $font);
 
         // Set output headers
-        $cache_time = (int)($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
-        $response = $response
+        $cache_time = (int) ($_ENV['APP_IMAGE_OUTPUT_CACHE_TIME'] ?? 86400);
+        $response   = $response
             ->withHeader('Pragma', 'public')
             ->withHeader('Cache-Control', 'max-age=' . $cache_time)
-            ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
+            ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', \time() + $cache_time))
             ->withHeader('Content-Type', 'image/png');
 
         // Output PNG data (using output buffering)

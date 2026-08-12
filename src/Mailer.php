@@ -2,29 +2,23 @@
 
 namespace App;
 
-use App\Enum\MailStatus;
-
 use App\Entity\Mail;
 use App\Entity\User;
-use Doctrine\Common\Collections\Collection;
+use App\Enum\MailStatus;
 use Doctrine\ORM\EntityManager;
 use PHPMailer\PHPMailer\PHPMailer;
-use Twig\Environment as TwigEnvironment;
 
 class Mailer
 {
-
     public function __construct(
         private EntityManager $em,
-    ) {}
+    ) {
+    }
 
     /**
-     * Create and add a mail to the mailer queue
+     * Create and add a mail to the mailer queue.
      *
-     * @param string $receiver
-     * @param string $subject
-     * @param string $contents
-     * @return false|integer      The id of the mail on success. -1 if not persisted to DB yet, False on failure
+     * @return false|int The id of the mail on success. -1 if not persisted to DB yet, False on failure
      */
     public function createMailInQueue(string $receiver, string $subject, string $body, ?string $html_body = null, bool $flush_db = true): int|false
     {
@@ -88,33 +82,33 @@ class Mailer
         $php_mailer = new PHPMailer(true);
         $php_mailer->isSMTP();
         $php_mailer->Host     = $_ENV['APP_SMTP_HOST'];
-        $php_mailer->SMTPAuth = (bool)$_ENV['APP_SMTP_AUTH'];
+        $php_mailer->SMTPAuth = (bool) $_ENV['APP_SMTP_AUTH'];
         $php_mailer->Username = $_ENV['APP_SMTP_USERNAME'];
         $php_mailer->Password = $_ENV['APP_SMTP_PASSWORD'];
         $php_mailer->Port     = (int) $_ENV['APP_SMTP_PORT'];
 
-        if ((bool)$_ENV['APP_SMTP_TLS']) {
+        if ((bool) $_ENV['APP_SMTP_TLS']) {
             $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         } else {
             // $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $php_mailer->SMTPSecure = false;
         }
 
-        if ((bool)$_ENV['APP_SMTP_VERIFY_CERT'] === false) {
+        if ((bool) $_ENV['APP_SMTP_VERIFY_CERT'] === false) {
             $php_mailer->SMTPOptions = [
                 'ssl' => [
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
+                    'verify_peer'       => false,
+                    'verify_peer_name'  => false,
                     'allow_self_signed' => true,
-                ]
+                ],
             ];
         } else {
             $php_mailer->SMTPOptions = [
                 'ssl' => [
-                    'verify_peer' => true,
-                    'verify_peer_name' => true,
+                    'verify_peer'       => true,
+                    'verify_peer_name'  => true,
                     'allow_self_signed' => false,
-                ]
+                ],
             ];
         }
 

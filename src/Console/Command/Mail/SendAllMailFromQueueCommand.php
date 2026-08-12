@@ -2,16 +2,13 @@
 
 namespace App\Console\Command\Mail;
 
+use App\Entity\Mail;
 use App\Enum\MailStatus;
 use App\Mailer;
 use Doctrine\ORM\EntityManager;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\PHPMailer;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-use App\Entity\Mail;
 
 class SendAllMailFromQueueCommand extends Command
 {
@@ -22,31 +19,30 @@ class SendAllMailFromQueueCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("mail:send-queue-all")
-            ->setDescription("Send all mails that are in the queue");
+        $this->setName('mail:send-queue-all')
+            ->setDescription('Send all mails that are in the queue');
     }
 
     protected function execute(Input $input, Output $output)
     {
-        $output->writeln("[>] Checking for mails to send...");
+        $output->writeln('[>] Checking for mails to send...');
 
-        $mails = $this->mailer->getAllPendingMailsInQueue();
+        $mails      = $this->mailer->getAllPendingMailsInQueue();
         $mail_count = \count($mails);
 
-        if($mail_count === 0){
-            $output->writeln("[+] No mails in queue");
-            return Command::SUCCESS;
-        } else {
-            $output->writeln("[+] {$mail_count} mails in queue");
-        }
+        if ($mail_count === 0) {
+            $output->writeln('[+] No mails in queue');
 
-        foreach($mails as $mail_loop_entity)
-        {
+            return Command::SUCCESS;
+        }
+        $output->writeln("[+] {$mail_count} mails in queue");
+
+        foreach ($mails as $mail_loop_entity) {
             // Make sure mail has a valid receiver email
             $email = $mail_loop_entity->getReceiver();
-            if($email === null || \filter_var($email, FILTER_VALIDATE_EMAIL) === false){
+            if ($email === null || \filter_var($email, \FILTER_VALIDATE_EMAIL) === false) {
 
                 // Remove from DB
                 $output->writeln("[!] Removing #{$mail_loop_entity->getId()} because it has an invalid email address");
@@ -61,7 +57,7 @@ class SendAllMailFromQueueCommand extends Command
                 'id'     => $mail_loop_entity->getId(),
                 'status' => MailStatus::NOT_SENT_YET,
             ]);
-            if(!$mail){
+            if (!$mail) {
                 $output->writeln("[?] The status of mail #{$mail_loop_entity->getId()} was changed by another process...");
                 continue;
             }
@@ -92,7 +88,8 @@ class SendAllMailFromQueueCommand extends Command
             }
         }
 
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Done!');
+
         return Command::SUCCESS;
     }
 }

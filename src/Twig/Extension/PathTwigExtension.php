@@ -6,24 +6,25 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class PathTwigExtension extends \Twig\Extension\AbstractExtension
 {
-
     /**
-     * The current uri
+     * The current uri.
+     *
      * @var string
      */
     private $current_uri = '/';
 
     /**
-     * The current path
+     * The current path.
+     *
      * @var string
      */
     private $current_path = '/';
 
     public function __construct()
     {
-        if (!empty($_SERVER["REQUEST_URI"])) {
-            $this->current_uri  = $_SERVER["REQUEST_URI"];
-            $this->current_path = \parse_url($_SERVER["REQUEST_URI"])['path'] ?? '/';
+        if (!empty($_SERVER['REQUEST_URI'])) {
+            $this->current_uri  = $_SERVER['REQUEST_URI'];
+            $this->current_path = \parse_url($_SERVER['REQUEST_URI'])['path'] ?? '/';
         }
     }
 
@@ -42,10 +43,7 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
 
     /**
      * Check the if a given path matches the current path.
-     * Wildcards can be used (ex: "/users/*"), as well as Regexes
-     *
-     * @param string ...$paths
-     * @return boolean
+     * Wildcards can be used (ex: "/users/*"), as well as Regexes.
      */
     public function pathEquals(string ...$paths): bool
     {
@@ -59,7 +57,7 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
 
             foreach ($paths as $path) {
 
-                if (\strpos($path, '+') !== false || \strpos($path, '[') !== false) {
+                if (\str_contains($path, '+') || \str_contains($path, '[')) {
                     $regex_path = \str_replace('/', '\\/', \addslashes($path));
                     $regex_path = '~^' . $regex_path . '$~';
 
@@ -80,9 +78,7 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     /**
-     * Get the current server request PATH
-     *
-     * @return string
+     * Get the current server request PATH.
      */
     public function getPath(): string
     {

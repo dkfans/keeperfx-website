@@ -6,7 +6,6 @@ use Twig\TwigFilter;
 
 class PregReplaceTwigExtension extends \Twig\Extension\AbstractExtension
 {
-
     public function getName(): string
     {
         return 'preg_replace_extension';
@@ -26,11 +25,7 @@ class PregReplaceTwigExtension extends \Twig\Extension\AbstractExtension
     /**
      * Standard PHP preg_replace() function.
      *
-     * @param array|string $pattern
-     * @param array|string $replacement
      * @param array|string $subject
-     * @param integer $limit
-     * @return string
      */
     public function preg_replace(string $subject, array|string $pattern, array|string $replacement, int $limit = -1): string
     {

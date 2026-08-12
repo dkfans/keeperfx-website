@@ -2,14 +2,11 @@
 
 namespace App\Twig\Extension;
 
-use Twig\TwigFilter;
-
 use ByteUnits\Binary as BinaryFormatter;
-
+use Twig\TwigFilter;
 
 class BinaryFormatterTwigExtension extends \Twig\Extension\AbstractExtension
 {
-
     public function getName(): string
     {
         return 'binary_formatter_extension';
@@ -24,9 +21,6 @@ class BinaryFormatterTwigExtension extends \Twig\Extension\AbstractExtension
 
     /**
      * Format bytes into a readable string.
-     *
-     * @param string $bytes
-     * @return string
      */
     public function formatBytes(string $bytes): string
     {

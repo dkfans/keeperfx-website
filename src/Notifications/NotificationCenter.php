@@ -2,31 +2,21 @@
 
 namespace App\Notifications;
 
-use App\Enum\UserRole;
-
+use App\Account;
 use App\Entity\User;
 use App\Entity\UserNotification;
-
-use App\Account;
+use App\Enum\UserRole;
 use App\Mailer;
-use Doctrine\ORM\EntityManager;
-use App\Notifications\NotificationSettings;
-
-use Psr\SimpleCache\CacheInterface;
-use App\Notifications\NotificationInterface;
-
 use App\Notifications\Exception\NotificationClassNotFoundException;
 use App\Notifications\Exception\NotificationException;
-
-use Xenokore\Utility\Helper\ClassHelper;
-use Xenokore\Utility\Helper\DirectoryHelper;
+use Doctrine\ORM\EntityManager;
+use Psr\SimpleCache\CacheInterface;
 
 class NotificationCenter
 {
+    private const CACHE_KEY_NOTIFICATIONS = 'unread-notif-uid-%s';
 
-    private const CACHE_KEY_NOTIFICATIONS = "unread-notif-uid-%s";
-
-    private array|null $unread_notifications = null;
+    private ?array $unread_notifications = null;
 
     public function __construct(
         private Account $account,
@@ -46,7 +36,7 @@ class NotificationCenter
         }
     }
 
-    public function sendNotification(User $user, string $class, array|null $data = null, bool $flush = true): bool
+    public function sendNotification(User $user, string $class, ?array $data = null, bool $flush = true): bool
     {
         // Get the notification settings of the receiving user
         $setting = $this->notification_settings->getUserSetting($user, $class);
@@ -69,7 +59,7 @@ class NotificationCenter
 
                 // Create and send mail
                 // TODO: add template functionality
-                $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
+                $email_body = $notification_object->getNotificationTitle() . \PHP_EOL . \PHP_EOL;
                 $email_body .= $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
                 $this->mailer->createMailForUser(
                     $user,
@@ -97,7 +87,7 @@ class NotificationCenter
             );
 
             // Create and send mail
-            $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
+            $email_body = $notification_object->getNotificationTitle() . \PHP_EOL . \PHP_EOL;
             $email_body .= $_ENV['APP_ROOT_URL'] . $notification_object->getUri();
             $this->mailer->createMailForUser(
                 $user,
@@ -111,9 +101,9 @@ class NotificationCenter
         return false;
     }
 
-    public function sendNotificationToAllWithRole(UserRole $role, string $class, array|null $data = null): void
+    public function sendNotificationToAllWithRole(UserRole $role, string $class, ?array $data = null): void
     {
-        $users = [];
+        $users     = [];
         $all_users = $this->em->getRepository(User::class)->findAll();
         if ($all_users) {
             foreach ($all_users as $user) {
@@ -128,9 +118,9 @@ class NotificationCenter
         }
     }
 
-    public function sendNotificationToAll(string $class, array|null $data = null): void
+    public function sendNotificationToAll(string $class, ?array $data = null): void
     {
-        $users = [];
+        $users     = [];
         $all_users = $this->em->getRepository(User::class)->findAll();
         if ($all_users) {
             foreach ($all_users as $user) {
@@ -143,13 +133,13 @@ class NotificationCenter
         }
     }
 
-    public function sendNotificationToAllExceptSelf(string $class, array|null $data = null): void
+    public function sendNotificationToAllExceptSelf(string $class, ?array $data = null): void
     {
         if (!$this->account->isLoggedIn()) {
-            throw new \Exception("user needs to be logged in");
+            throw new \Exception('user needs to be logged in');
         }
 
-        $users = [];
+        $users     = [];
         $all_users = $this->em->getRepository(User::class)->findAll();
         if ($all_users) {
             foreach ($all_users as $user) {
@@ -164,10 +154,10 @@ class NotificationCenter
         }
     }
 
-    public function sendNotificationToMany(array $users,  string $class, array|null $data = null)
+    public function sendNotificationToMany(array $users, string $class, ?array $data = null): void
     {
         // Variables
-        $notifications = [];
+        $notifications                  = [];
         $users_with_email_notifications = [];
 
         /** @var User $user */
@@ -223,7 +213,7 @@ class NotificationCenter
 
                     // Create and send mail
                     // TODO: add template functionality
-                    $email_body = $notification_definition->getNotificationTitle() . PHP_EOL . PHP_EOL;
+                    $email_body = $notification_definition->getNotificationTitle() . \PHP_EOL . \PHP_EOL;
                     $email_body .= $_ENV['APP_ROOT_URL'] . '/account/notification/' . $notification->getId();
                     $this->mailer->createMailForUser(
                         $user,
@@ -244,7 +234,7 @@ class NotificationCenter
                     );
 
                     // Create and send mail
-                    $email_body = $notification_object->getNotificationTitle() . PHP_EOL . PHP_EOL;
+                    $email_body = $notification_object->getNotificationTitle() . \PHP_EOL . \PHP_EOL;
                     $email_body .= $_ENV['APP_ROOT_URL'] . $notification_object->getUri();
                     $this->mailer->createMailForUser(
                         $user,
@@ -299,12 +289,13 @@ class NotificationCenter
         }
 
         if ($this->unread_notifications === null) {
-            throw new NotificationException("unread notifications have not been checked yet");
+            throw new NotificationException('unread notifications have not been checked yet');
         }
 
         // Remove the unread notification if it exists
         if (isset($this->unread_notifications[$id])) {
             unset($this->unread_notifications[$id]);
+
             // Return whether or not is has been removed
             return isset($this->unread_notifications[$id]);
         }
@@ -322,7 +313,7 @@ class NotificationCenter
 
         $user_notifications = $this->em->getRepository(UserNotification::class)->findBy(
             [
-                'user'    => $this->account->getUser(),
+                'user' => $this->account->getUser(),
             ],
             ['created_timestamp' => 'DESC'],
         );
@@ -354,7 +345,7 @@ class NotificationCenter
         return $notification;
     }
 
-    private function createUserNotification(User $user, string $class, array|null $data = null): UserNotification
+    private function createUserNotification(User $user, string $class, ?array $data = null): UserNotification
     {
         if (!\class_exists($class)) {
             throw new NotificationClassNotFoundException("notification class '{$class}' does not exist");
@@ -364,6 +355,7 @@ class NotificationCenter
         $notification->setClass($class);
         $notification->setUser($user);
         $notification->setData($data);
+
         return $notification;
     }
 
@@ -376,7 +368,7 @@ class NotificationCenter
         return \sprintf(self::CACHE_KEY_NOTIFICATIONS, $this->account->getUser()->getId());
     }
 
-    public function clearUserCache(User|null $user = null)
+    public function clearUserCache(?User $user = null): void
     {
         if ($user === null) {
             $this->cache->delete($this->getUserCacheKey());
@@ -390,7 +382,7 @@ class NotificationCenter
     public function getNotificationSettings(): array
     {
         if (!$this->account->isLoggedIn()) {
-            throw new \Exception("user needs to be logged in");
+            throw new \Exception('user needs to be logged in');
         }
 
         return $this->notification_settings->getAllUserSettings($this->account->getUser());
@@ -411,15 +403,10 @@ class NotificationCenter
      *     'comment' => [1, 2, 3]
      * ]
      * The above example will remove notifications that have 'item' => 1 and a 'comment' that is either 1, 2 or 3.
-     *
-     * @param string $class
-     * @param array $data_to_match
-     * @param bool $check_multiple
-     * @return bool
      */
     public function clearNotificationsWithData(string $class, array $data_to_match, bool $check_multiple = false): bool
     {
-        $need_database_flush = false;
+        $need_database_flush   = false;
         $clear_cache_for_users = [];
 
         $notifications = $this->em->getRepository(UserNotification::class)->findBy(['class' => $class]);
@@ -443,7 +430,7 @@ class NotificationCenter
                 // If we are checking multiple data values, we need to compare each value separately
                 if ($check_multiple && \is_array($value)) {
                     foreach ($value as $check_value) {
-                        if (gettype($notification_data[$key]) === \gettype($check_value) && $notification_data[$key] === $check_value) {
+                        if (\gettype($notification_data[$key]) === \gettype($check_value) && $notification_data[$key] === $check_value) {
                             $data_matches = true;
                             break;
                         }
@@ -453,7 +440,7 @@ class NotificationCenter
 
                 // Just compare the value
                 // This makes it so an array need to match an array completely.
-                if (gettype($notification_data[$key]) === \gettype($value) && $notification_data[$key] === $value) {
+                if (\gettype($notification_data[$key]) === \gettype($value) && $notification_data[$key] === $value) {
                     $data_matches = true;
                 }
             }

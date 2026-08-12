@@ -3,14 +3,12 @@
 namespace App\Entity;
 
 use App\Enum\OAuthProviderType;
-
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class UserOAuthToken
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -24,28 +22,28 @@ class UserOAuthToken
     private OAuthProviderType $provider_type;
 
     #[ORM\Column(nullable: true)]
-    private string|null $token = null;
+    private ?string $token = null;
 
     #[ORM\Column]
     private string $uid;
 
     #[ORM\Column(nullable: true)]
-    private string|null $refresh_token = null;
+    private ?string $refresh_token = null;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
     #[ORM\Column(nullable: true)]
-    private \DateTime|null $expires_timestamp = null;
+    private ?\DateTime $expires_timestamp = null;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -53,7 +51,7 @@ class UserOAuthToken
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -61,7 +59,7 @@ class UserOAuthToken
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -71,7 +69,7 @@ class UserOAuthToken
     }
 
     /**
-     * Get the value of provider_type
+     * Get the value of provider_type.
      */
     public function getProviderType(): OAuthProviderType
     {
@@ -79,7 +77,7 @@ class UserOAuthToken
     }
 
     /**
-     * Set the value of provider_type
+     * Set the value of provider_type.
      */
     public function setProviderType(OAuthProviderType $provider_type): self
     {
@@ -89,7 +87,7 @@ class UserOAuthToken
     }
 
     /**
-     * Get the value of token
+     * Get the value of token.
      */
     public function getToken(): ?string
     {
@@ -97,7 +95,7 @@ class UserOAuthToken
     }
 
     /**
-     * Set the value of token
+     * Set the value of token.
      */
     public function setToken(?string $token): self
     {
@@ -107,7 +105,7 @@ class UserOAuthToken
     }
 
     /**
-     * Get the value of uid
+     * Get the value of uid.
      */
     public function getUid(): string
     {
@@ -115,7 +113,7 @@ class UserOAuthToken
     }
 
     /**
-     * Set the value of uid
+     * Set the value of uid.
      */
     public function setUid(string $uid): self
     {
@@ -125,7 +123,7 @@ class UserOAuthToken
     }
 
     /**
-     * Get the value of refresh_token
+     * Get the value of refresh_token.
      */
     public function getRefreshToken(): ?string
     {
@@ -133,7 +131,7 @@ class UserOAuthToken
     }
 
     /**
-     * Set the value of refresh_token
+     * Set the value of refresh_token.
      */
     public function setRefreshToken(?string $refresh_token): self
     {
@@ -143,7 +141,7 @@ class UserOAuthToken
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -151,7 +149,7 @@ class UserOAuthToken
     }
 
     /**
-     * Set the value of created_timestamp
+     * Set the value of created_timestamp.
      */
     public function setCreatedTimestamp(\DateTime $created_timestamp): self
     {
@@ -161,7 +159,7 @@ class UserOAuthToken
     }
 
     /**
-     * Get the value of expires_timestamp
+     * Get the value of expires_timestamp.
      */
     public function getExpiresTimestamp(): ?\DateTime
     {
@@ -169,7 +167,7 @@ class UserOAuthToken
     }
 
     /**
-     * Set the value of expires_timestamp
+     * Set the value of expires_timestamp.
      */
     public function setExpiresTimestamp(?\DateTime $expires_timestamp): self
     {

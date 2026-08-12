@@ -2,12 +2,10 @@
 
 namespace App\Twig\Extension;
 
-use URLify;
 use Twig\TwigFilter;
 
 class SlugifyTwigExtension extends \Twig\Extension\AbstractExtension
 {
-
     public function getName(): string
     {
         return 'slug_extension';
@@ -22,12 +20,9 @@ class SlugifyTwigExtension extends \Twig\Extension\AbstractExtension
 
     /**
      * Slugify the string.
-     *
-     * @param string $string
-     * @return string
      */
     public function slugify(string $string): string
     {
-        return URLify::slug($string);
+        return \URLify::slug($string);
     }
 }

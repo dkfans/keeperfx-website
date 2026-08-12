@@ -2,15 +2,12 @@
 
 namespace App\Entity;
 
-use App\Enum\UserNotificationType;
-
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class UserNotification
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -24,7 +21,7 @@ class UserNotification
     private string $class;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private string|null $data;
+    private ?string $data;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
@@ -33,13 +30,13 @@ class UserNotification
     private bool $is_read = false;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -47,7 +44,7 @@ class UserNotification
     }
 
     /**
-     * Get the value of user
+     * Get the value of user.
      */
     public function getUser(): User
     {
@@ -55,7 +52,7 @@ class UserNotification
     }
 
     /**
-     * Set the value of user
+     * Set the value of user.
      */
     public function setUser(User $user): self
     {
@@ -65,7 +62,7 @@ class UserNotification
     }
 
     /**
-     * Get the value of data
+     * Get the value of data.
      */
     public function getData(): array|string|null
     {
@@ -73,9 +70,9 @@ class UserNotification
     }
 
     /**
-     * Set the value of data
+     * Set the value of data.
      */
-    public function setData(array|null $data): self
+    public function setData(?array $data): self
     {
         $this->data = \json_encode($data);
 
@@ -83,7 +80,7 @@ class UserNotification
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -91,7 +88,7 @@ class UserNotification
     }
 
     /**
-     * Get the value of is_read
+     * Get the value of is_read.
      */
     public function isRead(): bool
     {
@@ -99,7 +96,7 @@ class UserNotification
     }
 
     /**
-     * Set the value of is_read
+     * Set the value of is_read.
      */
     public function setRead(bool $is_read): self
     {
@@ -109,7 +106,7 @@ class UserNotification
     }
 
     /**
-     * Get the value of class
+     * Get the value of class.
      */
     public function getClass(): string
     {
@@ -117,7 +114,7 @@ class UserNotification
     }
 
     /**
-     * Set the value of class
+     * Set the value of class.
      */
     public function setClass(string $class): self
     {

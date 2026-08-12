@@ -2,7 +2,8 @@
 
 namespace App\Enum;
 
-enum OAuthProviderType: string {
-    case Discord     = 'discord';
-    case Twitch      = 'twitch';
+enum OAuthProviderType: string
+{
+    case Discord = 'discord';
+    case Twitch  = 'twitch';
 }

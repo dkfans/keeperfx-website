@@ -3,14 +3,12 @@
 namespace App\Entity;
 
 use App\Enum\MailStatus;
-
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class Mail
 {
-
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -23,10 +21,10 @@ class Mail
     private string $subject;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private string|null $body = null;
+    private ?string $body = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private string|null $html_body = null;
+    private ?string $html_body = null;
 
     #[ORM\Column(type: 'integer', enumType: MailStatus::class)]
     private MailStatus $status = MailStatus::NOT_SENT_YET;
@@ -35,13 +33,13 @@ class Mail
     private \DateTime $created_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -49,7 +47,7 @@ class Mail
     }
 
     /**
-     * Get the value of receiver
+     * Get the value of receiver.
      */
     public function getReceiver(): string
     {
@@ -57,7 +55,7 @@ class Mail
     }
 
     /**
-     * Set the value of receiver
+     * Set the value of receiver.
      */
     public function setReceiver(string $receiver): self
     {
@@ -67,7 +65,7 @@ class Mail
     }
 
     /**
-     * Get the value of status
+     * Get the value of status.
      */
     public function getStatus(): MailStatus
     {
@@ -75,7 +73,7 @@ class Mail
     }
 
     /**
-     * Set the value of status
+     * Set the value of status.
      */
     public function setStatus(MailStatus $status): self
     {
@@ -85,7 +83,7 @@ class Mail
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -93,7 +91,7 @@ class Mail
     }
 
     /**
-     * Get the value of subject
+     * Get the value of subject.
      */
     public function getSubject(): string
     {
@@ -101,7 +99,7 @@ class Mail
     }
 
     /**
-     * Set the value of subject
+     * Set the value of subject.
      */
     public function setSubject(string $subject): self
     {
@@ -111,7 +109,7 @@ class Mail
     }
 
     /**
-     * Get the value of body
+     * Get the value of body.
      */
     public function getBody(): ?string
     {
@@ -119,7 +117,7 @@ class Mail
     }
 
     /**
-     * Set the value of body
+     * Set the value of body.
      */
     public function setBody(?string $body): self
     {
@@ -129,7 +127,7 @@ class Mail
     }
 
     /**
-     * Get the value of html_body
+     * Get the value of html_body.
      */
     public function getHtmlBody(): ?string
     {
@@ -137,7 +135,7 @@ class Mail
     }
 
     /**
-     * Set the value of html_body
+     * Set the value of html_body.
      */
     public function setHtmlBody(?string $html_body): self
     {

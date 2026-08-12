@@ -9,7 +9,8 @@ class MoonPhaseExtension extends \Twig\Extension\AbstractExtension implements \T
 {
     private \Solaris\MoonPhase $moon_phase;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->moon_phase = new \Solaris\MoonPhase();
     }
 
@@ -21,17 +22,17 @@ class MoonPhaseExtension extends \Twig\Extension\AbstractExtension implements \T
     public function getGlobals(): array
     {
         // Variables
-        $is_full_moon = false;
+        $is_full_moon      = false;
         $is_near_full_moon = false;
-        $is_new_moon = false;
-        $is_near_new_moon = false;
+        $is_new_moon       = false;
+        $is_near_new_moon  = false;
 
         // Get phase
-        $phase = $this->moon_phase->getPhase();
+        $phase                    = $this->moon_phase->getPhase();
         $moon_phase_data['phase'] = $phase;
 
         // Check KFX type of moon
-        if ($phase > 0.475 && $phase < 0.525){
+        if ($phase > 0.475 && $phase < 0.525) {
             $is_full_moon = true;
         } elseif ($phase > 0.45 && $phase < 0.55) {
             $is_near_full_moon = true;
@@ -52,21 +53,21 @@ class MoonPhaseExtension extends \Twig\Extension\AbstractExtension implements \T
 
         // Get next full moon
         $next_full_moon = $this->moon_phase->getPhaseFullMoon();
-        if($next_full_moon < (new \DateTime("now"))->getTimestamp()) {
+        if ($next_full_moon < (new \DateTime('now'))->getTimestamp()) {
             $next_full_moon = $this->moon_phase->getPhaseNextFullMoon();
         }
 
         // Get upcoming full moon
         // If the current full moon is passed we use the next one instead
         $next_full_moon = $this->moon_phase->getPhaseFullMoon();
-        if($next_full_moon < (new \DateTime("now"))->getTimestamp()) {
+        if ($next_full_moon < (new \DateTime('now'))->getTimestamp()) {
             $next_full_moon = $this->moon_phase->getPhaseNextFullMoon();
         }
 
         // Get upcoming new moon
         // If the current new moon is passed we use the next one instead
         $next_new_moon = $this->moon_phase->getPhaseNewMoon();
-        if($next_new_moon < (new \DateTime("now"))->getTimestamp()) {
+        if ($next_new_moon < (new \DateTime('now'))->getTimestamp()) {
             $next_new_moon = $this->moon_phase->getPhaseNextNewMoon();
         }
 

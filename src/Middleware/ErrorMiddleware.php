@@ -2,19 +2,16 @@
 
 namespace App\Middleware;
 
-use Slim\Psr7\Factory\ResponseFactory;
-use Twig\Environment as TwigEnvironment;
-
-use Psr\Log\LoggerInterface;
+use Doctrine\DBAL\Driver\PDO\Exception as DbalPdoException;
+use Doctrine\DBAL\Exception\ConnectionException as DbalConnectionException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
+use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpSpecializedException;
-
-use Doctrine\DBAL\Driver\PDO\Exception as DbalPdoException;
-use Doctrine\DBAL\Exception\ConnectionException as DbalConnectionException;
+use Slim\Psr7\Factory\ResponseFactory;
+use Twig\Environment as TwigEnvironment;
 
 class ErrorMiddleware implements MiddlewareInterface
 {
@@ -22,14 +19,11 @@ class ErrorMiddleware implements MiddlewareInterface
         private ResponseFactory $response_factory,
         private TwigEnvironment $twig,
         private LoggerInterface $logger,
-    ) {}
+    ) {
+    }
 
     /**
      * Process a server request and return a response.
-     *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -42,17 +36,17 @@ class ErrorMiddleware implements MiddlewareInterface
 
             // Check if we should return a JSON response
             if (
-                \str_contains($request->getHeaderLine('Accept') ?? '', 'application/json') ||
-                \str_contains($request->getHeaderLine('Content-Type') ?? '', 'application/json') ||
-                \str_starts_with($request->getUri()->getPath(), '/api/')
+                \str_contains($request->getHeaderLine('Accept') ?? '', 'application/json')
+                || \str_contains($request->getHeaderLine('Content-Type') ?? '', 'application/json')
+                || \str_starts_with($request->getUri()->getPath(), '/api/')
             ) {
                 $json_response = true;
             }
 
             // Get database connection exception
             if (
-                $ex instanceof DbalConnectionException ||
-                ($ex instanceof DbalPdoException && $ex->getCode() == 2002) // Connection not found
+                $ex instanceof DbalConnectionException
+                || ($ex instanceof DbalPdoException && $ex->getCode() == 2002) // Connection not found
             ) {
                 $response = $this->response_factory->createResponse(500); // Server error
 
@@ -61,7 +55,7 @@ class ErrorMiddleware implements MiddlewareInterface
                     $response->getBody()->write(\json_encode([
                         'success'    => false,
                         'error_code' => 500,
-                        'error'      => 'DATABASE_CONNECTION_ERROR'
+                        'error'      => 'DATABASE_CONNECTION_ERROR',
                     ]));
                     $response = $response->withHeader('Content-Type', 'application/json');
                 } else {
@@ -78,9 +72,9 @@ class ErrorMiddleware implements MiddlewareInterface
             // Log error if not a normal HTTP exception
             if ($this->logger && !($ex instanceof HttpSpecializedException)) {
                 $this->logger->error(
-                    sprintf(
+                    \sprintf(
                         "%s: %s in %s:%d\n%s",
-                        get_class($ex),
+                        $ex::class,
                         $ex->getMessage(),
                         $ex->getFile(),
                         $ex->getLine(),
@@ -97,18 +91,18 @@ class ErrorMiddleware implements MiddlewareInterface
                         'success'    => false,
                         'error_code' => $ex->getCode(),
                         'error'      => match ($ex->getCode()) {
-                            403 => 'FORBIDDEN',
-                            404 => 'NOT_FOUND',
-                            405 => 'METHOD_NOT_ALLOWED',
+                            403     => 'FORBIDDEN',
+                            404     => 'NOT_FOUND',
+                            405     => 'METHOD_NOT_ALLOWED',
                             default => 'UNKNOWN_ERROR',
-                        }
+                        },
                     ]));
                 } else {
                     $response = $this->response_factory->createResponse(500);
                     $response->getBody()->write(\json_encode([
                         'success'    => false,
                         'error_code' => 500,
-                        'error'      => 'INTERNAL_SERVER_ERROR'
+                        'error'      => 'INTERNAL_SERVER_ERROR',
                     ]));
                 }
             } else {

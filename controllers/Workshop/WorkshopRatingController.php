@@ -2,25 +2,21 @@
 
 namespace App\Controller\Workshop;
 
+use App\Account;
+use App\Entity\WorkshopDifficultyRating;
 use App\Entity\WorkshopItem;
 use App\Entity\WorkshopRating;
-use App\Entity\WorkshopDifficultyRating;
-
-use App\Account;
-use Doctrine\ORM\EntityManager;
+use App\Twig\Extension\WorkshopRatingTwigExtension;
 use App\Workshop\WorkshopCache;
+use App\Workshop\WorkshopHelper;
+use Doctrine\ORM\EntityManager;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Csrf\Guard as CsrfGuard;
 use Twig\Environment as TwigEnvironment;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-
-use App\Twig\Extension\WorkshopRatingTwigExtension;
-
-use App\Workshop\WorkshopHelper;
-
-class WorkshopRatingController {
-
+class WorkshopRatingController
+{
     public function rateQuality(
         Request $request,
         Response $response,
@@ -29,40 +25,39 @@ class WorkshopRatingController {
         CsrfGuard $csrf_guard,
         WorkshopCache $workshop_cache,
         WorkshopRatingTwigExtension $workshop_rating_extension,
-        $id
-    )
-    {
-        $post = $request->getParsedBody();
+        $id,
+    ) {
+        $post  = $request->getParsedBody();
         $score = (int) ($post['score'] ?? 0);
 
         // Check valid score
-        if($score < 1 || $score > 5){
+        if ($score < 1 || $score > 5) {
             return $response;
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             return $response;
         }
 
         // Check if workshop item has been accepted
-        if($workshop_item->isPublished() !== true){
+        if ($workshop_item->isPublished() !== true) {
             return $response;
         }
 
-        if($workshop_item->getSubmitter() === $account->getUser()){
+        if ($workshop_item->getSubmitter() === $account->getUser()) {
             return $response;
         }
 
         // Get possible already existing rating
         $rating = $em->getRepository(WorkshopRating::class)->findOneBy([
             'item' => $workshop_item,
-            'user' => $account->getUser()
+            'user' => $account->getUser(),
         ]);
 
         // Set rating or create a new one
-        if($rating !== null){
+        if ($rating !== null) {
             $rating->setScore($score);
         } else {
             $rating = new WorkshopRating();
@@ -100,7 +95,7 @@ class WorkshopRatingController {
                         'value' => $csrf_guard->getTokenValueKey(),
                     ],
                     'name'  => $csrf_guard->getTokenName(),
-                    'value' => $csrf_guard->getTokenValue()
+                    'value' => $csrf_guard->getTokenValue(),
                 ],
             ])
         );
@@ -111,7 +106,6 @@ class WorkshopRatingController {
         return $response;
     }
 
-
     public function rateDifficulty(
         Request $request,
         Response $response,
@@ -120,36 +114,35 @@ class WorkshopRatingController {
         CsrfGuard $csrf_guard,
         WorkshopRatingTwigExtension $workshop_rating_extension,
         WorkshopCache $workshop_cache,
-        $id
-    )
-    {
-        $post = $request->getParsedBody();
+        $id,
+    ) {
+        $post  = $request->getParsedBody();
         $score = (int) ($post['score'] ?? 0);
 
         // Check valid score
-        if($score < 1 || $score > 5){
+        if ($score < 1 || $score > 5) {
             return $response;
         }
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             return $response;
         }
 
         // Check if workshop item has been accepted
-        if($workshop_item->isPublished() !== true){
+        if ($workshop_item->isPublished() !== true) {
             return $response;
         }
 
         // Get possible already existing rating
         $rating = $em->getRepository(WorkshopDifficultyRating::class)->findOneBy([
             'item' => $workshop_item,
-            'user' => $account->getUser()
+            'user' => $account->getUser(),
         ]);
 
         // Set rating or create a new one
-        if($rating !== null){
+        if ($rating !== null) {
             $rating->setScore($score);
         } else {
             $rating = new WorkshopDifficultyRating();
@@ -187,7 +180,7 @@ class WorkshopRatingController {
                         'value' => $csrf_guard->getTokenValueKey(),
                     ],
                     'name'  => $csrf_guard->getTokenName(),
-                    'value' => $csrf_guard->getTokenValue()
+                    'value' => $csrf_guard->getTokenValue(),
                 ],
             ])
         );
@@ -203,24 +196,23 @@ class WorkshopRatingController {
         CsrfGuard $csrf_guard,
         WorkshopRatingTwigExtension $workshop_rating_extension,
         WorkshopCache $workshop_cache,
-        $id
-    )
-    {
+        $id,
+    ) {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             return $response;
         }
 
         // Get rating
         $rating = $em->getRepository(WorkshopRating::class)->findOneBy([
             'item' => $workshop_item,
-            'user' => $account->getUser()
+            'user' => $account->getUser(),
         ]);
-        if(!$rating) {
+        if (!$rating) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
@@ -231,7 +223,7 @@ class WorkshopRatingController {
                             'value' => $csrf_guard->getTokenValueKey(),
                         ],
                         'name'  => $csrf_guard->getTokenName(),
-                        'value' => $csrf_guard->getTokenValue()
+                        'value' => $csrf_guard->getTokenValue(),
                     ],
                 ])
             );
@@ -245,14 +237,14 @@ class WorkshopRatingController {
 
         // Get updated rating
         $rating_score = null;
-        $ratings = $workshop_item->getRatings();
-        if($ratings && \count($ratings) > 0){
+        $ratings      = $workshop_item->getRatings();
+        if ($ratings && \count($ratings) > 0) {
             $rating_scores = [];
-            foreach($ratings as $rating){
+            foreach ($ratings as $rating) {
                 $rating_scores[] = $rating->getScore();
             }
-            $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
-            $rating_score  = \round($rating_average, 2);
+            $rating_average = \array_sum($rating_scores) / \count($rating_scores);
+            $rating_score   = \round($rating_average, 2);
         }
 
         // Set updated rating in item
@@ -277,10 +269,11 @@ class WorkshopRatingController {
                         'value' => $csrf_guard->getTokenValueKey(),
                     ],
                     'name'  => $csrf_guard->getTokenName(),
-                    'value' => $csrf_guard->getTokenValue()
+                    'value' => $csrf_guard->getTokenValue(),
                 ],
             ])
         );
+
         return $response;
     }
 
@@ -292,24 +285,23 @@ class WorkshopRatingController {
         CsrfGuard $csrf_guard,
         WorkshopRatingTwigExtension $workshop_rating_extension,
         WorkshopCache $workshop_cache,
-        $id
-    )
-    {
+        $id,
+    ) {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             return $response;
         }
 
         // Get rating
         $rating = $em->getRepository(WorkshopDifficultyRating::class)->findOneBy([
             'item' => $workshop_item,
-            'user' => $account->getUser()
+            'user' => $account->getUser(),
         ]);
-        if(!$rating) {
+        if (!$rating) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
@@ -320,10 +312,11 @@ class WorkshopRatingController {
                             'value' => $csrf_guard->getTokenValueKey(),
                         ],
                         'name'  => $csrf_guard->getTokenName(),
-                        'value' => $csrf_guard->getTokenValue()
+                        'value' => $csrf_guard->getTokenValue(),
                     ],
                 ])
             );
+
             return $response;
         }
 
@@ -333,14 +326,14 @@ class WorkshopRatingController {
 
         // Get updated rating
         $rating_score = null;
-        $ratings = $workshop_item->getDifficultyRatings();
-        if($ratings && \count($ratings) > 0){
+        $ratings      = $workshop_item->getDifficultyRatings();
+        if ($ratings && \count($ratings) > 0) {
             $rating_scores = [];
-            foreach($ratings as $rating){
+            foreach ($ratings as $rating) {
                 $rating_scores[] = $rating->getScore();
             }
-            $rating_average =  \array_sum($rating_scores) / \count($rating_scores);
-            $rating_score  = \round($rating_average, 2);
+            $rating_average = \array_sum($rating_scores) / \count($rating_scores);
+            $rating_score   = \round($rating_average, 2);
         }
 
         // Set updated rating in item
@@ -365,10 +358,11 @@ class WorkshopRatingController {
                         'value' => $csrf_guard->getTokenValueKey(),
                     ],
                     'name'  => $csrf_guard->getTokenName(),
-                    'value' => $csrf_guard->getTokenValue()
+                    'value' => $csrf_guard->getTokenValue(),
                 ],
             ])
         );
+
         return $response;
     }
 
@@ -378,14 +372,13 @@ class WorkshopRatingController {
         TwigEnvironment $twig,
         EntityManager $em,
         Account $account,
-    ){
+    ) {
 
         $ratings = [];
 
         // Add quality ratings to output array
-        $quality_ratings    = $em->getRepository(WorkshopRating::class)->findBy(['user' => $account->getUser()], ['updated_timestamp' => 'DESC']);
-        foreach($quality_ratings as $q_rating)
-        {
+        $quality_ratings = $em->getRepository(WorkshopRating::class)->findBy(['user' => $account->getUser()], ['updated_timestamp' => 'DESC']);
+        foreach ($quality_ratings as $q_rating) {
             $ratings[$q_rating->getItem()->getId()] = [
                 'item'             => $q_rating->getItem(),
                 'quality_score'    => $q_rating->getScore(),
@@ -396,14 +389,13 @@ class WorkshopRatingController {
 
         // Add difficulty ratings to output array
         $difficulty_ratings = $em->getRepository(WorkshopDifficultyRating::class)->findBy(['user' => $account->getUser()], ['updated_timestamp' => 'DESC']);
-        foreach($difficulty_ratings as $d_rating)
-        {
+        foreach ($difficulty_ratings as $d_rating) {
             $id = $d_rating->getItem()->getId();
-            if(isset($ratings[$id])){
+            if (isset($ratings[$id])) {
 
                 $ratings[$id]['difficulty_score'] = $d_rating->getScore();
 
-                if($d_rating->getUpdatedTimestamp() > $ratings[$id]['date']){
+                if ($d_rating->getUpdatedTimestamp() > $ratings[$id]['date']) {
                     $ratings[$id]['date'] = $d_rating->getUpdatedTimestamp();
                 }
 
@@ -419,7 +411,7 @@ class WorkshopRatingController {
 
         // Sort by date (descending)
         // It can be changed to ascending by changing switching the variables around the spaceship operator.
-        \uasort($ratings, function($a, $b){
+        \uasort($ratings, static function ($a, $b) {
             return $b['date'] <=> $a['date'];
         });
 

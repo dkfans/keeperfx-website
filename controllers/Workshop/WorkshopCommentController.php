@@ -2,32 +2,24 @@
 
 namespace App\Controller\Workshop;
 
-
-use App\Enum\UserRole;
-
-use App\Entity\WorkshopItem;
-use App\Entity\WorkshopComment;
-use App\Entity\UserNotification;
-
 use App\Account;
+use App\Entity\WorkshopComment;
+use App\Entity\WorkshopItem;
+use App\Enum\UserRole;
 use App\FlashMessage;
-use App\Workshop\WorkshopCache;
-use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
-use League\CommonMark\GithubFlavoredMarkdownConverter;
-
-use App\Notifications\NotificationCenter;
 use App\Notifications\Notification\WorkshopItemCommentNotification;
 use App\Notifications\Notification\WorkshopItemCommentReplyNotification;
 use App\Notifications\Notification\WorkshopItemCommentReportNotification;
-
-
+use App\Notifications\NotificationCenter;
+use App\Workshop\WorkshopCache;
+use Doctrine\ORM\EntityManager;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpNotFoundException;
 
-class WorkshopCommentController {
-
+class WorkshopCommentController
+{
     public function comment(
         Request $request,
         Response $response,
@@ -36,20 +28,21 @@ class WorkshopCommentController {
         WorkshopCache $workshop_cache,
         EntityManager $em,
         NotificationCenter $nc,
-        $id
-    ){
+        $id,
+    ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Get comment
         $post    = $request->getParsedBody();
         $content = (string) ($post['content'] ?? null);
-        if(empty($content)){
+        if (empty($content)) {
             $flash->warning('You tried to submit an empty comment.');
             $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
+
             return $response;
         }
 
@@ -64,10 +57,10 @@ class WorkshopCommentController {
         $em->flush();
 
         // Notify workshop item submitter of the new comment
-        if(
-            $workshop_item->getSubmitter() !== null &&
-            $workshop_item->getSubmitter() !== $account->getUser()
-        ){
+        if (
+            $workshop_item->getSubmitter()    !== null
+            && $workshop_item->getSubmitter() !== $account->getUser()
+        ) {
             $nc->sendNotification(
                 $workshop_item->getSubmitter(),
                 WorkshopItemCommentNotification::class,
@@ -86,6 +79,7 @@ class WorkshopCommentController {
         // Success!
         $flash->success('Your comment has been added!');
         $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
+
         return $response;
     }
 
@@ -102,36 +96,38 @@ class WorkshopCommentController {
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Get the comment
         /** @var WorkshopComment $item */
         $comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
-        if(!$comment){
+        if (!$comment) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if comment is posted on this workshop item
-        if($comment->getItem() !== $workshop_item){
+        if ($comment->getItem() !== $workshop_item) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
-                    'error'   => 'COMMENT_DOES_NOT_BELONG_TO_THIS_WORKSHOP_ITEM'
+                    'error'   => 'COMMENT_DOES_NOT_BELONG_TO_THIS_WORKSHOP_ITEM',
                 ])
             );
+
             return $response;
         }
 
         // Only Workshop moderators and the original owner can edit the comment
-        if($account->getUser()->getRole()->value < UserRole::Moderator->value && $comment->getUser() !== $account->getUser()){
+        if ($account->getUser()->getRole()->value < UserRole::Moderator->value && $comment->getUser() !== $account->getUser()) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
-                    'error'   => 'NOT_ALLOWED'
+                    'error'   => 'NOT_ALLOWED',
                 ])
             );
+
             return $response;
         }
 
@@ -139,17 +135,17 @@ class WorkshopCommentController {
         $post = $request->getParsedBody();
 
         // Check for updated content
-        if(\array_key_exists('content', $post)){
+        if (\array_key_exists('content', $post)) {
 
             // New content can not be empty
-            if(!\is_string($post['content']) || empty($post['content']))
-            {
+            if (!\is_string($post['content']) || empty($post['content'])) {
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
-                        'error'   => 'EMPTY_CONTENT'
+                        'error'   => 'EMPTY_CONTENT',
                     ])
                 );
+
                 return $response;
             }
 
@@ -159,31 +155,32 @@ class WorkshopCommentController {
 
         // Check for updated parent comment
         // Only workshop moderators are allowed to update the parent
-        if(
-            \array_key_exists('parent', $post) &&
-            $account->getUser()->getRole()->value >= UserRole::Moderator->value
-        ){
+        if (
+            \array_key_exists('parent', $post)
+            && $account->getUser()->getRole()->value >= UserRole::Moderator->value
+        ) {
 
             // Move comment to top
-            if(\is_string($post['parent']) && $post['parent'] === "top"){
+            if (\is_string($post['parent']) && $post['parent'] === 'top') {
                 $comment->setParent(null);
             }
 
             // Move comment under another comment
-            if(\is_numeric($post['parent'])){
+            if (\is_numeric($post['parent'])) {
 
                 // Find the parent comment
                 $parent_comment = $em->getRepository(WorkshopComment::class)->findOneBy([
                     'id'   => (int) $post['parent'],
                     'item' => $workshop_item,
                 ]);
-                if(!$parent_comment){
+                if (!$parent_comment) {
                     $response->getBody()->write(
                         \json_encode([
                             'success' => false,
-                            'error'   => 'INVALID_PARENT_COMMENT'
+                            'error'   => 'INVALID_PARENT_COMMENT',
                         ])
                     );
+
                     return $response;
                 }
 
@@ -204,7 +201,7 @@ class WorkshopCommentController {
         // Return
         $response->getBody()->write(
             \json_encode([
-                'success' => true,
+                'success'          => true,
                 'workshop_comment' => [
                     'item_id'      => $comment->getItem()->getId(),
                     'id'           => $comment->getId(),
@@ -214,15 +211,14 @@ class WorkshopCommentController {
                         'id'           => $comment->getUser()->getId(),
                         'username'     => $comment->getUser()->getUsername(),
                         'role'         => $comment->getUser()->getRole()->value,
-                        'is_submitter' => ($comment->getUser() === $comment->getItem()->getSubmitter())
+                        'is_submitter' => ($comment->getUser() === $comment->getItem()->getSubmitter()),
                     ],
-                ]
+                ],
             ])
         );
 
         return $response;
     }
-
 
     public function deleteComment(
         Request $request,
@@ -239,46 +235,48 @@ class WorkshopCommentController {
 
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Get the comment
         /** @var WorkshopComment $item */
         $comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
-        if(!$comment){
+        if (!$comment) {
             throw new HttpNotFoundException($request);
         }
 
         // Check if comment is posted on this workshop item
-        if($comment->getItem() !== $workshop_item){
+        if ($comment->getItem() !== $workshop_item) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
-                    'error'   => 'COMMENT_DOES_NOT_BELONG_TO_THIS_WORKSHOP_ITEM'
+                    'error'   => 'COMMENT_DOES_NOT_BELONG_TO_THIS_WORKSHOP_ITEM',
                 ])
             );
+
             return $response;
         }
 
         // Only Workshop moderators and the original owner can edit the comment
-        if($account->getUser()->getRole()->value < UserRole::Moderator->value && $comment->getUser() !== $account->getUser()){
+        if ($account->getUser()->getRole()->value < UserRole::Moderator->value && $comment->getUser() !== $account->getUser()) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
-                    'error'   => 'NOT_ALLOWED'
+                    'error'   => 'NOT_ALLOWED',
                 ])
             );
+
             return $response;
         }
 
         // Get any reports for this comment
         $reports = $comment->getReports();
-        if(!is_null($reports) && \count($reports) > 0){
+        if ($reports !== null && \count($reports) > 0) {
 
             // Get all the IDs for the reports and then remove them
             $report_ids = [];
-            foreach($reports as $report){
+            foreach ($reports as $report) {
                 $report_ids[] = $report->getId();
                 $em->remove($report);
             }
@@ -306,6 +304,7 @@ class WorkshopCommentController {
                 'success' => true,
             ])
         );
+
         return $response;
     }
 
@@ -319,26 +318,27 @@ class WorkshopCommentController {
         NotificationCenter $nc,
         $item_id,
         $comment_id,
-    ){
+    ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
-        if(!$workshop_item){
+        if (!$workshop_item) {
             throw new HttpNotFoundException($request);
         }
 
         // Get the comment
         /** @var WorkshopComment $item */
         $parent_comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
-        if(!$parent_comment){
+        if (!$parent_comment) {
             throw new HttpNotFoundException($request);
         }
 
         // Get comment
         $post    = $request->getParsedBody();
         $content = (string) ($post['content'] ?? null);
-        if(empty($content)){
+        if (empty($content)) {
             $flash->warning('You tried to submit an empty reply.');
             $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
+
             return $response;
         }
 
@@ -354,7 +354,7 @@ class WorkshopCommentController {
         $em->flush();
 
         // Notify the owner of the comment if we are not replying to ourselves
-        if($parent_comment->getUser() !== $account->getUser()){
+        if ($parent_comment->getUser() !== $account->getUser()) {
 
             // Notify the user of the comment that we replied to them
             $nc->sendNotification(
@@ -370,11 +370,11 @@ class WorkshopCommentController {
         }
 
         // Notify workshop item submitter of the new comment if it was not them we replied to
-        if(
-            $workshop_item->getSubmitter() !== null &&
-            $workshop_item->getSubmitter() !== $account->getUser() &&
-            $workshop_item->getSubmitter() !== $parent_comment->getUser()
-        ){
+        if (
+            $workshop_item->getSubmitter()    !== null
+            && $workshop_item->getSubmitter() !== $account->getUser()
+            && $workshop_item->getSubmitter() !== $parent_comment->getUser()
+        ) {
             $nc->sendNotification(
                 $workshop_item->getSubmitter(),
                 WorkshopItemCommentNotification::class,
@@ -393,7 +393,7 @@ class WorkshopCommentController {
         // Success!
         $flash->success('Your reply has been added!');
         $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId())->withStatus(302);
+
         return $response;
     }
-
 }

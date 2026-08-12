@@ -2,23 +2,16 @@
 
 namespace App\Console\Command\User;
 
-use App\Entity\User;
 use App\Entity\UserIpLog;
-use App\Entity\UserNotification;
-use App\Entity\UserPasswordResetToken;
 use Doctrine\ORM\EntityManager;
-
 use Psr\Container\ContainerInterface as Container;
-
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-use App\Enum\UserRole;
 
 class HandleNewIpLogsCommand extends Command
 {
-    /** @var Container $container */
+    /** @var Container */
     private $container;
 
     public function __construct(Container $container)
@@ -28,10 +21,10 @@ class HandleNewIpLogsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("user:handle-new-ip-logs")
-                ->setDescription("Handle new ip logs and get info about them");
+        $this->setName('user:handle-new-ip-logs')
+                ->setDescription('Handle new ip logs and get info about them');
     }
 
     protected function execute(Input $input, Output $output)
@@ -49,7 +42,7 @@ class HandleNewIpLogsCommand extends Command
             ->getQuery()
             ->getResult();
 
-        if(!$result){
+        if (!$result) {
             $output->writeln("[+] No IP's to handle");
         } else {
 
@@ -58,39 +51,39 @@ class HandleNewIpLogsCommand extends Command
             );
 
             /** @var UserIpLog $ip_log */
-            foreach($result as $ip_log){
+            foreach ($result as $ip_log) {
 
                 $ip = $ip_log->getIp();
 
                 // Ignore localhost
-                if($ip === "127.0.0.1"){
+                if ($ip === '127.0.0.1') {
                     continue;
                 }
 
                 $output->writeln("[>] Looking up <info>{$ip}</info>");
 
                 // Get info from API
-                $res = $client->request('GET', 'http://ip-api.com/json/' . $ip . '?fields=status,message,countryCode,isp,proxy,hosting,query');
+                $res     = $client->request('GET', 'http://ip-api.com/json/' . $ip . '?fields=status,message,countryCode,isp,proxy,hosting,query');
                 $content = $res->getBody();
-                if(!$content){
-                    $output->writeln("[-] Failed to get API response");
+                if (!$content) {
+                    $output->writeln('[-] Failed to get API response');
                     continue;
                 }
 
                 // Decode JSON
                 $json = \json_decode($content, true);
-                if(!$json){
-                    $output->writeln("[-] Failed to decode JSON");
+                if (!$json) {
+                    $output->writeln('[-] Failed to decode JSON');
                     continue;
                 }
 
                 // Make sure lookup is successful
-                if(!isset($json['status']) || !\is_string($json['status']) || $json['status'] !== 'success'){
-                    $output->writeln("[-] Failed to get info");
+                if (!isset($json['status']) || !\is_string($json['status']) || $json['status'] !== 'success') {
+                    $output->writeln('[-] Failed to get info');
                     continue;
                 }
-                if(!isset($json['query']) || !\is_string($json['query']) || $json['query'] !== $ip){
-                    $output->writeln("[-] Returned IP does not match?");
+                if (!isset($json['query']) || !\is_string($json['query']) || $json['query'] !== $ip) {
+                    $output->writeln('[-] Returned IP does not match?');
                     continue;
                 }
 
@@ -102,7 +95,7 @@ class HandleNewIpLogsCommand extends Command
 
                 // Add unique hostname (must be different from IP)
                 $host = \gethostbyaddr($ip);
-                if($host !== $ip){
+                if ($host !== $ip) {
                     $ip_log->setHostName($host);
                 }
 
@@ -113,8 +106,8 @@ class HandleNewIpLogsCommand extends Command
         }
 
         // Success
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Done!');
+
         return Command::SUCCESS;
     }
-
 }

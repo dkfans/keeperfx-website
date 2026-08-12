@@ -6,8 +6,8 @@ use App\I18n\Exception\TranslatorException;
 use Xenokore\Utility\Helper\ArrayHelper;
 use Xenokore\Utility\Helper\FileHelper;
 
-class Translator {
-
+class Translator
+{
     public const I18N_DIR = APP_ROOT . '/i18n';
 
     public const NOT_FOUND_STRING = '[[ %s ]]';
@@ -25,7 +25,7 @@ class Translator {
     {
 
         // Check if category + translation key is set
-        if(\strpos($key, '.') === false){
+        if (!\str_contains($key, '.')) {
             throw new TranslatorException("Invalid translation key: '{$key}'. Only a category is supplied.");
         }
 
@@ -33,14 +33,14 @@ class Translator {
         $locale_code = $this->locale->getCode();
 
         // Try and load category file if it's not loaded yet
-        if(!isset($this->translations[$locale_code][$category])){
+        if (!isset($this->translations[$locale_code][$category])) {
             $this->loadTranslationFile($locale_code, $category);
         }
 
         // Handle translation if category is loaded
-        if(isset($this->translations[$locale_code][$category])){
+        if (isset($this->translations[$locale_code][$category])) {
             $translation = $this->getTranslation($key, ...$vars);
-            if($translation !== null){
+            if ($translation !== null) {
                 return $translation;
             }
         }
@@ -49,61 +49,54 @@ class Translator {
         return \sprintf(self::NOT_FOUND_STRING, $key);
     }
 
-    private function getTranslation(string $key, ...$vars): string|null
+    private function getTranslation(string $key, ...$vars): ?string
     {
         $translation = ArrayHelper::get($this->translations[$this->locale->getCode()], $key);
 
         // Check if translation is found
-        if(\is_null($translation)){
+        if ($translation === null) {
             return null;
         }
 
         // Check if translation is valid
-        if(!\is_string($translation) && !is_array($translation)){
-            throw new TranslatorException(
-                "Translation key '{$key}' must resolve to a string or an array (pluralization)."
-            );
+        if (!\is_string($translation) && !\is_array($translation)) {
+            throw new TranslatorException("Translation key '{$key}' must resolve to a string or an array (pluralization).");
         }
 
         // Handle normal translation strings
-        if(is_string($translation)){
+        if (\is_string($translation)) {
             return \sprintf($translation, ...$vars);
         }
 
         // Handle pluralization
         // When the translation key resolves an array
-        if(\is_array($translation)){
+        if (\is_array($translation)) {
 
             // Check for default pluralization index
-            if(!isset($translation['_'])){
-                throw new TranslatorException(
-                    "Translation key '{$key}' resolves an array (pluralization) but does not contain the \"_\" (default pluralize) index."
-                );
+            if (!isset($translation['_'])) {
+                throw new TranslatorException("Translation key '{$key}' resolves an array (pluralization) but does not contain the \"_\" (default pluralize) index.");
             }
 
             // Get the first number out of the variables
             // To make sure a number is given
             $number = null;
-            foreach($vars as $val){
-                if(\is_int($val) || \is_numeric($val)){
+            foreach ($vars as $val) {
+                if (\is_int($val) || \is_numeric($val)) {
                     $number = $val;
                     break;
                 }
             }
-            if($number === null){
-                throw new TranslatorException(
-                    "Translation key '{$key}' needs one of its given values to be a number for pluralization."
-                );
+            if ($number === null) {
+                throw new TranslatorException("Translation key '{$key}' needs one of its given values to be a number for pluralization.");
             }
 
             // Check if number for pluralization exists (needs to be an int)
-            $number_int = (int)$number;
-            if(isset($translation[$number_int])){
+            $number_int = (int) $number;
+            if (isset($translation[$number_int])) {
                 return \sprintf($translation[$number_int], ...$vars);
-            } else {
-                return \sprintf($translation['_'], ...$vars);
             }
 
+            return \sprintf($translation['_'], ...$vars);
         }
 
         // Not found (not reachable)
@@ -114,17 +107,17 @@ class Translator {
     {
         $path = self::I18N_DIR . "/{$locale_code}/translations/{$category}.{$locale_code}.translation.php";
 
-        if(!\file_exists($path)){
+        if (!\file_exists($path)) {
             return false;
         }
 
-        if(!FileHelper::isAccessible($path)){
+        if (!FileHelper::isAccessible($path)) {
             throw new TranslatorException("Translation file exists but is not accessible: '{$path}'");
         }
 
         $translations = require $path;
 
-        if(!\is_array($translations)){
+        if (!\is_array($translations)) {
             throw new TranslatorException("Invalid translation file: '{$path}'. Must return an array.");
         }
 
@@ -133,11 +126,8 @@ class Translator {
         return true;
     }
 
-
     /**
-     * Get the locale
-     *
-     * @return Locale
+     * Get the locale.
      */
     public function getLocale(): Locale
     {
@@ -145,10 +135,7 @@ class Translator {
     }
 
     /**
-     * Set the locale
-     *
-     * @param Locale $locale
-     * @return self
+     * Set the locale.
      */
     public function setLocale(Locale $locale): self
     {

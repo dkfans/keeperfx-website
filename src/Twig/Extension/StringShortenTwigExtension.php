@@ -20,14 +20,11 @@ class StringShortenTwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     /**
-     * Shorten a string to a max length
-     *
-     * @param string $var
-     * @return null|string
+     * Shorten a string to a max length.
      */
-    public function shortenString(string|null $string, int $max_length): null|string
+    public function shortenString(?string $string, int $max_length): ?string
     {
-        if(!\is_string($string)){
+        if (!\is_string($string)) {
             return $string;
         }
 
@@ -35,8 +32,7 @@ class StringShortenTwigExtension extends \Twig\Extension\AbstractExtension
         $string_length = \strlen($string);
 
         // Check if string can be returned directly
-        if(($string_length - 3) <= $max_length)
-        {
+        if (($string_length - 3) <= $max_length) {
             return $string;
         }
 

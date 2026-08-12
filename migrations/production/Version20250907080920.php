@@ -16,23 +16,23 @@ final class Version20250907080920 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql("ALTER TABLE crash_report CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE git_commit CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE github_alpha_build CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE github_release CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE launcher_release CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE mail CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE news_article CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE user CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE user_cookie_token CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE user_oauth_token CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE workshop_comment CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE workshop_difficulty_rating CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE workshop_file CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE workshop_image CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE workshop_item CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE workshop_rating CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $this->addSql("ALTER TABLE workshop_tag CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+        $this->addSql('ALTER TABLE crash_report CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE git_commit CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE github_alpha_build CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE github_release CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE launcher_release CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE mail CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE news_article CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE user CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE user_cookie_token CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE user_oauth_token CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE workshop_comment CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE workshop_difficulty_rating CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE workshop_file CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE workshop_image CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE workshop_item CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE workshop_rating CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $this->addSql('ALTER TABLE workshop_tag CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
 
         $this->addSql('ALTER TABLE crash_report CHANGE description description LONGTEXT NOT NULL');
         $this->addSql('ALTER TABLE git_commit CHANGE message message VARCHAR(255) NOT NULL');

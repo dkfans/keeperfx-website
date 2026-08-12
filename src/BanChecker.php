@@ -4,14 +4,12 @@ namespace App;
 
 use App\Entity\Ban;
 use App\Enum\BanType;
-
 use Doctrine\ORM\EntityManager;
 use Psr\SimpleCache\CacheInterface;
 use Xenokore\Utility\Helper\StringHelper;
 
 class BanChecker
 {
-
     public const BAN_CACHE_KEY = 'bans';
 
     private $loaded = false;
@@ -25,16 +23,13 @@ class BanChecker
     public function __construct(
         private EntityManager $em,
         private CacheInterface $cache,
-    ) {}
+    ) {
+    }
 
     /**
      * Check if a string matches a ban within a chosen BanType.
      *
      * In most cases you would want to use checkAll() instead.
-     *
-     * @param BanType $type
-     * @param string $string
-     * @return boolean
      */
     public function check(BanType $type, string $string): bool
     {
@@ -58,11 +53,6 @@ class BanChecker
      * Check if an IP, Hostname or ISP is banned.
      *
      * You can either specify all of the parameters or leave some as NULL.
-     *
-     * @param string|null $ip
-     * @param string|null $hostname
-     * @param string|null $isp
-     * @return boolean
      */
     public function checkAll(?string $ip = null, ?string $hostname = null, ?string $isp = null): bool
     {
@@ -93,13 +83,14 @@ class BanChecker
      *
      * @return void
      */
-    private function loadBans()
+    private function loadBans(): void
     {
         // Load bans from cache
         $bans = $this->cache->get(self::BAN_CACHE_KEY, null);
         if ($bans != null) {
-            $this->bans = $bans;
+            $this->bans   = $bans;
             $this->loaded = true;
+
             return;
         }
 

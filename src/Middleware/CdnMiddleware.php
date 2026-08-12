@@ -2,16 +2,13 @@
 
 namespace App\Middleware;
 
-use App\CDN;
 use App\Account;
-
+use App\CDN;
 use Compwright\PhpSession\Session;
-
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
 use Xenokore\Utility\Helper\FileHelper;
 
 class CdnMiddleware implements MiddlewareInterface
@@ -20,14 +17,11 @@ class CdnMiddleware implements MiddlewareInterface
         private CDN $cdn,
         private Account $account,
         private Session $session,
-    ) {}
+    ) {
+    }
 
     /**
      * Process a server request and return a response.
-     *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -44,8 +38,8 @@ class CdnMiddleware implements MiddlewareInterface
                 if (FileHelper::isAccessible($database_file)) {
                     try {
                         // Find IP in GeoIP database
-                        $reader  = new \MaxMind\Db\Reader($database_file);
-                        $record  = $reader->get($request->getAttribute('ip_address'));
+                        $reader = new \MaxMind\Db\Reader($database_file);
+                        $record = $reader->get($request->getAttribute('ip_address'));
 
                         // Check if country code is found
                         $country_code = $record['country_code'] ?? null;
@@ -64,6 +58,7 @@ class CdnMiddleware implements MiddlewareInterface
         }
 
         $response = $handler->handle($request);
+
         return $response;
     }
 }

@@ -2,19 +2,16 @@
 
 namespace App\Controller;
 
-use App\Enum\MailStatus;
-
 use App\Entity\Mail;
-
+use App\Enum\MailStatus;
 use App\Mailer;
-use Doctrine\ORM\EntityManager;
 use Compwright\PhpSession\Session;
-
+use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class EmailController {
-
+class EmailController
+{
     /**
      * Ajax endpoint to send email directly.
      *
@@ -28,20 +25,21 @@ class EmailController {
         Mailer $mailer,
         Session $session,
         int $id,
-    ){
+    ) {
 
         // Get the mail
         $mail = $em->getRepository(Mail::class)->findOneBy([
             'id'     => $id,
             'status' => MailStatus::NOT_SENT_YET,
         ]);
-        if(!$mail){
+        if (!$mail) {
             $response->getBody()->write(
                 \json_encode([
-                    'success'=> false,
-                    'error' => 'MAIL_NOT_FOUND'
+                    'success' => false,
+                    'error'   => 'MAIL_NOT_FOUND',
                 ])
             );
+
             return $response;
         }
 
@@ -60,8 +58,7 @@ class EmailController {
             $em->flush();
 
             // Remove send mail action from session
-            if(!empty($session['send_mail']))
-            {
+            if (!empty($session['send_mail'])) {
                 $session['send_mail'] = -1;
                 unset($session['send_mail']);
             }
@@ -75,20 +72,21 @@ class EmailController {
             // Return failure
             $response->getBody()->write(
                 \json_encode([
-                    'success'=> false,
-                    'error' => 'FAILED_TO_SEND_MAIL'
+                    'success' => false,
+                    'error'   => 'FAILED_TO_SEND_MAIL',
                 ])
             );
+
             return $response;
         }
 
         // Return success
         $response->getBody()->write(
             \json_encode([
-                'success'=> true,
+                'success' => true,
             ])
         );
+
         return $response;
     }
-
 }

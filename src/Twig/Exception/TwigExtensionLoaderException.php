@@ -2,4 +2,6 @@
 
 namespace App\Twig\Exception;
 
-class TwigExtensionLoaderException extends \Exception {}
+class TwigExtensionLoaderException extends \Exception
+{
+}

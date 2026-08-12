@@ -2,19 +2,18 @@
 
 namespace App;
 
-use GuzzleHttp\Psr7;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
 
 class VirusTotalScanner
 {
-
     public const API_SCAN_FILES_ENDPOINT = 'https://www.virustotal.com/api/v3/files';
 
     private static function getHttpApiClient(): Client
     {
         return new Client([
-            'verify' => false, // Don't verify SSL connection
-            'headers' => ['x-apikey' => $_ENV['APP_VIRUSTOTAL_API_KEY']]
+            'verify'  => false, // Don't verify SSL connection
+            'headers' => ['x-apikey' => $_ENV['APP_VIRUSTOTAL_API_KEY']],
         ]);
     }
 
@@ -23,14 +22,15 @@ class VirusTotalScanner
      *
      * This function will not wait for the result as that would take too long.
      *
-     * @param string $file_path     The local filepath of the file for sending.
-     * @return false|array          Returns false if we failed to submit, or the JSON response of the VirusTotal endpoint on success.
+     * @param string $file_path the local filepath of the file for sending
+     *
+     * @return false|array returns false if we failed to submit, or the JSON response of the VirusTotal endpoint on success
      */
     public static function scanFile(string $file_path): false|array
     {
         // Make sure VirusTotal API key is set
         if (empty($_ENV['APP_VIRUSTOTAL_API_KEY'])) {
-            throw new \Exception("APP_VIRUSTOTAL_API_KEY needs to be set");
+            throw new \Exception('APP_VIRUSTOTAL_API_KEY needs to be set');
         }
 
         // Make sure file exists
@@ -50,9 +50,9 @@ class VirusTotalScanner
                 'multipart' => [
                     [
                         'name'     => 'file',
-                        'contents' => Psr7\Utils::tryFopen($file_path, 'r')
-                    ]
-                ]
+                        'contents' => Psr7\Utils::tryFopen($file_path, 'r'),
+                    ],
+                ],
             ]);
 
             // Make sure requests was successful

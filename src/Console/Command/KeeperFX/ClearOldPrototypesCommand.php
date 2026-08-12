@@ -2,11 +2,9 @@
 
 namespace App\Console\Command\KeeperFX;
 
-use App\Entity\GithubPrototype;
-
 use App\Config\Config;
+use App\Entity\GithubPrototype;
 use Doctrine\ORM\EntityManager;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
@@ -21,10 +19,10 @@ class ClearOldPrototypesCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName("kfx:clear-old-prototypes")
-            ->setDescription("Clear old build prototypes");
+        $this->setName('kfx:clear-old-prototypes')
+            ->setDescription('Clear old build prototypes');
     }
 
     protected function execute(Input $input, Output $output)
@@ -32,8 +30,9 @@ class ClearOldPrototypesCommand extends Command
         // Make sure an output directory is set
         $storage_dir = Config::get('storage.path.prototype');
         if ($storage_dir === null) {
-            $output->writeln("[-] Prototype download directory is not set");
+            $output->writeln('[-] Prototype download directory is not set');
             $output->writeln("[>] ENV VAR: 'APP_PROTOTYPE_STORAGE'");
+
             return Command::FAILURE;
         }
 
@@ -80,7 +79,8 @@ class ClearOldPrototypesCommand extends Command
         }
 
         // Done!
-        $output->writeln("[+] Done!");
+        $output->writeln('[+] Done!');
+
         return Command::SUCCESS;
     }
 }

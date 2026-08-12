@@ -2,39 +2,36 @@
 
 namespace App\Workshop;
 
+use App\Config\Config;
 use App\Entity\WorkshopBrokenFile;
 use App\Entity\WorkshopFile;
 use App\Entity\WorkshopItem;
-
-use App\Config\Config;
 use Doctrine\ORM\EntityManager;
 
-use Psr\SimpleCache\CacheInterface;
-
-class WorkshopBrokenFileHandler {
-
+class WorkshopBrokenFileHandler
+{
     public function __construct(
         private EntityManager $em,
         private WorkshopCache $workshop_cache,
-    ){}
+    ) {
+    }
 
     public function handleItem(WorkshopItem $item, bool $flush_after = true): void
     {
         // Get hashes for all broken files
         $hashes = $this->getBrokenFileHashes();
-        if(\count($hashes) === 0)
-        {
+        if (\count($hashes) === 0) {
             return;
         }
 
         // Get the last file for this item
         $last_file = $this->em->getRepository(WorkshopFile::class)->findOneBy(['item' => $item], ['weight' => 'ASC'], 1);
-        if($last_file === null){
+        if ($last_file === null) {
             return;
         }
 
         // Check if last file is a broken file
-        if(\in_array($this->getWorkshopFileHash($last_file), $hashes)){
+        if (\in_array($this->getWorkshopFileHash($last_file), $hashes)) {
 
             // Set file (and item) as broken
             $this->setFileBroken($last_file, true, false);
@@ -47,25 +44,24 @@ class WorkshopBrokenFileHandler {
         }
     }
 
-    private function setFileBroken(WorkshopFile $file, bool $is_broken, bool $flush_after)
+    private function setFileBroken(WorkshopFile $file, bool $is_broken, bool $flush_after): void
     {
         $file->setIsBroken($is_broken);
 
-        if($flush_after){
+        if ($flush_after) {
             $this->em->flush();
         }
     }
 
-    private function setItemLastFileIsBroken(WorkshopItem $item, bool $is_broken, bool $flush_after)
+    private function setItemLastFileIsBroken(WorkshopItem $item, bool $is_broken, bool $flush_after): void
     {
         // Only handle this if the item broken status is changed
-        if($is_broken !== $item->isLastFileBroken())
-        {
+        if ($is_broken !== $item->isLastFileBroken()) {
             // Set the 'is last file broken' on the item
             $item->setIsLastFileBroken($is_broken);
 
             // Save changes to the DB
-            if($flush_after){
+            if ($flush_after) {
                 $this->em->flush();
             }
 
@@ -75,20 +71,20 @@ class WorkshopBrokenFileHandler {
 
     }
 
-    public function markFileAsBroken(WorkshopFile $workshop_file, bool $flush_after = true)
+    public function markFileAsBroken(WorkshopFile $workshop_file, bool $flush_after = true): void
     {
         $workshop_item     = $workshop_file->getItem();
         $original_filename = $workshop_file->getFilename();
         $hash              = $this->getWorkshopFileHash($workshop_file);
 
         // Make sure we have a hash for the file
-        if($hash === null){
+        if ($hash === null) {
             return;
         }
 
         // Check if hash is already stored
         $already_marked = $this->em->getRepository(WorkshopBrokenFile::class)->findOneBy(['hash' => $hash]);
-        if($already_marked === null){
+        if ($already_marked === null) {
 
             // Create a broken file entity if item hash combo is not stored yet
             $broken_file = new WorkshopBrokenFile();
@@ -100,11 +96,10 @@ class WorkshopBrokenFileHandler {
 
         // Loop trough all files of the workshop item
         $last_file = null;
-        $files = $this->em->getRepository(WorkshopFile::class)->findBy(['item' => $workshop_item], ['weight' => 'DESC']);
-        foreach($files as $file)
-        {
+        $files     = $this->em->getRepository(WorkshopFile::class)->findBy(['item' => $workshop_item], ['weight' => 'DESC']);
+        foreach ($files as $file) {
             // If the hash matches the one we're marking we'll mark this file as broken
-            if($this->getWorkshopFileHash($file) === $hash){
+            if ($this->getWorkshopFileHash($file) === $hash) {
                 $file->setIsBroken(true);
             }
 
@@ -117,34 +112,33 @@ class WorkshopBrokenFileHandler {
         );
 
         // Flush changes to DB
-        if($flush_after) {
+        if ($flush_after) {
             $this->em->flush();
         }
     }
 
-    public function unmarkFileAsBroken(WorkshopFile $workshop_file, bool $flush_after = true)
+    public function unmarkFileAsBroken(WorkshopFile $workshop_file, bool $flush_after = true): void
     {
         $workshop_item = $workshop_file->getItem();
         $hash          = $this->getWorkshopFileHash($workshop_file);
 
         // Make sure we have a hash for the file
-        if($hash === null){
+        if ($hash === null) {
             return;
         }
 
         // Check if hash in the DB and remove its definition
         $broken_file = $this->em->getRepository(WorkshopBrokenFile::class)->findOneBy(['hash' => $hash]);
-        if($broken_file !== null){
+        if ($broken_file !== null) {
             $this->em->remove($broken_file);
         }
 
         // Loop trough all files of the workshop item
         $last_file = null;
-        $files = $this->em->getRepository(WorkshopFile::class)->findBy(['item' => $workshop_item], ['weight' => 'DESC']);
-        foreach($files as $file)
-        {
+        $files     = $this->em->getRepository(WorkshopFile::class)->findBy(['item' => $workshop_item], ['weight' => 'DESC']);
+        foreach ($files as $file) {
             // If the hash matches the one we're marking we'll mark this file as broken
-            if($this->getWorkshopFileHash($file) === $hash){
+            if ($this->getWorkshopFileHash($file) === $hash) {
                 $file->setIsBroken(false);
             }
 
@@ -157,7 +151,7 @@ class WorkshopBrokenFileHandler {
         );
 
         // Flush changes to DB
-        if($flush_after){
+        if ($flush_after) {
             $this->em->flush();
         }
     }
@@ -168,14 +162,14 @@ class WorkshopBrokenFileHandler {
 
         $broken_files = $this->em->getRepository(WorkshopBrokenFile::class)->findAll();
 
-        foreach($broken_files as $broken_file) {
+        foreach ($broken_files as $broken_file) {
             $hashes[] = $broken_file->getHash();
         }
 
         return $hashes;
     }
 
-    private function getWorkshopFileHash(WorkshopFile $file): string|null
+    private function getWorkshopFileHash(WorkshopFile $file): ?string
     {
         // Get file path
         $workshop_item_dir       = Config::get('storage.path.workshop') . '/' . $file->getItem()->getId();
@@ -183,7 +177,7 @@ class WorkshopBrokenFileHandler {
         $workshop_file_path      = $workshop_item_files_dir . '/' . $file->getStorageFilename();
 
         // Make sure the file exists
-        if(!\file_exists($workshop_file_path)) {
+        if (!\file_exists($workshop_file_path)) {
             return null;
         }
 

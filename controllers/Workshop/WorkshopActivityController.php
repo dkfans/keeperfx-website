@@ -4,31 +4,26 @@ namespace App\Controller\Workshop;
 
 use App\Entity\User;
 use App\Entity\WorkshopItem;
-use App\Entity\WorkshopComment;
-use App\Entity\WorkshopCommentReport;
-
-use Doctrine\ORM\EntityManager;
-use Twig\Environment as TwigEnvironment;
 use Doctrine\DBAL\Connection as DbalConnection;
-
+use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Twig\Environment as TwigEnvironment;
 
 class WorkshopActivityController
 {
-
     public function listIndex(
         Request $request,
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-        DbalConnection $dbal
+        DbalConnection $dbal,
     ) {
-        $sql = "SELECT *
+        $sql = 'SELECT *
                 FROM workshop_comment
                 WHERE created_timestamp IS NOT NULL OR updated_timestamp IS NOT NULL
                 ORDER BY COALESCE(updated_timestamp, created_timestamp) DESC
-                LIMIT 100";
+                LIMIT 100';
 
         $statement = $dbal->prepare($sql);
         $result    = $statement->executeQuery();
@@ -46,22 +41,22 @@ class WorkshopActivityController
 
             // Get the user
             $user = null;
-            $uid = $comment['user_id'];
+            $uid  = $comment['user_id'];
             if (isset($user_cache[$uid])) {
                 $user = $user_cache[$uid];
             } else {
-                $user = $em->getRepository(User::class)->find($uid);
+                $user             = $em->getRepository(User::class)->find($uid);
                 $user_cache[$uid] = $user;
             }
             $comments[$i]['user'] = $user;
 
             // Get the workshop item
             $workshop_item = null;
-            $workshop_id = $comment['item_id'];
+            $workshop_id   = $comment['item_id'];
             if (isset($workshop_item_cache[$workshop_id])) {
                 $workshop_item = $workshop_item_cache[$workshop_id];
             } else {
-                $workshop_item = $em->getRepository(WorkshopItem::class)->find($workshop_id);
+                $workshop_item                     = $em->getRepository(WorkshopItem::class)->find($workshop_id);
                 $workshop_item_cache[$workshop_id] = $workshop_item;
             }
             $comments[$i]['item'] = $workshop_item;
@@ -95,11 +90,11 @@ class WorkshopActivityController
         }
 
         // Order the data array by timestamp
-        \krsort($data, SORT_NUMERIC);
+        \krsort($data, \SORT_NUMERIC);
 
         $response->getBody()->write(
             $twig->render('workshop/activity.workshop.html.twig', [
-                'data' => $data
+                'data' => $data,
             ])
         );
 

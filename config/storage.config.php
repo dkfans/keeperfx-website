@@ -2,7 +2,7 @@
 
 return [
     'path' => [
-        'logs'                    => $_ENV['APP_LOG_STORAGE']                     ?? '/app/log',
+        'logs' => $_ENV['APP_LOG_STORAGE'] ?? '/app/log',
 
         'workshop'                => $_ENV['APP_WORKSHOP_STORAGE']                ?? '/app/storage/workshop',
         'avatar'                  => $_ENV['APP_AVATAR_STORAGE']                  ?? '/app/storage/avatar',
@@ -17,8 +17,8 @@ return [
         'game-files-file-bundle'  => $_ENV['APP_GAME_FILE_BUNDLE_STORAGE']        ?? '/app/storage/game-files-file-bundle',
         'launcher'                => $_ENV['APP_LAUNCHER_STORAGE']                ?? '/app/storage/launcher',
 
-        'kfx-repo'                => $_ENV['APP_KFX_REPO_STORAGE']                ?? '/app/var/kfx-repo',
-        'wiki-repo'               => $_ENV['APP_WIKI_REPO_STORAGE']               ?? '/app/var/wiki-repo',
-        'website-repo'            => $_ENV['APP_WEBSITE_REPO_STORAGE']            ?? '/app/var/website-repo',
+        'kfx-repo'     => $_ENV['APP_KFX_REPO_STORAGE']     ?? '/app/var/kfx-repo',
+        'wiki-repo'    => $_ENV['APP_WIKI_REPO_STORAGE']    ?? '/app/var/wiki-repo',
+        'website-repo' => $_ENV['APP_WEBSITE_REPO_STORAGE'] ?? '/app/var/website-repo',
     ],
 ];

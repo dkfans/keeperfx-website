@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use App\Enum\BanType;
-
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class Ban {
-
+class Ban
+{
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
@@ -21,20 +20,20 @@ class Ban {
     #[ORM\Column]
     private string $pattern;
 
-    #[ORM\Column(type: 'text', nullable:true)]
-    private string|null $reason = null;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $reason = null;
 
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
     #[ORM\PrePersist]
-    public function onPrePersist()
+    public function onPrePersist(): void
     {
-        $this->created_timestamp = new \DateTime("now");
+        $this->created_timestamp = new \DateTime('now');
     }
 
     /**
-     * Get the value of id
+     * Get the value of id.
      */
     public function getId(): int
     {
@@ -42,7 +41,7 @@ class Ban {
     }
 
     /**
-     * Get the value of type
+     * Get the value of type.
      */
     public function getType(): BanType
     {
@@ -50,7 +49,7 @@ class Ban {
     }
 
     /**
-     * Set the value of type
+     * Set the value of type.
      */
     public function setType(BanType $type): self
     {
@@ -60,7 +59,7 @@ class Ban {
     }
 
     /**
-     * Get the value of pattern
+     * Get the value of pattern.
      */
     public function getPattern(): string
     {
@@ -68,7 +67,7 @@ class Ban {
     }
 
     /**
-     * Set the value of pattern
+     * Set the value of pattern.
      */
     public function setPattern(string $pattern): self
     {
@@ -78,7 +77,7 @@ class Ban {
     }
 
     /**
-     * Get the value of reason
+     * Get the value of reason.
      */
     public function getReason(): ?string
     {
@@ -86,7 +85,7 @@ class Ban {
     }
 
     /**
-     * Set the value of reason
+     * Set the value of reason.
      */
     public function setReason(?string $reason): self
     {
@@ -96,7 +95,7 @@ class Ban {
     }
 
     /**
-     * Get the value of created_timestamp
+     * Get the value of created_timestamp.
      */
     public function getCreatedTimestamp(): \DateTime
     {
@@ -104,7 +103,7 @@ class Ban {
     }
 
     /**
-     * Set the value of created_timestamp
+     * Set the value of created_timestamp.
      */
     public function setCreatedTimestamp(\DateTime $created_timestamp): self
     {

@@ -2,29 +2,18 @@
 
 namespace App\Controller\Api\v1;
 
-use App\Account;
-
-use App\FlashMessage;
-
 use App\Config\Config;
-use App\Enum\UserRole;
-use App\UploadSizeHelper;
 use App\Entity\CrashReport;
-use Doctrine\ORM\EntityManager;
-use Psr\SimpleCache\CacheInterface;
-
-use App\Notifications\NotificationCenter;
-
-use Xenokore\Utility\Helper\StringHelper;
-use Psr\Http\Message\ResponseInterface as Response;
-
-use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Enum\UserRole;
 use App\Notifications\Notification\CrashReportNotification;
-use Symfony\Component\CssSelector\Parser\Handler\StringHandler;
+use App\Notifications\NotificationCenter;
+use Doctrine\ORM\EntityManager;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Xenokore\Utility\Helper\StringHelper;
 
 class CrashReportApiController
 {
-
     public function upload(
         Request $request,
         Response $response,
@@ -40,9 +29,10 @@ class CrashReportApiController
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
-                    'error'   => 'INVALID_OR_MISSING_POST_DATA'
+                    'error'   => 'INVALID_OR_MISSING_POST_DATA',
                 ])
             );
+
             return $response->withStatus(500);
         }
 
@@ -83,18 +73,18 @@ class CrashReportApiController
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
-                    'error'   => 'NO_GAME_VERSION_DEFINED'
+                    'error'   => 'NO_GAME_VERSION_DEFINED',
                 ])
             );
+
             return $response;
-        } else {
-            $crash_report->setGameVersion($post['game_version']);
         }
+        $crash_report->setGameVersion($post['game_version']);
 
         // Check if savefile is included in request
         if (
-            array_key_exists('save_file_name', $post) && \is_string($post['save_file_name']) && \strlen($post['save_file_name']) > 0
-            && array_key_exists('save_file_data', $post) && \is_string($post['save_file_data']) && \strlen($post['save_file_data']) > 0
+            \array_key_exists('save_file_name', $post) && \is_string($post['save_file_name']) && $post['save_file_name']    !== ''
+                                                       && \array_key_exists('save_file_data', $post) && \is_string($post['save_file_data']) && $post['save_file_data'] !== ''
         ) {
 
             // Check if savefile storage dir is configured
@@ -103,21 +93,23 @@ class CrashReportApiController
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
-                        'error'   => 'NO_SAVEFILE_STORAGE_DIR_CONFIGURED'
+                        'error'   => 'NO_SAVEFILE_STORAGE_DIR_CONFIGURED',
                     ])
                 );
+
                 return $response;
             }
 
             // Check (and try to make) savefile storage dir
             if (!\file_exists($savefile_storage_dir) || !\is_writable($savefile_storage_dir)) {
-                if (!@mkdir($savefile_storage_dir, 0777, true)) {
+                if (!@\mkdir($savefile_storage_dir, 0777, true)) {
                     $response->getBody()->write(
                         \json_encode([
                             'success' => false,
-                            'error'   => 'NO_SAVEFILE_STORAGE_DIR'
+                            'error'   => 'NO_SAVEFILE_STORAGE_DIR',
                         ])
                     );
+
                     return $response;
                 }
             }
@@ -128,13 +120,14 @@ class CrashReportApiController
 
             // Make sure the savefile is not too big
             $file_size_in_bytes = \strlen($savefile_data);
-            if ($file_size_in_bytes > (int)$_ENV['APP_CRASH_REPORT_SAVEFILE_MAX_UPLOAD_SIZE']) {
+            if ($file_size_in_bytes > (int) $_ENV['APP_CRASH_REPORT_SAVEFILE_MAX_UPLOAD_SIZE']) {
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
-                        'error'   => 'SAVEFILE_TOO_BIG'
+                        'error'   => 'SAVEFILE_TOO_BIG',
                     ])
                 );
+
                 return $response;
             }
 
@@ -144,15 +137,16 @@ class CrashReportApiController
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
-                        'error'   => 'INVALID_SAVEFILE_FILENAME_EXTENSION'
+                        'error'   => 'INVALID_SAVEFILE_FILENAME_EXTENSION',
                     ])
                 );
+
                 return $response;
             }
 
             // Generate storage filename and path
-            $savefile_storage_filename = \substr(\md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . time()), 0, 16) . '.' . $savefile_ext;
-            $savefile_storage_path = $savefile_storage_dir . '/' . $savefile_storage_filename;
+            $savefile_storage_filename = \substr(\md5(\random_int(\PHP_INT_MIN, \PHP_INT_MAX) . \time()), 0, 16) . '.' . $savefile_ext;
+            $savefile_storage_path     = $savefile_storage_dir . '/' . $savefile_storage_filename;
 
             // Store file
             @\file_put_contents($savefile_storage_path, $savefile_data);
@@ -160,9 +154,10 @@ class CrashReportApiController
                 $response->getBody()->write(
                     \json_encode([
                         'success' => false,
-                        'error'   => 'FAILED_TO_STORE_SAFEFILE'
+                        'error'   => 'FAILED_TO_STORE_SAFEFILE',
                     ])
                 );
+
                 return $response;
             }
 
@@ -178,7 +173,7 @@ class CrashReportApiController
             UserRole::Developer,
             CrashReportNotification::class,
             [
-                'id' => $crash_report->getId(),
+                'id'           => $crash_report->getId(),
                 'game_version' => $crash_report->getGameVersion(),
             ]
         );
@@ -187,9 +182,10 @@ class CrashReportApiController
         $response->getBody()->write(
             \json_encode([
                 'success' => true,
-                'id'      => $crash_report->getId()
+                'id'      => $crash_report->getId(),
             ])
         );
+
         return $response;
     }
 }

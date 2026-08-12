@@ -4,8 +4,6 @@ namespace App;
 
 use Compwright\PhpSession\Session;
 
-
-
 class FlashMessage
 {
     private Session $session;
@@ -13,27 +11,21 @@ class FlashMessage
     private const SESSION_VAR = 'flash_messages';
 
     /**
-     * Constructor
-     *
-     * @param Session $session
+     * Constructor.
      */
     public function __construct(Session $session)
     {
         $this->session = $session;
 
-        if (!isset($this->session[self::SESSION_VAR]) || !is_array($this->session[self::SESSION_VAR])) {
+        if (!isset($this->session[self::SESSION_VAR]) || !\is_array($this->session[self::SESSION_VAR])) {
             $this->session[self::SESSION_VAR] = [];
         }
     }
 
     /**
-     * Add a flash message
-     *
-     * @param string $type
-     * @param string|null $message
-     * @return FlashMessage
+     * Add a flash message.
      */
-    public function add(string $type, ?string $message): FlashMessage
+    public function add(string $type, ?string $message): self
     {
         $this->session[self::SESSION_VAR][] = [
             'type'    => \strtolower($type),
@@ -44,53 +36,39 @@ class FlashMessage
     }
 
     /**
-     * Add an info flash message
-     *
-     * @param string|null $message
-     * @return FlashMessage
+     * Add an info flash message.
      */
-    public function info(?string $message): FlashMessage
+    public function info(?string $message): self
     {
         return $this->add('info', $message);
     }
 
     /**
-     * Add a success flash message
-     *
-     * @param string|null $message
-     * @return FlashMessage
+     * Add a success flash message.
      */
-    public function success(?string $message): FlashMessage
+    public function success(?string $message): self
     {
         return $this->add('success', $message);
     }
 
     /**
-     * Add a warning flash message
-     *
-     * @param string|null $message
-     * @return FlashMessage
+     * Add a warning flash message.
      */
-    public function warning(?string $message): FlashMessage
+    public function warning(?string $message): self
     {
         return $this->add('warning', $message);
     }
 
     /**
-     * Add an error flash message
-     *
-     * @param string|null $message
-     * @return FlashMessage
+     * Add an error flash message.
      */
-    public function error(?string $message): FlashMessage
+    public function error(?string $message): self
     {
         return $this->add('error', $message);
     }
 
     /**
-     * Retrieve all flash messages and possibly remove them from the session
-     *
-     * @return array
+     * Retrieve all flash messages and possibly remove them from the session.
      */
     public function getAll(bool $remove = true): array
     {
@@ -106,8 +84,7 @@ class FlashMessage
     /**
      * Retrieve all flash messages as an array.
      *
-     * @param boolean $remove_after Remove messages after grabbing them
-     * @return array
+     * @param bool $remove_after Remove messages after grabbing them
      */
     public function getAllAsArray(bool $remove_after = true): array
     {
@@ -125,19 +102,16 @@ class FlashMessage
     }
 
     /**
-     * Check if there is a message to be displayed. Can be checked if a specific type of message exists
-     *
-     * @return bool
+     * Check if there is a message to be displayed. Can be checked if a specific type of message exists.
      */
     public function hasMessage(?string $type = null): bool
     {
         if (empty($type)) {
             return !empty($this->session[self::SESSION_VAR]);
-        } else {
-            foreach ($this->session[self::SESSION_VAR] as $message) {
-                if ($message['type'] == $type) {
-                    return true;
-                }
+        }
+        foreach ($this->session[self::SESSION_VAR] as $message) {
+            if ($message['type'] == $type) {
+                return true;
             }
         }
 

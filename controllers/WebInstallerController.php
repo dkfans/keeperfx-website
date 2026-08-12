@@ -2,21 +2,16 @@
 
 namespace App\Controller;
 
-use Slim\Psr7\Stream;
 use App\Config\Config;
 use App\Entity\LauncherRelease;
-
 use Doctrine\ORM\EntityManager;
-use GuzzleHttp\Psr7\LazyOpenStream;
-use Twig\Environment as TwigEnvironment;
-use Slim\Exception\HttpNotFoundException;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpNotFoundException;
+use Slim\Psr7\Stream;
 
 class WebInstallerController
 {
-
     public function outputFile(
         Request $request,
         Response $response,
@@ -45,16 +40,17 @@ class WebInstallerController
                 }
 
                 // Force file download
-                $stream = \fopen($filepath, 'r');
-                $cache_time = (int)($_ENV['APP_WEB_INSTALLER_DOWNLOAD_CACHE_TIME'] ?? 1209600);
-                $response = $response
+                $stream     = \fopen($filepath, 'r');
+                $cache_time = (int) ($_ENV['APP_WEB_INSTALLER_DOWNLOAD_CACHE_TIME'] ?? 1209600);
+                $response   = $response
                     ->withHeader('Pragma', 'public')
                     ->withHeader('Cache-Control', 'max-age=' . $cache_time)
-                    ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_time))
+                    ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', \time() + $cache_time))
                     ->withHeader('Content-Length', \filesize($filepath))
                     ->withHeader('Content-Type', 'application/octet-stream')
                     ->withHeader('Content-Transfer-Encoding', 'Binary')
                     ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
                 return $response->withBody(
                     new Stream($stream)
                 );
