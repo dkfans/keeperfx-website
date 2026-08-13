@@ -4,12 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Start REPL (PsySH)",
+            "label": "Start REPL (Docker)",
             "type": "shell",
-            "command": "./vendor/bin/psysh --trust-project",
-            "windows": {
-                "command": "php ./vendor/bin/psysh --trust-project"
-            },
+            "command": "docker exec -it -u www-data kfx-php php ./vendor/bin/psysh --trust-project -c ./.psysh.php",
             "problemMatcher": []
         },
         {

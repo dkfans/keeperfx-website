@@ -1,26 +1,32 @@
 <?php
 
-use App\Config\Config;
-
 /**
- * Available REPL variables:
- * - Config::class
- * - $container        \Psr\ContainerInterface
- * - $logger           \Psr\LoggerInterface
- * - $dbal             \Doctrine\DBAL\Connection
- * - $em               \Doctrine\ORM\EntityManager
- * - $cache            \Psr\SimpleCache\CacheInterface
+ * This file will load the app bootstrap and load a ton of useful classes into variables.
  */
 
 // Load app bootstrap
 require __DIR__ . '/bootstrap.php';
 
-// Set variables
-$dbal       = $container->get(Doctrine\DBAL\Connection::class);
-$em         = $container->get(Doctrine\ORM\EntityManager::class);
-$cache      = $container->get(Psr\SimpleCache\CacheInterface::class);
-$session    = $container->get(Compwright\PhpSession\Session::class);
-$locale     = $container->get(App\I18n\Locale::class);
+/** @var Doctrine\DBAL\Connection $dbal */
+$dbal = $container->get(Doctrine\DBAL\Connection::class);
+
+/** @var Doctrine\ORM\EntityManager $em */
+$em = $container->get(Doctrine\ORM\EntityManager::class);
+
+/** @var Psr\SimpleCache\CacheInterface $cache */
+$cache = $container->get(Psr\SimpleCache\CacheInterface::class);
+
+/** @var Compwright\PhpSession\Session $session */
+$session = $container->get(Compwright\PhpSession\Session::class);
+
+/** @var App\I18n\Locale $locale */
+$locale = $container->get(App\I18n\Locale::class);
+
+/** @var App\I18n\Translator $translator */
 $translator = $container->get(App\I18n\Translator::class);
-$discord    = $container->get(App\DiscordNotifier::class);
-$nc         = $container->get(App\Notifications\NotificationCenter::class);
+
+/** @var App\DiscordNotifier $discord */
+$discord = $container->get(App\DiscordNotifier::class);
+
+/** @var App\Notifications\NotificationCenter $nc */
+$nc = $container->get(App\Notifications\NotificationCenter::class);

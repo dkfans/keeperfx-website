@@ -1,15 +1,25 @@
 <?php
 
+/**
+ * PsySH configuration
+ * https://github.com/bobthecow/psysh/wiki/Configuration.
+ */
 return [
-    'commands' => [
-        new \Psy\Command\ParseCommand,
-    ],
+    'colorMode' => Psy\Configuration::COLOR_MODE_AUTO,
+
+    'dataDir'    => __DIR__ . '/.psysh/data',
+    'configDir'  => __DIR__ . '/.psysh/config',
+    'runtimeDir' => __DIR__ . '/.psysh/runtime',
 
     'defaultIncludes' => [
-        __DIR__ . '/app/bootstrap/bootstrap.psysh.php'
+        __DIR__ . '/app/bootstrap/bootstrap.psysh.php',
     ],
 
-    // 'startupMessage' => 'PsySH REPL',
-
-    // 'prompt' => 'repl> '
+    'implicitUse' => [
+        'includeNamespaces' => [
+            'App\\',
+            'App\\Entity\\',
+            'App\\Enum\\',
+        ],
+    ],
 ];

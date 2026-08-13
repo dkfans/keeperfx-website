@@ -17,24 +17,24 @@ sed -i 's/^APP_SMTP_AUTH=.*/APP_SMTP_AUTH=0/' .env
 sed -i 's/^APP_SMTP_TLS=.*/APP_SMTP_TLS=0/' .env
 sed -i 's/^APP_SMTP_VERIFY_CERT=.*/APP_SMTP_VERIFY_CERT=0/' .env
 
-# Create logs and cache dirs
-mkdir -p ./logs ./cache
+# Create dirs
+mkdir -p ./logs ./cache ./.psysh
 
-# Set correct permissions for logs and cache dirs
+# Set correct permissions for created dirs
 if [ "$EUID" -eq 0 ]; then
     # We are already root, execute without sudo
-    chown 33:$(id -g) ./logs ./cache
-    chmod 777 ./logs ./cache
+    chown 33:$(id -g) ./logs ./cache ./.psysh
+    chmod 777 ./logs ./cache ./.psysh
 else
     # We are not root. Check if sudo will ask for a password.
     # 'sudo -n true' fails (returns non-zero) if a password is required.
     if ! sudo -n true 2>/dev/null; then
-        echo "sudo is required to set correct permissions of logs and cache dirs..."
+        echo "sudo is required to set correct permissions of created dirs..."
     fi
 
     # Run the commands. If sudo -n true succeeded above, this won't prompt for a password.
-    sudo chown 33:$(id -g) ./logs ./cache
-    sudo chmod 777 ./logs ./cache
+    sudo chown 33:$(id -g) ./logs ./cache ./.psysh
+    sudo chmod 777 ./logs ./cache ./.psysh
 fi
 
 # Copy the compose override example configuration
