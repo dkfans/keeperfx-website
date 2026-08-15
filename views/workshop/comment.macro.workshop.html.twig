@@ -28,6 +28,17 @@
                             <span class="user-username">{{ comment.user.username }}</span>
                         </a>
 
+                        {# Moderation note #}
+                        {% if account and account.role >= roles.moderator and comment.user.moderatorNote %}
+                            <ion-icon
+                                name="document-text-outline"
+                                class="text-muted"
+                                style="position: relative; top: 2px;"
+                                data-bs-toggle="popover" data-bs-placement="top"
+                                data-bs-content="{{ comment.user.moderatorNote }}"
+                            ></ion-icon>
+                        {% endif %}
+
                         {# Country #}
                         {% if comment.user.country is not null %}
                             <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(comment.user.country) }}" data-bs-placement="top">
