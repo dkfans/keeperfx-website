@@ -44,8 +44,16 @@
                         <td>{{ user.id }}</td>
                         <td>
                             <a href="/admin/user/{{ user.id }}" {% if user.role.value == roles.banned %}style="text-decoration: line-through;"{% endif %}>
-                                {{ user.username }}
+                                {{- user.username -}}
                             </a>
+                            {% if user.moderatorNote %}
+                                <ion-icon
+                                    name="document-text-outline"
+                                    class="text-muted"
+                                    data-bs-toggle="popover" data-bs-placement="top"
+                                    data-bs-content="{{ user.moderatorNote }}"
+                                ></ion-icon>
+                            {% endif %}
                         </td>
                         <td>{{ user.role.name }}</td>
                         <td>

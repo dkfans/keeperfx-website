@@ -52,6 +52,9 @@ class User
     #[ORM\Column]
     private string $theme = 'default';
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $moderator_note = null;
+
     #[ORM\Column]
     private \DateTime $created_timestamp;
 
@@ -491,6 +494,24 @@ class User
     public function setCdn(?string $cdn): self
     {
         $this->cdn = $cdn;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of moderator_note_hidden.
+     */
+    public function getModeratorNote(): ?string
+    {
+        return $this->moderator_note;
+    }
+
+    /**
+     * Set the value of moderator_note_hidden.
+     */
+    public function setModeratorNote(?string $moderator_note): self
+    {
+        $this->moderator_note = $moderator_note;
 
         return $this;
     }

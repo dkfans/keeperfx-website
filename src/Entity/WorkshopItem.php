@@ -44,6 +44,12 @@ class WorkshopItem
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $install_instructions = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $moderator_note_hidden = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $moderator_note_public = null;
+
     #[ORM\Column]
     private bool $is_published = false;
 
@@ -542,6 +548,42 @@ class WorkshopItem
     public function setIsLastFileBroken(bool $is_last_file_broken): self
     {
         $this->is_last_file_broken = $is_last_file_broken;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of moderator_note_hidden.
+     */
+    public function getModeratorNoteHidden(): ?string
+    {
+        return $this->moderator_note_hidden;
+    }
+
+    /**
+     * Set the value of moderator_note_hidden.
+     */
+    public function setModeratorNoteHidden(?string $moderator_note_hidden): self
+    {
+        $this->moderator_note_hidden = $moderator_note_hidden;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of moderator_note_public.
+     */
+    public function getModeratorNotePublic(): ?string
+    {
+        return $this->moderator_note_public;
+    }
+
+    /**
+     * Set the value of moderator_note_public.
+     */
+    public function setModeratorNotePublic(?string $moderator_note_public): self
+    {
+        $this->moderator_note_public = $moderator_note_public;
 
         return $this;
     }

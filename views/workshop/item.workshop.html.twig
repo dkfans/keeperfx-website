@@ -388,6 +388,41 @@
                         </div>
                     {% endif %}
 
+                    {# Moderator note #}
+                    {% if item.moderatorNotePublic is not empty %}
+                        <div class="workshop-info-box" style="padding: 25px; margin-top: 30px;">
+                            <h5 style="border-bottom: 0;">
+                                {# We only show an icon here if we are logged in as a moderator (or higher) because it doesn't really fit the rest of the page design #}
+                                {% if account and account.role >= roles.moderator %}
+                                    <ion-icon name="eye-outline" style="position: relative; top: 2px;" class="text-special"></ion-icon>
+                                {% endif %}
+                                Moderator note
+                                <span class="text-muted px-1">
+                                   (KeeperFX Team)
+                                </span>
+                            </h5>
+                            <div class="workshop-item-text-content force-wordwrap markdown-body" style="margin-top: 25px;">
+                                {{ item.moderatorNotePublic|markdown_to_html }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {# Moderator note (Hidden) #}
+                    {% if account and account.role >= roles.moderator and item.moderatorNoteHidden is not empty %}
+                        <div class="workshop-info-box" style="padding: 25px; margin-top: 30px;">
+                            <h5 style="border-bottom: 0;">
+                                <ion-icon name="eye-off-outline" style="position: relative; top: 2px;" class="text-special"></ion-icon>
+                                Moderator Note
+                                <span class="text-muted px-1">
+                                    (Hidden)
+                                </span>
+                            </h5>
+                            <div class="workshop-item-text-content force-wordwrap markdown-body" style="margin-top: 25px;">
+                                {{ item.moderatorNoteHidden|markdown_to_html }}
+                            </div>
+                        </div>
+                    {% endif %}
+
                     {% if item.submitter is not null and item.originalAuthor is empty and more_items_by_user is not empty %}
                         <h5 style="margin-top: 30px; padding: 5px; border-bottom: 0;">
                             More items by

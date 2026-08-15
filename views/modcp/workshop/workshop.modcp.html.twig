@@ -49,10 +49,18 @@
                                 <s class="text-warning">
                             {% endif %}
                             <a href="/moderate/workshop/{{ workshop_item.id }}">
-                                {{ workshop_item.name }}
+                                {{- workshop_item.name -}}
                             </a>
                             {% if not workshop_item.is_published %}
                                 </s>
+                            {% endif %}
+                            {% if workshop_item.moderatorNoteHidden %}
+                                <ion-icon
+                                    name="document-text-outline"
+                                    class="text-muted"
+                                    data-bs-toggle="popover" data-bs-placement="top"
+                                    data-bs-content="{{ workshop_item.moderatorNoteHidden }}"
+                                ></ion-icon>
                             {% endif %}
                         </td>
 

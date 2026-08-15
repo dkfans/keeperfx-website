@@ -40,5 +40,17 @@
             {% endif %}
             <span class="user-username" {% if workshop_item.submitter.role.value == roles.banned %}style="text-decoration: line-through;"{% endif %}>{{ workshop_item.submitter.username }}</span>
         </a>
+
+        {# Moderator note (hidden) #}
+        {% if account and account.role >= roles.moderator and workshop_item.submitter.moderatorNote %}
+            <ion-icon
+                name="document-text-outline"
+                class="text-muted"
+                style="position: relative; top: 2px;"
+                data-bs-toggle="popover" data-bs-placement="top"
+                data-bs-content="{{ workshop_item.submitter.moderatorNote }}"
+            ></ion-icon>
+        {% endif %}
+
     {% endif %}
 {% endif %}

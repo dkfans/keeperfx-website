@@ -145,6 +145,24 @@
     </div>
 </div>
 
+    {# Moderator note (only visible to moderators) #}
+    {% if account and account.role >= roles.moderator and user.moderatorNote %}
+        <div class="content-box bg-keeper bd-keeper">
+            <div class="content-header">
+                <h2>
+                    <ion-icon name="eye-off-outline" style="position: relative; top: 2px;" class="text-special"></ion-icon>
+                    Moderator Note
+                    <span class="text-muted px-1">
+                        (Hidden)
+                    </span>
+                </h2>
+            </div>
+            <div class="content-body">
+                {{ user.moderatorNote }}
+            </div>
+        </div>
+    {% endif %}
+
     <div class="content-box bg-keeper bd-keeper">
 
         <div class="content-body">

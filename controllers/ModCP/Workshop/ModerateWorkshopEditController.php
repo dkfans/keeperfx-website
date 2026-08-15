@@ -31,7 +31,7 @@ class ModerateWorkshopEditController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-        $id,
+        int $id,
     ) {
         // Get workshop item
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
@@ -181,6 +181,9 @@ class ModerateWorkshopEditController
         $workshop_item->setDifficultyRatingEnabled(\array_key_exists('enable_difficulty_rating', $post));
         $workshop_item->setIsBundledWithGame(\array_key_exists('is_bundled_with_game', $post));
         $workshop_item->setIsPublished(\array_key_exists('is_published', $post));
+
+        $workshop_item->setModeratorNotePublic(!empty($post['moderator_note_public']) ? $post['moderator_note_public'] : null);
+        $workshop_item->setModeratorNoteHidden(!empty($post['moderator_note_hidden']) ? $post['moderator_note_hidden'] : null);
 
         // Set optional minimum game build
         $workshop_item->setMinGameBuild(null);

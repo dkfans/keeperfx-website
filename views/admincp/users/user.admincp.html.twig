@@ -245,6 +245,37 @@
     </div>
 </div>
 
+{# Moderator note (hidden) #}
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>
+            <ion-icon name="eye-off-outline" style="position: relative; top: 2px;" class="text-special"></ion-icon>
+            Moderator Note
+            <span class="text-muted px-1">
+                (Hidden)
+            </span>
+        </h2>
+        <span class="text-muted">Communicate information about this user to other members of the KeeperFX team.</span>
+    </div>
+    <div class="content-body">
+        <form action="/admin/user/{{ user.id }}/note" method="POST">
+
+            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
+            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
+
+            <div class="form-group">
+                <textarea class="form-control mb-1" name="note" rows="6">{{ user.moderatorNote ?? '' }}</textarea>
+                <span class="text-muted mx-2" style="font-size: 12px;">No markdown supported</span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-medieval">Update</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
 <div class="content-box bg-keeper bd-keeper">
     <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
         <h2>IP logs for {{ user.username }}</h2>

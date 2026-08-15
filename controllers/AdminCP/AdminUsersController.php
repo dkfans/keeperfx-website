@@ -134,7 +134,7 @@ class AdminUsersController
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id,
+        int $id,
     ) {
 
         $user = $em->getRepository(User::class)->find($id);
@@ -161,13 +161,14 @@ class AdminUsersController
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id,
+        int $id,
     ) {
         $success = true;
 
         $email = null;
 
         // Get user
+        /** @var User $user */
         $user = $em->getRepository(User::class)->find($id);
         if (!$user) {
             $flash->warning('User not found.');
@@ -266,7 +267,7 @@ class AdminUsersController
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id,
+        int $id,
     ) {
         // Get user
         $user = $em->getRepository(User::class)->find($id);
@@ -306,10 +307,41 @@ class AdminUsersController
 
         $flash->success('About-me updated!.');
 
-        // Return view
-        $response->getBody()->write(
-            $twig->render('admincp/users/user.admincp.html.twig', ['user' => $user])
-        );
+        // Return to user page
+        $response = $response->withHeader('Location', '/admin/user/' . $id)->withStatus(302);
+
+        return $response;
+    }
+
+    public function userNoteEdit(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        TwigEnvironment $twig,
+        FlashMessage $flash,
+        int $id,
+    ) {
+        // Get user
+        /** @var User $user */
+        $user = $em->getRepository(User::class)->find($id);
+        if (!$user) {
+            $flash->warning('User not found.');
+            $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
+            return $response;
+        }
+
+        // Get post vars
+        $post = $request->getParsedBody();
+
+        // Update user note
+        $user->setModeratorNote(!empty($post['note']) ? (string) $post['note'] : null);
+        $em->flush();
+
+        $flash->success('Note updated!');
+
+        // Return to user page
+        $response = $response->withHeader('Location', '/admin/user/' . $id)->withStatus(302);
 
         return $response;
     }
@@ -320,9 +352,9 @@ class AdminUsersController
         EntityManager $em,
         FlashMessage $flash,
         Guard $csrf_guard,
-        $id,
-        $token_name,
-        $token_value,
+        int $id,
+        string $token_name,
+        string $token_value,
     ) {
 
         // Check for valid CSRF token
@@ -353,7 +385,7 @@ class AdminUsersController
         EntityManager $em,
         FlashMessage $flash,
         TwigEnvironment $twig,
-        $id,
+        int $id,
     ) {
         // Find user
         $user = $em->getRepository(User::class)->find($id);
@@ -389,7 +421,7 @@ class AdminUsersController
         FlashMessage $flash,
         TwigEnvironment $twig,
         Mailer $mailer,
-        $id,
+        int $id,
     ) {
         // Find user
         $user = $em->getRepository(User::class)->find($id);
