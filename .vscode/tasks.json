@@ -37,6 +37,12 @@
             "problemMatcher": []
         },
         {
+            "label": "Doctrine Migrations",
+            "type": "shell",
+            "command": "docker exec -it -u $(id -u) kfx-php php console ${input:consoleCommandDoctrineMigrations}",
+            "problemMatcher": []
+        },
+        {
             "label": "Run console command (Docker)",
             "type": "shell",
             "command": "docker exec -it -u www-data kfx-php php console ${input:consoleCommand}",
@@ -90,18 +96,6 @@
                 "mail:send-queue-all",
                 "maintenance:start",
                 "maintenance:stop",
-                "migrations:current",
-                "migrations:diff",
-                "migrations:dump-schema",
-                "migrations:execute",
-                "migrations:generate",
-                "migrations:latest",
-                "migrations:list",
-                "migrations:migrate",
-                "migrations:rollup",
-                "migrations:status",
-                "migrations:sync-metadata-storage",
-                "migrations:version",
                 "user:clear-old-notifications",
                 "user:clear-old-password-reset",
                 "user:create",
@@ -116,6 +110,25 @@
                 "workshop:fetch-unearth",
                 "workshop:fix-ratings",
                 "workshop:generate-all-thumbnails"
+            ]
+        },
+        {
+            "id": "consoleCommandDoctrineMigrations",
+            "description": "The Doctrine Migrations command to run.",
+            "type": "pickString",
+            "options": [
+                "migrations:current",
+                "migrations:diff",
+                "migrations:dump-schema",
+                "migrations:execute",
+                "migrations:generate",
+                "migrations:latest",
+                "migrations:list",
+                "migrations:migrate",
+                "migrations:rollup",
+                "migrations:status",
+                "migrations:sync-metadata-storage",
+                "migrations:version",
             ]
         }
     ]
