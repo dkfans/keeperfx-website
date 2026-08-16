@@ -93,8 +93,9 @@
                     <thead>
                         <tr>
                             <th>Workshop Item</th>
+                            <th>Category</th>
                             <th>Rating</th>
-                            <th>Difficulty Rating</th>
+                            <th title="Difficulty Rating">Diff. Rating</th>
                             <th>Date</th>
                         </tr>
                     </thead>
@@ -107,6 +108,11 @@
                                         {% if rating.item.submitter is not null and rating.item.submitter.id == account.id %}
                                             <span class="text-muted">(self)</span>
                                         {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if rating.item %}
+                                        {{ rating.item.category.name|enum_beautify }}
                                     {% endif %}
                                 </td>
                                 <td>
