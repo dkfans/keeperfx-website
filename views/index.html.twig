@@ -131,10 +131,17 @@
                                     <span class="text-special">{{ article.createdTimestamp|date('Y-m-d') }}</span>
                                 </div>
                                 <div class="news-item-text">
+
+                                    {# The excerpt of the news article #}
                                     {{ article.excerpt|markdown_to_html }}
-                                    <p>
-                                        <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}" data-instant>Read more...</a>
-                                    </p>
+
+                                    {# Add a "Read more..." link if the article is longer than its excerpt #}
+                                    {% if article.excerpt != article.contents %}
+                                        <p>
+                                            <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}" data-instant>Read more...</a>
+                                        </p>
+                                    {% endif %}
+
                                 </div>
                             </div>
                         </div>
