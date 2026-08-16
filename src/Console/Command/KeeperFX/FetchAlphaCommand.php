@@ -363,6 +363,40 @@ class FetchAlphaCommand extends Command
             }
             $output->writeln("[+] {$game_files_store_result} game files stored");
 
+            // Grab commit HEAD sha
+            $commit_sha = null;
+            if (!empty($run->head_sha) && \is_string($run->head_sha)) {
+                $commit_sha = $run->head_sha;
+                $output->writeln('[>] Commit HEAD SHA: ' . $commit_sha);
+            } else {
+                $output->writeln('[-] Failed to get commit HEAD SHA');
+            }
+
+            // Try to grab commit comment
+            $commit_comment = null;
+            if (!empty($commit_sha)) {
+
+                try {
+                    $commit_res  = $client->request('GET', "https://api.github.com/repos/dkfans/keeperfx/commits/{$commit_sha}");
+                    $commit_json = \json_decode($commit_res->getBody());
+                    if (!$commit_json || empty($commit_json->commit)) {
+                        $output->writeln('[-] Failed to get commit object or commit JSON');
+                    } else {
+                        if (!empty($commit_json->commit->message)) {
+                            $message       = $commit_json->commit->message;
+                            $message_parts = \explode("\n\n", $message);
+                            if (\count($message_parts) > 1) {
+                                \array_shift($message_parts);
+                                $commit_comment = \implode('', $message_parts);
+                                $output->writeln("[>] Commit comment: {$commit_comment}");
+                            }
+                        }
+                    }
+                } catch (\Exception $ex) {
+                    $output->writeln('[-] Failed to get commit');
+                }
+            }
+
             // Create entity
             $build = new GithubAlphaBuild();
             $build->setName($build_name);
@@ -374,6 +408,8 @@ class FetchAlphaCommand extends Command
             $build->setWorkflowRunId($artifact->workflow_run?->id ?? null);
             $build->setIsAvailable(self::IS_ENABLED);
             $build->setVersion($version);
+            $build->setCommitComment($commit_comment);
+            $build->setCommitSha($commit_sha);
 
             // Save to DB
             $this->em->persist($build);

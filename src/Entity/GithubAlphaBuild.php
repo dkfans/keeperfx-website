@@ -21,6 +21,9 @@ class GithubAlphaBuild
     #[ORM\Column(nullable: true)]
     private ?string $version = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?string $commit_sha;
+
     #[ORM\Column]
     private string $workflow_title;
 
@@ -38,6 +41,9 @@ class GithubAlphaBuild
 
     #[ORM\Column]
     private bool $is_available = true;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $commit_comment;
 
     /**
      * Get the value of id.
@@ -219,6 +225,42 @@ class GithubAlphaBuild
     public function setVersion(?string $version): self
     {
         $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of commit_comment.
+     */
+    public function getCommitComment(): ?string
+    {
+        return $this->commit_comment;
+    }
+
+    /**
+     * Set the value of commit_comment.
+     */
+    public function setCommitComment(?string $commit_comment): self
+    {
+        $this->commit_comment = $commit_comment;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of commit_sha.
+     */
+    public function getCommitSha(): ?string
+    {
+        return $this->commit_sha;
+    }
+
+    /**
+     * Set the value of commit_sha.
+     */
+    public function setCommitSha(?string $commit_sha): self
+    {
+        $this->commit_sha = $commit_sha;
 
         return $this;
     }
