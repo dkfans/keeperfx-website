@@ -7,6 +7,8 @@
 // Load app bootstrap
 require __DIR__ . '/bootstrap.php';
 
+/** @var Psr\Container\ContainerInterface $container */
+
 /** @var Doctrine\DBAL\Connection $dbal */
 $dbal = $container->get(Doctrine\DBAL\Connection::class);
 

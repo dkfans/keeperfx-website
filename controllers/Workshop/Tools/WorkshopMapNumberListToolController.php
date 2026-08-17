@@ -17,6 +17,8 @@ class WorkshopMapNumberListToolController
         TwigEnvironment $twig,
         EntityManager $em,
     ) {
+        $map_numbers = [];
+
         $items = $em->getRepository(WorkshopItem::class)->findBy(['category' => WorkshopCategory::Map], ['map_number' => 'ASC']);
         foreach ($items as $item) {
             if ($item->getMapNumber() === null) {

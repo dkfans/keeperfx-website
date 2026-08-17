@@ -3,6 +3,9 @@
 use App\Config\Config;
 use App\Middleware\ErrorMiddleware;
 
+/** @var Psr\Container\ContainerInterface $container */
+/** @var Psr\Log\LoggerInterface $logger */
+
 // Check for maintenance mode and show notice
 // This should be the very first check that is ran.
 // That way every part of the application can update without an end user executing any code.

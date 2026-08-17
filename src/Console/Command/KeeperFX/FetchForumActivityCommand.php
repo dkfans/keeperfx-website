@@ -107,7 +107,7 @@ class FetchForumActivityCommand extends Command
 
             // Get amount of replies
             $replies_str = $node->filter('.threadstats li')->first()->text();
-            $replies     = \preg_replace('/[^0-9]/', '', $replies_str ?? '');
+            $replies     = \preg_replace('/[^0-9]/', '', (string) $replies_str);
 
             // Get URL but remove any query parameters
             $url = $base_url . '/' . $node->filter('h3 a')->first()->attr('href');
