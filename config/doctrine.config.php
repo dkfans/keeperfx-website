@@ -30,8 +30,8 @@ return [
     'proxy_dir' => Config::get('cache.file_storage_dir') . '/doctrine/proxy',
 
     'proxy_class_generation' => $_ENV['APP_ENV'] === 'dev' ?
-        Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_ALWAYS :
-        Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS,
+        Doctrine\ORM\Proxy\ProxyFactory::AUTOGENERATE_ALWAYS :
+        Doctrine\ORM\Proxy\ProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS,
 
     'enable_query_cache' => true, // Cache the conversion of DQL to SQL
 
