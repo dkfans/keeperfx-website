@@ -10,7 +10,6 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
@@ -259,7 +258,7 @@ class FetchPrototypeCommand extends Command
                 // Create new 7z archive
                 $output->writeln('[>] Creating new 7z archive...');
                 try {
-                    UnifiedArchive::create(['' => $temp_archive_dir], $temp_archive_path_new, BasicDriver::COMPRESSION_STRONG);
+                    UnifiedArchive::create(['' => $temp_archive_dir], $temp_archive_path_new, (int) $_ENV['APP_ARCHIVE_COMPRESSION_LEVEL_PROTOTYPE']);
                     $output->writeln("[+] Archive created: <info>{$temp_archive_path_new}</info>");
                 } catch (\Exception $ex) {
                     throw $ex;

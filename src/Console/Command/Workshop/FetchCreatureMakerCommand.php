@@ -10,7 +10,6 @@ use GuzzleHttp\Client;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
-use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
@@ -208,7 +207,7 @@ class FetchCreatureMakerCommand extends Command
         $windows_new_archive_path     = \sys_get_temp_dir() . '/' . \time() . '-' . $windows_new_archive_filename;
         $output->writeln('[>] Creating new Windows archive...');
         try {
-            UnifiedArchive::create(['' => $windows_temp_archive_dir], $windows_new_archive_path, BasicDriver::COMPRESSION_STRONG);
+            UnifiedArchive::create(['' => $windows_temp_archive_dir], $windows_new_archive_path, (int) $_ENV['APP_ARCHIVE_COMPRESSION_LEVEL_CREATURE_MAKER']);
             $windows_new_archive_filesize    = \filesize($windows_new_archive_path);
             $windows_new_archive_filesize_mb = \round($windows_new_archive_filesize / (1024 * 1024), 2);
             $output->writeln("[+] Archive created: <info>{$windows_new_archive_path}</info> ({$windows_new_archive_filesize_mb} MiB)");
@@ -224,7 +223,7 @@ class FetchCreatureMakerCommand extends Command
         // $linux_new_archive_path = \sys_get_temp_dir() . '/' . time() . '-' . $linux_new_archive_filename;
         // $output->writeln("[>] Creating new Linux archive...");
         // try {
-        //     UnifiedArchive::create(['' => $linux_temp_archive_dir], $linux_new_archive_path, BasicDriver::COMPRESSION_STRONG);
+        //     UnifiedArchive::create(['' => $linux_temp_archive_dir], $linux_new_archive_path, (int) $_ENV['APP_ARCHIVE_COMPRESSION_LEVEL_CREATURE_MAKER']);
         //     $linux_new_archive_filesize = \filesize($linux_new_archive_path);
         //     $linux_new_archive_filesize_mb = \round($linux_new_archive_filesize / (1024 * 1024), 2);
         //     $output->writeln("[+] Archive created: <info>{$linux_new_archive_path}</info> ({$linux_new_archive_filesize_mb} MiB)");
