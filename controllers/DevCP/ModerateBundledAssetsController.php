@@ -72,11 +72,9 @@ class ModerateBundledAssetsController
     }
 
     /**
-     * This function converts a directory into a `bootstrap-treeview.js` compatible array.
-     *
-     * @return void
+     * This function converts a directory path into a `bootstrap-treeview.js` compatible array.
      */
-    private function buildWidgetFileTree(string $dir)
+    private function buildWidgetFileTree(string $dir): array
     {
 
         $return = [];
