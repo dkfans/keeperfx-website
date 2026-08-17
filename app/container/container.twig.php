@@ -1,52 +1,46 @@
 <?php
 
 use App\Config\Config;
-
-use App\Twig\TwigGlobalProvider;
-use App\Twig\TwigExtensionLoader;
-
-use Psr\Container\ContainerInterface;
 use App\Kernel\Exception\ContainerException;
+use App\Twig\TwigExtensionLoader;
+use App\Twig\TwigGlobalProvider;
+use Psr\Container\ContainerInterface;
 
-/**
+/*
  * Twig container definitions
  */
 return [
+    App\Twig\Extension\Markdown\CustomMarkdownRuntimeLoader::class => DI\create(),
 
-    \App\Twig\Extension\Markdown\CustomMarkdownRuntimeLoader::class => DI\create(),
-
-    \Twig\Environment::class => function (ContainerInterface $container) {
+    Twig\Environment::class => static function (ContainerInterface $container) {
 
         // Make sure Twig is enabled in config
         if (Config::get('twig.is_enabled') === false) {
-            throw new ContainerException(
-                'The container tried to resolve Twig but it\'s disabled. (\\Twig\\Environment) ' .
-                    'Enable it in: \'' . APP_ROOT . '/config/twig.config.php\''
-            );
+            throw new ContainerException('The container tried to resolve Twig but it\'s disabled. (\\Twig\\Environment) Enable it in: \'' . APP_ROOT . '/config/twig.config.php\'');
         }
 
         // Create Twig environment
-        $loader = new \Twig\Loader\FilesystemLoader(Config::get('twig.views_dir'));
-        $twig   = new \Twig\Environment($loader, Config::get('twig.options'));
+        $loader = new Twig\Loader\FilesystemLoader(Config::get('twig.views_dir'));
+        $twig   = new Twig\Environment($loader, Config::get('twig.options'));
 
         // Add simple tests
         $twig->addTest(
-            new \Twig\TwigTest('string', function ($value) {
+            new Twig\TwigTest('string', static function ($value) {
                 return \is_string($value);
             })
         );
         $twig->addTest(
-            new \Twig\TwigTest('int', function ($value) {
+            new Twig\TwigTest('int', static function ($value) {
                 return \is_int($value);
             })
         );
         $twig->addTest(
-            new \Twig\TwigTest('float', function ($value) {
+            new Twig\TwigTest('float', static function ($value) {
                 return \is_float($value);
             })
         );
         $twig->addTest(
-            new \Twig\TwigTest('array', function ($value) {
+            new Twig\TwigTest('array', static function ($value) {
                 return \is_array($value);
             })
         );
@@ -62,15 +56,15 @@ return [
         }
 
         // Add markdown runtime loader
-        $twig->addRuntimeLoader($container->get(\App\Twig\Extension\Markdown\CustomMarkdownRuntimeLoader::class));
+        $twig->addRuntimeLoader($container->get(App\Twig\Extension\Markdown\CustomMarkdownRuntimeLoader::class));
 
         // Add debug bar collector
         // We do this here so the Twig session extension does not load the session before the request middleware loads it
         if ($_ENV['APP_ENV'] === 'dev') {
-            $debugbar = $container->get(\DebugBar\StandardDebugBar::class);
-            $profile = new \Twig\Profiler\Profile();
-            $twig->addExtension(new \Twig\Extension\ProfilerExtension($profile));
-            $debugbar->addCollector(new \DebugBar\Bridge\NamespacedTwigProfileCollector($profile, $twig));
+            $debugbar = $container->get(DebugBar\StandardDebugBar::class);
+            $profile  = new Twig\Profiler\Profile();
+            $twig->addExtension(new Twig\Extension\ProfilerExtension($profile));
+            $debugbar->addCollector(new DebugBar\Bridge\NamespacedTwigProfileCollector($profile, $twig));
         }
 
         return $twig;

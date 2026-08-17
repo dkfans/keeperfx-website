@@ -2,24 +2,21 @@
 
 use App\Config\Config;
 use Compwright\PhpSession\Session;
-
+use Psr\Container\ContainerInterface;
 use Slim\Psr7\Factory\ResponseFactory;
 
-use Psr\Container\ContainerInterface;
-
-/**
+/*
  * CSRF Container Definition
  * Uses `slim/csrf` library.
  */
 return [
-
-    \Slim\Csrf\Guard::class => function(ContainerInterface $container) {
+    Slim\Csrf\Guard::class => static function (ContainerInterface $container) {
 
         // Get session
         $session = $container->get(Session::class);
 
         // Make sure we have a CSRF storage array in the session
-        if(!isset($session['csrf'])) {
+        if (!isset($session['csrf'])) {
             $session['csrf'] = [];
         }
 
@@ -27,7 +24,7 @@ return [
         $csrf_storage = &$session['csrf'];
 
         // Create CSRF Guard
-        return new \Slim\Csrf\Guard(
+        return new Slim\Csrf\Guard(
             $container->get(ResponseFactory::class),
             Config::get('csrf.prefix'),
             $csrf_storage,

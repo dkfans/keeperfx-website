@@ -14,7 +14,6 @@ $finder = new Finder()
         __DIR__ . '/tasks',
         __DIR__ . '/tests',
     ])
-    ->exclude(['container'])
     ->name('*.php')
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
