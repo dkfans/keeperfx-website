@@ -1,0 +1,3 @@
+parameters:
+    bootstrapFiles:
+        - ./app/bootstrap/bootstrap.phpstan.php
