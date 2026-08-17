@@ -69,7 +69,6 @@ class CustomMarkdownConverter implements MarkdownInterface
                             </noscript>
                         </div>',
                         $id,
-                        $id
                     );
                 }
 
