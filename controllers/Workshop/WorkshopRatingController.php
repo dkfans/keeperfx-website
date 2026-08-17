@@ -25,7 +25,7 @@ class WorkshopRatingController
         CsrfGuard $csrf_guard,
         WorkshopCache $workshop_cache,
         WorkshopRatingTwigExtension $workshop_rating_extension,
-        $id,
+        int $id,
     ) {
         $post  = $request->getParsedBody();
         $score = (int) ($post['score'] ?? 0);
@@ -114,7 +114,7 @@ class WorkshopRatingController
         CsrfGuard $csrf_guard,
         WorkshopRatingTwigExtension $workshop_rating_extension,
         WorkshopCache $workshop_cache,
-        $id,
+        int $id,
     ) {
         $post  = $request->getParsedBody();
         $score = (int) ($post['score'] ?? 0);
@@ -196,7 +196,7 @@ class WorkshopRatingController
         CsrfGuard $csrf_guard,
         WorkshopRatingTwigExtension $workshop_rating_extension,
         WorkshopCache $workshop_cache,
-        $id,
+        int $id,
     ) {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
@@ -285,7 +285,7 @@ class WorkshopRatingController
         CsrfGuard $csrf_guard,
         WorkshopRatingTwigExtension $workshop_rating_extension,
         WorkshopCache $workshop_cache,
-        $id,
+        int $id,
     ) {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
