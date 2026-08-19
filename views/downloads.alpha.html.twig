@@ -56,7 +56,15 @@
                                 <span class="text-muted">-</span>
                             {% endif %}
                         </td>
-                        <td>{{ build.timestamp|date('Y-m-d, G:i') }}</td>
+                        <td style="text-wrap: nowrap">
+
+                            <span
+                                data-bs-toggle="popover"  data-bs-content="{{ build.timestamp|date('Y/m/d - H:i') }}" data-bs-placement="top"
+                                style="cursor: default;"
+                            >
+                                {{ build.timestamp|date('Y-m-d') }}
+                            </span>
+                        </td>
                         <td>{{ build.workflowTitle|github_interact }}</td>
                     </tr>
                 {% endfor %}

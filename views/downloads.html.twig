@@ -177,7 +177,9 @@
                                 <span class="text-muted">-</span>
                             {% endif %}
                         </td>
-                        <td>{{ release.timestamp|date('Y-m-d') }}</td>
+                        <td style="text-wrap: nowrap">
+                            {{ release.timestamp|date('Y-m-d') }}
+                        </td>
                         <td>
                             {% if release.linkedNewsPost is not null %}
                                 <a href="/news/{{ release.linkedNewsPost.id }}/{{ release.linkedNewsPost.createdTimestamp|date('Y-m-d') }}/{{ release.linkedNewsPost.titleSlug }}" data-instant>View</a>
@@ -279,7 +281,15 @@
                                 <span class="text-muted">-</span>
                             {% endif %}
                         </td>
-                        <td>{{ build.timestamp|date('Y-m-d, G:i') }}</td>
+                        <td style="text-wrap: nowrap">
+                            <time
+                                datetime="{{ build.timestamp|date('Y/m/d - H:i') }}"
+                                data-bs-toggle="popover"  data-bs-content="{{ build.timestamp|date('Y/m/d - H:i') }}" data-bs-placement="top"
+                                style="cursor: default; border-bottom: 1px solid #222; box-sizing: border-box;"
+                            >
+                                {{ build.timestamp|date('Y/m/d - H:i') }}
+                            </time>
+                        </td>
                         <td>{{ build.workflowTitle|github_interact }}</td>
                     </tr>
                 {% endfor %}
