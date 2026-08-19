@@ -32,7 +32,7 @@ class TaskScheduler
             // Log output
             // Use a backtrace to figure out the filename of the script that created the task and use it as the log name
             $backtrace    = \debug_backtrace();
-            $log_name     = (isset($backtrace[1]['file']) ? \basename($backtrace[1]['file'], '.php') : 'UnknownTasks') . '.log';
+            $log_name     = (isset($backtrace[0]['file']) ? \basename($backtrace[0]['file'], '.php') : 'UnknownTasks') . '.log';
             $log_filepath = \rtrim($_ENV['APP_LOG_STORAGE'] ?? '/app/log', '/') . '/' . $log_name;
             $crunz_task->appendOutputTo($log_filepath);
         }
