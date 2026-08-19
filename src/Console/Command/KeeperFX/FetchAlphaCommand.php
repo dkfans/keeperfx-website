@@ -388,6 +388,7 @@ class FetchAlphaCommand extends Command
                                 \array_shift($message_parts);
                                 $commit_comment = \implode('', $message_parts);
                                 $commit_comment = \preg_replace('/^    /m', '', $commit_comment);
+                                $commit_comment = \preg_replace('/^Co-authored-by\:.*($|\n)/m', '', $commit_comment);
                                 $output->writeln("[>] Commit comment: {$commit_comment}");
                             }
                         }

@@ -28,6 +28,7 @@ class GitHelper
             // Separate message and note
             $message_raw       = $match[4] ?? '';
             $message_raw       = \preg_replace('/^    /m', '', $message_raw);
+            $message_raw       = \preg_replace('/^Co-authored-by\:.*($|\n)/m', '', $message_raw);
             $message_raw_parts = \explode("\n\n", $message_raw);
             if (\count($message_raw_parts) > 1) {
                 $message = \array_shift($message_raw_parts);
