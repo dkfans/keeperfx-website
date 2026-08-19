@@ -102,7 +102,7 @@ class FixAlphaBuildCommitInfoCommand extends Command
                     continue;
                 }
 
-                $alpha->setName($commit['message']);
+                $alpha->setWorkflowTitle($commit['message']);
                 $alpha->setCommitSha($commit['hash']);
                 $alpha->setCommitComment($commit['note']);
 
