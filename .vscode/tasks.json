@@ -86,6 +86,7 @@
                 "kfx:fetch-stable",
                 "kfx:fetch-stable-game-files",
                 "kfx:fetch-wiki",
+                "kfx:fix-alpha-commit-info",
                 "kfx:handle-commits",
                 "kfx:handle-twitch-streams",
                 "kfx:pull-repo",
