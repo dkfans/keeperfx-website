@@ -65,7 +65,12 @@
                                 {{ build.timestamp|date('Y-m-d') }}
                             </span>
                         </td>
-                        <td>{{ build.workflowTitle|github_interact }}</td>
+                        <td>
+                            {{ build.workflowTitle|github_interact }}
+                            {% if build.commitComment %}
+                                <p class="text-muted" style="margin: 0; padding:0;">{{ build.commitComment|strip_markdown|nl2br }}</p>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
