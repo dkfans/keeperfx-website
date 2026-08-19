@@ -236,7 +236,7 @@ class ReleaseApiController
                 'new_patches' => $patches,
                 'alpha_patch' => [
                     'name'      => $last_patch->getName(),
-                    'version'   => $patch->getVersion(),
+                    'version'   => $last_patch->getVersion(),
                     'url'       => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($last_patch->getFilename()),
                     'timestamp' => $last_patch->getTimestamp()->format('c'),
                 ],
