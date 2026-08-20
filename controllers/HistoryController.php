@@ -171,6 +171,24 @@ class HistoryController
                     'date_format' => 'Y-m-d',
                     'description' => 'qqluqq has amazed us yet again with the addition of controller support for KeeperFX.',
                 ],
+                [
+                    'title'       => 'Find other people using the Multiplayer Masterserver',
+                    'date'        => new \DateTime('2026-03-28'),
+                    'date_format' => 'Y-m-d',
+                    'description' => 'rainlizard has added masterserver support for multiplayer, allowing people to easily find each other using nothing more than the in-game lobby screen.',
+                ],
+                [
+                    'title'       => '4-player Multiplayer!',
+                    'date'        => new \DateTime('2026-05-17'),
+                    'date_format' => 'Y-m-d',
+                    'description' => 'It is now possible to play multiplayer with 4 people, thanks to even more amazing work by rainlizard',
+                ],
+                [
+                    'title'       => 'Migration to SDL3',
+                    'date'        => new \DateTime('2026-08-05'),
+                    'date_format' => 'Y-m-d',
+                    'description' => 'Cerwym migrated KeeperFX from SDL2 to SDL3. This is mostly a technical change, but it also fixes some sound issues and will help the project in the future.',
+                ],
             ]])
         );
 
