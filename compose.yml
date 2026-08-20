@@ -74,7 +74,7 @@ services:
             - kfx_network
         healthcheck:
             test: ["CMD-SHELL", "curl -s http://localhost/healthz | grep -q 'OK' || exit 1"]
-            interval: 5s
+            interval: 10s
             timeout: 3s
             retries: 3
 
