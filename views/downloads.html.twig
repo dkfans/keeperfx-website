@@ -273,7 +273,7 @@
                                 {%- for endpoint_id, endpoint in globals.cdn.endpoints -%}
                                     {%- if endpoint_id != globals.cdn.id -%}
                                         {%- if cdn_loop_count > 1 %}, {% endif -%}
-                                        <a href="{{ endpoint.url }}/download/alpha/{{ build.filename|url_encode }}"  data-alpha-patch-download="true" download>#{{ cdn_loop_count }}</a>
+                                        <a href="{{ endpoint.url }}/download/alpha/{{ build.filename|url_encode }}" data-bs-toggle="popover" data-bs-content="{{ endpoint.name }}" data-bs-placement="top" data-alpha-patch-download="true" download>#{{ cdn_loop_count }}</a>
                                         {%- set cdn_loop_count = cdn_loop_count + 1 -%}
                                     {%- endif -%}
                                 {%- endfor -%}
