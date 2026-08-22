@@ -221,14 +221,19 @@ $(function(){
     // Scroll up button visibility
     $(window).scroll(function() {
         if ($(this).scrollTop() > 100) {
-            $('#scroll-up-button').fadeIn();
+            if ($('#scroll-up-button').is(':visible') == false){
+                $('#scroll-up-button').fadeIn();
+            }
         } else {
-            $('#scroll-up-button').fadeOut();
+            if ($('#scroll-up-button').is(':visible')) {
+                $('#scroll-up-button').fadeOut();
+            }
         }
     });
 
     // Scroll up button handler
     $('#scroll-up-button').click(function() {
+        $('#scroll-up-button').fadeOut();
         $('html, body').animate({ scrollTop: 0 }, 250);
     });
 
