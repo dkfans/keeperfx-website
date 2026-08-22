@@ -9,13 +9,29 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  * Doctrine container definitions
  */
 return [
+    Doctrine\Common\EventManager::class => DI\create(),
+
     Doctrine\DBAL\Configuration::class => DI\create(),
 
-    Doctrine\DBAL\Connection::class => static function (Doctrine\DBAL\Configuration $dbal_config) {
-        return Doctrine\DBAL\DriverManager::getConnection(
+    Doctrine\DBAL\Connection::class => static function (Doctrine\DBAL\Configuration $dbal_config, Doctrine\Common\EventManager $event_manager) {
+
+        // Handle database read only mode
+        if ($_ENV['APP_DB_READ_ONLY_MODE'] ?? false) {
+            $event_manager->addEventListener(
+                [Doctrine\ORM\Events::preFlush],
+                new App\Doctrine\ReadOnlyListener()
+            );
+        }
+
+        // Create a connection
+        $connection = Doctrine\DBAL\DriverManager::getConnection(
             Config::get('doctrine.connection'),
-            $dbal_config
+            $dbal_config,
+            $event_manager,
         );
+
+        // Return connection to container
+        return $connection;
     },
 
     Doctrine\ORM\Configuration::class => static function (CacheItemPoolInterface $cache) {
