@@ -218,5 +218,19 @@ $(function(){
         });
     });
 
+    // Scroll up button visibility
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 100) {
+            $('#scroll-up-button').fadeIn();
+        } else {
+            $('#scroll-up-button').fadeOut();
+        }
+    });
+
+    // Scroll up button handler
+    $('#scroll-up-button').click(function() {
+        $('html, body').animate({ scrollTop: 0 }, 250);
+    });
+
 });
 
