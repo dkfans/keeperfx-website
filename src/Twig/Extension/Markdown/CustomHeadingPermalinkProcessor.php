@@ -67,7 +67,7 @@ class CustomHeadingPermalinkProcessor
 
     private function addPermalink(Heading $heading, string $slug): void
     {
-        $permalink = new HeadingPermalink($slug, '🔗', ['class' => 'header-link']);
+        $permalink = new HeadingPermalink($slug);
         $heading->appendChild($permalink);
     }
 }
