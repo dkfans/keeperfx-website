@@ -74,9 +74,14 @@ class FetchDiscordInfoCommand extends Command
             }
         }
 
+        // Show in output
+        $output->writeln('[+] Members: ' . $json['approximate_member_count']);
+        $output->writeln('[+] Online: ' . $json['approximate_presence_count']);
+
         // Save info to cache
         $this->cache->set('discord_info', $json);
 
+        // Done!
         $output->writeln('[+] Done!');
 
         return Command::SUCCESS;
