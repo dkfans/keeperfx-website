@@ -1,3 +1,13 @@
 parameters:
-    bootstrapFiles:
-        - ./app/bootstrap/bootstrap.phpstan.php
+	level: 4
+	paths:
+		- ./app/
+		- ./config/
+		- ./controllers/
+		- ./migrations/
+		- ./public/
+		- ./src/
+		- ./tasks/
+		- ./tests/
+	bootstrapFiles:
+		- ./app/bootstrap/bootstrap.phpstan.php
