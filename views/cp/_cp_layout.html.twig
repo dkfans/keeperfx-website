@@ -98,6 +98,10 @@
                             <ion-icon name="folder-outline"></ion-icon>
                             Uploads
                         </a>
+                        <a class="nav-link {% if path_equals('/admin/tasks') %}active{% endif %}" href="/admin/tasks">
+                            <ion-icon name="alarm-outline"></ion-icon>
+                            Background Tasks
+                        </a>
                         <a class="nav-link {% if path_equals('/admin/server-info') %}active{% endif %}" href="/admin/server-info">
                             <ion-icon name="server-outline"></ion-icon>
                             Server Info

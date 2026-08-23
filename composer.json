@@ -40,6 +40,7 @@
         "laminas/laminas-feed": "^2.26",
         "league/commonmark": "^2.3",
         "league/oauth2-client": "^2.6",
+        "lorisleiva/cron-translator": "^0.5.2",
         "matomo/device-detector": "^6.5",
         "maxmind-db/reader": "^1.13",
         "monolog/monolog": "^3.2",

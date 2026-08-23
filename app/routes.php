@@ -173,6 +173,12 @@ $app->group('', static function (RouteCollectorProxy $group) {
                 $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminBanController::class, 'banDelete']);
             });
 
+            // Admin: BACKGROUND TASKS
+            $group->group('/tasks', static function (RouteCollectorProxy $group) {
+                $group->get('', [AdminCP\AdminBackgroundTaskController::class, 'index']);
+                $group->get('/run/{run_id}', [AdminCP\AdminBackgroundTaskController::class, 'run']);
+            });
+
             // Server info
             $group->get('/server-info', [AdminCP\AdminServerInfoController::class, 'serverInfoIndex']);
         })->add(AuthAdminCPMiddleware::class);

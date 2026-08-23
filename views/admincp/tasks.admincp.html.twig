@@ -1,0 +1,136 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Uploads - AdminCP' %}
+
+{% block page %}
+
+{% include 'core/_breadcrumb.html.twig' with {
+    items: [
+        { label: 'Control Panel', url: '/account' },
+        { label: 'Background Tasks', url: '/admin/tasks' },
+    ],
+    add_back_button: false
+} %}
+
+<div class="alert alert-info">
+Previous Runs are not a good representation of actual runs and will only show what the previous time it would have ran.
+</div>
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Background Tasks</h2>
+    </div>
+    <div class="content-body">
+
+        {% for schedule in schedules %}
+
+            <div class="schedule-body">
+
+                <div class="d-flex justify-content-between mb-3">
+                    <h5 style="display: inline;">{{ schedule.name }}</h5>
+                    <span class="monospace text-muted" style="font-size: 14px;">{{ schedule.filename }}</span>
+                </div>
+
+
+                {% for task in schedule.tasks %}
+                    <div class="task-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="task-title">{{ task.summary }}</h6>
+
+                            {# Run button #}
+                            <button class="btn btn-medieval" data-task-run-id="{{ task.run_id }}">
+                                <ion-icon name="caret-forward-outline"></ion-icon>
+                                Run
+                            </button>
+
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div class="w-50">
+                                <table>
+                                    <tr>
+                                        <td>Runs:</td>
+                                        <td><span class="text-secondary">{{ task.expression }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cron:</td>
+                                        <td><code class="text-secondary">{{ task.expression_raw }}</code></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="w-50">
+                                <table>
+                                    <tr>
+                                        <td>Next Run:</td>
+                                        <td><span class="text-secondary">{{ task.next_run|date('Y/m/d - H:i') }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Previous Run:</td>
+                                        <td><span class="text-secondary">{{ task.previous_run|date('Y/m/d - H:i') }}</span></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <pre style="display: none; margin-top: 10px;" data-task-output="{{ task.run_id }}"><code></code></pre>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block body_javascript %}
+
+<script>
+    // Wait for document load
+    $(function(e){
+
+        // Handle run buttons
+        $('button[data-task-run-id]').on('click', function(e){
+
+            // Show the button loader
+            $button = $(this);
+            $button.buttonLoader(true);
+
+            // Get the run ID
+            let runId = $(this).data('task-run-id');
+
+            // Find the corresponding <pre> element for output
+            let $outputPre = $('pre[data-task-output="' + runId + '"]');
+            let $outputElement = $($outputPre).find('code');
+
+            // Do an AJAX request to the run endpoint
+            $.ajax({
+                url: "/admin/tasks/run/" + runId,
+                method: 'GET', // or 'POST' if your endpoint expects it
+                dataType: 'json', // Expect JSON response
+                success: function(data) {
+                    if (data.success) {
+                        $outputElement.text(data.result);
+                    } else {
+                        $outputElement.text("Error: " + data.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $outputElement.text("AJAX Error: " + error);
+                },
+                complete: function() {
+
+                    // Show the output
+                    $outputPre.show();
+
+                    // Hide button loader again
+                    $button.buttonLoader(false);
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}
