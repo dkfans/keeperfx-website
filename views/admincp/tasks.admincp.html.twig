@@ -37,11 +37,19 @@ Previous Runs are not a good representation of actual runs and will only show wh
                         <div class="d-flex justify-content-between">
                             <h6 class="task-title">{{ task.summary }}</h6>
 
-                            {# Run button #}
-                            <button class="btn btn-medieval" data-task-run-id="{{ task.run_id }}">
-                                <ion-icon name="caret-forward-outline"></ion-icon>
-                                Run
-                            </button>
+                            <div>
+
+                                {# Log button #}
+                                <a href="/admin/tasks/log/{{ task.task_id }}" data-task-log-id="{{ task.task_id }}" target="_blank" class="btn btn-medieval btn-medieval-gray" style="{% if task.output_exists == false %}display: none;{% endif %}">
+                                    <ion-icon name="document-outline" style="margin-right: 1px;"></ion-icon>
+                                </a>
+
+                                {# Run button #}
+                                <button class="btn btn-medieval" data-task-run-id="{{ task.task_id }}">
+                                    <ion-icon name="caret-forward-outline" style="margin-right: 1px;"></ion-icon>
+                                </button>
+
+                            </div>
 
                         </div>
                         <div class="d-flex justify-content-between">
@@ -71,7 +79,7 @@ Previous Runs are not a good representation of actual runs and will only show wh
                             </div>
                         </div>
 
-                        <pre style="display: none; margin-top: 10px;" data-task-output="{{ task.run_id }}"><code></code></pre>
+                        <pre style="display: none; margin-top: 10px;" data-task-output="{{ task.task_id }}"><code></code></pre>
                     </div>
 
                 {% endfor %}
@@ -94,9 +102,6 @@ Previous Runs are not a good representation of actual runs and will only show wh
         // Handle run buttons
         $('button[data-task-run-id]').on('click', function(e){
 
-            // Show the button loader
-            $button = $(this);
-            $button.buttonLoader(true);
 
             // Get the run ID
             let runId = $(this).data('task-run-id');
@@ -105,14 +110,24 @@ Previous Runs are not a good representation of actual runs and will only show wh
             let $outputPre = $('pre[data-task-output="' + runId + '"]');
             let $outputElement = $($outputPre).find('code');
 
+            // Show that we are running
+            $outputPre.show();
+            $outputElement.text('Executing...');
+
+            // Show the button loader
+            $button = $(this);
+            $button.buttonLoader(true);
+
             // Do an AJAX request to the run endpoint
             $.ajax({
                 url: "/admin/tasks/run/" + runId,
                 method: 'GET', // or 'POST' if your endpoint expects it
                 dataType: 'json', // Expect JSON response
+                timeout: 1000 * 60 * 10, // 10 minute timeout
                 success: function(data) {
                     if (data.success) {
                         $outputElement.text(data.result);
+                        $('a[data-task-log-id="' + runId + '"]').show();
                     } else {
                         $outputElement.text("Error: " + data.error);
                     }
@@ -121,10 +136,6 @@ Previous Runs are not a good representation of actual runs and will only show wh
                     $outputElement.text("AJAX Error: " + error);
                 },
                 complete: function() {
-
-                    // Show the output
-                    $outputPre.show();
-
                     // Hide button loader again
                     $button.buttonLoader(false);
                 }

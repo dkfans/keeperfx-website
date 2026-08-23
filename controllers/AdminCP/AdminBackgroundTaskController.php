@@ -2,12 +2,14 @@
 
 namespace App\Controller\AdminCP;
 
+use App\Helper\TailHelper;
 use Cron\CronExpression;
 use Crunz\Event;
 use Crunz\Schedule;
 use Lorisleiva\CronTranslator\CronTranslator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpNotFoundException;
 use Symfony\Component\Lock\Lock;
 use Twig\Environment as TwigEnvironment;
 
@@ -50,7 +52,9 @@ class AdminBackgroundTaskController
                         'expression_raw' => $cron_expression,
                         'next_run'       => $cron->getNextRunDate(),
                         'previous_run'   => $cron->getPreviousRunDate(),
-                        'run_id'         => "{$basename}:{$index}",
+                        'task_id'        => "{$basename}:{$index}",
+                        'output'         => $event->output,
+                        'output_exists'  => ($event->output !== '/dev/null') ? \file_exists($event->output) : false,
                         'event'          => $event,
                     ];
                 }
@@ -86,23 +90,11 @@ class AdminBackgroundTaskController
     public function run(
         Request $request,
         Response $response,
-        string $run_id,
+        string $task_id,
     ): Response {
 
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
-
-        // Make sure we're in the dev environment
-        if ($_ENV['APP_ENV'] !== 'dev') {
-            $response->getBody()->write(
-                \json_encode([
-                    'success' => false,
-                    'error'   => 'MUST_BE_DEV_ENVIRONMENT',
-                ])
-            );
-
-            return $response;
-        }
 
         // Find schedules
         $schedules = $this->getSchedulesAndTasks();
@@ -129,7 +121,7 @@ class AdminBackgroundTaskController
             foreach ($schedule['tasks'] as $task) {
 
                 // Make sure the given run id matches that of this task
-                if ($run_id !== $task['run_id']) {
+                if ($task_id !== $task['task_id']) {
                     continue;
                 }
 
@@ -170,10 +162,16 @@ class AdminBackgroundTaskController
                     return $response;
                 }
 
+                // Append to log file
+                if ($task['output'] !== '/dev/null') {
+                    \file_put_contents($task['output'], "\n\n" . $result, \FILE_APPEND | \LOCK_EX);
+                }
+
+                // Write response
                 $response->getBody()->write(
                     \json_encode([
                         'success' => true,
-                        'run_id'  => $run_id,
+                        'task_id' => $task_id,
                         'command' => $command,
                         'result'  => $result,
                     ])
@@ -190,6 +188,58 @@ class AdminBackgroundTaskController
                 'error'   => 'TASK_NOT_FOUND',
             ])
         );
+
+        return $response;
+    }
+
+    public function log(
+        Request $request,
+        Response $response,
+        string $task_id,
+    ): Response {
+
+        $response = $response->withHeader('Content-Type', 'text/plain');
+
+        // Find schedules
+        $schedules = $this->getSchedulesAndTasks();
+        if (\count($schedules) === 0) {
+            throw new HttpNotFoundException($request);
+        }
+
+        // Loop trough all schedules
+        foreach ($schedules as $schedule) {
+
+            // Make sure this schedule has tasks
+            if (\count($schedule['tasks']) < 1) {
+                continue;
+            }
+
+            // Loop trough all tasks
+            foreach ($schedule['tasks'] as $task) {
+
+                // Make sure the given run id matches that of this task
+                if ($task_id !== $task['task_id']) {
+                    continue;
+                }
+
+                if ($task['output'] == '/dev/null') {
+                    continue;
+                }
+
+                $response->getBody()->write(
+                    TailHelper::tail(
+                        filepath: $task['output'],
+                        lines: 200,
+                        adaptive: true,
+                        lock: true,
+                    )
+                );
+
+                return $response;
+            }
+        }
+
+        $response->getBody()->write('LOG NOT FOUND OR EMPTY');
 
         return $response;
     }

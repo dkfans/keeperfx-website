@@ -176,7 +176,8 @@ $app->group('', static function (RouteCollectorProxy $group) {
             // Admin: BACKGROUND TASKS
             $group->group('/tasks', static function (RouteCollectorProxy $group) {
                 $group->get('', [AdminCP\AdminBackgroundTaskController::class, 'index']);
-                $group->get('/run/{run_id}', [AdminCP\AdminBackgroundTaskController::class, 'run']);
+                $group->get('/run/{task_id}', [AdminCP\AdminBackgroundTaskController::class, 'run']);
+                $group->get('/log/{task_id}', [AdminCP\AdminBackgroundTaskController::class, 'log']);
             });
 
             // Server info
