@@ -371,7 +371,10 @@
                     {# Description #}
                     {% if item.description is not empty %}
                         <div class="workshop-info-box" style="padding: 25px; margin-top: 30px;">
-                            <h5 style="border-bottom: 0;">Description</h5>
+                            <h5 style="border-bottom: 0;" id="description">
+                                Description
+                                <a href="#description" class="header-link" aria-hidden="true" tabindex="-1" title="Permalink">🔗</a>
+                            </h5>
                             <div class="workshop-item-text-content force-wordwrap markdown-body" style="margin-top: 25px;">
                                 {{ item.description|markdown_to_html }}
                             </div>
@@ -381,7 +384,10 @@
                     {# Install Instructions #}
                     {% if item.installInstructions is not empty %}
                         <div class="workshop-info-box" style="padding: 25px; margin-top: 30px;">
-                            <h5 style="border-bottom: 0;">Installation Instructions</h5>
+                            <h5 style="border-bottom: 0;" id="installation-instructions">
+                                Installation Instructions
+                                <a href="#installation-instructions" class="header-link" aria-hidden="true" tabindex="-1" title="Permalink">🔗</a>
+                            </h5>
                             <div class="workshop-item-text-content force-wordwrap markdown-body" style="margin-top: 25px;">
                                 {{ item.installInstructions|markdown_to_html }}
                             </div>
@@ -391,7 +397,7 @@
                     {# Moderator note #}
                     {% if item.moderatorNotePublic is not empty %}
                         <div class="workshop-info-box" style="padding: 25px; margin-top: 30px;">
-                            <h5 style="border-bottom: 0;">
+                            <h5 style="border-bottom: 0;" id="moderator-note">
                                 {# We only show an icon here if we are logged in as a moderator (or higher) because it doesn't really fit the rest of the page design #}
                                 {% if account and account.role >= roles.moderator %}
                                     <ion-icon name="eye-outline" style="position: relative; top: 2px;" class="text-special"></ion-icon>
@@ -400,6 +406,7 @@
                                 <span class="text-muted px-1">
                                    (KeeperFX Team)
                                 </span>
+                                <a href="#moderator-note" class="header-link" aria-hidden="true" tabindex="-1" title="Permalink">🔗</a>
                             </h5>
                             <div class="workshop-item-text-content force-wordwrap markdown-body" style="margin-top: 25px;">
                                 {{ item.moderatorNotePublic|markdown_to_html }}
@@ -410,12 +417,13 @@
                     {# Moderator note (Hidden) #}
                     {% if account and account.role >= roles.moderator and item.moderatorNoteHidden is not empty %}
                         <div class="workshop-info-box" style="padding: 25px; margin-top: 30px; border-style: dashed; border-color: #555;">
-                            <h5 style="border-bottom: 0;">
+                            <h5 style="border-bottom: 0;" id="moderator-note-hidden">
                                 <ion-icon name="eye-off-outline" style="position: relative; top: 2px;" class="text-special"></ion-icon>
                                 Moderator Note
                                 <span class="text-muted px-1">
                                     (Hidden)
                                 </span>
+                                <a href="#moderator-note-hidden" class="header-link" aria-hidden="true" tabindex="-1" title="Permalink">🔗</a>
                             </h5>
                             <div class="workshop-item-text-content force-wordwrap markdown-body" style="margin-top: 25px;">
                                 {{ item.moderatorNoteHidden|markdown_to_html }}
