@@ -164,7 +164,10 @@ class AdminBackgroundTaskController
 
                 // Append to log file
                 if ($task['output'] !== '/dev/null') {
-                    \file_put_contents($task['output'], "\n\n" . $result, \FILE_APPEND | \LOCK_EX);
+                    $log_contents = \file_exists($task['output']) ? "\n\n" : '';
+                    $log_contents .= '> ' . $command . "\n";
+                    $log_contents .= $result;
+                    \file_put_contents($task['output'], $log_contents, \FILE_APPEND | \LOCK_EX);
                 }
 
                 // Write response
