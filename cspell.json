@@ -170,6 +170,7 @@
         "phpdotenv",
         "phpmailer",
         "PHPSESSID",
+        "phpstan",
         "phpstorm",
         "phpunit",
         "predis",
