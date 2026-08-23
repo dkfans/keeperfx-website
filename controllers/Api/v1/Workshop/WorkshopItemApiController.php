@@ -17,7 +17,7 @@ class WorkshopItemApiController
         Response $response,
         EntityManager $em,
         // TODO: CacheInterface $cache,
-        $id,
+        int $id,
     ) {
         /** @var WorkshopItem $item */
         $item = $em->getRepository(WorkshopItem::class)->find($id);
@@ -33,7 +33,7 @@ class WorkshopItemApiController
             $files[] = [
                 'id'        => $file->getId(),
                 'filename'  => $file->getFilename(),
-                'url'       => $_ENV['APP_ROOT_URL'] . '/workshop/download/' . $item->getid() . '/' . $file->getId() . '/' . \urlencode($file->getFilename()),
+                'url'       => $_ENV['APP_ROOT_URL'] . '/workshop/download/' . $item->getId() . '/' . $file->getId() . '/' . \urlencode($file->getFilename()),
                 'timestamp' => $file->getCreatedTimestamp()->format('Y-m-d'),
                 'size'      => $file->getSize(),
             ];
@@ -56,9 +56,9 @@ class WorkshopItemApiController
         Request $request,
         Response $response,
         EntityManager $em,
-        $id,
+        int $id,
     ) {
-        /** @var WorkshopComment $item */
+        /** @var WorkshopComment $comment */
         $comment = $em->getRepository(WorkshopComment::class)->find($id);
         if (!$comment) {
             throw new HttpNotFoundException($request);
@@ -173,12 +173,10 @@ class WorkshopItemApiController
         Request $request,
         Response $response,
         EntityManager $em,
-        $map_number,
+        int $map_number,
     ) {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
-
-        $map_number = (int) $map_number;
 
         // Check if map number is valid
         if ($map_number < 202 || $map_number > 32767) {

@@ -119,7 +119,7 @@ class AdminBanController
             foreach ($ip_logs as $ip_log) {
                 // Check if this IP log matches the new pattern
                 $matches_admin = false;
-                if ($type == BanType::IP && $ip_log->getIp() !== null) {
+                if ($type == BanType::IP && !empty($ip_log->getIp())) {
                     if (StringHelper::match($ip_log->getIp(), $pattern)) {
                         $matches_admin = true;
                     }
@@ -149,7 +149,7 @@ class AdminBanController
             $ip_logs = $em->getRepository(UserIpLog::class)->findAll();
             /** @var UserIpLog $ip_log */
             foreach ($ip_logs as $ip_log) {
-                if ($type == BanType::IP && $ip_log->getIp() !== null) {
+                if ($type == BanType::IP && !empty($ip_log->getIp())) {
                     if (StringHelper::match($ip_log->getIp(), $pattern)) {
                         $matches[] = $ip_log;
                     }

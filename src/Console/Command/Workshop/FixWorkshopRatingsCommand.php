@@ -36,7 +36,7 @@ class FixWorkshopRatingsCommand extends Command
         $em = $this->container->get(EntityManager::class);
 
         // Get workshop items
-        /** @var array[WorkshopItem] $items */
+        /** @var array $items */
         $items = $em->getRepository(WorkshopItem::class)->findAll();
         if (!$items || !\is_array($items) || \count($items) <= 0) {
             $output->writeln('[?] No workshop items found');
@@ -48,6 +48,7 @@ class FixWorkshopRatingsCommand extends Command
         $difficulty_ratings_updated = 0;
 
         // Loop trough all workshop items
+        /** @var WorkshopItem $item */
         foreach ($items as $item) {
 
             // Get rating data

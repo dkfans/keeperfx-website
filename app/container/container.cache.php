@@ -15,7 +15,6 @@ return [
         $cache = null;
 
         switch (Config::get('cache.adapter')) {
-            default:
             case 'filesystem':
                 $cache = new FilesystemAdapter(
                     Config::get('cache.namespace') ?? Config::get('app.app_name'),

@@ -5,6 +5,7 @@ namespace App\Console\Command\Cache;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -41,8 +42,8 @@ class CacheWarmCommand extends Command
             $output->writeln('[>] User executing the command: ' . $current_user);
             $output->writeln('[>] Script owner: ' . $owning_user);
             $output->writeln('[!] Running this command might result in permission errors.');
-            /** @var HelperInterface */
-            $helper   = $this->getHelper('question');
+
+            $helper   = new QuestionHelper();
             $question = new ConfirmationQuestion('[?] Continue? [y/n] ', false);
             if (!$helper->ask($input, $output, $question)) {
                 return Command::SUCCESS;

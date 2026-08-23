@@ -51,14 +51,14 @@ class FetchDiscordInfoCommand extends Command
 
         // Make sure the request returned a body
         $content = $res->getBody();
-        if (!$content) {
-            $output->writeln('[-] Failed to grab content');
+        if ($content->getSize() === 0) {
+            $output->writeln('[-] Failed to grab content (empty body)');
 
             return Command::FAILURE;
         }
 
         // Decode JSON
-        $json = \json_decode($res->getBody(), true);
+        $json = \json_decode($content, true);
         if (!$json) {
             $output->writeln('[-] Failed to decode JSON response');
 

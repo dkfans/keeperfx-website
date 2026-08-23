@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\SimpleCache\CacheInterface;
 use Slim\Exception\HttpNotFoundException;
 
 class ReleaseApiController
@@ -178,7 +177,7 @@ class ReleaseApiController
         }
 
         // Get the alpha patch the user has
-        /** @var GithubAlphaBuild $release */
+        /** @var GithubAlphaBuild $alpha_patch */
         $alpha_patch = $em->getRepository(GithubAlphaBuild::class)->findOneBy(['version' => $version]);
         if (!$alpha_patch) {
             $response->getBody()->write(

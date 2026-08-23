@@ -91,7 +91,7 @@ class Mailer
             $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         } else {
             // $php_mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $php_mailer->SMTPSecure = false;
+            $php_mailer->SMTPSecure = '';
         }
 
         if ((bool) $_ENV['APP_SMTP_VERIFY_CERT'] === false) {

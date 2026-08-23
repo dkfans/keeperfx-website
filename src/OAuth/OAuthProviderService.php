@@ -21,7 +21,7 @@ class OAuthProviderService
     public function getProvider(OAuthProviderType $provider)
     {
         if (isset($this->providers[$provider->value])) {
-            return $this->providers[$provider];
+            return $this->providers[$provider->value];
         }
 
         if (!isset(self::CLASSES[$provider->value])) {

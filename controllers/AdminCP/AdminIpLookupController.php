@@ -88,7 +88,7 @@ class AdminIpLookupController
                 // Get info from API
                 $res     = $client->request('GET', $url);
                 $content = $res->getBody();
-                if (!$content) {
+                if ($content->getSize() === 0) {
                     $flash->error('Failed to get API response');
                     $success = false;
                 }

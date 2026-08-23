@@ -28,7 +28,7 @@ class WorkshopHelper
 
         // Make sure this workshop item has images
         $images = $item->getImages();
-        if (!$images || !isset($images[0])) {
+        if (\count($images) < 1) {
             return false;
         }
 
@@ -95,7 +95,7 @@ class WorkshopHelper
         }
 
         // Handle item ratings
-        if ($ratings && \count($ratings) > 0) {
+        if (\count($ratings) > 0) {
 
             // Get all scores
             $rating_scores = [];

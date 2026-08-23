@@ -21,13 +21,13 @@ class WorkshopReportController
         Account $account,
         EntityManager $em,
         NotificationCenter $nc,
-        $comment_id,
-    ) {
+        int $comment_id,
+    ): Response {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
 
         // Get the comment
-        /** @var WorkshopComment $item */
+        /** @var WorkshopComment $comment */
         $comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
         if (!$comment) {
             throw new HttpNotFoundException($request);
@@ -82,10 +82,10 @@ class WorkshopReportController
         Response $response,
         EntityManager $em,
         NotificationCenter $nc,
-        $report_id,
-    ) {
+        int $report_id,
+    ): Response {
         // Get the report
-        /** @var WorkshopCommentReport $item */
+        /** @var WorkshopCommentReport $report */
         $report = $em->getRepository(WorkshopCommentReport::class)->find($report_id);
         if (!$report) {
             throw new HttpNotFoundException($request);

@@ -94,7 +94,7 @@ class FetchForumActivityCommand extends Command
         }
 
         $content = $res->getBody();
-        if (!$content) {
+        if ($content->getSize() === 0) {
             $output->writeln('[-] Failed to grab content');
             $this->cache->delete('keeperfx_forum_threads');
 

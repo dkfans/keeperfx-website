@@ -12,10 +12,12 @@ use App\Entity\UserOAuthToken;
 use App\Entity\UserPasswordResetToken;
 use App\Entity\WorkshopComment;
 use App\Entity\WorkshopCommentReport;
+use App\Entity\WorkshopDifficultyRating;
 use App\Entity\WorkshopItem;
 use App\Entity\WorkshopRating;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
@@ -299,12 +301,12 @@ class MergeUsersCommand extends Command
         }
 
         // Move workshop difficulty ratings
-        /** @var WorkshopDifficultyRating $rating */
+        /** @var WorkshopDifficultyRating $diff_rating */
         foreach ($secondary_user->getWorkshopDifficultyRatings() as $diff_rating) {
 
             $removed = false;
 
-            /** @var WorkshopDifficultyRating $main_rating */
+            /** @var WorkshopDifficultyRating $main_diff_rating */
             foreach ($main_user->getWorkshopDifficultyRatings() as $main_diff_rating) {
                 if ($main_diff_rating->getItem() == $diff_rating->getItem()) {
 
@@ -335,8 +337,7 @@ class MergeUsersCommand extends Command
         // Ask whether or not this is correct
         $output->writeln('');
         $question = new ConfirmationQuestion("[?] Do you want to merge <info>{$secondary_user->getUsername()}</info> into <info>{$main_user->getUsername()}</info>? [y/n] ", false);
-        /** @var HelperInterface */
-        $helper = $this->getHelper('question');
+        $helper   = new QuestionHelper();
         if (!$helper->ask($input, $output, $question)) {
             return Command::SUCCESS;
         }

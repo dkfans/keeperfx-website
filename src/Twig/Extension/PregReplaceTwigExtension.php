@@ -24,8 +24,6 @@ class PregReplaceTwigExtension extends \Twig\Extension\AbstractExtension
 
     /**
      * Standard PHP preg_replace() function.
-     *
-     * @param array|string $subject
      */
     public function preg_replace(string $subject, array|string $pattern, array|string $replacement, int $limit = -1): string
     {

@@ -36,7 +36,7 @@ class FixCrashReportExceptionOriginsCommand extends Command
         $em = $this->container->get(EntityManager::class);
 
         // Get crash reports
-        /** @var array[CrashReport] $crash_reports */
+        /** @var array $crash_reports */
         $crash_reports = $em->getRepository(CrashReport::class)->findAll();
         if (!$crash_reports || !\is_array($crash_reports) || \count($crash_reports) <= 0) {
             $output->writeln('[?] No crash reports found');
@@ -45,7 +45,7 @@ class FixCrashReportExceptionOriginsCommand extends Command
         }
 
         // Loop trough all workshop items
-        /** @var CrashReport $report */
+        /** @var CrashReport $crash_report */
         foreach ($crash_reports as $crash_report) {
 
             // Reset exception source function

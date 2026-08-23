@@ -17,10 +17,10 @@ class NewsController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-        $id,
-        $date_str = null,
-        $slug = null,
-    ) {
+        int $id,
+        ?string $date_str = null,
+        ?string $slug = null,
+    ): Response {
 
         // Get news article
         $article = $em->getRepository(NewsArticle::class)->find($id);
@@ -53,7 +53,7 @@ class NewsController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
 
         // Get news article
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC']);
@@ -72,16 +72,12 @@ class NewsController
      * News image output endpoint.
      *
      * This is a fallback and is probably not in use.
-     *
-     * @param string $filename
-     *
-     * @return void
      */
     public function outputNewsImage(
         Request $request,
         Response $response,
-        $filename,
-    ) {
+        string $filename,
+    ): Response {
         // Get image filepath
         $filepath = Config::get('storage.path.news-img') . '/' . $filename;
 

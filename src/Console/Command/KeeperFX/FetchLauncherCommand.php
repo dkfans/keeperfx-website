@@ -59,10 +59,16 @@ class FetchLauncherCommand extends Command
         );
 
         // Fetch releases
-        $res         = $client->request('GET', self::GITHUB_RELEASE_URL);
-        $gh_releases = JsonHelper::decode($res->getBody());
+        $res  = $client->request('GET', self::GITHUB_RELEASE_URL);
+        $body = $res->getBody();
+        if ($body->getSize() === 0) {
+            $output->writeln('[-] Failed to fetch releases (empty body)');
+
+            return Command::FAILURE;
+        }
+        $gh_releases = JsonHelper::decode($body);
         if (empty($gh_releases)) {
-            $output->writeln('[-] Failed to fetch releases');
+            $output->writeln('[-] Failed to fetch releases (invalid json)');
 
             return Command::FAILURE;
         }

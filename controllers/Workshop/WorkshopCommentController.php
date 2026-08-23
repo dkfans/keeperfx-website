@@ -28,8 +28,8 @@ class WorkshopCommentController
         WorkshopCache $workshop_cache,
         EntityManager $em,
         NotificationCenter $nc,
-        $id,
-    ) {
+        int $id,
+    ): Response {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
         if (!$workshop_item) {
@@ -88,9 +88,9 @@ class WorkshopCommentController
         Response $response,
         EntityManager $em,
         Account $account,
-        $item_id,
-        $comment_id,
-    ) {
+        int $item_id,
+        int $comment_id,
+    ): Response {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
 
@@ -101,9 +101,9 @@ class WorkshopCommentController
         }
 
         // Get the comment
-        /** @var WorkshopComment $item */
+        /** @var WorkshopComment $comment */
         $comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
-        if (!$comment) {
+        if ($comment == null) {
             throw new HttpNotFoundException($request);
         }
 
@@ -227,9 +227,9 @@ class WorkshopCommentController
         Account $account,
         NotificationCenter $nc,
         WorkshopCache $workshop_cache,
-        $item_id,
-        $comment_id,
-    ) {
+        int $item_id,
+        int $comment_id,
+    ): Response {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
 
@@ -240,9 +240,9 @@ class WorkshopCommentController
         }
 
         // Get the comment
-        /** @var WorkshopComment $item */
+        /** @var WorkshopComment $comment */
         $comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
-        if (!$comment) {
+        if ($comment == null) {
             throw new HttpNotFoundException($request);
         }
 
@@ -272,7 +272,7 @@ class WorkshopCommentController
 
         // Get any reports for this comment
         $reports = $comment->getReports();
-        if ($reports !== null && \count($reports) > 0) {
+        if (\count($reports) > 0) {
 
             // Get all the IDs for the reports and then remove them
             $report_ids = [];
@@ -316,9 +316,9 @@ class WorkshopCommentController
         WorkshopCache $workshop_cache,
         EntityManager $em,
         NotificationCenter $nc,
-        $item_id,
-        $comment_id,
-    ) {
+        int $item_id,
+        int $comment_id,
+    ): Response {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
         if (!$workshop_item) {
@@ -326,9 +326,9 @@ class WorkshopCommentController
         }
 
         // Get the comment
-        /** @var WorkshopComment $item */
+        /** @var WorkshopComment $parent_comment */
         $parent_comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
-        if (!$parent_comment) {
+        if ($parent_comment == null) {
             throw new HttpNotFoundException($request);
         }
 

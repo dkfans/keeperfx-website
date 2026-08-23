@@ -97,9 +97,16 @@ class FetchAlphaCommand extends Command
 
         // Grab Github workflow runs
         $res  = $client->request('GET', self::GITHUB_WORKFLOW_RUNS_URL);
-        $json = \json_decode($res->getBody());
+        $body = $res->getBody();
+        if ($body->getSize() === 0) {
+            $output->writeln('[-] Failed to fetch workflow runs (empty body)');
+
+            return Command::FAILURE;
+        }
+
+        $json = \json_decode($body);
         if (!$json || empty($json->workflow_runs)) {
-            $output->writeln('[-] Failed to fetch workflow runs');
+            $output->writeln('[-] Failed to fetch workflow runs (invalid json)');
 
             return Command::FAILURE;
         }
@@ -132,9 +139,15 @@ class FetchAlphaCommand extends Command
 
             // Grab artifacts
             $res  = $client->request('GET', $run->artifacts_url);
-            $json = \json_decode($res->getBody());
+            $body = $res->getBody();
+            if ($body->getSize() === 0) {
+                $output->writeln('[-] Failed to grab artifacts for this run (empty body)');
+                continue;
+            }
+
+            $json = \json_decode($body);
             if (!$json || empty($json->artifacts)) {
-                $output->writeln('[-] Failed to grab artifacts for this run');
+                $output->writeln('[-] Failed to grab artifacts for this run (invalid json)');
                 continue;
             }
 

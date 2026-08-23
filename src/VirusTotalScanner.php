@@ -56,7 +56,7 @@ class VirusTotalScanner
             ]);
 
             // Make sure requests was successful
-            if (!$response || $response->getStatusCode() !== 200) {
+            if ($response->getStatusCode() !== 200) {
                 return false;
             }
 

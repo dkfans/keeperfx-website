@@ -25,8 +25,9 @@ class WorkshopBrokenFileHandler
         }
 
         // Get the last file for this item
-        $last_file = $this->em->getRepository(WorkshopFile::class)->findOneBy(['item' => $item], ['weight' => 'ASC'], 1);
-        if ($last_file === null) {
+        /** @var WorkshopFile $last_file */
+        $last_file = $this->em->getRepository(WorkshopFile::class)->findOneBy(['item' => $item], ['weight' => 'ASC']);
+        if ($last_file == null) {
             return;
         }
 

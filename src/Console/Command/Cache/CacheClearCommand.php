@@ -5,6 +5,7 @@ namespace App\Console\Command\Cache;
 use App\Config\Config;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface as Output;
@@ -42,8 +43,7 @@ class CacheClearCommand extends Command
 
             $question = new ConfirmationQuestion('[?] Continue? [y/n] ', false);
 
-            /** @var HelperInterface */
-            $helper = $this->getHelper('question');
+            $helper = new QuestionHelper();
             if (!$helper->ask($input, $output, $question)) {
                 return Command::SUCCESS;
             }
