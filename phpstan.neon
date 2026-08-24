@@ -11,3 +11,6 @@ parameters:
 		- ./tests/
 	bootstrapFiles:
 		- ./app/bootstrap/bootstrap.phpstan.php
+
+includes:
+	- vendor/phpstan/phpstan-doctrine/extension.neon
