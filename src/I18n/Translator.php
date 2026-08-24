@@ -70,37 +70,32 @@ class Translator
 
         // Handle pluralization
         // When the translation key resolves an array
-        if (\is_array($translation)) {
 
-            // Check for default pluralization index
-            if (!isset($translation['_'])) {
-                throw new TranslatorException("Translation key '{$key}' resolves an array (pluralization) but does not contain the \"_\" (default pluralize) index.");
-            }
-
-            // Get the first number out of the variables
-            // To make sure a number is given
-            $number = null;
-            foreach ($vars as $val) {
-                if (\is_int($val) || \is_numeric($val)) {
-                    $number = $val;
-                    break;
-                }
-            }
-            if ($number === null) {
-                throw new TranslatorException("Translation key '{$key}' needs one of its given values to be a number for pluralization.");
-            }
-
-            // Check if number for pluralization exists (needs to be an int)
-            $number_int = (int) $number;
-            if (isset($translation[$number_int])) {
-                return \sprintf($translation[$number_int], ...$vars);
-            }
-
-            return \sprintf($translation['_'], ...$vars);
+        // Check for default pluralization index
+        if (!isset($translation['_'])) {
+            throw new TranslatorException("Translation key '{$key}' resolves an array (pluralization) but does not contain the \"_\" (default pluralize) index.");
         }
 
-        // Not found (not reachable)
-        return null;
+        // Get the first number out of the variables
+        // To make sure a number is given
+        $number = null;
+        foreach ($vars as $val) {
+            if (\is_int($val) || \is_numeric($val)) {
+                $number = $val;
+                break;
+            }
+        }
+        if ($number === null) {
+            throw new TranslatorException("Translation key '{$key}' needs one of its given values to be a number for pluralization.");
+        }
+
+        // Check if number for pluralization exists (needs to be an int)
+        $number_int = (int) $number;
+        if (isset($translation[$number_int])) {
+            return \sprintf($translation[$number_int], ...$vars);
+        }
+
+        return \sprintf($translation['_'], ...$vars);
     }
 
     private function loadTranslationFile(string $locale_code, string $category)

@@ -51,7 +51,7 @@ class UserIpChangeLoggerMiddleware implements MiddlewareInterface
         if ($this->account->isLoggedIn() && $ip !== null) {
 
             // Check if the IP is not yet stored in the session
-            if (empty($this->session['ip']) || $this->session['ip'] === null) {
+            if (empty($this->session['ip']) || $this->session['ip'] == null) {
 
                 // Remember IP address for this session
                 $this->session['ip'] = $ip;

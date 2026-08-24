@@ -20,13 +20,10 @@ class GitHelper
         foreach ($matches as $match) {
 
             // Get timestamp
-            $timestamp = null;
-            if (isset($match[3])) {
-                $timestamp = new \DateTime($match[3]);
-            }
+            $timestamp = new \DateTime($match[3]);
 
             // Separate message and note
-            $message_raw       = $match[4] ?? '';
+            $message_raw       = $match[4];
             $message_raw       = \preg_replace('/^    /m', '', $message_raw);
             $message_raw       = \preg_replace('/^Co-authored-by\:.*($|\n)/m', '', $message_raw);
             $message_raw_parts = \explode("\n\n", $message_raw);
@@ -40,8 +37,8 @@ class GitHelper
 
             // Create structure
             $return[] = [
-                'hash'      => $match[1] ?? null,
-                'author'    => $match[2] ?? null,
+                'hash'      => $match[1],
+                'author'    => $match[2],
                 'timestamp' => $timestamp,
                 'message'   => $message,
                 'note'      => $note,

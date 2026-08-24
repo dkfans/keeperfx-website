@@ -4,7 +4,6 @@ namespace App\Middleware;
 
 use App\Account;
 use App\FlashMessage;
-use Compwright\PhpSession\Session;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -16,7 +15,6 @@ class LoggedInMiddleware implements MiddlewareInterface
     public function __construct(
         private ResponseFactory $response_factory,
         private Account $account,
-        private Session $session,
         private FlashMessage $flash,
     ) {
     }

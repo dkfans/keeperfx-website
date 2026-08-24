@@ -24,9 +24,9 @@ class OAuthProviderService
             return $this->providers[$provider->value];
         }
 
-        if (!isset(self::CLASSES[$provider->value])) {
-            throw new \Exception("OAuthProviderType '{$provider->value}' does not have a class assigned to it");
-        }
+        // if (!isset(self::CLASSES[$provider->value])) {
+        //     throw new \Exception("OAuthProviderType '{$provider->value}' does not have a class assigned to it");
+        // }
 
         $class_name = self::CLASSES[$provider->value];
 
@@ -54,9 +54,9 @@ class OAuthProviderService
     public function getScopes(OAuthProviderType $provider): array
     {
 
-        if (!isset(self::SCOPES[$provider->value])) {
-            throw new \Exception("OAuthProviderType '{$provider->value}' does not have scopes assigned to it");
-        }
+        // if (!isset(self::SCOPES[$provider->value])) {
+        //     throw new \Exception("OAuthProviderType '{$provider->value}' does not have scopes assigned to it");
+        // }
 
         return self::SCOPES[$provider->value];
     }

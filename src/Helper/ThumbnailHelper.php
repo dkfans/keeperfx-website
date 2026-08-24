@@ -42,7 +42,7 @@ class ThumbnailHelper
 
         // Fix a possible libpng error that might arise
         try {
-            if (\is_callable('shell_exec') && SystemHelper::verifyShellCommand('mogrify')) {
+            if (SystemHelper::verifyShellCommand('mogrify')) {
                 @\shell_exec("mogrify -interlace none {$image_filepath}");
             }
         } catch (\Exception $ex) {

@@ -174,7 +174,7 @@ class GameFileHandler
             ['release_type' => $release_type->value]
         );
 
-        if ($indexes !== null && \count($indexes) > 0) {
+        if (\count($indexes) > 0) {
             $entities_removed = false;
 
             /** @var GameFileIndex $index */

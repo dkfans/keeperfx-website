@@ -36,8 +36,8 @@ class ErrorMiddleware implements MiddlewareInterface
 
             // Check if we should return a JSON response
             if (
-                \str_contains($request->getHeaderLine('Accept') ?? '', 'application/json')
-                || \str_contains($request->getHeaderLine('Content-Type') ?? '', 'application/json')
+                \str_contains($request->getHeaderLine('Accept'), 'application/json')
+                || \str_contains($request->getHeaderLine('Content-Type'), 'application/json')
                 || \str_starts_with($request->getUri()->getPath(), '/api/')
             ) {
                 $json_response = true;
@@ -70,7 +70,7 @@ class ErrorMiddleware implements MiddlewareInterface
             }
 
             // Log error if not a normal HTTP exception
-            if ($this->logger && !($ex instanceof HttpSpecializedException)) {
+            if ($ex instanceof HttpSpecializedException) {
                 $this->logger->error(
                     \sprintf(
                         "%s: %s in %s:%d\n%s",

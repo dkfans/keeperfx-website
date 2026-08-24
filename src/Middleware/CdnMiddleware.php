@@ -2,7 +2,6 @@
 
 namespace App\Middleware;
 
-use App\Account;
 use App\CDN;
 use Compwright\PhpSession\Session;
 use Psr\Http\Message\ResponseInterface;
@@ -15,7 +14,6 @@ class CdnMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private CDN $cdn,
-        private Account $account,
         private Session $session,
     ) {
     }

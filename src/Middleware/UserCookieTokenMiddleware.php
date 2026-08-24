@@ -15,18 +15,15 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Slim\Psr7\Factory\ResponseFactory;
 
 class UserCookieTokenMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private EntityManager $em,
         private Account $account,
-        private Session $session,
         private FlashMessage $flash,
         private BanChecker $ban_checker,
         private OAuthProviderService $provider_service,
-        private ResponseFactory $response_factory,
     ) {
     }
 
@@ -43,13 +40,14 @@ class UserCookieTokenMiddleware implements MiddlewareInterface
             if ($token && \preg_match('~^[a-zA-Z0-9]+$~', $token)) {
 
                 // Check if token exists in DB
+                /** @var UserCookieToken $cookie_token */
                 $cookie_token = $this->em->getRepository(UserCookieToken::class)->findOneBy(['token' => $token]);
-                if ($cookie_token) {
+                if ($cookie_token != null) {
 
                     // Check if cookie is linked to an OAuth Token
                     /** @var UserOAuthToken $oauth_token */
                     $oauth_token = $cookie_token->getOAuthToken();
-                    if ($oauth_token) {
+                    if ($oauth_token != null) {
 
                         // Handle invalidated tokens
                         if ($oauth_token->getToken() === null || $oauth_token->getRefreshToken() === null) {

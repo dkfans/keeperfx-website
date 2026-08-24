@@ -11,16 +11,13 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 
 class NotificationSettings
 {
-    private EntityManager $em;
-
     private array $notification_classes = [];
 
     private array $default_settings = [];
 
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-
+    public function __construct(
+        private EntityManager $em,
+    ) {
         // Loop trough all possible notifications
         foreach (DirectoryHelper::tree(__DIR__ . '/Notification') as $file) {
 
@@ -39,7 +36,7 @@ class NotificationSettings
 
         $user_settings = $user->getNotificationSettings();
 
-        if ($user_settings) {
+        if (\count($user_settings) > 0) {
 
             /** @var UserNotificationSetting $user_setting */
             foreach ($user_settings as $user_setting) {
@@ -76,5 +73,10 @@ class NotificationSettings
         }
 
         return $settings;
+    }
+
+    public function getNotificationClasses()
+    {
+        return $this->notification_classes;
     }
 }
