@@ -27,28 +27,34 @@
                 </p>
             {% else %}
 
-                <span style="font-size: 20px" class="mx-3">Filter:</span>
+                <span style="font-size: 20px;" class="mx-3">Filter:</span>
 
-                    <div class="form-group mt-2 mx-3">
-                        <button type="button" class="btn btn-dark" id="filter-quality-1" data-filter=false>
+                <div class="p-3 mb-3" style="background-color: rgba(0, 0, 0, 0.3)">
+
+                    <input class="form-control form-form-control-sm" id="filter-search" placeholder="Search" style="margin-bottom: 15px;" />
+
+                    <span>Ratings:</span>
+
+                    <div class="form-group">
+                        <button type="button" class="btn btn-dark" id="filter-quality-1" data-filter-rating=false>
                             <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
                         </button>
-                        <button type="button" class="btn btn-dark" id="filter-quality-2" data-filter=false>
-                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
-                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
-                        </button>
-                        <button type="button" class="btn btn-dark" id="filter-quality-3" data-filter=false>
-                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
-                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
-                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
-                        </button>
-                        <button type="button" class="btn btn-dark" id="filter-quality-4" data-filter=false>
-                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
-                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
+                        <button type="button" class="btn btn-dark" id="filter-quality-2" data-filter-rating=false>
                             <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
                             <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
                         </button>
-                        <button type="button" class="btn btn-dark" id="filter-quality-5" data-filter=false>
+                        <button type="button" class="btn btn-dark" id="filter-quality-3" data-filter-rating=false>
+                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
+                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
+                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
+                        </button>
+                        <button type="button" class="btn btn-dark" id="filter-quality-4" data-filter-rating=false>
+                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
+                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
+                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
+                            <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
+                        </button>
+                        <button type="button" class="btn btn-dark" id="filter-quality-5" data-filter-rating=false>
                             <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
                             <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
                             <img src="/img/rating/star2-full.png" style="width: 18px; height: 18px;" />
@@ -57,26 +63,26 @@
                         </button>
                     </div>
 
-                    <div class="form-group mt-2 mx-3">
-                        <button type="button" class="btn btn-dark" id="filter-difficulty-1" data-filter=false>
+                    <div class="form-group mt-2">
+                        <button type="button" class="btn btn-dark" id="filter-difficulty-1" data-filter-rating=false>
                             <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
                         </button>
-                        <button type="button" class="btn btn-dark" id="filter-difficulty-2" data-filter=false>
-                            <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
-                            <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
-                        </button>
-                        <button type="button" class="btn btn-dark" id="filter-difficulty-3" data-filter=false>
-                            <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
+                        <button type="button" class="btn btn-dark" id="filter-difficulty-2" data-filter-rating=false>
                             <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
                             <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
                         </button>
-                        <button type="button" class="btn btn-dark" id="filter-difficulty-4" data-filter=false>
-                            <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
+                        <button type="button" class="btn btn-dark" id="filter-difficulty-3" data-filter-rating=false>
                             <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
                             <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
                             <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
                         </button>
-                        <button type="button" class="btn btn-dark" id="filter-difficulty-5" data-filter=false>
+                        <button type="button" class="btn btn-dark" id="filter-difficulty-4" data-filter-rating=false>
+                            <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
+                            <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
+                            <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
+                            <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
+                        </button>
+                        <button type="button" class="btn btn-dark" id="filter-difficulty-5" data-filter-rating=false>
                             <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
                             <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
                             <img src="/img/rating/star-difficulty-full.png" style="width: 18px; height: 18px;" />
@@ -85,9 +91,24 @@
                         </button>
                     </div>
 
-                </p>
+                    <br />
+                    <span>Category:</span>
+                    <div class="form-group mt-2 row">
+                        <div class="col-6">
+                        <select class="form-control form-select" id="filter-category">
+                            <option value="" selected>All</option>
+                            {% if workshop_globals.categories|length > 0 %}
+                                {% for category in workshop_globals.categories %}
+                                    <option value="{{ category.value }}">
+                                        {{ category.name|enum_beautify }}
+                                    </option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                        </div>
+                    </div>
 
-                <input class="form-control form-form-control-sm" id="search" placeholder="Search" style="margin-bottom: 15px;" />
+                </div>
 
                 <table class="table">
                     <thead>
@@ -101,7 +122,7 @@
                     </thead>
                     <tbody id="table-body">
                         {% for rating in ratings %}
-                            <tr>
+                            <tr data-category="{{ rating.item.category.value }}">
                                 <td>
                                     {% if rating.item %}
                                         <a href="/workshop/item/{{ rating.item.id }}/{{ rating.item.name|slugify }}">{{ rating.item.name }}</a>
@@ -151,31 +172,34 @@
             {
                 $('#table-body tr').unmark();
 
-                // Get search string
-                var searchString = $('#search').val().toLowerCase();
-
                 // Get filters
-                var filterQuality1       = $('#filter-quality-1').data('filter');
-                var filterQuality2       = $('#filter-quality-2').data('filter');
-                var filterQuality3       = $('#filter-quality-3').data('filter');
-                var filterQuality4       = $('#filter-quality-4').data('filter');
-                var filterQuality5       = $('#filter-quality-5').data('filter');
-                var filterDifficulty1    = $('#filter-difficulty-1').data('filter');
-                var filterDifficulty2    = $('#filter-difficulty-2').data('filter');
-                var filterDifficulty3    = $('#filter-difficulty-3').data('filter');
-                var filterDifficulty4    = $('#filter-difficulty-4').data('filter');
-                var filterDifficulty5    = $('#filter-difficulty-5').data('filter');
+                var searchString = $('#filter-search').val().toLowerCase();
+                var filterCategory = $('#filter-category').val();
+
+                // Get rating filters
+                var filterQuality1       = $('#filter-quality-1').data('filter-rating');
+                var filterQuality2       = $('#filter-quality-2').data('filter-rating');
+                var filterQuality3       = $('#filter-quality-3').data('filter-rating');
+                var filterQuality4       = $('#filter-quality-4').data('filter-rating');
+                var filterQuality5       = $('#filter-quality-5').data('filter-rating');
+                var filterDifficulty1    = $('#filter-difficulty-1').data('filter-rating');
+                var filterDifficulty2    = $('#filter-difficulty-2').data('filter-rating');
+                var filterDifficulty3    = $('#filter-difficulty-3').data('filter-rating');
+                var filterDifficulty4    = $('#filter-difficulty-4').data('filter-rating');
+                var filterDifficulty5    = $('#filter-difficulty-5').data('filter-rating');
                 var isQualityFiltered    = (filterQuality1 || filterQuality2 || filterQuality3 || filterQuality4 || filterQuality5);
                 var isDifficultyFiltered = (filterDifficulty1 || filterDifficulty2 || filterDifficulty3 || filterDifficulty4 || filterDifficulty5);
 
                 // Loop trough all rows
                 $.each($('#table-body tr'), function(i, el){
 
+                    $row = $(el);
+
                     // Handle searches
                     if(searchString != ""){
-                        let content = $(el).text().toLowerCase();
+                        let content = $row.text().toLowerCase();
                         if(!content.includes(searchString)){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else {
                             $('#table-body tr').mark(searchString);
@@ -185,30 +209,30 @@
                     // Handle quality filters
                     if(isQualityFiltered){
 
-                        let qualityRating = $(el).find('[data-workshop-rating-type="quality"]');
+                        let qualityRating = $row.find('[data-workshop-rating-type="quality"]');
                         if(qualityRating.length === 0){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         }
 
                         let score = parseInt($(qualityRating).data('workshop-rating-score'));
                         if(score == 1 && filterQuality1 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else if(score == 1 && filterQuality1 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else if(score == 2 && filterQuality2 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else if(score == 3 && filterQuality3 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else if(score == 4 && filterQuality4 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else if(score == 5 && filterQuality5 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         }
                     }
@@ -216,41 +240,50 @@
                     // Handle difficulty filters
                     if(isDifficultyFiltered){
 
-                        let difficultyRating = $(el).find('[data-workshop-rating-type="difficulty"]');
+                        let difficultyRating = $row.find('[data-workshop-rating-type="difficulty"]');
                         if(difficultyRating.length === 0){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         }
 
                         let score = parseInt($(difficultyRating).data('workshop-rating-score'));
                         if(score == 1 && filterDifficulty1 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else if(score == 1 && filterDifficulty1 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else if(score == 2 && filterDifficulty2 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else if(score == 3 && filterDifficulty3 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else if(score == 4 && filterDifficulty4 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         } else if(score == 5 && filterDifficulty5 == false){
-                            $(el).hide();
+                            $row.hide();
                             return;
                         }
                     }
 
-                    $(el).show();
+                    // Handle the category filter
+                    if(filterCategory != "") {
+                        if($row.data('category') != filterCategory) {
+                            $row.hide();
+                            return;
+                        }
+                    }
+
+                    // Show the row
+                    $row.show();
                 });
 
             }
 
             // Handle search input
-            $('#search').on('keyup', $.debounce(250, function(e){
+            $('#filter-search').on('keyup', $.debounce(250, function(e){
 
                 // Update the table
                 // This handles the search
@@ -258,20 +291,27 @@
             }));
 
             // Handle filter buttons
-            $('[data-filter]').on('click', function(e){
+            $('[data-filter-rating]').on('click', function(e){
 
                 // Toggle button color
                 $(this).toggleClass('btn-dark');
                 $(this).toggleClass('btn-primary');
 
                 // Toggle filter status
-                let isSelected = $(this).data('filter');
-                $(this).data('filter', !isSelected);
+                let isSelected = $(this).data('filter-rating');
+                $(this).data('filter-rating', !isSelected);
 
                 // Update the table
                 updateTableRows();
             });
 
+            // Handle category filter
+            $('#filter-category').on('change', function(e){
+                // Update the table
+                updateTableRows();
+            });
+
+            updateTableRows();
         });
 
     </script>
