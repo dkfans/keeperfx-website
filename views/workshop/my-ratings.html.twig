@@ -153,6 +153,8 @@
                         {% endfor %}
                     </tbody>
                 </table>
+
+                <span class="text-muted" id="rows-hidden-notice" style="display: none;"><span id="rows-hidden-amount">0</span> rows are hidden because of filters</span>
             {% endif %}
         </div>
     </div>
@@ -280,6 +282,21 @@
                     $row.show();
                 });
 
+                // Count hidden rows
+                var hiddenRows = 0;
+                $.each($('#table-body tr'), function(i, el){
+                    if($(el).is(':hidden')){
+                        hiddenRows++;
+                    }
+                });
+                $('#rows-hidden-amount').text(hiddenRows);
+
+                // Show or hide the hidden rows notice
+                if(hiddenRows < 1){
+                    $('#rows-hidden-notice').hide();
+                } else {
+                    $('#rows-hidden-notice').show();
+                }
             }
 
             // Handle search input
