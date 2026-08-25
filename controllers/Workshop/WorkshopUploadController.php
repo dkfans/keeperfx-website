@@ -170,10 +170,9 @@ class WorkshopUploadController
 
         if (\is_string($original_creation_date) && !empty($original_creation_date)) {
             try {
-                $datetime = new \DateTime($original_creation_date);
-                if ($datetime) {
-                    $workshop_item->setOriginalCreationDate($datetime);
-                }
+                $workshop_item->setOriginalCreationDate(
+                    new \DateTime($original_creation_date)
+                );
             } catch (\Exception $ex) {
             }
         }
@@ -303,10 +302,8 @@ class WorkshopUploadController
             $width  = null;
             $height = null;
             $size   = @\getimagesize($path);
-            if ($size && \is_array($size)) {
-                $width  = $size[0];
-                $height = $size[1];
-            }
+            $width  = $size[0];
+            $height = $size[1];
 
             // Create image entity
             $image_entity = new WorkshopImage();

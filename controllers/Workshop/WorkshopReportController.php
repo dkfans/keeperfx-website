@@ -29,7 +29,7 @@ class WorkshopReportController
         // Get the comment
         /** @var WorkshopComment $comment */
         $comment = $em->getRepository(WorkshopComment::class)->find($comment_id);
-        if (!$comment) {
+        if ($comment == null) {
             throw new HttpNotFoundException($request);
         }
 
@@ -87,7 +87,7 @@ class WorkshopReportController
         // Get the report
         /** @var WorkshopCommentReport $report */
         $report = $em->getRepository(WorkshopCommentReport::class)->find($report_id);
-        if (!$report) {
+        if ($report == null) {
             throw new HttpNotFoundException($request);
         }
 

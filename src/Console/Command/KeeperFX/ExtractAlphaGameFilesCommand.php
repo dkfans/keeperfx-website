@@ -60,7 +60,7 @@ class ExtractAlphaGameFilesCommand extends Command
         $alpha_patch = $this->em->getRepository(GithubAlphaBuild::class)->findOneBy(['version' => $version]);
 
         // Make sure version is found
-        if (!$alpha_patch) {
+        if ($alpha_patch == null) {
             $output->writeln("[-] Alpha patch version '{$version}' not found");
 
             return Command::FAILURE;

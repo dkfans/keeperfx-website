@@ -53,7 +53,7 @@ class HandleTwitchStreamsCommand extends Command
         /** @var UserOAuthToken[] $oauth_tokens */
         $oauth_tokens = $this->em->getRepository(UserOAuthToken::class)->findBy(['provider_type' => OAuthProviderType::Twitch]);
 
-        if (!$oauth_tokens || \count($oauth_tokens) < 1) {
+        if (\count($oauth_tokens) < 1) {
             $output->writeln('[+] No OAuth tokens found');
 
             return Command::SUCCESS;
@@ -114,7 +114,7 @@ class HandleTwitchStreamsCommand extends Command
 
             // Check valid response
             $response = $api->getStreamsApi()->getStreamForUserId($token->getToken(), $token->getUid());
-            if (!$response || $response->getStatusCode() !== 200) {
+            if ($response->getStatusCode() !== 200) {
                 continue;
             }
 

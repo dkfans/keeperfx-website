@@ -38,7 +38,7 @@ class FixCrashReportExceptionOriginsCommand extends Command
         // Get crash reports
         /** @var array $crash_reports */
         $crash_reports = $em->getRepository(CrashReport::class)->findAll();
-        if (!$crash_reports || !\is_array($crash_reports) || \count($crash_reports) <= 0) {
+        if (\count($crash_reports) <= 0) {
             $output->writeln('[?] No crash reports found');
 
             return Command::INVALID;
@@ -57,7 +57,7 @@ class FixCrashReportExceptionOriginsCommand extends Command
             }
 
             if (\preg_match('/\[\#\d+\s?\]\s(?:keeperfx|KEEPERFX|KeeperFX)\S+?\s+\:\s+(\S+)\s+\[/', $game_log, $matches)) {
-                $exception_source_function = $matches[1] ?? null;
+                $exception_source_function = $matches[1];
                 if (!empty($exception_source_function) && StringHelper::startsWith($exception_source_function, '@') == false) {
                     $crash_report->setExceptionSourceFunction($exception_source_function);
                     $output->writeln("[+] #{$crash_report->getId()} -> {$exception_source_function}");

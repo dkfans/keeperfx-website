@@ -283,7 +283,7 @@ class MergeUsersCommand extends Command
                         ($main_rating->getScore() + $rating->getScore()) / 2
                     );
 
-                    if ($main_rating->getScore() !== $new_rating) {
+                    if ($main_rating->getScore() != $new_rating) {
                         $output->writeln("[+] Change rating from <info>{$main_rating->getScore()}</info> to <info>{$new_rating}</info> for <info>{$main_rating->getItem()->getName()}</info>");
                         $main_rating->setScore($new_rating);
                     }
@@ -314,7 +314,7 @@ class MergeUsersCommand extends Command
                         ($main_diff_rating->getScore() + $diff_rating->getScore()) / 2
                     );
 
-                    if ($main_diff_rating->getScore() !== $new_rating) {
+                    if ($main_diff_rating->getScore() != $new_rating) {
                         $output->writeln("[+] Change difficulty rating from <info>{$main_diff_rating->getScore()}</info> to <info>{$new_rating}</info> for <info>{$main_diff_rating->getItem()->getName()}</info>");
                         $main_diff_rating->setScore($new_rating);
                     }

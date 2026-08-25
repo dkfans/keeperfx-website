@@ -107,8 +107,5 @@ class PullRepoCommand extends Command
         $output->writeln('[+] Done!');
 
         return Command::SUCCESS;
-        $output->writeln('[+] Done!');
-
-        return Command::SUCCESS;
     }
 }

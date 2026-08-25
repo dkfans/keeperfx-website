@@ -282,8 +282,6 @@ class FetchPrototypeCommand extends Command
                 $output->writeln('[-] <error>Something went wrong</error>...');
                 $output->writeln("[-] <error>{$ex->getMessage()}</error>...");
 
-                \dd($ex);
-
                 // Cleanup if something went wrong
                 $output->writeln('[>] Removing created files and directory...');
                 if (\file_exists($temp_archive_path)) {
@@ -316,7 +314,7 @@ class FetchPrototypeCommand extends Command
             $build->setSizeInBytes($output_filesize);
             $build->setTimestamp(new \DateTime($artifact->created_at));
             $build->setWorkflowTitle($display_title);
-            $build->setWorkflowRunId($artifact->workflow_run?->id ?? null);
+            $build->setWorkflowRunId($artifact->workflow_run->id ?? null);
             $build->setIsAvailable(self::IS_ENABLED);
             $this->em->persist($build);
             $this->em->flush();

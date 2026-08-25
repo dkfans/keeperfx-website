@@ -25,7 +25,7 @@ final class Version20230505180242 extends AbstractMigration
 
         // Move current thumbnail and screenshots to new WorkshopImage entity
         $items = $this->connection->fetchAllAssociative('SELECT * FROM workshop_item');
-        if ($items && \is_iterable($items)) {
+        if ($items) {
             foreach ($items as $item) {
 
                 // Define storage dir
@@ -62,7 +62,7 @@ final class Version20230505180242 extends AbstractMigration
                             $width  = 'NULL';
                             $height = 'NULL';
                             $size   = @\getimagesize($thumbnail_new_path);
-                            if ($size && \is_array($size)) {
+                            if (\is_array($size)) {
                                 $width  = $size[0];
                                 $height = $size[1];
                             }
@@ -88,7 +88,7 @@ final class Version20230505180242 extends AbstractMigration
                                 $width  = 'NULL';
                                 $height = 'NULL';
                                 $size   = @\getimagesize($screenshot_new_path);
-                                if ($size && \is_array($size)) {
+                                if (\is_array($size)) {
                                     $width  = $size[0];
                                     $height = $size[1];
                                 }

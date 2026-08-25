@@ -30,7 +30,7 @@ class Account
         private FlashMessage $flash,
     ) {
         // Check if current user is logged in
-        if (isset($session['uid']) && $session['uid'] !== null) {
+        if (isset($session['uid']) && $session['uid'] != null) {
 
             // Search this user in the DB
             // In case a user has a session without a valid user account

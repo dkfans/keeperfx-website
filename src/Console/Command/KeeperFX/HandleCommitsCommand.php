@@ -92,7 +92,7 @@ class HandleCommitsCommand extends Command
 
             // Get the git log commits
             $parsed_commits = GitHelper::parseCommitsFromGitLog($process->getOutput());
-            if (!$parsed_commits) {
+            if ($parsed_commits === false) {
                 $output->writeln("[-] Failed to grab commits for {$current_tag}");
                 continue;
             }
@@ -110,7 +110,8 @@ class HandleCommitsCommand extends Command
             }
 
             // Show commit count message
-            if (($commit_count = \count($parsed_commits)) > 0) {
+            $commit_count = \count($parsed_commits);
+            if ($commit_count > 0) {
                 $output->writeln("[+] Handled {$commit_count} commits!");
             } else {
                 $output->writeln('[?] No commits handled');

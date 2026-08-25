@@ -238,7 +238,7 @@ class WorkshopRatingController
         // Get updated rating
         $rating_score = null;
         $ratings      = $workshop_item->getRatings();
-        if ($ratings && \count($ratings) > 0) {
+        if (\count($ratings) > 0) {
             $rating_scores = [];
             foreach ($ratings as $rating) {
                 $rating_scores[] = $rating->getScore();
@@ -327,7 +327,7 @@ class WorkshopRatingController
         // Get updated rating
         $rating_score = null;
         $ratings      = $workshop_item->getDifficultyRatings();
-        if ($ratings && \count($ratings) > 0) {
+        if (\count($ratings) > 0) {
             $rating_scores = [];
             foreach ($ratings as $rating) {
                 $rating_scores[] = $rating->getScore();

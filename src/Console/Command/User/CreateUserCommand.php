@@ -61,7 +61,7 @@ class CreateUserCommand extends Command
         // Set role
         if (\is_numeric($role)) {
 
-            $user->setRole($role);
+            $user->setRole(UserRole::tryFrom($role));
 
         } elseif (\is_string($role)) {
 
@@ -88,7 +88,6 @@ class CreateUserCommand extends Command
                     $output->writeln("[-] Invalid role: {$role}");
 
                     return Command::FAILURE;
-                    break;
             }
 
             $user->setRole($role);

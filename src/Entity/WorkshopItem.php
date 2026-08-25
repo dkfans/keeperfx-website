@@ -111,6 +111,7 @@ class WorkshopItem
         $this->ratings            = new ArrayCollection();
         $this->difficulty_ratings = new ArrayCollection();
         $this->comments           = new ArrayCollection();
+        $this->broken_files       = new ArrayCollection();
     }
 
     #[ORM\PrePersist]

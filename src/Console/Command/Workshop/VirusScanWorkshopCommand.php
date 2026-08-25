@@ -138,7 +138,7 @@ class VirusScanWorkshopCommand extends Command
             );
         }
 
-        if (!$files || \count($files) === 0) {
+        if (\count($files) === 0) {
             $output->writeln('[?] No files found to scan');
             $output->writeln('[>] Done!');
 

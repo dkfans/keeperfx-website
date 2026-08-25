@@ -24,7 +24,7 @@ final class Version20250219015239 extends AbstractMigration
 
         // Fix possible existing stable versions
         $items = $this->connection->fetchAllAssociative('SELECT * FROM github_release');
-        if ($items && \is_iterable($items)) {
+        if ($items) {
             foreach ($items as $item) {
                 if (\preg_match('/^KeeperFX (\d+\.\d+\.\d+)$/', $item['name'], $matches)) {
                     $this->addSql('UPDATE github_release SET version = \'' . $matches[1] . '\' WHERE id = ' . $item['id']);
@@ -34,7 +34,7 @@ final class Version20250219015239 extends AbstractMigration
 
         // Fix possible existing alpha versions
         $items = $this->connection->fetchAllAssociative('SELECT * FROM github_alpha_build');
-        if ($items && \is_iterable($items)) {
+        if ($items) {
             foreach ($items as $item) {
                 if (\preg_match('/^keeperfx\-(\d+\_\d+\_\d+\_\d+)\_Alpha\-patch$/', $item['name'], $matches)) {
                     $this->addSql('UPDATE github_alpha_build SET version = \'' . \str_replace('_', '.', $matches[1]) . '\' WHERE id = ' . $item['id']);

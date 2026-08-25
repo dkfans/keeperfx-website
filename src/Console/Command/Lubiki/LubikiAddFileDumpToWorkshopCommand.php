@@ -320,7 +320,7 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
                 $width  = null;
                 $height = null;
                 $size   = @\getimagesize($image_new_path);
-                if ($size && \is_array($size)) {
+                if (\is_array($size)) {
                     $width  = $size[0];
                     $height = $size[1];
                 }

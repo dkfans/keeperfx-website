@@ -25,7 +25,7 @@ final class Version20230403223250 extends AbstractMigration
 
         // Move current files to new WorkshopFile entity
         $items = $this->connection->fetchAllAssociative('SELECT * FROM workshop_item');
-        if ($items && \is_iterable($items)) {
+        if ($items) {
             foreach ($items as $item) {
 
                 // Define storage dir
@@ -62,7 +62,10 @@ final class Version20230403223250 extends AbstractMigration
                 \rename($file_path, $new_file_path);
 
                 // Get filesize
-                $filesize = @\filesize($new_file_path) ?? 0;
+                $filesize = @\filesize($new_file_path);
+                if ($filesize === false) {
+                    $filesize = 0;
+                }
 
                 // Insert into DB
                 $this->addSql(

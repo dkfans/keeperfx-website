@@ -38,7 +38,7 @@ class FixWorkshopRatingsCommand extends Command
         // Get workshop items
         /** @var array $items */
         $items = $em->getRepository(WorkshopItem::class)->findAll();
-        if (!$items || !\is_array($items) || \count($items) <= 0) {
+        if (\count($items) <= 0) {
             $output->writeln('[?] No workshop items found');
 
             return Command::INVALID;

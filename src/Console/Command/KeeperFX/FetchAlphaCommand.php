@@ -419,7 +419,7 @@ class FetchAlphaCommand extends Command
             $build->setSizeInBytes($output_filesize);
             $build->setTimestamp(new \DateTime($artifact->created_at));
             $build->setWorkflowTitle($display_title);
-            $build->setWorkflowRunId($artifact->workflow_run?->id ?? null);
+            $build->setWorkflowRunId($artifact->workflow_run->id ?? null);
             $build->setIsAvailable(self::IS_ENABLED);
             $build->setVersion($version);
             $build->setCommitComment($commit_comment);

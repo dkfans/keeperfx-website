@@ -115,8 +115,8 @@ class DiscordNotifier
             return false;
         }
 
-        if ($item->getId() === null) {
-            throw new \Exception('workshop item does not have an ID yet');
+        if ($this->em->contains($item) === false) {
+            throw new \Exception('workshop item is not persisted yet');
         }
 
         // Create the Embed
