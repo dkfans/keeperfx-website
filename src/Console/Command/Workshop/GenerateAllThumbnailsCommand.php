@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'workshop:generate-all-thumbnails', description: 'Generate thumbnails for all workshop items')]
 class GenerateAllThumbnailsCommand extends Command
 {
     /** @var Container */
@@ -21,13 +22,7 @@ class GenerateAllThumbnailsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('workshop:generate-all-thumbnails')
-            ->setDescription('Generate thumbnails for all workshop items');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         /** @var EntityManager $em */
         $em = $this->container->get(EntityManager::class);

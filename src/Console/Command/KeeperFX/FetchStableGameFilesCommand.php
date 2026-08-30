@@ -17,6 +17,7 @@ use wapmorgan\UnifiedArchive\Exceptions\EmptyFileListException;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fetch-stable-game-files', description: 'Fetch the game files for a stable release')]
 class FetchStableGameFilesCommand extends Command
 {
     public function __construct(
@@ -28,12 +29,11 @@ class FetchStableGameFilesCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('kfx:fetch-stable-game-files')
-            ->setDescription('Fetch the game files for a stable release')
+        $this
             ->addArgument('version', InputArgument::REQUIRED, 'Stable version');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Make sure the game files directory is set
         $storage_dir = Config::get('storage.path.game-files');

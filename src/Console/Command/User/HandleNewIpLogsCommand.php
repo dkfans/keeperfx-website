@@ -9,6 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'user:handle-new-ip-logs', description: 'Handle new ip logs and get info about them')]
 class HandleNewIpLogsCommand extends Command
 {
     /** @var Container */
@@ -21,13 +22,7 @@ class HandleNewIpLogsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('user:handle-new-ip-logs')
-                ->setDescription('Handle new ip logs and get info about them');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         /** @var EntityManager $em */
         $em = $this->container->get(EntityManager::class);

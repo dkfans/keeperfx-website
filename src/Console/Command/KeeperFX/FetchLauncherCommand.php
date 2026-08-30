@@ -14,6 +14,7 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
 use Xenokore\Utility\Helper\DirectoryHelper;
 use Xenokore\Utility\Helper\JsonHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fetch-launcher', description: 'Fetch the latest launcher release')]
 class FetchLauncherCommand extends Command
 {
     public const GITHUB_RELEASE_URL = 'https://api.github.com/repos/dkfans/keeperfx-launcher-qt/releases';
@@ -32,13 +33,7 @@ class FetchLauncherCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('kfx:fetch-launcher')
-            ->setDescription('Fetch the latest launcher release');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Make sure an output directory is set
         $storage_dir = Config::get('storage.path.launcher');

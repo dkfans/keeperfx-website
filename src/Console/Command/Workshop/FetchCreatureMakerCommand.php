@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'workshop:fetch-creature-maker', description: 'Fetch the latest version of CreatureMaker')]
 class FetchCreatureMakerCommand extends Command
 {
     private const CREATURE_MAKER_WORKSHOP_ID = 390;
@@ -29,12 +30,6 @@ class FetchCreatureMakerCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('workshop:fetch-creature-maker')
-                ->setDescription('Fetch the latest version of CreatureMaker');
-    }
-
     private function getCreatureMakerVersionFromString(string $string): string|false
     {
         if (\preg_match('~' . self::CREATURE_MAKER_VERSION_REGEX . '~', $string, $matches) !== 1) {
@@ -44,7 +39,7 @@ class FetchCreatureMakerCommand extends Command
         return $matches[1];
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[>] Checking if CreatureMaker workshop item needs updating...');
 

@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fetch-prototype', description: 'Fetch the latest github prototypes')]
 class FetchPrototypeCommand extends Command
 {
     public const IS_ENABLED = true;
@@ -29,13 +30,7 @@ class FetchPrototypeCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('kfx:fetch-prototype')
-            ->setDescription('Fetch the latest github prototypes');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[>] Fetching latest prototypes...');
 

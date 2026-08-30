@@ -9,15 +9,10 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\Process\Process;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fetch-wiki', description: 'Fetch the latest wiki pages')]
 class FetchWikiCommand extends Command
 {
-    protected function configure(): void
-    {
-        $this->setName('kfx:fetch-wiki')
-            ->setDescription('Fetch the latest wiki pages');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[>] Fetching latest wiki revision...');
 

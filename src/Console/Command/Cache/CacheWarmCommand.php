@@ -12,6 +12,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Twig\Environment as TwigEnvironment;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'cache:warm', description: 'Warm the cache')]
 class CacheWarmCommand extends Command
 {
     public const ENTITY_DIR = APP_ROOT . '/src/Entity';
@@ -26,13 +27,7 @@ class CacheWarmCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('cache:warm')
-            ->setDescription('Warm the cache');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $current_user = \exec('whoami');
         $owning_user  = \get_current_user();

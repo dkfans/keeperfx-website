@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\Process\Process;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fix-alpha-commit-info', description: 'Try to fix the commit SHA and commit note for alpha builds')]
 class FixAlphaBuildCommitInfoCommand extends Command
 {
     public function __construct(
@@ -23,12 +24,11 @@ class FixAlphaBuildCommitInfoCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('kfx:fix-alpha-commit-info')
-            ->setDescription('Try to fix the commit SHA and commit note for alpha builds')
+        $this
             ->addArgument('version', InputArgument::OPTIONAL, 'Alpha patch version');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[>] Trying to fix the commit SHA and commit note for alpha build(s)...');
 

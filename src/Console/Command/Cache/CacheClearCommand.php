@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Xenokore\Utility\Helper\StringHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'cache:clear', description: 'Clear the app cache and the cache directory')]
 class CacheClearCommand extends Command
 {
     private CacheInterface $cache;
@@ -25,12 +26,11 @@ class CacheClearCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('cache:clear')
-            ->setDescription('Clear the app cache and the cache directory')
+        $this
             ->addOption('ignore-sessions', '-i', InputOption::VALUE_NONE, 'Ignore sessions');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $current_user = \exec('whoami');
         $owning_user  = \get_current_user();

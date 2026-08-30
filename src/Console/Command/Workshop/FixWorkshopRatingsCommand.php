@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'workshop:fix-ratings', description: 'Fix and recalculate all workshop ratings')]
 class FixWorkshopRatingsCommand extends Command
 {
     /** @var Container */
@@ -22,13 +23,7 @@ class FixWorkshopRatingsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('workshop:fix-ratings')
-                ->setDescription('Fix and recalculate all workshop ratings');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[+] Checking if we need to fix any workshop ratings');
 

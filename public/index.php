@@ -82,13 +82,12 @@ if ($_ENV['APP_ENV'] === 'dev') {
     $debugbar = $container->get(DebugBar\StandardDebugBar::class);
 
     // Monolog collector
-    $debugbar->addCollector(new DebugBar\Bridge\MonologCollector($logger));
+    $debugbar->addCollector(new DebugBar\Bridge\Monolog\MonologCollector($logger));
 
     // Doctrine collector
-    $em          = $container->get(Doctrine\ORM\EntityManager::class);
-    $debug_stack = new Doctrine\DBAL\Logging\DebugStack();
-    $em->getConnection()->getConfiguration()->setSQLLogger($debug_stack);
-    $debugbar->addCollector(new DebugBar\Bridge\DoctrineCollector($debug_stack));
+    $debugbar->addCollector(new DebugBar\Bridge\Doctrine\DoctrineCollector(
+        $container->get(DebugBar\Bridge\Doctrine\DebugBarSQLMiddleware::class)
+    ));
 
     // Session collector
     $debugbar->addCollector(new App\DebugBar\SessionCollector($container));

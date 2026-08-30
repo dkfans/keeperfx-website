@@ -24,7 +24,7 @@ class DebugBarAssetController
         }
 
         // Get asset filepath
-        $filepath = APP_ROOT . '/vendor/php-debugbar/php-debugbar/src/DebugBar/Resources/' . $path;
+        $filepath = APP_ROOT . '/vendor/php-debugbar/php-debugbar/resources/' . $path;
 
         // Check if file exists
         if (!\file_exists($filepath)) {

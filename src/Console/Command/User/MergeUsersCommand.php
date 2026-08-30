@@ -24,6 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Xenokore\Utility\Helper\FileHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'user:merge', description: 'Merge 2 user accounts')]
 class MergeUsersCommand extends Command
 {
     public function __construct(
@@ -34,13 +35,12 @@ class MergeUsersCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('user:merge')
-                ->setDescription('Merge 2 user accounts')
+        $this
                 ->addArgument('main_account_username', InputArgument::REQUIRED, 'Main account username')
                 ->addArgument('secondary_account_username', InputArgument::REQUIRED, 'Secondary account username');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Get arguments
         $main_username      = (string) $input->getArgument('main_account_username');

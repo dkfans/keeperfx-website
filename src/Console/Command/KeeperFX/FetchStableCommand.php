@@ -18,6 +18,7 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
 use Xenokore\Utility\Helper\DirectoryHelper;
 use Xenokore\Utility\Helper\JsonHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fetch-stable', description: 'Fetch the latest stable release')]
 class FetchStableCommand extends Command
 {
     public const GITHUB_RELEASE_URL = 'https://api.github.com/repos/dkfans/keeperfx/releases';
@@ -42,13 +43,7 @@ class FetchStableCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('kfx:fetch-stable')
-            ->setDescription('Fetch the latest stable release');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[>] Fetching latest stable releases...');
         $output->writeln('[>] API Endpoint: ' . self::GITHUB_RELEASE_URL);

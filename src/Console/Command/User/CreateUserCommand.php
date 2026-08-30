@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'user:create', description: 'Create a user')]
 class CreateUserCommand extends Command
 {
     /** @var Container */
@@ -25,14 +26,13 @@ class CreateUserCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('user:create')
-                ->setDescription('Create a user')
+        $this
                 ->addArgument('username', InputArgument::REQUIRED, 'Username')
                 ->addArgument('password', InputArgument::OPTIONAL, 'Password')
                 ->addArgument('role', InputArgument::OPTIONAL, 'Role');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         /** @var EntityManager $em */
         $em = $this->container->get(EntityManager::class);

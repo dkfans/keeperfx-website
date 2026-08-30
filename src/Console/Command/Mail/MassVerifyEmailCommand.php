@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'mail:mass-verify-email', description: 'Send verification emails to everybody')]
 class MassVerifyEmailCommand extends Command
 {
     public function __construct(
@@ -19,13 +20,7 @@ class MassVerifyEmailCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('mail:mass-verify-email')
-            ->setDescription('Send verification emails to everybody');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $users = $this->em->getRepository(User::class)->findAll();
 

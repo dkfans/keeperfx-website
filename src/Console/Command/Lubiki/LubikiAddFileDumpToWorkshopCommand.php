@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'lubiki:add-file-dump-to-workshop', description: 'Add Lubiki file dump to Workshop')]
 class LubikiAddFileDumpToWorkshopCommand extends Command
 {
     private EntityManager $em;
@@ -30,8 +31,7 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('lubiki:add-file-dump-to-workshop')
-            ->setDescription('Add Lubiki file dump to Workshop')
+        $this
             ->addArgument('path', InputArgument::REQUIRED, 'Directory containing Lubiki stuff');
     }
 
@@ -127,7 +127,7 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
         return $data;
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Define workshop storage dir
         $storage_dir = Config::get('storage.path.workshop');

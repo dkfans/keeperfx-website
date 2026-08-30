@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'workshop:virus-scan', description: 'Use ClamAV to scan workshop files.')]
 class VirusScanWorkshopCommand extends Command
 {
     public function __construct(
@@ -26,13 +27,12 @@ class VirusScanWorkshopCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('workshop:virus-scan')
-            ->setDescription('Use ClamAV to scan workshop files.')
+        $this
             ->addArgument('target', InputArgument::REQUIRED, 'Target to scan (<id>|scanned|new|all)')
             ->addArgument('order', InputArgument::OPTIONAL, 'Order (ASC|DESC)');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Define workshop storage dir
         $storage_dir = Config::get('storage.path.workshop');

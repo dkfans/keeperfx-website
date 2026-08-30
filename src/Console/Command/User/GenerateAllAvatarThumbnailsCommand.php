@@ -11,6 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'user:generate-all-avatar-thumbnails', description: 'Generate thumbnails for all user avatars')]
 class GenerateAllAvatarThumbnailsCommand extends Command
 {
     /** @var Container */
@@ -22,13 +23,7 @@ class GenerateAllAvatarThumbnailsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('user:generate-all-avatar-thumbnails')
-            ->setDescription('Generate thumbnails for all user avatars');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Define workshop storage dir
         $storage_dir = Config::get('storage.path.avatar');

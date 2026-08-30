@@ -3,46 +3,50 @@
 use App\Config\Config;
 use Doctrine\ORM\ORMSetup;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /*
  * Doctrine container definitions
  */
 return [
+    DebugBar\Bridge\Doctrine\DebugBarSQLMiddleware::class => \DI\create(),
+
     Doctrine\Common\EventManager::class => DI\create(),
 
-    Doctrine\DBAL\Configuration::class => DI\create(),
+    Doctrine\DBAL\Configuration::class => static function (ContainerInterface $container) {
+        $dbal_config = new Doctrine\DBAL\Configuration();
 
-    Doctrine\DBAL\Connection::class => static function (Doctrine\DBAL\Configuration $dbal_config, Doctrine\Common\EventManager $event_manager) {
-
-        // Handle database read only mode
-        if ($_ENV['APP_DB_READ_ONLY_MODE'] ?? false) {
-            $event_manager->addEventListener(
-                [Doctrine\ORM\Events::preFlush],
-                new App\Doctrine\ReadOnlyListener()
+        // Add php-debugbar middleware for logging SQL
+        if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'dev') {
+            $sql_middleware = $container->get(DebugBar\Bridge\Doctrine\DebugBarSQLMiddleware::class);
+            $dbal_config->setMiddlewares(
+                \array_merge($dbal_config->getMiddlewares(), [$sql_middleware])
             );
         }
 
-        // Create a connection
-        $connection = Doctrine\DBAL\DriverManager::getConnection(
+        return $dbal_config;
+    },
+
+    Doctrine\DBAL\Connection::class => static function (Doctrine\DBAL\Configuration $dbal_config) {
+        return Doctrine\DBAL\DriverManager::getConnection(
             Config::get('doctrine.connection'),
             $dbal_config,
-            $event_manager,
         );
-
-        // Return connection to container
-        return $connection;
     },
 
     Doctrine\ORM\Configuration::class => static function (CacheItemPoolInterface $cache) {
 
         // Create ORM config
-        $orm_config = ORMSetup::createAttributeMetadataConfiguration(
+        $orm_config = ORMSetup::createAttributeMetadataConfig(
             Config::get('doctrine.entity_dirs'),
             Config::get('doctrine.dev_mode'),
             Config::get('doctrine.proxy_dir'),
             $cache
         );
+
+        // Enable PHP native lazy objects
+        $orm_config->enableNativeLazyObjects(true);
 
         // Set table naming strategy
         if (\is_object(Config::get('doctrine.orm_naming_strategy'))) {
@@ -65,10 +69,18 @@ return [
         return $orm_config;
     },
 
-    Doctrine\ORM\EntityManager::class => DI\create()->constructor(
-        DI\get(Doctrine\DBAL\Connection::class),
-        DI\get(Doctrine\ORM\Configuration::class)
-    ),
+    Doctrine\ORM\EntityManager::class => static function (ContainerInterface $container, Doctrine\DBAL\Connection $conn, Doctrine\ORM\Configuration $config, Doctrine\Common\EventManager $event_manager) {
+
+        // Handle database read only mode
+        if ($_ENV['APP_DB_READ_ONLY_MODE'] ?? false) {
+            $event_manager->addEventListener(
+                [Doctrine\ORM\Events::preFlush],
+                new App\Doctrine\ReadOnlyListener()
+            );
+        }
+
+        return new Doctrine\ORM\EntityManager($conn, $config, $event_manager);
+    },
 
     Doctrine\Migrations\DependencyFactory::class => static function (Doctrine\DBAL\Connection $conn, Doctrine\ORM\Configuration $config) {
 

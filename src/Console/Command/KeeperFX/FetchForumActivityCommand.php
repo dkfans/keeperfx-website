@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\DomCrawler\Crawler;
 use Xenokore\Utility\Helper\StringHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fetch-forum-activity', description: 'Fetch the latest KeeperFX forum threads from Keeper Klan')]
 class FetchForumActivityCommand extends Command
 {
     public function __construct(
@@ -19,13 +20,7 @@ class FetchForumActivityCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('kfx:fetch-forum-activity')
-            ->setDescription('Fetch the latest KeeperFX forum threads from Keeper Klan');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
 
         // Check if enabled

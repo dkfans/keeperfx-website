@@ -7,6 +7,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fetch-discord-info', description: 'Fetch the info about the Discord server')]
 class FetchDiscordInfoCommand extends Command
 {
     public const REQUIRED_API_KEYS = [
@@ -20,13 +21,7 @@ class FetchDiscordInfoCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('kfx:fetch-discord-info')
-            ->setDescription('Fetch the info about the Discord server');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Get Discord server ID
         $discord_id = $_ENV['APP_DISCORD_INVITE_ID'] ?? null;

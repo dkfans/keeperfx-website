@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\Process\Process;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:handle-commits', description: 'Handle the commit history of the KeeperFX project')]
 class HandleCommitsCommand extends Command
 {
     private EntityManager $em;
@@ -23,13 +24,7 @@ class HandleCommitsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('kfx:handle-commits')
-            ->setDescription('Handle the commit history of the KeeperFX project');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $commits_handled = false;
         $output->writeln('[>] Handling project commits...');

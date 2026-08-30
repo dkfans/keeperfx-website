@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'workshop:add-tag', description: 'Add a workshop tag')]
 class AddWorkshopTagCommand extends Command
 {
     /** @var Container */
@@ -25,12 +26,11 @@ class AddWorkshopTagCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('workshop:add-tag')
-                ->setDescription('Add a workshop tag')
+        $this
                 ->addArgument('tag_name', InputArgument::REQUIRED, 'Name');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         /** @var EntityManager $em */
         $em = $this->container->get(EntityManager::class);

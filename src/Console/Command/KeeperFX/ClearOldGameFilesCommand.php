@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:clear-old-game-files', description: 'Clear old game files')]
 class ClearOldGameFilesCommand extends Command
 {
     public function __construct(
@@ -22,13 +23,7 @@ class ClearOldGameFilesCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('kfx:clear-old-game-files')
-            ->setDescription('Clear old game files');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Make sure the game files directory is set
         $storage_dir = Config::get('storage.path.game-files');

@@ -1684,6 +1684,10 @@ mark {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 a.phpdebugbar-restore-btn::after {
+
+    mask-image: none;
+    -webkit-mask-image: none;
+
     background: none;
     background-size: 18px 18px;
     background-position: center;
@@ -1693,7 +1697,7 @@ a.phpdebugbar-restore-btn::after {
 }
 
 div.phpdebugbar-widgets-callgraph pre span {
-    color: black;
+    color: var(--special-text-color);
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/

@@ -15,6 +15,7 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 use Xenokore\Utility\Helper\JsonHelper;
 use Xenokore\Utility\Helper\StringHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'workshop:fetch-unearth', description: 'Fetch the latest version of Unearth')]
 class FetchUnearthCommand extends Command
 {
     private const UNEARTH_GITHUB_RELEASE_URL = 'https://api.github.com/repos/rainlizard/Unearth/releases';
@@ -35,12 +36,6 @@ class FetchUnearthCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('workshop:fetch-unearth')
-                ->setDescription('Fetch the latest version of Unearth');
-    }
-
     private function getUnearthVersionFromString(string $string): string|false
     {
         if (\preg_match('~' . self::UNEARTH_VERSION_REGEX_1 . '~', $string, $matches) === 1) {
@@ -58,7 +53,7 @@ class FetchUnearthCommand extends Command
         return false;
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[>] Checking if Unearth workshop item needs updating...');
 

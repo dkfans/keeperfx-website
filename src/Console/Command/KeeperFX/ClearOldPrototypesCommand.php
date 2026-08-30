@@ -9,6 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:clear-old-prototypes', description: 'Clear old build prototypes')]
 class ClearOldPrototypesCommand extends Command
 {
     private EntityManager $em;
@@ -19,13 +20,7 @@ class ClearOldPrototypesCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('kfx:clear-old-prototypes')
-            ->setDescription('Clear old build prototypes');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Make sure an output directory is set
         $storage_dir = Config::get('storage.path.prototype');

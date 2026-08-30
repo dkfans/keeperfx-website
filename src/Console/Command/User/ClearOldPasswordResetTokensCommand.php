@@ -9,6 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'user:clear-old-password-reset', description: 'Clear old password reset tokens')]
 class ClearOldPasswordResetTokensCommand extends Command
 {
     /** @var Container */
@@ -21,13 +22,7 @@ class ClearOldPasswordResetTokensCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('user:clear-old-password-reset')
-                ->setDescription('Clear old password reset tokens');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         /** @var EntityManager $em */
         $em = $this->container->get(EntityManager::class);

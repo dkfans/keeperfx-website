@@ -18,6 +18,7 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
 use Xenokore\Utility\Helper\DirectoryHelper;
 use Xenokore\Utility\Helper\FileHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:extract-alpha-game-files', description: 'Extract the game files for an alpha patch')]
 class ExtractAlphaGameFilesCommand extends Command
 {
     public function __construct(
@@ -29,12 +30,11 @@ class ExtractAlphaGameFilesCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('kfx:extract-alpha-game-files')
-            ->setDescription('Extract the game files for an alpha patch')
+        $this
             ->addArgument('version', InputArgument::REQUIRED, 'Alpha patch version');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Make sure the game files directory is set
         $game_file_dir = Config::get('storage.path.game-files');

@@ -7,16 +7,16 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'website:benchmark-bcrypt-hash-cost', description: 'Benchmark and calculate an appropriate bcrypt password hash cost')]
 class BenchmarkBcryptHashCost extends Command
 {
     protected function configure(): void
     {
-        $this->setName('website:benchmark-bcrypt-hash-cost')
-            ->setDescription('Benchmark and calculate an appropriate bcrypt password hash cost')
+        $this
             ->addArgument('time', InputArgument::REQUIRED, 'Minimum target time in seconds. Decimals are possible');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Time Target
         $time_target = (float) $input->getArgument('time');

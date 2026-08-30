@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\Process\Process;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'website:cache-git-commits', description: 'Handle the commit history of the KeeperFX website')]
 class CacheWebsiteChangelogCommand extends Command
 {
     private CacheInterface $cache;
@@ -19,13 +20,7 @@ class CacheWebsiteChangelogCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('website:cache-git-commits')
-            ->setDescription('Handle the commit history of the KeeperFX website');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $commits = [];
         $output->writeln('[>] Grabbing commits from local website repo...');

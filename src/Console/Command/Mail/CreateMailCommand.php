@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'mail:create', description: 'Create a mail that will be added to the queue for sending')]
 class CreateMailCommand extends Command
 {
     public function __construct(
@@ -18,14 +19,13 @@ class CreateMailCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('mail:create')
-            ->setDescription('Create a mail that will be added to the queue for sending')
+        $this
             ->addArgument('email', InputArgument::REQUIRED, 'Email address to send the mail to')
             ->addArgument('subject', InputArgument::REQUIRED, 'Subject of the email')
             ->addArgument('body', InputArgument::REQUIRED, 'Body of the email');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Get email address
         $email = \rtrim((string) $input->getArgument('email'), ' \\/');

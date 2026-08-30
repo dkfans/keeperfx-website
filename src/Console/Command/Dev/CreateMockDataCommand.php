@@ -17,6 +17,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'dev:generate-mock-data', description: 'Generate fake data for use during development')]
 class CreateMockDataCommand extends Command
 {
     public const ISP_LIST = [
@@ -79,13 +80,7 @@ class CreateMockDataCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('dev:generate-mock-data')
-            ->setDescription('Generate fake data for use during development');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         // Create the Faker instance for mock data such as usernames, email addresses and text
         $faker = \Faker\Factory::create();

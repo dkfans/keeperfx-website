@@ -64,7 +64,7 @@ return [
             $debugbar = $container->get(DebugBar\StandardDebugBar::class);
             $profile  = new Twig\Profiler\Profile();
             $twig->addExtension(new Twig\Extension\ProfilerExtension($profile));
-            $debugbar->addCollector(new DebugBar\Bridge\NamespacedTwigProfileCollector($profile, $twig));
+            $debugbar->addCollector(new DebugBar\Bridge\Twig\NamespacedTwigProfileCollector($profile, $twig));
         }
 
         return $twig;

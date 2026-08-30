@@ -18,6 +18,7 @@ use wapmorgan\UnifiedArchive\Exceptions\EmptyFileListException;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fetch-alpha', description: 'Fetch the latest alpha releases')]
 class FetchAlphaCommand extends Command
 {
     public const IS_ENABLED = true;
@@ -38,13 +39,7 @@ class FetchAlphaCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('kfx:fetch-alpha')
-            ->setDescription('Fetch the latest alpha releases');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[>] Fetching latest alpha releases...');
 

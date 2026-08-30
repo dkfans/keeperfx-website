@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 use Xenokore\Utility\Helper\StringHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'crash-report:fix-exception-origins', description: 'Grab and set all exception origin in crash reports')]
 class FixCrashReportExceptionOriginsCommand extends Command
 {
     /** @var Container */
@@ -22,13 +23,7 @@ class FixCrashReportExceptionOriginsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('crash-report:fix-exception-origins')
-            ->setDescription('Grab and set all exception origin in crash reports');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[+] Fixing the exception origin for crash reports...');
 

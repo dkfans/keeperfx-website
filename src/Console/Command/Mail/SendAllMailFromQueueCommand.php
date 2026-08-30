@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'mail:send-queue-all', description: 'Send all mails that are in the queue')]
 class SendAllMailFromQueueCommand extends Command
 {
     public function __construct(
@@ -19,13 +20,7 @@ class SendAllMailFromQueueCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('mail:send-queue-all')
-            ->setDescription('Send all mails that are in the queue');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[>] Checking for mails to send...');
 

@@ -9,15 +9,10 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use Symfony\Component\Process\Process;
 use Xenokore\Utility\Helper\DirectoryHelper;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:pull-repo', description: 'Pull the latest master branch of KeeperFX')]
 class PullRepoCommand extends Command
 {
-    protected function configure(): void
-    {
-        $this->setName('kfx:pull-repo')
-            ->setDescription('Pull the latest master branch of KeeperFX');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[>] Fetching latest KeeperFX source revision...');
 

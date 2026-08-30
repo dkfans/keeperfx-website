@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 use TwitchApi\HelixGuzzleClient;
 use TwitchApi\TwitchApi;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:handle-twitch-streams', description: 'Fetch and handle Twitch streams to broadcast on homepage')]
 class HandleTwitchStreamsCommand extends Command
 {
     public const DUNGEON_KEEPER_GAME_ID = '16169'; // string
@@ -38,13 +39,7 @@ class HandleTwitchStreamsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setName('kfx:handle-twitch-streams')
-            ->setDescription('Fetch and handle Twitch streams to broadcast on homepage');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $streams = [];
         $output->writeln('[>] Handling Twitch streams...');

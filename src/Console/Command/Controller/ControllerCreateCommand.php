@@ -8,17 +8,17 @@ use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'controller:create', description: 'Create a new blank controller')]
 class ControllerCreateCommand extends Command
 {
     protected function configure(): void
     {
-        $this->setName('controller:create')
-            ->setDescription('Create a new blank controller')
+        $this
             ->addArgument('name', InputArgument::REQUIRED, 'Controller name (without the Controller affix)')
             ->addOption('twig', '-t', InputOption::VALUE_NONE, 'Add Twig');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $controller_dir = APP_ROOT . '/controllers';
 

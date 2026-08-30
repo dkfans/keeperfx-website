@@ -6,17 +6,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'website:fetch-geoip-db', description: 'Download the GeoIP database (mmdb)')]
 class FetchGeoIpDatabaseCommand extends Command
 {
     public const GEO_IP_URL = 'https://cdn.jsdelivr.net/npm/@ip-location-db/geo-whois-asn-country-mmdb/geo-whois-asn-country.mmdb';
 
-    protected function configure(): void
-    {
-        $this->setName('website:fetch-geoip-db')
-            ->setDescription('Download the GeoIP database (mmdb)');
-    }
-
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): int
     {
         $output->writeln('[>] Fetching latest GeoIP database...');
 
