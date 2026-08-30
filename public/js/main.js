@@ -237,5 +237,7 @@ $(function(){
         $('html, body').animate({ scrollTop: 0 }, 250);
     });
 
+    // Handle clear input fields
+    $('[data-input-clear-button]').clearInputButton();
 });
 
