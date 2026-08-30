@@ -51,7 +51,9 @@
                     <form id="workshop-search-form">
                         <input
                         class="form-control form-control-sm {% if get_query_param('search') %}border-primary{% endif %}"
-                        type="text" name="search" id="workshop-search" placeholder="Search" style="font-size: 16px; height: 38px; min-width: 250px" value="{{ get_query_param('search') }}" />
+                        type="text" name="search" id="workshop-search" placeholder="Search" style="font-size: 16px; height: 38px; min-width: 250px" value="{{ get_query_param('search') }}"
+                        data-input-clear-button  data-input-clear-button-submit
+                        />
                     </form>
                 </div>
 
