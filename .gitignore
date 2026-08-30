@@ -8,6 +8,9 @@ __MAINTENANCE_MODE_ACTIVE
 # Environment vars
 .env
 
+# CDN config
+cdn.config.yml
+
 # Cache files (during dev)
 /cache/
 .php-cs-fixer.cache

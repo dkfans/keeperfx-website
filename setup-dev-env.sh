@@ -3,6 +3,9 @@
 # Copy the example environment variables
 cp .env.docker .env
 
+# Copy the example CDN config
+cp cdn.config.yml.example cdn.config.yml
+
 # Set to development environment
 sed -i 's/^APP_ENV=.*/APP_ENV=dev/' .env
 

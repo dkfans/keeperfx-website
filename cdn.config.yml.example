@@ -1,0 +1,27 @@
+# The default CDN to use
+# '_self' will figure out the current domain / path
+default_endpoint: '_self'
+
+# Whether or not to show the '_self' endpoint
+# If you add an endpoint for the current website domain this should be disabled
+show_self_endpoint: true
+
+# The list of endpoint CDNs to use
+endpoints:
+    # kfx:
+    #     name: 'KeeperFX.net'
+    #     url: 'https://keeperfx.net'
+    #     location: 'Germany'
+
+    # cloudflare:
+    #     name: 'Cloudflare CDN'
+    #     url: 'https://cdn-cf1.keeperfx.net'
+    #     location: 'Worldwide'
+
+# Use default CDNs for specific countries
+country_defaults:
+    # Some German ISPs have a bad connection to Cloudflare
+    # DE: 'kfx'
+    # Some US and Australian ISPs have a bad connection to Hetzner
+    # US: 'cloudflare'
+    # AU: 'cloudflare'
