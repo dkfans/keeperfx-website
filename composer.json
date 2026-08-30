@@ -83,6 +83,7 @@
         "phpstan/phpstan": "^2.2",
         "phpstan/phpstan-doctrine": "^2.0",
         "phpunit/phpunit": "^9.5",
-        "psy/psysh": "^0.12"
+        "psy/psysh": "^0.12",
+        "rector/rector": "^2.6"
     }
 }
