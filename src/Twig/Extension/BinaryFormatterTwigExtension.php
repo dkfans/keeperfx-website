@@ -12,7 +12,7 @@ class BinaryFormatterTwigExtension extends \Twig\Extension\AbstractExtension
         return 'binary_formatter_extension';
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('format_bytes', [$this, 'formatBytes']),

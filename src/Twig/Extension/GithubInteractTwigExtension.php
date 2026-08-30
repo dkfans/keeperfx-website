@@ -11,7 +11,7 @@ class GithubInteractTwigExtension extends \Twig\Extension\AbstractExtension
         return 'github_interact_extension';
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('github_interact', [$this, 'githubInteract'], ['is_safe' => ['all']]),

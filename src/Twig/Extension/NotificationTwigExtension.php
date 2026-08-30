@@ -19,7 +19,7 @@ class NotificationTwigExtension extends \Twig\Extension\AbstractExtension implem
         return 'notification_extension';
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('notification_render', [$this, 'notificationRender'], ['is_safe' => ['all']]),

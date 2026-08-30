@@ -18,7 +18,7 @@ class StripMarkdownExtension extends AbstractExtension
         return 'strip_markdown_extension';
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('strip_markdown', [$this, 'stripMarkdown']),

@@ -11,7 +11,7 @@ class StringUniqueColorTwigExtension extends \Twig\Extension\AbstractExtension
         return 'string_unique_color_extension';
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('unique_color', [$this, 'unique_color'], ['is_safe' => ['all']]),

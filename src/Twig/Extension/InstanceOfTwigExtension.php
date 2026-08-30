@@ -14,7 +14,7 @@ class InstanceOfTwigExtension extends \Twig\Extension\AbstractExtension
         return 'instanceof_extension';
     }
 
-    public function getTests()
+    public function getTests(): array
     {
         return [
             new TwigTest('instanceof', [$this, 'isInstanceof']),

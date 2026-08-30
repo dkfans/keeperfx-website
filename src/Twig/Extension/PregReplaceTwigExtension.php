@@ -11,7 +11,7 @@ class PregReplaceTwigExtension extends \Twig\Extension\AbstractExtension
         return 'preg_replace_extension';
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter(
