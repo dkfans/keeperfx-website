@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed1f9ab9c5e0a47f13434de657c2949b",
+    "content-hash": "ed9b0b4986e88d6c3df10a133f0a5e66",
     "packages": [
         {
             "name": "akrabat/ip-address-middleware",
@@ -8026,7 +8026,7 @@
         },
         {
             "name": "wapmorgan/unified-archive",
-            "version": "dev-master",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wapmorgan/UnifiedArchive.git",
@@ -8067,7 +8067,6 @@
                 "symfony/console": "Requirement for cam (Console Archive Manager)",
                 "wapmorgan/cab-archive": "[pure] native CAB support"
             },
-            "default-branch": true,
             "bin": [
                 "bin/cam"
             ],
@@ -8122,7 +8121,7 @@
             ],
             "support": {
                 "issues": "https://github.com/wapmorgan/UnifiedArchive/issues",
-                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/master"
+                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.3.1"
             },
             "time": "2025-08-25T20:26:55+00:00"
         },
@@ -9214,11 +9213,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.2.9",
+            "version": "2.2.10",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/13d6b4f347bad222da436580c8304fa6f83e6bd0",
-                "reference": "13d6b4f347bad222da436580c8304fa6f83e6bd0",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/36d1509c998b0602811824143526b4a9ee2774e7",
+                "reference": "36d1509c998b0602811824143526b4a9ee2774e7",
                 "shasum": ""
             },
             "require": {
@@ -9274,7 +9273,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-22T07:38:16+00:00"
+            "time": "2026-08-30T12:46:16+00:00"
         },
         {
             "name": "phpstan/phpstan-doctrine",
@@ -11716,8 +11715,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "amoschou/commonmark-alert-extension": 20,
-        "wapmorgan/unified-archive": 20
+        "amoschou/commonmark-alert-extension": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
