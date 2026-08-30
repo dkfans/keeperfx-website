@@ -398,6 +398,9 @@ $app->group('/api', static function (RouteCollectorProxy $group) {
 
     // API: Moon Phase
     $group->get('/v1/moonphase', [Api\v1\MoonPhaseApiController::class, 'outputInfo']);
+
+    // API: CDN / download servers
+    $group->get('/v1/cdn/endpoints', [Api\v1\CdnApiController::class, 'listEndpoints']);
 });
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
