@@ -21,8 +21,6 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 #[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fetch-alpha', description: 'Fetch the latest alpha releases')]
 class FetchAlphaCommand extends Command
 {
-    public const IS_ENABLED = true;
-
     public const GITHUB_WORKFLOW_RUNS_URL = 'https://api.github.com/repos/dkfans/keeperfx/actions/runs';
 
     public const ARTIFACT_NAME_REGEX = '/^keeperfx\-([\d\_\-]+?)[\-\_]Alpha\-patch\-signed$/';
@@ -41,6 +39,15 @@ class FetchAlphaCommand extends Command
 
     protected function execute(Input $input, Output $output): int
     {
+        // Check if fetching alpha patches is disabled from the .env file
+        // We do this so we can easily disable it in case the alpha downloading is broken somehow
+        if ((bool) $_ENV['APP_ALPHA_PATCH_FETCH_ENABLED'] === false) {
+            $output->writeln('[?] Alpha patch fetching is forcefully disabled (APP_ALPHA_PATCH_FETCH_ENABLED)');
+
+            return Command::SUCCESS;
+        }
+
+        // Show that we start the fetching process
         $output->writeln('[>] Fetching latest alpha releases...');
 
         // Make sure a Github token is set
@@ -429,10 +436,8 @@ class FetchAlphaCommand extends Command
             $output->writeln('[+] Output filesize: ' . BinaryFormatter::bytes($output_filesize)->format());
 
             // Send a notification on Discord
-            if (self::IS_ENABLED) {
-                if ($this->discord_notifier->notifyNewAlphaPatch($build)) {
-                    $output->writeln('[+] Discord has been notified!');
-                }
+            if ($this->discord_notifier->notifyNewAlphaPatch($build)) {
+                $output->writeln('[+] Discord has been notified!');
             }
 
             // Scan with VirusTotal
