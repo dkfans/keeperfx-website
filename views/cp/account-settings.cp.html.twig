@@ -220,7 +220,8 @@
                             <strong>{{ endpoint_data.name }}</strong>
                             {# <div class="w-100 d-flex justify-content-between"> #}
                             <div class="w-100">
-                                <span class="text-muted">{{ endpoint_data.location }}</span>
+                                <span class="pe-1">{{ endpoint_data.location.flag }}</span>
+                                <span class="text-muted">{{ endpoint_data.location.name }}</span>
                                 {# <span class="" id="cdn-speedtest-speed-{{ endpoint_id }}"></span> #}
                                 <span class="ms-3" id="cdn-speedtest-speed-{{ endpoint_id }}"></span>
                             </div>

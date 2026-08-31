@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Config\Config;
 use Symfony\Component\Yaml\Yaml;
 
 class CDN
@@ -12,6 +13,8 @@ class CDN
     private array $current_cdn;
 
     private bool $is_user_choice = false;
+
+    private array $possible_locations = [];
 
     private function getDefaultConfig(): array
     {
@@ -24,7 +27,7 @@ class CDN
                         \parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_HOST) . (\parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_PORT) ? ':' . \parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_PORT) : '')
                     ),
                     'url'      => $_ENV['APP_ROOT_URL'],
-                    'location' => 'Unknown',
+                    'location' => $this->getLocationData('XX'), // Unknown
                 ],
             ],
             'show_self_endpoint' => true,
@@ -33,8 +36,59 @@ class CDN
         ];
     }
 
+    private function loadPossibleLocations(): void
+    {
+        $location_names = Config::load('location.name');
+        $location_flags = Config::load('location.flag');
+        $country_names  = Config::load('country.name');
+        $country_flags  = Config::load('country.flag');
+
+        foreach (\array_keys(\array_merge($location_names, $country_names)) as $code) {
+
+            $location_data = [
+                'code' => $code,
+                'name' => 'Unknown',
+                'flag' => '❓',
+            ];
+
+            if (isset($location_names[$code])) {
+                $location_data['name'] = (string) $location_names[$code];
+            }
+
+            if (isset($location_flags[$code])) {
+                $location_data['flag'] = (string) $location_flags[$code];
+            }
+
+            if (isset($country_names[$code])) {
+                $location_data['name'] = (string) $country_names[$code];
+            }
+
+            if (isset($country_flags[$code])) {
+                $location_data['flag'] = (string) $country_flags[$code];
+            }
+
+            $this->possible_locations[$code] = $location_data;
+        }
+    }
+
+    private function getLocationData(string $code)
+    {
+        if (isset($this->possible_locations[$code])) {
+            return $this->possible_locations[$code];
+        }
+
+        return [
+            'code' => 'XX',
+            'name' => 'Unknown',
+            'flag' => '❓',
+        ];
+    }
+
     public function __construct()
     {
+        // Load all the possible locations
+        $this->loadPossibleLocations();
+
         // Load the default config
         $this->cdn_config = $this->getDefaultConfig();
 
@@ -58,6 +112,17 @@ class CDN
         if (\is_array($yaml)) {
             if (isset($yaml['endpoints']) && \is_array($yaml['endpoints'])) {
                 $this->cdn_config['endpoints'] = \array_merge($this->cdn_config['endpoints'], $yaml['endpoints']);
+
+                // Load location data for location code
+                foreach ($this->cdn_config['endpoints'] as $endpoint => $data) {
+                    if (isset($data['location']) && \is_string($data['location'])) {
+                        $code = $data['location'];
+                        // Overwrite the location with a location data array
+                        $this->cdn_config['endpoints'][$endpoint]['location'] = $this->getLocationData($code);
+                    } else {
+                        $this->cdn_config['endpoints'][$endpoint]['location'] = $this->getLocationData('XX'); // Unknown
+                    }
+                }
             }
             if (isset($yaml['default_endpoint'])) {
                 $this->cdn_config['default_endpoint'] = $yaml['default_endpoint'];

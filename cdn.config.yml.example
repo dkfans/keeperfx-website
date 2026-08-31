@@ -7,18 +7,20 @@ default_endpoint: '_self'
 show_self_endpoint: true
 
 # The list of endpoint CDNs to use
+# Location codes can be found in `./config/country.name.config.php` and `./config/location.name.config.php`
 endpoints:
     # kfx:
     #     name: 'KeeperFX.net'
     #     url: 'https://keeperfx.net'
-    #     location: 'Germany'
+    #     location: 'DE'
 
     # cloudflare:
     #     name: 'Cloudflare CDN'
     #     url: 'https://cdn-cf1.keeperfx.net'
-    #     location: 'Worldwide'
+    #     location: 'WW'
 
 # Use default CDNs for specific countries
+# The locations from `./config/location.name.config.php` do not work here. Only country codes can be used.
 country_defaults:
     # Some German ISPs have a bad connection to Cloudflare
     # DE: 'kfx'
