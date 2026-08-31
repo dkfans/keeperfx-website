@@ -17,6 +17,7 @@ class CdnApiController
         $response = $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(
             \json_encode([
+                'success'            => true,
                 'endpoints'          => $cdn->getAll(),
                 'suggested_endpoint' => $cdn->getCurrentId(),   // This will pass trough the middleware which will check the country
             ])

@@ -22,6 +22,17 @@ class ReleaseApiController
         /** @var GithubRelease $release */
         $release = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
 
+        if ($release == null) {
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'NO_RELEASE_FOUND',
+                ])
+            );
+
+            return $response;
+        }
+
         $response->getBody()->write(
             \json_encode([
                 'success' => true,
@@ -51,19 +62,34 @@ class ReleaseApiController
         /** @var GithubAlphaBuild $alpha_build */
         $alpha_build = $em->getRepository(GithubAlphaBuild::class)->findOneBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC']);
 
+        if ($alpha_build == null) {
+            $response->getBody()->write(
+                \json_encode([
+                    'success' => false,
+                    'error'   => 'NO_ALPHA_BUILD_FOUND',
+                ])
+            );
+
+            return $response;
+        }
+
+        // Get the download endpoint
+        $download_endpoint = '/download/alpha/' . \urlencode($alpha_build->getFilename());
+
         $response->getBody()->write(
             \json_encode([
                 'success'     => true,
                 'alpha_build' => [
-                    'artifact_id'     => $alpha_build->getArtifactId(),
-                    'name'            => $alpha_build->getName(),
-                    'version'         => $alpha_build->getVersion(),
-                    'workflow_title'  => $alpha_build->getWorkflowTitle(),
-                    'workflow_run_id' => $alpha_build->getWorkflowRunId(),
-                    'filename'        => $alpha_build->getFilename(),
-                    'timestamp'       => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
-                    'size_in_bytes'   => $alpha_build->getSizeInBytes(),
-                    'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename()),
+                    'artifact_id'      => $alpha_build->getArtifactId(),
+                    'name'             => $alpha_build->getName(),
+                    'version'          => $alpha_build->getVersion(),
+                    'workflow_title'   => $alpha_build->getWorkflowTitle(),
+                    'workflow_run_id'  => $alpha_build->getWorkflowRunId(),
+                    'filename'         => $alpha_build->getFilename(),
+                    'timestamp'        => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
+                    'size_in_bytes'    => $alpha_build->getSizeInBytes(),
+                    'download_url'     => $_ENV['APP_ROOT_URL'] . $download_endpoint,
+                    'download_url_cdn' => $download_endpoint,
                 ],
             ])
         );
@@ -86,9 +112,9 @@ class ReleaseApiController
         $version = \preg_replace('/[^0-9.]/', '', $version);
 
         // Get the release the user has
-        /** @var GithubRelease $release */
+        /** @var ?GithubRelease $release */
         $release = $em->getRepository(GithubRelease::class)->findOneBy(['version' => $version]);
-        if (!$release) {
+        if ($release == null) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
@@ -120,9 +146,9 @@ class ReleaseApiController
 
         // Get news for the latest release
         $news = null;
-        /** @var NewsArticle $article */
+        /** @var ?NewsArticle $article */
         $article = $latest_release->getLinkedNewsPost();
-        if ($article) {
+        if ($article != null) {
             $news = [
                 'title'     => $article->getTitle(),
                 'timestamp' => $article->getCreatedTimestamp()->format('c'),
@@ -179,7 +205,7 @@ class ReleaseApiController
         // Get the alpha patch the user has
         /** @var GithubAlphaBuild $alpha_patch */
         $alpha_patch = $em->getRepository(GithubAlphaBuild::class)->findOneBy(['version' => $version]);
-        if (!$alpha_patch) {
+        if ($alpha_patch == null) {
             $response->getBody()->write(
                 \json_encode([
                     'success' => false,
@@ -227,6 +253,9 @@ class ReleaseApiController
             ];
         }
 
+        // Get the download endpoint
+        $download_endpoint = '/download/alpha/' . \urlencode($last_patch->getFilename());
+
         // Return
         $response->getBody()->write(
             \json_encode([
@@ -236,7 +265,8 @@ class ReleaseApiController
                 'alpha_patch' => [
                     'name'      => $last_patch->getName(),
                     'version'   => $last_patch->getVersion(),
-                    'url'       => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($last_patch->getFilename()),
+                    'url'       => $_ENV['APP_ROOT_URL'] . $download_endpoint,
+                    'url_cdn'   => $download_endpoint,
                     'timestamp' => $last_patch->getTimestamp()->format('c'),
                 ],
             ])
@@ -285,19 +315,23 @@ class ReleaseApiController
         /** @var GithubAlphaBuild $alpha_build */
         $alpha_build = $result[0];
 
+        // Get the download endpoint
+        $download_endpoint = '/download/alpha/' . \urlencode($alpha_build->getFilename());
+
         $response->getBody()->write(
             \json_encode([
                 'success'     => true,
                 'alpha_build' => [
-                    'artifact_id'     => $alpha_build->getArtifactId(),
-                    'name'            => $alpha_build->getName(),
-                    'version'         => $alpha_build->getVersion(),
-                    'workflow_title'  => $alpha_build->getWorkflowTitle(),
-                    'workflow_run_id' => $alpha_build->getWorkflowRunId(),
-                    'filename'        => $alpha_build->getFilename(),
-                    'timestamp'       => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
-                    'size_in_bytes'   => $alpha_build->getSizeInBytes(),
-                    'download_url'    => $_ENV['APP_ROOT_URL'] . '/download/alpha/' . \urlencode($alpha_build->getFilename()),
+                    'artifact_id'      => $alpha_build->getArtifactId(),
+                    'name'             => $alpha_build->getName(),
+                    'version'          => $alpha_build->getVersion(),
+                    'workflow_title'   => $alpha_build->getWorkflowTitle(),
+                    'workflow_run_id'  => $alpha_build->getWorkflowRunId(),
+                    'filename'         => $alpha_build->getFilename(),
+                    'timestamp'        => $alpha_build->getTimestamp()->format('c'), // ISO 8601 date
+                    'size_in_bytes'    => $alpha_build->getSizeInBytes(),
+                    'download_url'     => $_ENV['APP_ROOT_URL'] . $download_endpoint,
+                    'download_url_cdn' => $download_endpoint,
                 ],
             ])
         );
