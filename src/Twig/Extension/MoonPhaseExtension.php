@@ -42,10 +42,15 @@ class MoonPhaseExtension extends \Twig\Extension\AbstractExtension implements \T
             $is_near_new_moon = true;
         }
 
+        // Get the internal moon phase name value
+        $moon_phase_name_internal = $this->moon_phase->getPhaseNameEnum()->value;
+
+        // Get the moon phase name
+        $moon_phase_name = \str_replace('_', ' ', $moon_phase_name_internal);
+        $moon_phase_name = \ucwords($moon_phase_name);
+
         // Get phase image
-        $phase_img_filename = $this->moon_phase->getPhaseName();
-        $phase_img_filename = \strtolower($phase_img_filename);
-        $phase_img_filename = \str_replace(' ', '-', $phase_img_filename);
+        $phase_img_filename = \str_replace('_', '-', $moon_phase_name_internal);
         $phase_img_filename .= '.png';
 
         // Get phase image URL
@@ -75,7 +80,7 @@ class MoonPhaseExtension extends \Twig\Extension\AbstractExtension implements \T
         return [
             'moon_phase' => [
                 'phase'             => $phase,
-                'name'              => $this->moon_phase->getPhaseName(),
+                'name'              => $moon_phase_name,
                 'img'               => $phase_img_url,
                 'next_full_moon'    => (new \DateTime())->setTimestamp((int) $next_full_moon),
                 'next_new_moon'     => (new \DateTime())->setTimestamp((int) $next_new_moon),
