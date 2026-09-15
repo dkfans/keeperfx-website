@@ -9,7 +9,7 @@ show_self_endpoint: true
 # The list of endpoint CDNs to use
 # Location codes can be found in `./config/country.name.config.php` and `./config/location.name.config.php`
 endpoints:
-    # kfx:
+    # keeperfx.net:
     #     name: 'KeeperFX.net'
     #     url: 'https://keeperfx.net'
     #     location: 'DE'
