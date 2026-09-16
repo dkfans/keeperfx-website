@@ -422,7 +422,7 @@ class FetchAlphaCommand extends Command
             $build->setTimestamp(new \DateTime($artifact->created_at));
             $build->setWorkflowTitle($display_title);
             $build->setWorkflowRunId($artifact->workflow_run->id ?? null);
-            $build->setIsAvailable(self::IS_ENABLED);
+            $build->setIsAvailable(true);
             $build->setVersion($version);
             $build->setCommitComment($commit_comment);
             $build->setCommitSha($commit_sha);
