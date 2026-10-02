@@ -24,7 +24,7 @@ services:
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         volumes:
-            - kfx_database:/app/lib/mysql
+            - kfx_database:/var/lib/mysql
         networks:
             - kfx_network
         healthcheck:
@@ -84,7 +84,7 @@ services:
         restart: unless-stopped
         network_mode: none
         volumes:
-            - "/app/run/docker.sock:/app/run/docker.sock"
+            - "/var/run/docker.sock:/var/run/docker.sock"
         environment:
             CRON_APP_TASKS: "* * * * * docker exec -u www-data kfx-php php ./vendor/bin/crunz schedule:run &"
         healthcheck:
