@@ -189,6 +189,12 @@ class HistoryController
                     'date_format' => 'Y-m-d',
                     'description' => 'Cerwym migrated KeeperFX from SDL2 to SDL3. This is mostly a technical change, but it also fixes some sound issues and will help the project in the future.',
                 ],
+                [
+                    'title'       => 'OpenGL support!',
+                    'date'        => new \DateTime('2026-09-12'),
+                    'date_format' => 'Y-m-d',
+                    'description' => 'GPU rendering has finally landed! Cerwym added OpenGL support which allows the graphics card to render the view.',
+                ],
             ]])
         );
 
