@@ -214,4 +214,19 @@ class CDN
     {
         return \array_key_exists($name, $this->getAll());
     }
+
+    public function getDefaultCdnId(): string
+    {
+        return $this->cdn_config['default_endpoint'];
+    }
+
+    public function getDefaultCdn(): array
+    {
+        return $this->cdn_config['endpoints'][$this->getDefaultCdnId()];
+    }
+
+    public function getCountryDefaults(): array
+    {
+        return $this->cdn_config['country_defaults'];
+    }
 }

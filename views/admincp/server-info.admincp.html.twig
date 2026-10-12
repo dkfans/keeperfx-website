@@ -267,20 +267,24 @@
         </table>
 
         <h5>CDN Custom Country Rules</h5>
-        <table class="table">
-            {% for country_code, endpoint in cdn_rules %}
-            <tr>
-                <td style="width: 50%">
-                    {{ get_country_emoji(country_code) }}
+        {% if cdn_rules is not empty %}
+            <table class="table">
+                {% for country_code, endpoint in cdn_rules %}
+                <tr>
+                    <td style="width: 50%">
+                        {{ get_country_emoji(country_code) }}
 
-                    {{ get_country_string(country_code) }}
-                </td>
-                <td style="width: 50%" class="text-info">
-                    {{ cdn_info[endpoint].name }}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+                        {{ get_country_string(country_code) }}
+                    </td>
+                    <td style="width: 50%" class="text-info">
+                        {{ cdn_info[endpoint].name ?? (endpoint ~ ' (unavailable)' )}}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <span class="text-muted">No custom country rules found</span>
+        {% endif %}
 
     </div>
 </div>

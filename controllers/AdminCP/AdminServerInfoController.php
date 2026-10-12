@@ -3,7 +3,6 @@
 namespace App\Controller\AdminCP;
 
 use App\CDN;
-use App\Config\Config;
 use App\Entity\GithubAlphaBuild;
 use App\Entity\Mail;
 use App\Entity\User;
@@ -53,7 +52,7 @@ class AdminServerInfoController
         $cdn_info = [
             'null' => [
                 'count' => $em->getRepository(User::class)->count(['cdn' => null]),
-                'name'  => Config::get('cdn.endpoints.' . Config::get('cdn.default') . '.name') . ' (custom country rules)',
+                'name'  => $cdn->getDefaultCdn()['name'] . ' (custom country rules)',
             ],
         ];
         foreach ($cdn->getAll() as $id => $data) {
@@ -165,7 +164,7 @@ class AdminServerInfoController
                 'last_workshop_item'         => $em->getRepository(WorkshopItem::class)->findOneBy([], ['created_timestamp' => 'DESC']),
                 'ipv6_support'               => \defined('AF_INET6') && @\inet_pton('::1') !== false,
                 'cdn_info'                   => $cdn_info,
-                'cdn_rules'                  => Config::get('cdn.country_defaults'),
+                'cdn_rules'                  => $cdn->getCountryDefaults(),
                 'country_counts'             => $country_counts,
                 'env_vars'                   => $env_vars,
             ])
