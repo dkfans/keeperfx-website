@@ -41,7 +41,7 @@
         "maxmind-db/reader": "^1.13",
         "monolog/monolog": "^3.2",
         "nicklaw5/twitch-api-php": "^7.1",
-        "nopjmp/discord-webhooks": "^0.3.1",
+        "nopjmp/discord-webhooks": "^0.4",
         "php-debugbar/doctrine-bridge": "^3.0",
         "php-debugbar/monolog-bridge": "^1.0",
         "php-debugbar/php-debugbar": "^3.0",
