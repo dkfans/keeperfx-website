@@ -212,11 +212,18 @@ $(function () {
                     .text('Upload complete');
 
                 const $html = $('<div>').html(response);
-                const $newTbody = $html.find('#files-table tbody');
-                const $currentTbody = $('#files-table tbody');
+                var $newTbody = $html.find('#files-table tbody');
+                var $currentTbody = $('#files-table tbody');
 
                 if ($newTbody.length) {
+
+                    if($currentTbody.length == 0){
+                        window.location.reload();
+                        return;
+                    }
+
                     $currentTbody.html($newTbody.html());
+
                     $currentTbody.find('[data-copy-url]').show();
 
                     // Highlight the row that has the filename we uploaded
