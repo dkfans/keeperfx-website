@@ -108,7 +108,7 @@ class NewsArticle
 
     public function getTitleSlug(): string
     {
-        return \URLify::slug($this->title);
+        return \App\Helper\SlugHelper::slugify($this->title);
     }
 
     /**

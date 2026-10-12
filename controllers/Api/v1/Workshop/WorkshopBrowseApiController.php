@@ -47,7 +47,7 @@ class WorkshopBrowseApiController
                     'description_html'     => $description_with_html,
                     'description'          => $description_text_only,
 
-                    'url' => $_ENV['APP_ROOT_URL'] . '/workshop/item/' . $entity->getId() . '/' . \URLify::slug($entity->getName()),
+                    'url' => $_ENV['APP_ROOT_URL'] . '/workshop/item/' . $entity->getId() . '/' . \App\Helper\SlugHelper::slugify($entity->getName()),
 
                     'image' => \count($entity->getImages()) > 0 ?
                         $_ENV['APP_ROOT_URL'] . '/workshop/image/' . $entity->getId() . '/' . $entity->getImages()[0]->getFilename() :

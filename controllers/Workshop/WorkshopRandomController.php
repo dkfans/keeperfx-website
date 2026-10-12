@@ -62,7 +62,7 @@ class WorkshopRandomController
 
         $response = $response->withHeader(
             'Location',
-            '/workshop/item/' . $item->getId() . '/' . \URLify::slug($item->getName()) . '#nav-top'
+            '/workshop/item/' . $item->getId() . '/' . \App\Helper\SlugHelper::slugify($item->getName()) . '#nav-top'
         )->withStatus(302);
 
         return $response;

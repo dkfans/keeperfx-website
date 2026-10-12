@@ -23,6 +23,6 @@ class SlugifyTwigExtension extends \Twig\Extension\AbstractExtension
      */
     public function slugify(string $string): string
     {
-        return \URLify::slug($string);
+        return \App\Helper\SlugHelper::slugify($string);
     }
 }

@@ -345,7 +345,7 @@ class WorkshopUploadController
 
         // Show upload success message and redirect to workshop item page
         $flash->success('Your workshop item has been uploaded!');
-        $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId() . '/' . \URLify::slug($workshop_item->getName()))->withStatus(302);
+        $response = $response->withHeader('Location', '/workshop/item/' . $workshop_item->getId() . '/' . \App\Helper\SlugHelper::slugify($workshop_item->getName()))->withStatus(302);
 
         return $response;
     }

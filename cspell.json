@@ -206,6 +206,7 @@
         "timeago",
         "TINYINT",
         "toastr",
+        "TRANSLIT",
         "treeview",
         "tulipscent",
         "unicode",

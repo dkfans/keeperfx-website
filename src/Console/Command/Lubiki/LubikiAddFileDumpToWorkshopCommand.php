@@ -286,7 +286,7 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
             }
 
             // Generate new fancy download name
-            $download_filename = \URLify::slug($nfo['name']);
+            $download_filename = \App\Helper\SlugHelper::slugify($nfo['name']);
             if ($nfo['version']) {
                 $download_filename .= '_v' . $nfo['version'];
             }

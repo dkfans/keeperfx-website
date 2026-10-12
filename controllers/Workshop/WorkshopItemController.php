@@ -38,10 +38,10 @@ class WorkshopItemController
         }
 
         // Make sure title slug is in URL and matches
-        if (\URLify::slug($workshop_item->getName()) !== $slug) {
+        if (\App\Helper\SlugHelper::slugify($workshop_item->getName()) !== $slug) {
             $response = $response->withHeader(
                 'Location',
-                '/workshop/item/' . $workshop_item->getId() . '/' . \URLify::slug($workshop_item->getName())
+                '/workshop/item/' . $workshop_item->getId() . '/' . \App\Helper\SlugHelper::slugify($workshop_item->getName())
             )->withStatus(302);
 
             return $response;

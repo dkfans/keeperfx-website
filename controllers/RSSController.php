@@ -199,7 +199,7 @@ class RSSController
                 $entry = $feed->createEntry();
                 $entry
                     ->setTitle($item->getName())
-                    ->setLink($_ENV['APP_ROOT_URL'] . '/workshop/item/' . $item->getId() . '/' . \URLify::slug($item->getName()))
+                    ->setLink($_ENV['APP_ROOT_URL'] . '/workshop/item/' . $item->getId() . '/' . \App\Helper\SlugHelper::slugify($item->getName()))
                     ->setDateCreated($item->getCreatedTimestamp());
 
                 // Get submitter username

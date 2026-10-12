@@ -332,7 +332,7 @@ class WorkshopEditController
         $flash->success('Your workshop item has been updated.');
         $response = $response->withHeader(
             'Location',
-            '/workshop/item/' . $workshop_item->getId() . '/' . \URLify::slug($workshop_item->getName())
+            '/workshop/item/' . $workshop_item->getId() . '/' . \App\Helper\SlugHelper::slugify($workshop_item->getName())
         )->withStatus(302);
 
         return $response;

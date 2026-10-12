@@ -124,7 +124,7 @@ class DiscordNotifier
         $embed->title(\htmlentities($item->getName()));
         $embed->color(self::COLOR_NEW_WORKSHOP_ITEM);
         $embed->timestamp($item->getCreatedTimestamp()->format('Y-m-d H:i'));
-        $embed->url($_ENV['APP_ROOT_URL'] . '/workshop/item/' . $item->getId() . '/' . \URLify::slug($item->getName()));
+        $embed->url($_ENV['APP_ROOT_URL'] . '/workshop/item/' . $item->getId() . '/' . Helper\SlugHelper::slugify($item->getName()));
         $embed->field(
             EnumTwigExtension::enumBeautify($item->getCategory()->name), // Little hack
             ''
