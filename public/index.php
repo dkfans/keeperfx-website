@@ -2,6 +2,8 @@
 
 use App\Config\Config;
 use App\Middleware\ErrorMiddleware;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /** @var Psr\Container\ContainerInterface $container */
 /** @var Psr\Log\LoggerInterface $logger */
@@ -61,17 +63,37 @@ foreach ((require APP_ROOT . '/app/middlewares.php') as $middleware_class) {
     $app->add($middleware_class);
 }
 
-// Add default error handler (for end users)
+// Add Error middleware
 if (Config::get('app.whoops.is_enabled') === false) {
-    $app->add(ErrorMiddleware::class);
-}
 
-// Add Whoops Middleware
-if (Config::get('app.whoops.is_enabled') === true) {
-    $app->add(new Zeuxisoo\Whoops\Slim\WhoopsMiddleware([
-        // Set IDE to open the source file from the error page
-        'editor' => Config::get('app.whoops.editor'),
-    ]));
+    // Default error handler (for end users)
+    $app->add(ErrorMiddleware::class);
+
+} else {
+
+    // Whoops Middleware
+    $app->add(new class {
+        public function __invoke(RequestInterface $request, RequestHandlerInterface $handler)
+        {
+            try {
+                return $handler->handle($request);
+            } catch (Throwable $e) {
+
+                $whoops = new Whoops\Run();
+                $whoops->allowQuit(false);
+                $whoops->writeToOutput(false);
+
+                $pretty_page_handler = new Whoops\Handler\PrettyPageHandler();
+                $pretty_page_handler->setEditor(Config::get('app.whoops.editor'));
+                $whoops->pushHandler($pretty_page_handler);
+
+                $response = new Slim\Psr7\Response(500);
+                $response->getBody()->write($whoops->handleException($e));
+
+                return $response;
+            }
+        }
+    });
 }
 
 // Add debug bar collectors
