@@ -15,6 +15,7 @@ use App\Entity\WorkshopCommentReport;
 use App\Entity\WorkshopDifficultyRating;
 use App\Entity\WorkshopItem;
 use App\Entity\WorkshopRating;
+use App\Workshop\WorkshopCache;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -29,6 +30,7 @@ class MergeUsersCommand extends Command
 {
     public function __construct(
         private EntityManager $em,
+        private WorkshopCache $workshop_cache,
     ) {
         parent::__construct();
     }
@@ -369,6 +371,9 @@ class MergeUsersCommand extends Command
                 }
             }
         }
+
+        // Clear the workshop cache
+        $this->workshop_cache->clearAllCachedBrowsePageData();
 
         // Success
         return Command::SUCCESS;
