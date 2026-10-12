@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "444c4c12ef35efec60cb2958a6b34c52",
+    "content-hash": "9f53644f5f3e802981aba8bc35b59c54",
     "packages": [
         {
             "name": "akrabat/ip-address-middleware",
@@ -1657,58 +1657,6 @@
                 }
             ],
             "time": "2026-10-03T17:03:57+00:00"
-        },
-        {
-            "name": "gemorroj/archive7z",
-            "version": "5.9.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Gemorroj/Archive7z.git",
-                "reference": "f9bf1ff0cc5e957aa7e2264ab24e1762bfabd905"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Gemorroj/Archive7z/zipball/f9bf1ff0cc5e957aa7e2264ab24e1762bfabd905",
-                "reference": "f9bf1ff0cc5e957aa7e2264ab24e1762bfabd905",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.2",
-                "symfony/process": "^7.4||^8.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.93",
-                "phpstan/phpstan": "^2.1",
-                "phpunit/phpunit": "^11.5||^12.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Archive7z\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Gemorroj"
-                }
-            ],
-            "description": "7z cli wrapper",
-            "keywords": [
-                "7-zip",
-                "7z",
-                "7zip",
-                "archive",
-                "p7zip"
-            ],
-            "support": {
-                "issues": "https://github.com/Gemorroj/Archive7z/issues",
-                "source": "https://github.com/Gemorroj/Archive7z/tree/5.9.0"
-            },
-            "time": "2026-01-25T11:31:33+00:00"
         },
         {
             "name": "graham-campbell/result-type",
