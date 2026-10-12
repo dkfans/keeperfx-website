@@ -3,7 +3,6 @@
 namespace App\Kernel;
 
 use DI\ContainerBuilder;
-use Kir\StringUtils\Matching\Wildcards\Pattern as WildcardPattern;
 use Psr\Container\ContainerInterface;
 use Xenokore\Utility\Helper\StringHelper;
 
@@ -65,8 +64,8 @@ class ContainerFactory
 
                             // Handle ignores (using wildcards)
                             foreach ($config['autowire']['ignore'] as $ignore_pattern) {
-                                if (WildcardPattern::create($ignore_pattern)->match($file_info->getFilename())) {
-                                    continue 2; // jump out parent loop too ;)
+                                if (\fnmatch($ignore_pattern, $file_info->getFilename())) {
+                                    continue 2; // jump out parent loop too
                                 }
                             }
 
