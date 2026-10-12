@@ -24,7 +24,10 @@
                             data-pswp-height="{{ screenshot.height }}"
                             data-cropped="true"
                             target="_blank">
-                                <img src="{{ screenshot.thumbnail_src }}" alt="" />
+                                <picture>
+                                    <source type="image/jxl" srcset="{{ screenshot.thumbnail_src_jxl }}">
+                                    <img src="{{ screenshot.thumbnail_src }}" alt="{{ screenshot.title }}">
+                                </picture>
                             </a>
                         </div>
                         <span class="screenshot-title">

@@ -3,8 +3,6 @@ types {
     text/html                                        html htm shtml;
     text/css                                         css;
     text/xml                                         xml;
-    image/gif                                        gif;
-    image/jpeg                                       jpeg jpg;
     application/javascript                           js;
     application/atom+xml                             atom;
     application/rss+xml                              rss;
@@ -16,6 +14,9 @@ types {
     text/x-component                                 htc;
 
     image/avif                                       avif;
+    image/gif                                        gif;
+    image/jpeg                                       jpeg jpg;
+    image/jxl                                        jxl;
     image/png                                        png;
     image/svg+xml                                    svg svgz;
     image/tiff                                       tif tiff;
