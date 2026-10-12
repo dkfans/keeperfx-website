@@ -11,7 +11,6 @@ use App\Helper\ThumbnailHelper;
 use App\Notifications\Notification\NewsPostNotification;
 use App\Notifications\NotificationCenter;
 use App\UploadSizeHelper;
-use ByteUnits\Binary as BinaryFormatter;
 use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -125,7 +124,7 @@ class AdminNewsController
                 if ($file->getSize() > $upload_size_helper->getFinalNewsImageUploadSize()) {
                     $flash->warning(
                         'Maximum upload filesize for news image exceeded. (' .
-                        BinaryFormatter::bytes($upload_size_helper->getFinalNewsImageUploadSize())->format() .
+                        \App\Helper\FormatHelper::formatBytes($upload_size_helper->getFinalNewsImageUploadSize()) .
                         ')'
                     );
                     $response->getBody()->write(
@@ -282,7 +281,7 @@ class AdminNewsController
                 if ($file->getSize() > $upload_size_helper->getFinalNewsImageUploadSize()) {
                     $flash->warning(
                         'Maximum upload filesize for news image exceeded. (' .
-                        BinaryFormatter::bytes($upload_size_helper->getFinalNewsImageUploadSize())->format() .
+                        \App\Helper\FormatHelper::formatBytes($upload_size_helper->getFinalNewsImageUploadSize()) .
                         ')'
                     );
                     $response = $response->withHeader('Location', '/admin/news/' . $article->getId())->withStatus(302);

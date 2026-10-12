@@ -433,7 +433,7 @@ class FetchAlphaCommand extends Command
 
             // Show success message
             $output->writeln("[+] <info>{$artifact->name}</info> stored! -> <info>{$display_title}</info>");
-            $output->writeln('[+] Output filesize: ' . BinaryFormatter::bytes($output_filesize)->format());
+            $output->writeln('[+] Output filesize: ' . \App\Helper\FormatHelper::formatBytes($output_filesize));
 
             // Send a notification on Discord
             if ($this->discord_notifier->notifyNewAlphaPatch($build)) {

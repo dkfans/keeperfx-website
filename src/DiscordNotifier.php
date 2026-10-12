@@ -8,7 +8,6 @@ use App\Entity\NewsArticle;
 use App\Entity\WorkshopImage;
 use App\Entity\WorkshopItem;
 use App\Twig\Extension\EnumTwigExtension;
-use ByteUnits\Binary as BinaryFormatter;
 use DiscordWebhooks\Client;
 use DiscordWebhooks\Embed;
 use Doctrine\ORM\EntityManager;
@@ -207,7 +206,7 @@ class DiscordNotifier
         $embed->timestamp($alpha_build->getTimestamp()->format('Y-m-d H:i'));
         $embed->url($_ENV['APP_ROOT_URL'] . '/download/alpha/' . $alpha_build->getFilename());
         $embed->description($description);
-        $embed->footer(BinaryFormatter::bytes($alpha_build->getSizeInBytes())->format());
+        $embed->footer(Helper\FormatHelper::formatBytes($alpha_build->getSizeInBytes()));
 
         // Send the embed
         return $this->sendEmbed($embed, 'New alpha patch!');
@@ -226,7 +225,7 @@ class DiscordNotifier
         $embed->timestamp($github_release->getTimestamp()->format('Y-m-d H:i'));
         $embed->url($github_release->getDownloadUrl());
         $embed->thumbnail($_ENV['APP_ROOT_URL'] . '/img/download.png');
-        $embed->footer(BinaryFormatter::bytes($github_release->getSizeInBytes())->format());
+        $embed->footer(Helper\FormatHelper::formatBytes($github_release->getSizeInBytes()));
         $embed->description('A new game update!');
 
         // Send the embed

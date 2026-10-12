@@ -13,7 +13,6 @@ use App\Helper\ThumbnailHelper;
 use App\Theme;
 use App\UploadSizeHelper;
 use App\Workshop\WorkshopCache;
-use ByteUnits\Binary as BinaryFormatter;
 use Compwright\PhpSession\Session;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\Modifier\SameSite;
@@ -447,7 +446,7 @@ class AccountController
         if ($file->getSize() > $upload_size_helper->getFinalAvatarUploadSize()) {
             $flash->warning(
                 'Maximum upload filesize for avatar exceeded. (' .
-                    BinaryFormatter::bytes($upload_size_helper->getFinalAvatarUploadSize())->format() .
+                    \App\Helper\FormatHelper::formatBytes($upload_size_helper->getFinalAvatarUploadSize()) .
                     ')'
             );
             $response = $response->withHeader('Location', '/account')->withStatus(302);

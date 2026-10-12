@@ -2,7 +2,7 @@
 
 namespace App\Twig\Extension;
 
-use ByteUnits\Binary as BinaryFormatter;
+use App\Helper\FormatHelper;
 use Twig\TwigFilter;
 
 class BinaryFormatterTwigExtension extends \Twig\Extension\AbstractExtension
@@ -24,6 +24,7 @@ class BinaryFormatterTwigExtension extends \Twig\Extension\AbstractExtension
      */
     public function formatBytes(string $bytes): string
     {
-        return BinaryFormatter::bytes($bytes)->format();
+        // return \App\Helper\FormatHelper::formatBytes($bytes);
+        return FormatHelper::formatBytes($bytes);
     }
 }

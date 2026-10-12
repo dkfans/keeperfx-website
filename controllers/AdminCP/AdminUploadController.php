@@ -5,7 +5,6 @@ namespace App\Controller\AdminCP;
 use App\Config\Config;
 use App\FlashMessage;
 use App\UploadSizeHelper;
-use ByteUnits\Binary as BinaryFormatter;
 use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -105,7 +104,7 @@ class AdminUploadController
         if ($uploaded_files['file']->getSize() > $upload_size_helper->getMaxCalculatedFileUpload()) {
             $flash->warning(
                 'Maximum upload size exceeded. (' .
-                    BinaryFormatter::bytes($upload_size_helper->getMaxCalculatedFileUpload())->format() .
+                    \App\Helper\FormatHelper::formatBytes($upload_size_helper->getMaxCalculatedFileUpload()) .
                     ')'
             );
             $response = $response->withHeader('Location', '/admin/uploads')->withStatus(302);

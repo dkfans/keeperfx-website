@@ -16,7 +16,6 @@ use App\Notifications\NotificationCenter;
 use App\UploadSizeHelper;
 use App\Workshop\WorkshopCache;
 use App\Workshop\WorkshopHelper;
-use ByteUnits\Binary as BinaryFormatter;
 use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -91,7 +90,7 @@ class WorkshopUploadController
             if ($uploaded_files['file']->getSize() > $upload_size_helper->getFinalWorkshopItemUploadSize()) {
                 $flash->warning(
                     'Maximum upload size for workshop item exceeded. (' .
-                    BinaryFormatter::bytes($upload_size_helper->getFinalWorkshopItemUploadSize())->format() .
+                    \App\Helper\FormatHelper::formatBytes($upload_size_helper->getFinalWorkshopItemUploadSize()) .
                     ')'
                 );
                 $success = false;

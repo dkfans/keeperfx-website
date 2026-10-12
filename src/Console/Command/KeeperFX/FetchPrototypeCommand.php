@@ -5,7 +5,6 @@ namespace App\Console\Command\KeeperFX;
 use App\Config\Config;
 use App\Entity\GithubPrototype;
 use App\VirusTotalScanner;
-use ByteUnits\Binary as BinaryFormatter;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
@@ -316,7 +315,7 @@ class FetchPrototypeCommand extends Command
 
             // Show success message
             $output->writeln("[+] <info>{$artifact->name}</info> stored! -> <info>{$display_title}</info>");
-            $output->writeln('[+] Output filesize: ' . BinaryFormatter::bytes($output_filesize)->format());
+            $output->writeln('[+] Output filesize: ' . \App\Helper\FormatHelper::formatBytes($output_filesize));
 
             // Scan with VirusTotal
             // We do this so many Antivirus companies get a sample as soon as possible.

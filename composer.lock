@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "498ad778e45e80f78db19149b8249f42",
+    "content-hash": "9e03e9323f98449305ff94e6ca9a1d32",
     "packages": [
         {
             "name": "akrabat/ip-address-middleware",
@@ -1657,62 +1657,6 @@
                 }
             ],
             "time": "2026-10-03T17:03:57+00:00"
-        },
-        {
-            "name": "gabrielelana/byte-units",
-            "version": "0.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/gabrielelana/byte-units.git",
-                "reference": "eaf7b998535578c7160be30b39904a8326bb9bb8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/gabrielelana/byte-units/zipball/eaf7b998535578c7160be30b39904a8326bb9bb8",
-                "reference": "eaf7b998535578c7160be30b39904a8326bb9bb8",
-                "shasum": ""
-            },
-            "require": {
-                "ext-bcmath": "*",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": ">=4.0,<6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/ByteUnits/functions.php"
-                ],
-                "psr-4": {
-                    "ByteUnits\\": "src/ByteUnits"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Gabriele Lana",
-                    "email": "gabriele.lana@gmail.com"
-                }
-            ],
-            "description": "Library to parse, format and convert byte units",
-            "homepage": "https://github.com/gabrielelana/byte-units",
-            "keywords": [
-                "byte",
-                "convert",
-                "format",
-                "parse",
-                "size",
-                "units"
-            ],
-            "support": {
-                "issues": "https://github.com/gabrielelana/byte-units/issues",
-                "source": "https://github.com/gabrielelana/byte-units/tree/master"
-            },
-            "time": "2018-01-11T10:40:03+00:00"
         },
         {
             "name": "gemorroj/archive7z",
