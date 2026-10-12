@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed9b0b4986e88d6c3df10a133f0a5e66",
+    "content-hash": "f31678b52820b2c6cb625f681f40743c",
     "packages": [
         {
             "name": "akrabat/ip-address-middleware",
@@ -1713,43 +1713,6 @@
                 "source": "https://github.com/gabrielelana/byte-units/tree/master"
             },
             "time": "2018-01-11T10:40:03+00:00"
-        },
-        {
-            "name": "geertw/ip-anonymizer",
-            "version": "v1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/geertw/php-ip-anonymizer.git",
-                "reference": "6610b85b119de3bb505fd9a484bac67066e4a62f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/geertw/php-ip-anonymizer/zipball/6610b85b119de3bb505fd9a484bac67066e4a62f",
-                "reference": "6610b85b119de3bb505fd9a484bac67066e4a62f",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "geertw\\IpAnonymizer\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Geert Wirken",
-                    "email": "geert@gwirken.nl"
-                }
-            ],
-            "description": "IPv4 and IPv6 address anonymizer",
-            "support": {
-                "issues": "https://github.com/geertw/php-ip-anonymizer/issues",
-                "source": "https://github.com/geertw/php-ip-anonymizer/tree/master"
-            },
-            "time": "2017-06-24T13:15:14+00:00"
         },
         {
             "name": "gemorroj/archive7z",

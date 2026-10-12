@@ -8,8 +8,8 @@ use App\Entity\WorkshopFile;
 use App\Entity\WorkshopItem;
 use App\Enum\UserRole;
 use App\FlashMessage;
+use App\Helper\IpHelper;
 use Doctrine\ORM\EntityManager;
-use geertw\IpAnonymizer\IpAnonymizer;
 use GuzzleHttp\Psr7\LazyOpenStream;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -72,7 +72,7 @@ class WorkshopDownloadController
             // Get anonymized IP hash & cache key
             // This way we can protect against people abusing download numbers yet still be privacy friendly
             $ip           = $request->getAttribute('ip_address');
-            $anon_ip      = (new IpAnonymizer())->anonymize($ip ?? '');
+            $anon_ip      = IpHelper::anonymizeIp($ip);
             $anon_ip_hash = \sha1($anon_ip);
             $dl_cache_key = 'download-' . $workshop_item->getId() . '-' . $file->getId() . '-' . $anon_ip_hash;
 
