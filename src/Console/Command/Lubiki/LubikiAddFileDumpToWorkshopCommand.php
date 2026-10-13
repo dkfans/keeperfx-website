@@ -276,7 +276,8 @@ class LubikiAddFileDumpToWorkshopCommand extends Command
             }
 
             // Generate storage filename and path
-            $storage_filename = \md5(\time()) . '__zip';
+            $storage_hash     = \md5(\time() . \random_int(0, \PHP_INT_MAX) . $file);
+            $storage_filename = $storage_hash . '__zip';
             $storage_path     = $workshop_item_files_dir . '/' . $storage_filename;
 
             // Copy file

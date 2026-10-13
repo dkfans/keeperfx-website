@@ -2,11 +2,13 @@
 
 use App\Config\Config;
 use App\Middleware\ErrorMiddleware;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /** @var Psr\Container\ContainerInterface $container */
-/** @var Psr\Log\LoggerInterface $logger */
+/** @var Monolog\Logger $logger */
 
 // Check for maintenance mode and show notice
 // This should be the very first check that is ran.
@@ -72,8 +74,8 @@ if (Config::get('app.whoops.is_enabled') === false) {
 } else {
 
     // Whoops Middleware
-    $app->add(new class {
-        public function __invoke(RequestInterface $request, RequestHandlerInterface $handler)
+    $app->add(new class implements MiddlewareInterface {
+        public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
         {
             try {
                 return $handler->handle($request);
@@ -101,6 +103,7 @@ if (Config::get('app.whoops.is_enabled') === false) {
 if ($_ENV['APP_ENV'] === 'dev') {
 
     // Get the debugbar
+    /** @var DebugBar\StandardDebugBar $debugbar */
     $debugbar = $container->get(DebugBar\StandardDebugBar::class);
 
     // Monolog collector

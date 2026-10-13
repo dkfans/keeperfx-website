@@ -11,6 +11,7 @@ use App\FlashMessage;
 use App\OAuth\OAuthProviderService;
 use Compwright\PhpSession\Session;
 use Doctrine\ORM\EntityManager;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -67,10 +68,12 @@ class UserCookieTokenMiddleware implements MiddlewareInterface
                         if ($oauth_token->getExpiresTimestamp()->getTimestamp() < \time()) {
 
                             // Get OAuth provider
+                            /** @var \League\OAuth2\Client\Provider\AbstractProvider $provider */
                             $provider = $this->provider_service->getProvider($oauth_token->getProviderType());
 
                             // Get new OAuth Token from provider
                             try {
+                                /** @var AccessTokenInterface $new_access_token */
                                 $new_access_token = $provider->getAccessToken('refresh_token', [
                                     'refresh_token' => $oauth_token->getRefreshToken(),
                                 ]);
@@ -97,7 +100,7 @@ class UserCookieTokenMiddleware implements MiddlewareInterface
                             $oauth_token->setToken($new_access_token->getToken());
                             $oauth_token->setRefreshToken($new_access_token->getRefreshToken());
                             $oauth_token->setExpiresTimestamp(
-                                \DateTime::createFromFormat('U', (int) $new_access_token->getExpires())
+                                \DateTime::createFromFormat('U', (string) $new_access_token->getExpires())
                             );
                             $this->em->persist($oauth_token);
                             $this->em->flush();

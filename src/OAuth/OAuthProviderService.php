@@ -18,7 +18,7 @@ class OAuthProviderService
 
     private $providers = [];
 
-    public function getProvider(OAuthProviderType $provider)
+    public function getProvider(OAuthProviderType $provider): \League\OAuth2\Client\Provider\AbstractProvider
     {
         if (isset($this->providers[$provider->value])) {
             return $this->providers[$provider->value];

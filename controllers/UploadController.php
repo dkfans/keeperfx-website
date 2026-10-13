@@ -13,7 +13,7 @@ class UploadController
     public function outputFile(
         Request $request,
         Response $response,
-        $filename,
+        string $filename,
     ) {
         if (!isset($_ENV['APP_ADMIN_UPLOAD_ENABLED']) || !$_ENV['APP_ADMIN_UPLOAD_ENABLED']) {
             throw new HttpNotFoundException($request);
@@ -37,7 +37,7 @@ class UploadController
             ->withHeader('Pragma', 'public')
             ->withHeader('Cache-Control', 'max-age=' . $cache_time)
             ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', \time() + $cache_time))
-            ->withHeader('Content-Length', \filesize($filepath))
+            ->withHeader('Content-Length', (string) \filesize($filepath))
             ->withHeader('Content-Type', 'application/octet-stream')
             ->withHeader('Content-Transfer-Encoding', 'Binary')
             ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');

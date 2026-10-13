@@ -142,7 +142,7 @@ class OAuthUserController
                 $user_oauth_token->setToken($token->getToken());
                 $user_oauth_token->setRefreshToken($token->getRefreshToken());
                 $user_oauth_token->setExpiresTimestamp(
-                    \DateTime::createFromFormat('U', (int) $token->getExpires())
+                    \DateTime::createFromFormat('U', (string) $token->getExpires())
                 );
                 $em->flush();
             }
@@ -161,7 +161,7 @@ class OAuthUserController
                     $user_oauth_token->setToken($new_access_token->getToken());
                     $user_oauth_token->setRefreshToken($new_access_token->getRefreshToken());
                     $user_oauth_token->setExpiresTimestamp(
-                        \DateTime::createFromFormat('U', (int) $new_access_token->getExpires())
+                        \DateTime::createFromFormat('U', (string) $new_access_token->getExpires())
                     );
                     $em->persist($user_oauth_token);
                     $em->flush();
@@ -215,7 +215,7 @@ class OAuthUserController
             $user_oauth_token->setToken($token->getToken());
             $user_oauth_token->setRefreshToken($token->getRefreshToken());
             $user_oauth_token->setExpiresTimestamp(
-                \DateTime::createFromFormat('U', (int) $token->getExpires())
+                \DateTime::createFromFormat('U', (string) $token->getExpires())
             );
             $em->persist($user_oauth_token);
 
@@ -513,7 +513,7 @@ class OAuthUserController
         $user_oauth_token->setToken($session['oauth_register']['token']);
         $user_oauth_token->setRefreshToken($session['oauth_register']['refresh_token']);
         $user_oauth_token->setExpiresTimestamp(
-            \DateTime::createFromFormat('U', (int) $session['oauth_register']['expires'])
+            \DateTime::createFromFormat('U', (string) $session['oauth_register']['expires'])
         );
         $em->persist($user_oauth_token);
 

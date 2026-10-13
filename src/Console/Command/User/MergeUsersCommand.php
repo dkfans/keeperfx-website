@@ -281,7 +281,7 @@ class MergeUsersCommand extends Command
             foreach ($main_user->getWorkshopRatings() as $main_rating) {
                 if ($main_rating->getItem() == $rating->getItem()) {
 
-                    $new_rating = \floor(
+                    $new_rating = (int) \floor(
                         ($main_rating->getScore() + $rating->getScore()) / 2
                     );
 
@@ -312,7 +312,7 @@ class MergeUsersCommand extends Command
             foreach ($main_user->getWorkshopDifficultyRatings() as $main_diff_rating) {
                 if ($main_diff_rating->getItem() == $diff_rating->getItem()) {
 
-                    $new_rating = \floor(
+                    $new_rating = (int) \floor(
                         ($main_diff_rating->getScore() + $diff_rating->getScore()) / 2
                     );
 

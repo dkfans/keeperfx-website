@@ -257,8 +257,8 @@ class WorkshopEditFilesController
             ->update('workshop_file')
             ->where(
                 $query_builder->expr()->and(
-                    $query_builder->expr()->eq('item_id', $workshop_item->getId()),
-                    $query_builder->expr()->gt('weight', $deleted_weight)
+                    $query_builder->expr()->eq('item_id', (string) $workshop_item->getId()),
+                    $query_builder->expr()->gt('weight', (string) $deleted_weight)
                 )
             )
             ->set('weight', 'weight - 1');

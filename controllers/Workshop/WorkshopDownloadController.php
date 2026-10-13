@@ -28,9 +28,9 @@ class WorkshopDownloadController
         TwigEnvironment $twig,
         EntityManager $em,
         CacheInterface $cache,
-        $item_id,
-        $file_id,
-        $filename,
+        int $item_id,
+        int $file_id,
+        string $filename,
     ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
@@ -103,7 +103,7 @@ class WorkshopDownloadController
             ->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->withHeader('Pragma', 'no-cache')
             ->withHeader('Content-Type', 'application/octet-stream')
-            ->withHeader('Content-Length', $file->getSize())
+            ->withHeader('Content-Length', (string) $file->getSize())
             ->withHeader('Content-Transfer-Encoding', 'Binary')
             ->withHeader('Content-Disposition', 'attachment; filename="' . $file->getFilename() . '"')
             ->withBody(new LazyOpenStream($filepath, 'r'));

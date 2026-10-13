@@ -94,7 +94,7 @@ class FetchCreatureMakerCommand extends Command
             return Command::FAILURE;
         }
 
-        $windows_download_id       = $matches[1];
+        $windows_download_id       = (int) $matches[1];
         $windows_download_filename = $matches[2];
         $output->writeln("[+] Windows download: <info>{$windows_download_filename}</info> (#{$windows_download_id})");
 

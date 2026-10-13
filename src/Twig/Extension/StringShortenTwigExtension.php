@@ -38,8 +38,8 @@ class StringShortenTwigExtension extends \Twig\Extension\AbstractExtension
 
         // Get the part length
         $max_length_part     = ($max_length - 3) / 2;
-        $length_start_offset = \ceil($max_length_part);
-        $length_end_offset   = \floor($max_length_part);
+        $length_start_offset = (int) \ceil($max_length_part);
+        $length_end_offset   = (int) \floor($max_length_part);
 
         // Create strings
         $string_start = \substr($string, 0, $length_start_offset);

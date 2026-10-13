@@ -24,6 +24,6 @@ class BinaryFormatterTwigExtension extends \Twig\Extension\AbstractExtension
      */
     public function formatBytes(string $bytes): string
     {
-        return FormatHelper::formatBytes($bytes);
+        return FormatHelper::formatBytes((int) $bytes);
     }
 }

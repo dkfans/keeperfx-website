@@ -101,7 +101,7 @@ class HandleTwitchStreamsCommand extends Command
                 $token->setToken($new_access_token->getToken());
                 $token->setRefreshToken($new_access_token->getRefreshToken());
                 $token->setExpiresTimestamp(
-                    \DateTime::createFromFormat('U', (int) $new_access_token->getExpires())
+                    \DateTime::createFromFormat('U', (string) $new_access_token->getExpires())
                 );
                 $this->em->persist($token);
                 $this->em->flush();
