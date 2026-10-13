@@ -20,7 +20,7 @@ class WorkshopRating
     #[ORM\Column(type: 'integer')]
     private int $score;
 
-    #[ORM\ManyToOne(targetEntity: 'User', inversedBy: 'workshop_ratings')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'workshop_ratings')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 

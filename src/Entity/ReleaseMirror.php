@@ -16,7 +16,7 @@ class ReleaseMirror
     #[ORM\Column]
     private string $url;
 
-    #[ORM\ManyToOne(targetEntity: 'GithubRelease', inversedBy: 'mirrors')]
+    #[ORM\ManyToOne(targetEntity: GithubRelease::class, inversedBy: 'mirrors')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private GithubRelease $release;
 

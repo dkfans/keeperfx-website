@@ -14,7 +14,7 @@ class UserOAuthToken
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: 'User', inversedBy: 'connection_tokens')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'connection_tokens')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 

@@ -16,7 +16,7 @@ class GitCommit
     #[ORM\Column]
     private string $hash;
 
-    #[ORM\ManyToOne(targetEntity: 'GithubRelease', inversedBy: 'commits')]
+    #[ORM\ManyToOne(targetEntity: GithubRelease::class, inversedBy: 'commits')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private GithubRelease $release;
 
