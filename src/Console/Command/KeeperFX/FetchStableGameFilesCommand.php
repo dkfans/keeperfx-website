@@ -60,13 +60,13 @@ class FetchStableGameFilesCommand extends Command
             ['verify' => false] // Don't verify SSL connection
         );
 
-        try {
+        // Variables for file download
+        $exp               = \explode('/', $release->getDownloadUrl());
+        $filename          = \end($exp);
+        $temp_archive_path = \sys_get_temp_dir() . '/' . $filename;
+        $temp_archive_dir  = \sys_get_temp_dir() . '/' . $release->getName();
 
-            // Variables for file download
-            $exp               = \explode('/', $release->getDownloadUrl());
-            $filename          = \end($exp);
-            $temp_archive_path = \sys_get_temp_dir() . '/' . $filename;
-            $temp_archive_dir  = \sys_get_temp_dir() . '/' . $release->getName();
+        try {
 
             // Remove any leftover temp files
             if (\file_exists($temp_archive_path)) {

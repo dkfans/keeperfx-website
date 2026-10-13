@@ -11,6 +11,7 @@ use App\Entity\WorkshopTag;
 use App\Enum\WorkshopCategory;
 use App\FlashMessage;
 use App\Workshop\WorkshopCache;
+use DebugBar\DataCollector\TimeDataCollector;
 use DebugBar\StandardDebugBar;
 use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -44,7 +45,9 @@ class WorkshopBrowseController
         }
 
         // Start measuring
-        $debugbar['time']->startMeasure('browse', 'Workshop browse page query');
+        if ($debugbar['time'] instanceof TimeDataCollector) {
+            $debugbar['time']->startMeasure('browse', 'Workshop browse page query');
+        }
 
         // Remember URL params to return for links
         $url_params = [];
@@ -259,7 +262,7 @@ class WorkshopBrowseController
 
                 $pagination[] = [
                     'label'    => '1',
-                    'active'   => $page === 1,
+                    'active'   => false,
                     'disabled' => false,
                     'url'      => '/workshop/browse?' . \http_build_query($url_params + ['page' => 1]),
                 ];
@@ -378,7 +381,9 @@ class WorkshopBrowseController
         ];
 
         // Stop measure
-        $debugbar['time']->stopMeasure('browse');
+        if ($debugbar['time'] instanceof TimeDataCollector) {
+            $debugbar['time']->stopMeasure('browse');
+        }
 
         // Cache the view data
         $workshop_cache->setCachedBrowsePageData($q, $view_data);

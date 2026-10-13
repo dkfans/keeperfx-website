@@ -51,19 +51,28 @@ class SendMailCommand extends Command
             return Command::FAILURE;
         }
 
-        $output->writeln('[>] Sending email...');
+        // Create mail instance
+        $output->writeln('[>] Creating mail instance...');
+        $mail = $this->mailer->createPhpMailerInstanceWithData($email, $subject, $body);
 
+        // Send mail
         try {
+            $output->writeln('[>] Sending email...');
 
-            $mail = $this->mailer->createPhpMailerInstanceWithData($email, $subject, $body);
-            $mail->send();
-            $output->writeln('[+] Mail sent!');
+            if ($mail->send() === false) {
+                $output->writeln('[-] Failed to send mail');
+                $output->writeln("[-] {$mail->ErrorInfo}");
+
+                return Command::FAILURE;
+            }
         } catch (\Exception $e) {
-            $output->writeln('[-] Failed to send mail...');
+            $output->writeln('[-] Failed to send mail');
             $output->writeln("[-] {$mail->ErrorInfo}");
+
+            return Command::FAILURE;
         }
 
-        $output->writeln('[+] Done!');
+        $output->writeln('[+] Mail sent!');
 
         return Command::SUCCESS;
     }

@@ -33,7 +33,7 @@ class WorkshopEditController
         TwigEnvironment $twig,
         Account $account,
         EntityManager $em,
-        $id,
+        int $id,
     ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
@@ -87,7 +87,7 @@ class WorkshopEditController
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
         WorkshopCache $workshop_cache,
-        $id,
+        int $id,
     ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
@@ -246,8 +246,8 @@ class WorkshopEditController
                 // Get image width and height
                 $width  = null;
                 $height = null;
-                $size   = @\getimagesize($path);
-                if ($size && \is_array($size)) {
+                $size   = \getimagesize($path);
+                if ($size) {
                     $width  = $size[0];
                     $height = $size[1];
                 }
@@ -306,9 +306,7 @@ class WorkshopEditController
         if (\is_string($original_creation_date) && !empty($original_creation_date)) {
             try {
                 $datetime = new \DateTime($original_creation_date);
-                if ($datetime) {
-                    $workshop_item->setOriginalCreationDate($datetime);
-                }
+                $workshop_item->setOriginalCreationDate($datetime);
             } catch (\Exception $ex) {
                 $workshop_item->setOriginalCreationDate(null);
             }
@@ -348,9 +346,9 @@ class WorkshopEditController
         CsrfGuard $csrf_guard,
         WorkshopCache $workshop_cache,
         LoggerInterface $logger,
-        $id,
-        $token_name,
-        $token_value,
+        int $id,
+        string $token_name,
+        string $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
@@ -378,10 +376,8 @@ class WorkshopEditController
                 $logger->error("Failed to clear item storage dir during workshop item removal: $workshop_item_dir");
             } else {
                 // Remove workshop item dir
-                if (\is_dir($workshop_item_dir)) {
-                    if (@\rmdir($workshop_item_dir) == false) {
-                        $logger->error("Failed to remove item storage dir during workshop item removal: $workshop_item_dir");
-                    }
+                if (@\rmdir($workshop_item_dir) == false) {
+                    $logger->error("Failed to remove item storage dir during workshop item removal: $workshop_item_dir");
                 }
             }
         }

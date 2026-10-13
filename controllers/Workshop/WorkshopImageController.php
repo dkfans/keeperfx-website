@@ -23,8 +23,8 @@ class WorkshopImageController
         Account $account,
         TwigEnvironment $twig,
         EntityManager $em,
-        $id,
-        $filename)
+        int $id,
+        string $filename)
     {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
@@ -34,14 +34,17 @@ class WorkshopImageController
 
         // Handle non published workshop item
         if ($workshop_item->isPublished() === false) {
-            if (
-                !$account->isLoggedIn()
-                || (
-                    $account->isLoggedIn()
-                    && $workshop_item->getSubmitter() !== $account->getUser()
-                    && $account->getUser()->getRole()->value < UserRole::Moderator->value
-                )
-            ) {
+
+            // If user is not logged in
+            if (!$account->isLoggedIn()) {
+                throw new HttpNotFoundException($request, 'item is not published yet and user is not logged in');
+            }
+
+            // Check if user is allowed to access it
+            // Either by being the submitter of the item or by being a moderator
+            $is_item_submitter = $workshop_item->getSubmitter() !== $account->getUser();
+            $is_moderator      = $account->getUser()->getRole()->value >= UserRole::Moderator->value;
+            if ($is_item_submitter === false && $is_moderator === false) {
                 throw new HttpNotFoundException($request, 'item is not published yet and user is not allowed to access it');
             }
         }
@@ -78,7 +81,5 @@ class WorkshopImageController
             ->withHeader('Expires', \gmdate('D, d M Y H:i:s \G\M\T', \time() + $cache_time))
             ->withHeader('Content-Type', $content_type)
             ->withBody(new LazyOpenStream($image_filepath, 'r'));
-
-        return $response;
     }
 }

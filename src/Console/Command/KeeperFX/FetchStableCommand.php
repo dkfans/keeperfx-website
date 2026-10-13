@@ -123,15 +123,15 @@ class FetchStableCommand extends Command
                 continue;
             }
 
+            // Variables for file download
+            $exp               = \explode('/', $gh_release->assets[0]->browser_download_url);
+            $filename          = \end($exp);
+            $temp_archive_path = \sys_get_temp_dir() . '/' . $filename;
+            $temp_archive_dir  = \sys_get_temp_dir() . '/' . $gh_release->name;
+
             // Download the release archive
             $output->writeln("[>] Downloading {$version}...");
             try {
-
-                // Variables for file download
-                $exp               = \explode('/', $gh_release->assets[0]->browser_download_url);
-                $filename          = \end($exp);
-                $temp_archive_path = \sys_get_temp_dir() . '/' . $filename;
-                $temp_archive_dir  = \sys_get_temp_dir() . '/' . $gh_release->name;
 
                 // Remove possible existing temp archive
                 if (\file_exists($temp_archive_path) && \unlink($temp_archive_path) == false) {

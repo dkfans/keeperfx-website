@@ -82,31 +82,34 @@ class WorkshopItemController
         $rating_count            = \count($workshop_item->getRatings());
         $difficulty_rating_count = \count($workshop_item->getDifficultyRatings());
 
-        // Get user rating
-        $user_rating = $em->getRepository(WorkshopRating::class)->findOneBy([
-            'item' => $workshop_item,
-            'user' => $account?->getUser(),
-        ])?->getScore();
+        // Get user ratings
+        $user_rating            = null;
+        $user_difficulty_rating = null;
+        if ($account->isLoggedIn()) {
+            // Get user rating
+            $user_rating = $em->getRepository(WorkshopRating::class)->findOneBy([
+                'item' => $workshop_item,
+                'user' => $account->getUser(),
+            ])?->getScore();
 
-        // Get user difficulty rating
-        $user_difficulty_rating = $em->getRepository(WorkshopDifficultyRating::class)->findOneBy([
-            'item' => $workshop_item,
-            'user' => $account?->getUser(),
-        ])?->getScore();
+            // Get user difficulty rating
+            $user_difficulty_rating = $em->getRepository(WorkshopDifficultyRating::class)->findOneBy([
+                'item' => $workshop_item,
+                'user' => $account->getUser(),
+            ])?->getScore();
+        }
 
         // Get other workshop items for "more items by this user"
         $more_items_by_user = [];
         /** @var User $submitter */
         $submitter = $workshop_item->getSubmitter();
-        if ($submitter && empty($workshop_item->getOriginalAuthor())) {
-            $workshop_items = $submitter->getWorkshopItems();
-            if ($workshop_items) {
-                $workshop_items_array = [];
-                /** @var WorkshopItem $workshop_item2 */
-                foreach ($workshop_items as $workshop_item2) {
-                    if ($workshop_item2 !== $workshop_item && $workshop_item2->isLastFileBroken() === false) {
-                        $more_items_by_user[] = $workshop_item2;
-                    }
+        if (empty($workshop_item->getOriginalAuthor())) {
+            $workshop_items       = $submitter->getWorkshopItems();
+            $workshop_items_array = [];
+            /** @var WorkshopItem $workshop_item2 */
+            foreach ($workshop_items as $workshop_item2) {
+                if ($workshop_item2 !== $workshop_item && $workshop_item2->isLastFileBroken() === false) {
+                    $more_items_by_user[] = $workshop_item2;
                 }
             }
         }

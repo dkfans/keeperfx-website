@@ -26,7 +26,7 @@ class WorkshopEditFilesController
         TwigEnvironment $twig,
         Account $account,
         EntityManager $em,
-        $item_id,
+        int $item_id,
     ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
@@ -68,7 +68,7 @@ class WorkshopEditFilesController
         EntityManager $em,
         UploadSizeHelper $upload_size_helper,
         WorkshopBrokenFileHandler $broken_file_handler,
-        $item_id,
+        int $item_id,
     ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
@@ -191,10 +191,10 @@ class WorkshopEditFilesController
         UploadSizeHelper $upload_size_helper,
         WorkshopBrokenFileHandler $broken_file_handler,
         CsrfGuard $csrf_guard,
-        $item_id,
-        $file_id,
-        $token_name,
-        $token_value,
+        int $item_id,
+        int $file_id,
+        string $token_name,
+        string $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
@@ -286,11 +286,11 @@ class WorkshopEditFilesController
         UploadSizeHelper $upload_size_helper,
         WorkshopBrokenFileHandler $broken_file_handler,
         CsrfGuard $csrf_guard,
-        $item_id,
-        $file_id,
-        $direction,
-        $token_name,
-        $token_value,
+        int $item_id,
+        int $file_id,
+        string $direction,
+        string $token_name,
+        string $token_value,
     ) {
         // Check for valid direction
         if (!\in_array($direction, ['up', 'down'])) {
@@ -382,15 +382,15 @@ class WorkshopEditFilesController
         Account $account,
         EntityManager $em,
         CsrfGuard $csrf_guard,
-        $item_id,
-        $file_id,
+        int $item_id,
+        int $file_id,
     ) {
 
         $post     = $request->getParsedBody();
         $new_name = \trim((string) ($post['name'] ?? null));
 
         // Make sure new name is valid
-        if (!$new_name || \strlen($new_name) > 64 || $new_name === '') {
+        if (empty($new_name) || \strlen($new_name) > 64) {
             return $request;
         }
 

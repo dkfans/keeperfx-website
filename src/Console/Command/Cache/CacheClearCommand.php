@@ -101,9 +101,10 @@ class CacheClearCommand extends Command
                     $new_str = 'a:' . \implode('a:', $split);
 
                     // Unserialize
-                    try {
-                        $arr = \unserialize($new_str);
-                    } catch (\Exception $ex) {
+                    $arr = @\unserialize($new_str);
+
+                    // Make sure unserialized data is an array
+                    if (!\is_array($arr)) {
                         $predis->del($key);
                         continue;
                     }
