@@ -18,7 +18,7 @@ class ConnectionController
         TwigEnvironment $twig,
         EntityManager $em,
         Account $account,
-    ) {
+    ): Response {
         $connections = [
             'discord' => [
                 'uid'          => null,

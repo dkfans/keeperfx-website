@@ -13,7 +13,7 @@ class SecurityIssuesController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         // $acknowledgments = [
         //     'Yani' => [
         //         '2121-05-12: Super hack fix',
@@ -35,7 +35,7 @@ class SecurityIssuesController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $file = \APP_ROOT . '/security.txt';
 
         if (!\file_exists($file)) {

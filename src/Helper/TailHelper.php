@@ -13,7 +13,7 @@ class TailHelper
      *
      * @license http://creativecommons.org/licenses/by/3.0/
      */
-    public static function tail(string $filepath, int $lines = 1, bool $adaptive = true, bool $lock = false)
+    public static function tail(string $filepath, int $lines = 1, bool $adaptive = true, bool $lock = false): false|string
     {
 
         // Open file

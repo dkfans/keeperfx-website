@@ -26,7 +26,7 @@ class WorkshopUserController
         Account $account,
         FlashMessage $flash,
         string $username,
-    ) {
+    ): Response {
 
         // Get user
         $user = $em->getRepository(User::class)->findOneBy(['username' => $username]);

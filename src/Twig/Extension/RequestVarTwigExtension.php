@@ -12,6 +12,9 @@ class RequestVarTwigExtension extends \Twig\Extension\AbstractExtension
         return 'request_extension';
     }
 
+    /**
+     * @return \Twig\TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [

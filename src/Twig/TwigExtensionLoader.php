@@ -16,7 +16,10 @@ class TwigExtensionLoader
         $this->container = $container;
     }
 
-    public function getExtensions()
+    /**
+     * @return \Twig\Extension\ExtensionInterface[]
+     */
+    public function getExtensions(): array
     {
         $extensions = [];
 

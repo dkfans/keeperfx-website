@@ -111,7 +111,7 @@ class WikiController
 
     private function makeGithubUrlsLowercase(string $string): string
     {
-        return \preg_replace_callback("~\[(.+?)\]\((.+?)\)~", static function ($matches) {
+        return \preg_replace_callback("~\[(.+?)\]\((.+?)\)~", static function ($matches): string {
             // Only lowercase URLs without a slash
             // This should work against any absolute URLs as well as "subdirectory-URLs".
             if (\str_contains($matches[2], '/') === false) {

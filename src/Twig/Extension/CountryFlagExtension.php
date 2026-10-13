@@ -18,6 +18,9 @@ class CountryFlagExtension extends \Twig\Extension\AbstractExtension implements 
         return 'country_flag_extension';
     }
 
+    /**
+     * @return \Twig\TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [

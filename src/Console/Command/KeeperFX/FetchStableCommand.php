@@ -23,10 +23,16 @@ class FetchStableCommand extends Command
 {
     public const GITHUB_RELEASE_URL = 'https://api.github.com/repos/dkfans/keeperfx/releases';
 
+    /**
+     * @var string[]
+     */
     private array $version_regex = [
         '/^KeeperFX (\d+\.\d+\.\d+)$/',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     private array $old_releases = [
         'KeeperFX 0.5.0b Build 3081' => '0.5.0.3081',
         'KeeperFX 0.5.0 Build 3080'  => '0.5.0.3080',

@@ -11,6 +11,9 @@ class SlugifyTwigExtension extends \Twig\Extension\AbstractExtension
         return 'slug_extension';
     }
 
+    /**
+     * @return \Twig\TwigFilter[]
+     */
     public function getFilters(): array
     {
         return [

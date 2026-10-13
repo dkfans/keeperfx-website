@@ -5,7 +5,7 @@ namespace App\Console\Command\Workshop;
 use App\Entity\WorkshopItem;
 use App\Workshop\WorkshopHelper;
 use Doctrine\ORM\EntityManager;
-use Psr\Container\ContainerInterface as Container;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
@@ -13,13 +13,9 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 #[\Symfony\Component\Console\Attribute\AsCommand(name: 'workshop:fix-ratings', description: 'Fix and recalculate all workshop ratings')]
 class FixWorkshopRatingsCommand extends Command
 {
-    /** @var Container */
-    private $container;
-
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-
+    public function __construct(
+        private ContainerInterface $container,
+    ) {
         parent::__construct();
     }
 
@@ -31,7 +27,7 @@ class FixWorkshopRatingsCommand extends Command
         $em = $this->container->get(EntityManager::class);
 
         // Get workshop items
-        /** @var array $items */
+        /** @var array<WorkshopItem> $items */
         $items = $em->getRepository(WorkshopItem::class)->findAll();
         if (\count($items) <= 0) {
             $output->writeln('[?] No workshop items found');

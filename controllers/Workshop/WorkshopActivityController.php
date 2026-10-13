@@ -18,7 +18,7 @@ class WorkshopActivityController
         TwigEnvironment $twig,
         EntityManager $em,
         DbalConnection $dbal,
-    ) {
+    ): Response {
         $sql = 'SELECT *
                 FROM workshop_comment
                 WHERE created_timestamp IS NOT NULL OR updated_timestamp IS NOT NULL

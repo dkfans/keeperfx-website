@@ -23,7 +23,7 @@ class IndexController
         CacheInterface $cache,
         FlashMessage $flash,
         Account $account,
-    ) {
+    ): Response {
         // Grab some stuff from DB to show on main page
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 3);
         $release  = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);

@@ -12,7 +12,7 @@ use League\CommonMark\Node\StringContainerInterface;
 
 class CustomHeadingPermalinkProcessor
 {
-    private $headingCounts = [];
+    private array $headingCounts = [];
 
     public function onDocumentParsed(DocumentParsedEvent $event): void
     {

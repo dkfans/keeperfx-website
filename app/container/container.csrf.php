@@ -10,7 +10,7 @@ use Slim\Psr7\Factory\ResponseFactory;
  * Uses `slim/csrf` library.
  */
 return [
-    Slim\Csrf\Guard::class => static function (ContainerInterface $container) {
+    Slim\Csrf\Guard::class => static function (ContainerInterface $container): \Slim\Csrf\Guard {
 
         // Get session
         $session = $container->get(Session::class);

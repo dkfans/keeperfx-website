@@ -20,7 +20,7 @@ class ModerateAlphaPatchController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('devcp/alpha-patch.list.devcp.html.twig', [
                 'alpha_builds' => $em->getRepository(GithubAlphaBuild::class)->findBy([], ['id' => 'DESC']),

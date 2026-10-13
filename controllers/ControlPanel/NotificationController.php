@@ -70,7 +70,7 @@ class NotificationController
         Account $account,
         NotificationCenter $nc,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
 
         $response->getBody()->write(
             $twig->render('cp/notifications.cp.html.twig', [
@@ -91,7 +91,7 @@ class NotificationController
         NotificationSettings $ns,
         FlashMessage $flash,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         // Get user notification settings
         $user_settings         = [];
         $notification_settings = $nc->getNotificationSettings();

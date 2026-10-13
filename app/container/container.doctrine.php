@@ -14,7 +14,7 @@ return [
 
     Doctrine\Common\EventManager::class => DI\create(),
 
-    Doctrine\DBAL\Configuration::class => static function (ContainerInterface $container) {
+    Doctrine\DBAL\Configuration::class => static function (ContainerInterface $container): Doctrine\DBAL\Configuration {
         $dbal_config = new Doctrine\DBAL\Configuration();
 
         // Add php-debugbar middleware for logging SQL
@@ -28,14 +28,14 @@ return [
         return $dbal_config;
     },
 
-    Doctrine\DBAL\Connection::class => static function (Doctrine\DBAL\Configuration $dbal_config) {
+    Doctrine\DBAL\Connection::class => static function (Doctrine\DBAL\Configuration $dbal_config): Doctrine\DBAL\Connection {
         return Doctrine\DBAL\DriverManager::getConnection(
             Config::get('doctrine.connection'),
             $dbal_config,
         );
     },
 
-    Doctrine\ORM\Configuration::class => static function (CacheItemPoolInterface $cache) {
+    Doctrine\ORM\Configuration::class => static function (CacheItemPoolInterface $cache): Doctrine\ORM\Configuration {
 
         // Create ORM config
         $orm_config = ORMSetup::createAttributeMetadataConfig(
@@ -69,8 +69,11 @@ return [
         return $orm_config;
     },
 
-    Doctrine\ORM\EntityManager::class => static function (ContainerInterface $container, Doctrine\DBAL\Connection $conn, Doctrine\ORM\Configuration $config, Doctrine\Common\EventManager $event_manager) {
-
+    Doctrine\ORM\EntityManager::class => static function (
+        Doctrine\DBAL\Connection $conn,
+        Doctrine\ORM\Configuration $config,
+        Doctrine\Common\EventManager $event_manager,
+    ): Doctrine\ORM\EntityManager {
         // Handle database read only mode
         if ($_ENV['APP_DB_READ_ONLY_MODE'] ?? false) {
             $event_manager->addEventListener(
@@ -82,7 +85,10 @@ return [
         return new Doctrine\ORM\EntityManager($conn, $config, $event_manager);
     },
 
-    Doctrine\Migrations\DependencyFactory::class => static function (Doctrine\DBAL\Connection $conn, Doctrine\ORM\Configuration $config) {
+    Doctrine\Migrations\DependencyFactory::class => static function (
+        Doctrine\DBAL\Connection $conn,
+        Doctrine\ORM\Configuration $config,
+    ): Doctrine\Migrations\DependencyFactory {
 
         // Bypass any caching
         $config->setAutoGenerateProxyClasses(Doctrine\ORM\Proxy\ProxyFactory::AUTOGENERATE_ALWAYS);

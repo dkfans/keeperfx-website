@@ -4,7 +4,7 @@ namespace App;
 
 class TaskScheduler
 {
-    public static function schedule(array ...$tasks)
+    public static function schedule(array ...$tasks): \Crunz\Schedule
     {
         // Get app root, which is needed to get an absolute path to the 'console' script
         $app_root = \dirname(__DIR__);
@@ -40,6 +40,9 @@ class TaskScheduler
         return $schedule;
     }
 
+    /**
+     * @return array<string, string|bool>
+     */
     public static function task(string $interval, string $console_command, string $description, bool $prevent_overlapping = true): array
     {
         return [

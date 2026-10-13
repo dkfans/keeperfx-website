@@ -31,7 +31,7 @@ class WorkshopDownloadController
         int $item_id,
         int $file_id,
         string $filename,
-    ) {
+    ): Response {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
         if (!$workshop_item) {

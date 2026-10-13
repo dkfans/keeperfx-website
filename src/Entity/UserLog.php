@@ -91,6 +91,7 @@ class UserLog
 
     /**
      * Get the value of variables.
+     * @return array<string, mixed>
      */
     public function getVariables(): array
     {

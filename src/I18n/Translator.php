@@ -21,7 +21,7 @@ class Translator
         $this->locale = $locale;
     }
 
-    public function translate(string $key, ...$vars)
+    public function translate(string $key, ...$vars): string
     {
 
         // Check if category + translation key is set
@@ -98,7 +98,7 @@ class Translator
         return \sprintf($translation['_'], ...$vars);
     }
 
-    private function loadTranslationFile(string $locale_code, string $category)
+    private function loadTranslationFile(string $locale_code, string $category): bool
     {
         $path = self::I18N_DIR . "/{$locale_code}/translations/{$category}.{$locale_code}.translation.php";
 

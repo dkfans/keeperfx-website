@@ -34,7 +34,7 @@ class WorkshopEditController
         Account $account,
         EntityManager $em,
         int $id,
-    ) {
+    ): Response {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
         if (!$workshop_item) {

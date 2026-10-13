@@ -27,7 +27,7 @@ class SessionCollector extends DataCollector implements Renderable
             $output = '';
 
             // Dump into an open stream/memory buffer instead of stdout
-            $dumper->dump($cloner->cloneVar($val), static function ($line, $depth) use (&$output) {
+            $dumper->dump($cloner->cloneVar($val), static function ($line, $depth) use (&$output): void {
                 if ($depth >= 0) {
                     $output .= \str_repeat('  ', $depth) . $line . "\n";
                 }

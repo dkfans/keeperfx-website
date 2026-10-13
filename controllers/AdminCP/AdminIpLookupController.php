@@ -18,7 +18,7 @@ class AdminIpLookupController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $ip_logs = $em->getRepository(UserIpLog::class)->findBy([], ['last_seen_timestamp' => 'DESC']);
 
         $response->getBody()->write(
@@ -38,7 +38,7 @@ class AdminIpLookupController
         EntityManager $em,
         string $type,
         string $string,
-    ) {
+    ): Response {
 
         // Make sure type is valid
         if (!\in_array($type, ['ip', 'host_name', 'isp'])) {
@@ -155,7 +155,7 @@ class AdminIpLookupController
         TwigEnvironment $twig,
         FlashMessage $flash,
         EntityManager $em,
-    ) {
+    ): Response {
         $associations = [
             'ip'   => [],
             'host' => [],

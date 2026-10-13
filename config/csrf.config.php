@@ -35,7 +35,7 @@ return [
      *      function($request, $handler) and must return a Response.
      * Setting this to null (default) will simply return a page saying 'Invalid CSRF token'
      */
-    'failure_handler' => static function ($request, $handler) {
+    'failure_handler' => static function ($request, $handler): void {
         throw new Slim\Exception\HttpForbiddenException($request);
     },
 ];

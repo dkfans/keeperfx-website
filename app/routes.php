@@ -18,7 +18,7 @@ use Slim\Routing\RouteCollectorProxy;
 
 // CSRF middleware group
 // This is made a route group so the CSRF Guard Middleware will only be added to the front-end Application
-$app->group('', static function (RouteCollectorProxy $group) {
+$app->group('', static function (RouteCollectorProxy $group): void {
 
     $group->get('/', [IndexController::class, 'index']);
     $group->get('/screenshots', [ScreenshotController::class, 'screenshotsIndex']);
@@ -78,13 +78,13 @@ $app->group('', static function (RouteCollectorProxy $group) {
     $group->get('/assets/debugbar/{path:.+}', [DebugBarAssetController::class, 'outputAsset']);
 
     // LOGGED IN USERS
-    $group->group('', static function (RouteCollectorProxy $group) {
+    $group->group('', static function (RouteCollectorProxy $group): void {
 
         $group->get('/dashboard', [ControlPanel\DashboardController::class, 'dashboardIndex']);
         $group->get('/logout/{token_name}/{token_value:.+}', [ControlPanel\AccountController::class, 'logout']);
 
         // Users: Control Panel
-        $group->group('/account', static function (RouteCollectorProxy $group) {
+        $group->group('/account', static function (RouteCollectorProxy $group): void {
 
             // Account settings
             $group->get('', [ControlPanel\AccountController::class, 'accountSettingsIndex']);
@@ -115,10 +115,10 @@ $app->group('', static function (RouteCollectorProxy $group) {
         });
 
         // AUTH: ADMIN
-        $group->group('/admin', static function (RouteCollectorProxy $group) {
+        $group->group('/admin', static function (RouteCollectorProxy $group): void {
 
             // Admin: NEWS
-            $group->group('/news', static function (RouteCollectorProxy $group) {
+            $group->group('/news', static function (RouteCollectorProxy $group): void {
                 $group->get('/list', [AdminCP\AdminNewsController::class, 'newsIndex']);
                 $group->get('/add', [AdminCP\AdminNewsController::class, 'newsAddIndex']);
                 $group->post('/add', [AdminCP\AdminNewsController::class, 'newsAdd']);
@@ -129,7 +129,7 @@ $app->group('', static function (RouteCollectorProxy $group) {
             });
 
             // Admin: USERS
-            $group->group('/user', static function (RouteCollectorProxy $group) {
+            $group->group('/user', static function (RouteCollectorProxy $group): void {
                 $group->get('/list', [AdminCP\AdminUsersController::class, 'usersIndex']);
                 $group->get('/add', [AdminCP\AdminUsersController::class, 'userAddIndex']);
                 $group->post('/add', [AdminCP\AdminUsersController::class, 'userAdd']);
@@ -143,28 +143,28 @@ $app->group('', static function (RouteCollectorProxy $group) {
             });
 
             // Admin: UPLOADS
-            $group->group('/uploads', static function (RouteCollectorProxy $group) {
+            $group->group('/uploads', static function (RouteCollectorProxy $group): void {
                 $group->get('', [AdminCP\AdminUploadController::class, 'uploadIndex']);
                 $group->post('/upload', [AdminCP\AdminUploadController::class, 'upload']);
                 $group->get('/{filename}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminUploadController::class, 'delete']);
             });
 
             // Admin: RELEASES
-            $group->group('/releases', static function (RouteCollectorProxy $group) {
+            $group->group('/releases', static function (RouteCollectorProxy $group): void {
                 $group->get('/list', [AdminCP\AdminReleasesController::class, 'releasesIndex']);
                 $group->get('/{id:\d+}', [AdminCP\AdminReleasesController::class, 'releaseEditIndex']);
                 $group->post('/{id:\d+}', [AdminCP\AdminReleasesController::class, 'releaseEdit']);
             });
 
             // Admin: IP LOOKUP
-            $group->group('/ip-lookup', static function (RouteCollectorProxy $group) {
+            $group->group('/ip-lookup', static function (RouteCollectorProxy $group): void {
                 $group->get('/logs', [AdminCP\AdminIpLookupController::class, 'logsIndex']);
                 $group->get('/associations', [AdminCP\AdminIpLookupController::class, 'associationsIndex']);
                 $group->get('/{type}/{string:.+}', [AdminCP\AdminIpLookupController::class, 'lookup']);
             });
 
             // Admin: BANS
-            $group->group('/ban', static function (RouteCollectorProxy $group) {
+            $group->group('/ban', static function (RouteCollectorProxy $group): void {
                 $group->get('/list', [AdminCP\AdminBanController::class, 'bansIndex']);
                 $group->get('/add', [AdminCP\AdminBanController::class, 'banAddIndex']);
                 $group->post('/add', [AdminCP\AdminBanController::class, 'banAdd']);
@@ -174,7 +174,7 @@ $app->group('', static function (RouteCollectorProxy $group) {
             });
 
             // Admin: BACKGROUND TASKS
-            $group->group('/tasks', static function (RouteCollectorProxy $group) {
+            $group->group('/tasks', static function (RouteCollectorProxy $group): void {
                 $group->get('', [AdminCP\AdminBackgroundTaskController::class, 'index']);
                 $group->get('/run/{task_id}', [AdminCP\AdminBackgroundTaskController::class, 'run']);
                 $group->get('/log/{task_id}', [AdminCP\AdminBackgroundTaskController::class, 'log']);
@@ -185,10 +185,10 @@ $app->group('', static function (RouteCollectorProxy $group) {
         })->add(AuthAdminCPMiddleware::class);
 
         // AUTH: MODERATOR
-        $group->group('/moderate', static function (RouteCollectorProxy $group) {
+        $group->group('/moderate', static function (RouteCollectorProxy $group): void {
 
             // Moderate: WORKSHOP
-            $group->group('/workshop', static function (RouteCollectorProxy $group) {
+            $group->group('/workshop', static function (RouteCollectorProxy $group): void {
                 $group->get('/list', [ModCP\Workshop\ModerateWorkshopController::class, 'listIndex']);
 
                 $group->get('/upload', [ModCP\Workshop\ModerateWorkshopUploadController::class, 'index']);
@@ -213,7 +213,7 @@ $app->group('', static function (RouteCollectorProxy $group) {
         })->add(AuthModCPMiddleware::class);
 
         // AUTH: DEVELOPER
-        $group->group('/dev', static function (RouteCollectorProxy $group) {
+        $group->group('/dev', static function (RouteCollectorProxy $group): void {
 
             // Moderate (dev) Alpha Patches
             $group->get('/alpha-patches/list', [DevCP\ModerateAlphaPatchController::class, 'listIndex']);
@@ -242,7 +242,7 @@ $app->group('', static function (RouteCollectorProxy $group) {
     })->add(LoggedInMiddleware::class);
 
     // Workshop
-    $group->group('/workshop', static function (RouteCollectorProxy $group) {
+    $group->group('/workshop', static function (RouteCollectorProxy $group): void {
 
         // Public view
         $group->get('/item/{id:\d+}[/{slug}]', [Workshop\WorkshopItemController::class, 'itemIndex'])->add(CdnMiddleware::class);
@@ -259,7 +259,7 @@ $app->group('', static function (RouteCollectorProxy $group) {
         $group->post('/upload', [Workshop\WorkshopUploadController::class, 'upload'])->add(LoggedInMiddleware::class);
 
         // Workshop edit (LOGGED IN)
-        $group->group('/edit', static function (RouteCollectorProxy $group) {
+        $group->group('/edit', static function (RouteCollectorProxy $group): void {
 
             // Workshop item edit
             $group->get('/{id:\d+}', [Workshop\WorkshopEditController::class, 'editIndex']);
@@ -303,7 +303,7 @@ $app->group('', static function (RouteCollectorProxy $group) {
         $group->redirect('[/]', '/workshop/browse', 302);
 
         // Workshop report
-        $group->group('/report', static function (RouteCollectorProxy $group) {
+        $group->group('/report', static function (RouteCollectorProxy $group): void {
 
             // Comment report
             $group->post('/comment/{comment_id:\d+}', [Workshop\WorkshopReportController::class, 'reportComment']); // AJAX
@@ -315,7 +315,7 @@ $app->group('', static function (RouteCollectorProxy $group) {
         $group->get('/activity', [Workshop\WorkshopActivityController::class, 'listIndex']);
 
         // Workshop Tools
-        $group->group('/tools', static function (RouteCollectorProxy $group) {
+        $group->group('/tools', static function (RouteCollectorProxy $group): void {
 
             $group->get('', [Workshop\Tools\WorkshopToolsController::class, 'index']);
 
@@ -349,7 +349,7 @@ $app->group('', static function (RouteCollectorProxy $group) {
 
     // RSS
     $group->get('/rss-info', [RSSController::class, 'rssInfoIndex']);
-    $group->group('/rss', static function (RouteCollectorProxy $group) {
+    $group->group('/rss', static function (RouteCollectorProxy $group): void {
         $group->get('/news', [RSSController::class, 'newsFeed']);
         $group->get('/stable', [RSSController::class, 'stableBuildFeed']);
         $group->get('/alpha', [RSSController::class, 'alphaPatchFeed']);
@@ -367,7 +367,7 @@ $app->group('', static function (RouteCollectorProxy $group) {
 // ///// API
 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$app->group('/api', static function (RouteCollectorProxy $group) {
+$app->group('/api', static function (RouteCollectorProxy $group): void {
 
     // API: News
     $group->get('/v1/news/latest', [Api\v1\NewsApiController::class, 'listLatest']);

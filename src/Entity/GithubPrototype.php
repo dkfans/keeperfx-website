@@ -39,7 +39,7 @@ class GithubPrototype
     /**
      * Get the value of id.
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -47,7 +47,7 @@ class GithubPrototype
     /**
      * Get the value of artifact_id.
      */
-    public function getArtifactId()
+    public function getArtifactId(): int
     {
         return $this->artifact_id;
     }
@@ -57,7 +57,7 @@ class GithubPrototype
      *
      * @return self
      */
-    public function setArtifactId($artifact_id)
+    public function setArtifactId(int $artifact_id): static
     {
         $this->artifact_id = $artifact_id;
 
@@ -67,7 +67,7 @@ class GithubPrototype
     /**
      * Get the value of name.
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -77,7 +77,7 @@ class GithubPrototype
      *
      * @return self
      */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -87,7 +87,7 @@ class GithubPrototype
     /**
      * Get the value of filename.
      */
-    public function getFilename()
+    public function getFilename(): string
     {
         return $this->filename;
     }
@@ -97,7 +97,7 @@ class GithubPrototype
      *
      * @return self
      */
-    public function setFilename($filename)
+    public function setFilename(string $filename): static
     {
         $this->filename = $filename;
 
@@ -107,7 +107,7 @@ class GithubPrototype
     /**
      * Get the value of timestamp.
      */
-    public function getTimestamp()
+    public function getTimestamp(): \DateTime
     {
         return $this->timestamp;
     }
@@ -117,7 +117,7 @@ class GithubPrototype
      *
      * @return self
      */
-    public function setTimestamp($timestamp)
+    public function setTimestamp(\DateTime $timestamp): static
     {
         $this->timestamp = $timestamp;
 
@@ -127,7 +127,7 @@ class GithubPrototype
     /**
      * Get the value of size_in_bytes.
      */
-    public function getSizeInBytes()
+    public function getSizeInBytes(): int
     {
         return $this->size_in_bytes;
     }
@@ -137,7 +137,7 @@ class GithubPrototype
      *
      * @return self
      */
-    public function setSizeInBytes($size_in_bytes)
+    public function setSizeInBytes(int $size_in_bytes): static
     {
         $this->size_in_bytes = $size_in_bytes;
 
@@ -147,7 +147,7 @@ class GithubPrototype
     /**
      * Get the value of workflow_title.
      */
-    public function getWorkflowTitle()
+    public function getWorkflowTitle(): string
     {
         return $this->workflow_title;
     }
@@ -157,7 +157,7 @@ class GithubPrototype
      *
      * @return self
      */
-    public function setWorkflowTitle($workflow_title)
+    public function setWorkflowTitle(string $workflow_title): static
     {
         $this->workflow_title = $workflow_title;
 
@@ -167,7 +167,7 @@ class GithubPrototype
     /**
      * Get the value of is_available.
      */
-    public function getIsAvailable()
+    public function getIsAvailable(): bool
     {
         return $this->is_available;
     }
@@ -177,7 +177,7 @@ class GithubPrototype
      *
      * @return self
      */
-    public function setIsAvailable($is_available)
+    public function setIsAvailable(bool $is_available): static
     {
         $this->is_available = $is_available;
 

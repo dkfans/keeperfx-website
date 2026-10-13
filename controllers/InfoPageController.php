@@ -12,7 +12,7 @@ class InfoPageController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('terms-of-service.html.twig')
         );
@@ -24,7 +24,7 @@ class InfoPageController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('privacy-policy.html.twig')
         );

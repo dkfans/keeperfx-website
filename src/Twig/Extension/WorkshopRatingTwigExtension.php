@@ -22,6 +22,9 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
         return 'workshop_rating_extension';
     }
 
+    /**
+     * @return \Twig\TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [
@@ -78,8 +81,9 @@ class WorkshopRatingTwigExtension extends \Twig\Extension\AbstractExtension
      * @param string $type Type
      *
      * @return string
+     * @param array<string, string> $stars
      */
-    private static function createStarContainerSpan(int $item_id, float|int|null $rating, string $type = 'quality', array $stars = [])
+    private static function createStarContainerSpan(int $item_id, float|int|null $rating, string $type = 'quality', array $stars = []): string
     {
         $output = '<span ' .
             'style="' . self::SPAN_STYLE . '" ' .

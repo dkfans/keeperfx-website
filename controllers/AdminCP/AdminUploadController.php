@@ -23,7 +23,7 @@ class AdminUploadController
         TwigEnvironment $twig,
         FlashMessage $flash,
         EntityManager $em,
-    ) {
+    ): Response {
         // Check if uploads are enabled
         if (!isset($_ENV['APP_ADMIN_UPLOAD_ENABLED']) || !$_ENV['APP_ADMIN_UPLOAD_ENABLED']) {
             throw new HttpNotFoundException($request);
@@ -63,7 +63,7 @@ class AdminUploadController
         }
 
         // Order by date from newest to oldest
-        \usort($files, static fn ($a, $b) => $b['date'] <=> $a['date']);
+        \usort($files, static fn (array $a, array $b): int => $b['date'] <=> $a['date']);
 
         // Response
         $response->getBody()->write(

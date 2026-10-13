@@ -12,6 +12,9 @@ class ContainerFactory
 {
     public const CONTAINER_COMPILE_CLASS = 'CompiledContainer';
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public static function create(array $config, array $definitions = []): ContainerInterface
     {
         // Setup builder

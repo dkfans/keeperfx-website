@@ -54,7 +54,7 @@ class GithubRelease
     /**
      * Get the value of id.
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -62,7 +62,7 @@ class GithubRelease
     /**
      * Get the value of name.
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -72,7 +72,7 @@ class GithubRelease
      *
      * @return self
      */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -82,7 +82,7 @@ class GithubRelease
     /**
      * Get the value of tag.
      */
-    public function getTag()
+    public function getTag(): string
     {
         return $this->tag;
     }
@@ -92,7 +92,7 @@ class GithubRelease
      *
      * @return self
      */
-    public function setTag($tag)
+    public function setTag(string $tag): static
     {
         $this->tag = $tag;
 
@@ -102,7 +102,7 @@ class GithubRelease
     /**
      * Get the value of timestamp.
      */
-    public function getTimestamp()
+    public function getTimestamp(): \DateTime
     {
         return $this->timestamp;
     }
@@ -112,7 +112,7 @@ class GithubRelease
      *
      * @return self
      */
-    public function setTimestamp($timestamp)
+    public function setTimestamp(\DateTime $timestamp): static
     {
         $this->timestamp = $timestamp;
 
@@ -122,7 +122,7 @@ class GithubRelease
     /**
      * Get the value of download_url.
      */
-    public function getDownloadUrl()
+    public function getDownloadUrl(): string
     {
         return $this->download_url;
     }
@@ -132,7 +132,7 @@ class GithubRelease
      *
      * @return self
      */
-    public function setDownloadUrl($download_url)
+    public function setDownloadUrl(string $download_url): static
     {
         $this->download_url = $download_url;
 
@@ -142,7 +142,7 @@ class GithubRelease
     /**
      * Get the value of size_in_bytes.
      */
-    public function getSizeInBytes()
+    public function getSizeInBytes(): int
     {
         return $this->size_in_bytes;
     }
@@ -152,7 +152,7 @@ class GithubRelease
      *
      * @return self
      */
-    public function setSizeInBytes($size_in_bytes)
+    public function setSizeInBytes(int $size_in_bytes): static
     {
         $this->size_in_bytes = $size_in_bytes;
 
@@ -172,7 +172,7 @@ class GithubRelease
      *
      * @return self
      */
-    public function setCommitsHandled(bool $commits_handled)
+    public function setCommitsHandled(bool $commits_handled): static
     {
         $this->commits_handled = $commits_handled;
 
@@ -182,7 +182,7 @@ class GithubRelease
     /**
      * Get the value of commits.
      */
-    public function getCommits()
+    public function getCommits(): \Doctrine\Common\Collections\Collection
     {
         return $this->commits;
     }
@@ -226,7 +226,7 @@ class GithubRelease
     /**
      * Get the value of mirrors.
      */
-    public function getMirrors()
+    public function getMirrors(): \Doctrine\Common\Collections\Collection
     {
         return $this->mirrors;
     }

@@ -41,7 +41,7 @@ class NewsArticle
     /**
      * Get the value of id.
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -49,7 +49,7 @@ class NewsArticle
     /**
      * Get the value of title.
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -59,7 +59,7 @@ class NewsArticle
      *
      * @return self
      */
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
@@ -79,7 +79,7 @@ class NewsArticle
      *
      * @return self
      */
-    public function setAuthor(User $author)
+    public function setAuthor(User $author): static
     {
         $this->author = $author;
 
@@ -99,7 +99,7 @@ class NewsArticle
      *
      * @return self
      */
-    public function setCreatedTimestamp($created_timestamp)
+    public function setCreatedTimestamp(\DateTime $created_timestamp): static
     {
         $this->created_timestamp = $created_timestamp;
 

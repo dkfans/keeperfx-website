@@ -20,7 +20,7 @@ class AdminReleasesController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $releases = $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']);
 
         $response->getBody()->write(
@@ -38,7 +38,7 @@ class AdminReleasesController
         TwigEnvironment $twig,
         EntityManager $em,
         $id,
-    ) {
+    ): Response {
         // Get the release
         $release = $em->getRepository(GithubRelease::class)->find($id);
         if (!$release) {

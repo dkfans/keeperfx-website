@@ -19,7 +19,7 @@ class ModerateWorkshopCommentController
         TwigEnvironment $twig,
         EntityManager $em,
         DbalConnection $dbal,
-    ) {
+    ): Response {
 
         $sql = 'SELECT *
                 FROM workshop_comment

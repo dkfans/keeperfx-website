@@ -31,7 +31,7 @@ Config::loadDir(APP_ROOT . '/config');
 
 // Custom error handler to convert warnings and notices into exceptions
 if (!empty($_ENV['APP_RAISE_EXCEPTION_ON_WARNING']) && (int) $_ENV['APP_RAISE_EXCEPTION_ON_WARNING'] === 1) {
-    \set_error_handler(static function ($severity, $message, $file, $line) {
+    \set_error_handler(static function ($severity, $message, $file, $line): bool {
         if (!(\error_reporting() & $severity)) {
             // This error code is not included in error_reporting
             return false;

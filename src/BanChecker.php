@@ -12,7 +12,7 @@ class BanChecker
 {
     public const BAN_CACHE_KEY = 'bans';
 
-    private $loaded = false;
+    private bool $loaded = false;
 
     private $bans = [
         BanType::IP->value       => [],

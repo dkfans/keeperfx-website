@@ -9,6 +9,9 @@ class StringShortenTwigExtension extends \Twig\Extension\AbstractExtension
         return 'string_shorten_extension';
     }
 
+    /**
+     * @return \Twig\TwigFilter[]
+     */
     public function getFilters(): array
     {
         return [

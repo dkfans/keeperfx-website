@@ -25,7 +25,7 @@ class WorkshopKfxCfgDiffToolController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('workshop/tools/kfx_cfg_diff_tool.html.twig')
         );
@@ -38,7 +38,7 @@ class WorkshopKfxCfgDiffToolController
         Response $response,
         TwigEnvironment $twig,
         FlashMessage $flash,
-    ) {
+    ): Response {
         // Get post vars
         $post  = $request->getParsedBody();
         $left  = (string) ($post['left'] ?? '');
@@ -169,7 +169,10 @@ class WorkshopKfxCfgDiffToolController
         return $response;
     }
 
-    private function getCustomCfgTree(string $string)
+    /**
+     * @return array<mixed, array<non-empty-string, string|list{0: string, 1?: string, 2?: string}>>
+     */
+    private function getCustomCfgTree(string $string): array
     {
         $array = [];
 

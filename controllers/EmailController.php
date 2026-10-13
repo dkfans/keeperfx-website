@@ -25,7 +25,7 @@ class EmailController
         Mailer $mailer,
         Session $session,
         int $id,
-    ) {
+    ): Response {
 
         // Get the mail
         $mail = $em->getRepository(Mail::class)->findOneBy([

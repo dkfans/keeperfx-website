@@ -12,7 +12,7 @@ class ScreenshotController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $screenshots = [
             [
                 'src'               => '/screenshots/keeperfx-new-map-scripts.png',

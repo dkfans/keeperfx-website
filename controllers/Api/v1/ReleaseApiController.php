@@ -18,7 +18,7 @@ class ReleaseApiController
         Response $response,
         EntityManager $em,
         // TODO: CacheInterface $cache,
-    ) {
+    ): Response {
         /** @var GithubRelease $release */
         $release = $em->getRepository(GithubRelease::class)->findOneBy([], ['timestamp' => 'DESC']);
 
@@ -58,7 +58,7 @@ class ReleaseApiController
         Response $response,
         EntityManager $em,
         // TODO: CacheInterface $cache,
-    ) {
+    ): Response {
         /** @var GithubAlphaBuild $alpha_build */
         $alpha_build = $em->getRepository(GithubAlphaBuild::class)->findOneBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC']);
 

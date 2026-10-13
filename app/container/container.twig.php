@@ -12,7 +12,7 @@ use Psr\Container\ContainerInterface;
 return [
     App\Twig\Extension\Markdown\CustomMarkdownRuntimeLoader::class => DI\create(),
 
-    Twig\Environment::class => static function (ContainerInterface $container) {
+    Twig\Environment::class => static function (ContainerInterface $container): \Twig\Environment {
 
         // Make sure Twig is enabled in config
         if (Config::get('twig.is_enabled') === false) {
@@ -25,22 +25,22 @@ return [
 
         // Add simple tests
         $twig->addTest(
-            new Twig\TwigTest('string', static function ($value) {
+            new Twig\TwigTest('string', static function ($value): bool {
                 return \is_string($value);
             })
         );
         $twig->addTest(
-            new Twig\TwigTest('int', static function ($value) {
+            new Twig\TwigTest('int', static function ($value): bool {
                 return \is_int($value);
             })
         );
         $twig->addTest(
-            new Twig\TwigTest('float', static function ($value) {
+            new Twig\TwigTest('float', static function ($value): bool {
                 return \is_float($value);
             })
         );
         $twig->addTest(
-            new Twig\TwigTest('array', static function ($value) {
+            new Twig\TwigTest('array', static function ($value): bool {
                 return \is_array($value);
             })
         );

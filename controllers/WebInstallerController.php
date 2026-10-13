@@ -18,7 +18,7 @@ class WebInstallerController
         EntityManager $em,
         string $name_hash,
         string $filename,
-    ) {
+    ): Response {
         // Get all launcher releases
         $launcher_releases = $em->getRepository(LauncherRelease::class)->findBy([], ['timestamp' => 'DESC']);
         if (\count($launcher_releases) === 0) {

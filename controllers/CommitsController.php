@@ -18,7 +18,7 @@ class CommitsController
         TwigEnvironment $twig,
         EntityManager $em,
         $tag,
-    ) {
+    ): Response {
 
         // Get release
         $release = $em->getRepository(GithubRelease::class)->findBy(['tag' => $tag]);

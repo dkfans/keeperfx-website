@@ -12,7 +12,7 @@ class DashboardController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
 
         $response->getBody()->write(
             $twig->render('cp/dashboard.cp.html.twig')

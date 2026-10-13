@@ -28,7 +28,7 @@ class ModerateWorkshopEditFilesController
         Account $account,
         EntityManager $em,
         int $item_id,
-    ) {
+    ): Response {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
         if (!$workshop_item) {
@@ -60,7 +60,7 @@ class ModerateWorkshopEditFilesController
         UploadSizeHelper $upload_size_helper,
         WorkshopBrokenFileHandler $broken_file_handler,
         int $item_id,
-    ) {
+    ): Response {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($item_id);
         if (!$workshop_item) {
@@ -158,7 +158,7 @@ class ModerateWorkshopEditFilesController
         int $file_id,
         string $token_name,
         string $token_value,
-    ) {
+    ): Response {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
             throw new HttpForbiddenException($request);
@@ -239,7 +239,7 @@ class ModerateWorkshopEditFilesController
         string $direction,
         string $token_name,
         string $token_value,
-    ) {
+    ): Response {
         // Check for valid direction
         if (!\in_array($direction, ['up', 'down'])) {
             throw new HttpNotFoundException($request);
@@ -319,14 +319,14 @@ class ModerateWorkshopEditFilesController
         CsrfGuard $csrf_guard,
         int $item_id,
         int $file_id,
-    ) {
+    ): Response {
 
         $post     = $request->getParsedBody();
         $new_name = \trim((string) ($post['name'] ?? null));
 
         // Make sure new name is valid
         if (empty($new_name) || \strlen($new_name) > 64) {
-            return $request;
+            return $response;
         }
 
         // Check if workshop item exists
@@ -393,7 +393,7 @@ class ModerateWorkshopEditFilesController
         int $file_id,
         string $token_name,
         string $token_value,
-    ) {
+    ): Response {
 
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
@@ -442,7 +442,7 @@ class ModerateWorkshopEditFilesController
         int $file_id,
         string $token_name,
         string $token_value,
-    ) {
+    ): Response {
 
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {

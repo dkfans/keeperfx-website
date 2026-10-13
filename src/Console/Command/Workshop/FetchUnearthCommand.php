@@ -26,13 +26,9 @@ class FetchUnearthCommand extends Command
     private const UNEARTH_VERSION_REGEX_2 = "unearth\-([0-9\.]*?)\-";
     private const UNEARTH_VERSION_REGEX_3 = "unearth\-[a-z]*?\-([0-9\.]*?)\.(?:zip|7z)";
 
-    /** @var EntityManager */
-    private $em;
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-
+    public function __construct(
+        private EntityManager $em,
+    ) {
         parent::__construct();
     }
 
@@ -136,9 +132,7 @@ class FetchUnearthCommand extends Command
             }
         }
 
-        if ($linux_download_url                                                                                                                     == null || $windows_download_url == null
-                                                                                                                                                            || $linux_download_filename == null || $windows_download_filename == null) {
-
+        if ($linux_download_url == null || $windows_download_url == null || $linux_download_filename == null || $windows_download_filename == null) {
             $output->writeln('[-] Failed to get required download data');
 
             return Command::FAILURE;

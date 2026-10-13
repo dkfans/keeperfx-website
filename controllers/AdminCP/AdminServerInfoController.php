@@ -23,7 +23,7 @@ class AdminServerInfoController
         TwigEnvironment $twig,
         EntityManager $em,
         CDN $cdn,
-    ) {
+    ): Response {
         // Get PHP upload limits
         $php_max_upload            = (int) \ini_get('upload_max_filesize') * 1024 * 1024;
         $php_max_post              = (int) \ini_get('post_max_size')       * 1024 * 1024;

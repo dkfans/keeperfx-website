@@ -15,7 +15,10 @@ class TwigGlobalProvider
         $this->container = $container;
     }
 
-    public function getGlobals()
+    /**
+     * @return array<string, array<string, array<string, mixed>|array<string, array<string, mixed>>>>
+     */
+    public function getGlobals(): array
     {
         $upload_size_helper = $this->container->get(UploadSizeHelper::class);
 

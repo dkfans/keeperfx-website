@@ -12,7 +12,7 @@ class HistoryController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('history.html.twig', ['history_entries' => [
                 [

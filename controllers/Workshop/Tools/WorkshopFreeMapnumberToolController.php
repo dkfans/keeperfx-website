@@ -16,7 +16,7 @@ class WorkshopFreeMapnumberToolController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         // Response
         $response->getBody()->write(
             $twig->render('workshop/tools/free_mapnumber_tool.html.twig')

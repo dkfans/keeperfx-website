@@ -11,6 +11,9 @@ use Xenokore\Utility\Helper\DirectoryHelper;
 
 class NotificationSettings
 {
+    /**
+     * @var string[]
+     */
     private array $notification_classes = [];
 
     private array $default_settings = [];
@@ -58,7 +61,10 @@ class NotificationSettings
         return $this->default_settings[$class];
     }
 
-    public function getAllUserSettings(User $user)
+    /**
+     * @return mixed[]
+     */
+    public function getAllUserSettings(User $user): array
     {
 
         $settings = $this->default_settings;
@@ -75,7 +81,10 @@ class NotificationSettings
         return $settings;
     }
 
-    public function getNotificationClasses()
+    /**
+     * @return string[]
+     */
+    public function getNotificationClasses(): array
     {
         return $this->notification_classes;
     }

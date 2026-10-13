@@ -10,7 +10,7 @@ use Symfony\Component\Cache\Psr16Cache;
 
 return [
     // PSR-6 cache interface
-    CacheItemPoolInterface::class => static function () {
+    CacheItemPoolInterface::class => static function (): CacheItemPoolInterface {
 
         $cache = null;
 
@@ -41,7 +41,7 @@ return [
     },
 
     // PSR-16 cache interface
-    CacheInterface::class => static function (CacheItemPoolInterface $psr6_cache) {
+    CacheInterface::class => static function (CacheItemPoolInterface $psr6_cache): CacheInterface {
         return new Psr16Cache($psr6_cache);
     },
 

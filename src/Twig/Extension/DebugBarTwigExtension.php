@@ -19,6 +19,9 @@ class DebugBarTwigExtension extends \Twig\Extension\AbstractExtension
         return 'debug_bar_extension';
     }
 
+    /**
+     * @return \Twig\TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [

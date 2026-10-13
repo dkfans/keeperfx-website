@@ -5,7 +5,7 @@ namespace App\Console\Command\User;
 use App\Entity\User;
 use App\Enum\UserRole;
 use Doctrine\ORM\EntityManager;
-use Psr\Container\ContainerInterface as Container;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface as Input;
@@ -14,13 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 #[\Symfony\Component\Console\Attribute\AsCommand(name: 'user:create', description: 'Create a user')]
 class CreateUserCommand extends Command
 {
-    /** @var Container */
-    private $container;
-
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-
+    public function __construct(
+        private ContainerInterface $container,
+    ) {
         parent::__construct();
     }
 

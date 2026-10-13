@@ -6,11 +6,11 @@ use Psr\SimpleCache\CacheInterface;
 return [
     Compwright\PhpSession\Factory::class => DI\create(),
 
-    Compwright\PhpSession\Manager::class => static function (Compwright\PhpSession\Factory $factory, CacheInterface $cache) {
+    Compwright\PhpSession\Manager::class => static function (Compwright\PhpSession\Factory $factory, CacheInterface $cache): Compwright\PhpSession\Manager {
         return $factory->psr16Session($cache, Config::get('session'));
     },
 
-    Compwright\PhpSession\Session::class => static function (Compwright\PhpSession\Manager $manager) {
+    Compwright\PhpSession\Session::class => static function (Compwright\PhpSession\Manager $manager): ?Compwright\PhpSession\Session {
 
         // Check if session has already been started and start it if it isn't
         $started = $manager->start();

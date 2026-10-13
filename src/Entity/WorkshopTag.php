@@ -18,7 +18,7 @@ class WorkshopTag
     /**
      * Get the value of id.
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -26,7 +26,7 @@ class WorkshopTag
     /**
      * Get the value of name.
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -36,7 +36,7 @@ class WorkshopTag
      *
      * @return self
      */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 

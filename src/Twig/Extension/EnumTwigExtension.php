@@ -11,6 +11,9 @@ class EnumTwigExtension extends \Twig\Extension\AbstractExtension
         return 'enum_extension';
     }
 
+    /**
+     * @return \Twig\TwigFilter[]
+     */
     public function getFilters(): array
     {
         return [

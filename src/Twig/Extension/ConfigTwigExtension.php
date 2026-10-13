@@ -11,6 +11,9 @@ class ConfigTwigExtension extends \Twig\Extension\AbstractExtension
         return 'config_extension';
     }
 
+    /**
+     * @return \Twig\TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [

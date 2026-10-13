@@ -29,7 +29,7 @@ class GitCommit
     /**
      * Get the value of id.
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -37,7 +37,7 @@ class GitCommit
     /**
      * Get the value of hash.
      */
-    public function getHash()
+    public function getHash(): string
     {
         return $this->hash;
     }
@@ -47,7 +47,7 @@ class GitCommit
      *
      * @return self
      */
-    public function setHash($hash)
+    public function setHash(string $hash): static
     {
         $this->hash = $hash;
 
@@ -57,7 +57,7 @@ class GitCommit
     /**
      * Get the value of release.
      */
-    public function getRelease()
+    public function getRelease(): \App\Entity\GithubRelease
     {
         return $this->release;
     }
@@ -67,7 +67,7 @@ class GitCommit
      *
      * @return self
      */
-    public function setRelease(GithubRelease $release)
+    public function setRelease(GithubRelease $release): static
     {
         $this->release = $release;
 
@@ -87,7 +87,7 @@ class GitCommit
      *
      * @return self
      */
-    public function setTimestamp(\DateTime $timestamp)
+    public function setTimestamp(\DateTime $timestamp): static
     {
         $this->timestamp = $timestamp;
 
@@ -97,7 +97,7 @@ class GitCommit
     /**
      * Get the value of message.
      */
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->message;
     }
@@ -107,7 +107,7 @@ class GitCommit
      *
      * @return self
      */
-    public function setMessage(string $message)
+    public function setMessage(string $message): static
     {
         $this->message = $message;
 

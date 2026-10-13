@@ -22,7 +22,7 @@ class DownloadController
         EntityManager $em,
         FlashMessage $flash,
         CacheInterface $cache,
-    ) {
+    ): Response {
 
         // Get alpha and launcher releases
         $alpha_builds = $em->getRepository(GithubAlphaBuild::class)->findBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC'], 5);
@@ -61,7 +61,7 @@ class DownloadController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $stable_releases = $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']);
 
         $response->getBody()->write(
@@ -78,7 +78,7 @@ class DownloadController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $alpha_builds = $em->getRepository(GithubAlphaBuild::class)->findBy(['is_available' => true], ['workflow_run_id' => 'DESC', 'timestamp' => 'DESC']);
 
         $response->getBody()->write(

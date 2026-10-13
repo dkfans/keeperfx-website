@@ -15,7 +15,7 @@ class ModeratePrototypeController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $prototypes         = [];
         $prototype_entities = $em->getRepository(GithubPrototype::class)->findBy([], ['timestamp' => 'DESC']);
 

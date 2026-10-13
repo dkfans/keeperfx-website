@@ -16,7 +16,7 @@ class WorkshopKfxHostCheckerToolController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         // Get IP
         $ip = $request->getAttribute('ip_address');
 
@@ -37,7 +37,7 @@ class WorkshopKfxHostCheckerToolController
         Request $request,
         Response $response,
         string $ip,
-    ) {
+    ): Response {
         if (\filter_var($ip, \FILTER_VALIDATE_IP) == false) {
             $response->getBody()->write(
                 \json_encode([

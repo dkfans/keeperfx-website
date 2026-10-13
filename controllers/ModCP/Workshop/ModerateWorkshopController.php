@@ -15,7 +15,7 @@ class ModerateWorkshopController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('modcp/workshop/workshop.modcp.html.twig', [
                 'workshop_items' => $em->getRepository(WorkshopItem::class)->findBy([], ['id' => 'DESC']),

@@ -19,10 +19,16 @@ class FetchLauncherCommand extends Command
 {
     public const GITHUB_RELEASE_URL = 'https://api.github.com/repos/dkfans/keeperfx-launcher-qt/releases';
 
+    /**
+     * @var string[]
+     */
     private array $files_archive_asset_regex = [
         '/^keeperfx\-launcher\-qt\-(.+?)\-win64\.7z$/',
     ];
 
+    /**
+     * @var string[]
+     */
     private array $installer_asset_regex = [
         '/^keeperfx\-launcher\-qt\-(.+?)\-win64\-web\-installer\.exe$/',
     ];

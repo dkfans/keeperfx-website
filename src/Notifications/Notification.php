@@ -34,6 +34,9 @@ class Notification
         return UserRole::User;
     }
 
+    /**
+     * @return array<string, bool>
+     */
     public function getDefaultSettings(): array
     {
         return [

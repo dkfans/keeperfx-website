@@ -16,7 +16,7 @@ class OAuthProviderService
         'twitch'  => ['user:read:email'],
     ];
 
-    private $providers = [];
+    private array $providers = [];
 
     public function getProvider(OAuthProviderType $provider): \League\OAuth2\Client\Provider\AbstractProvider
     {

@@ -1,6 +1,7 @@
 <?php
 
 use Rector\Config\RectorConfig;
+use Rector\Set\ValueObject\SetList;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -15,4 +16,8 @@ return RectorConfig::configure()
         doctrine: true,
         phpunit: true,
         symfony: true,
-    );
+    )
+    ->withSets([
+        SetList::TYPE_DECLARATION,
+        SetList::TYPE_DECLARATION_DOCBLOCKS,
+    ]);

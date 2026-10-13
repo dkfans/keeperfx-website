@@ -30,7 +30,7 @@ class WorkshopUploadController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('workshop/upload.workshop.html.twig')
         );

@@ -21,7 +21,7 @@ class RSSController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('rss-info.html.twig')
         );
@@ -33,10 +33,12 @@ class RSSController
         Request $request,
         Response $response,
         EntityManager $em,
-    ) {
+    ): Response {
+
         /** @var NewsArticle[] $articles */
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC'], 5);
 
+        // Create feed
         $feed = new Feed();
         $feed
             ->setTitle('KeeperFX')
@@ -86,7 +88,7 @@ class RSSController
         Request $request,
         Response $response,
         EntityManager $em,
-    ) {
+    ): Response {
         $stable_builds = $em->getRepository(GithubRelease::class)->findBy([], ['timestamp' => 'DESC']);
 
         // Create feed
@@ -130,7 +132,7 @@ class RSSController
         Request $request,
         Response $response,
         EntityManager $em,
-    ) {
+    ): Response {
         $alpha_patches = $em->getRepository(GithubAlphaBuild::class)->findBy(['is_available' => true], ['timestamp' => 'DESC']);
 
         // Create feed
@@ -177,7 +179,7 @@ class RSSController
         Response $response,
         EntityManager $em,
         CustomMarkdownConverter $md_converter,
-    ) {
+    ): Response {
 
         // Create feed
         $feed = new Feed();

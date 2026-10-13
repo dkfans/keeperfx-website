@@ -19,7 +19,7 @@ class WorkshopMyItemsController
         EntityManager $em,
         FlashMessage $flash,
         Account $account,
-    ) {
+    ): Response {
         // Get users workshop items
         $items = $em->getRepository(WorkshopItem::class)->findBy(['submitter' => $account->getUser()]);
 

@@ -33,7 +33,7 @@ class ModerateWorkshopUploadController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
 
         $response->getBody()->write(
             $twig->render('modcp/workshop/upload.workshop.modcp.html.twig', [

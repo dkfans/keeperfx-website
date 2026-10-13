@@ -14,7 +14,7 @@ class UploadController
         Request $request,
         Response $response,
         string $filename,
-    ) {
+    ): Response {
         if (!isset($_ENV['APP_ADMIN_UPLOAD_ENABLED']) || !$_ENV['APP_ADMIN_UPLOAD_ENABLED']) {
             throw new HttpNotFoundException($request);
         }

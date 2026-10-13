@@ -14,6 +14,9 @@ class InstanceOfTwigExtension extends \Twig\Extension\AbstractExtension
         return 'instanceof_extension';
     }
 
+    /**
+     * @return \Twig\TwigTest[]
+     */
     public function getTests(): array
     {
         return [
@@ -24,7 +27,7 @@ class InstanceOfTwigExtension extends \Twig\Extension\AbstractExtension
     /**
      * @return bool
      */
-    public function isInstanceof($var, $instance)
+    public function isInstanceof($var, $instance): bool
     {
         return $var instanceof $instance;
     }

@@ -19,7 +19,7 @@ class ModerateGameFilesController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('devcp/game-files/game-files.list.devcp.html.twig', [
                 'stable_game_file_indexes' => $em->getRepository(GameFileIndex::class)->findBy(['release_type' => 'STABLE'], ['id' => 'DESC']),
@@ -37,7 +37,7 @@ class ModerateGameFilesController
         EntityManager $em,
         $type,
         $version,
-    ) {
+    ): Response {
 
         // Try and get the release type
         try {
@@ -114,10 +114,11 @@ class ModerateGameFilesController
 
     /**
      * Recursively sorts tree: dirs before files, case-insensitive.
+     * @param mixed[][] $nodes
      */
     private function sortWidgetTree(array &$nodes): void
     {
-        \usort($nodes, static function ($a, $b) {
+        \usort($nodes, static function (array $a, array $b): int {
             $aIsDir = isset($a['nodes']);
             $bIsDir = isset($b['nodes']);
 

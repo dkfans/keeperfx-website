@@ -9,6 +9,9 @@ class EnvironmentTwigExtension extends \Twig\Extension\AbstractExtension
         return 'environment_extension';
     }
 
+    /**
+     * @return \Twig\TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [

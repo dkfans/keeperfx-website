@@ -6,19 +6,14 @@ use App\FlashMessage;
 
 class FlashMessageTwigExtension extends \Twig\Extension\AbstractExtension
 {
-    /** @var FlashMessage */
-    private $flash;
-
     /**
      * Bootstrap alert index.
-     *
-     * @var int
      */
-    private $index = 0;
+    private int $index = 0;
 
-    public function __construct(FlashMessage $flash)
-    {
-        $this->flash = $flash;
+    public function __construct(
+        private FlashMessage $flash,
+    ) {
     }
 
     public function getName(): string
@@ -26,6 +21,9 @@ class FlashMessageTwigExtension extends \Twig\Extension\AbstractExtension
         return 'flash_message_extension';
     }
 
+    /**
+     * @return \Twig\TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [

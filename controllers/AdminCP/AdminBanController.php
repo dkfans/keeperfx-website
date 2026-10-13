@@ -27,7 +27,7 @@ class AdminBanController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $bans = $em->getRepository(Ban::class)->findAll();
 
         $response->getBody()->write(
@@ -43,7 +43,7 @@ class AdminBanController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
 
         $response->getBody()->write(
             $twig->render('admincp/bans/ban.add.admincp.html.twig', ['ban_types' => BanType::cases()])

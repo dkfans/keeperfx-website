@@ -20,13 +20,9 @@ class FetchCreatureMakerCommand extends Command
 
     private const CREATURE_MAKER_VERSION_REGEX = "v([0-9\.]+[a-z]*?)\.";
 
-    /** @var EntityManager */
-    private $em;
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-
+    public function __construct(
+        private EntityManager $em,
+    ) {
         parent::__construct();
     }
 
@@ -309,19 +305,22 @@ class FetchCreatureMakerCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function getDownloadURL(int $file_id, Client $client, string $csrf_token)
+    private function getDownloadURL(int $file_id, Client $client, string $csrf_token): ?string
     {
         $response = $client->post('https://rainlizard.itch.io/creaturemaker/file/' . $file_id . '?source=view_game&as_props=1&after_download_lightbox=true', [
             'csrf_token' => $csrf_token,
         ]);
+
         if ($response->getStatusCode() !== 200) {
-            return;
-        }
-        $json = \json_decode($response->getBody(), true);
-        if (!isset($json['url'])) {
-            return;
+            return null;
         }
 
-        return $json['url'];
+        $json = \json_decode($response->getBody(), true);
+
+        if (!isset($json['url'])) {
+            return null;
+        }
+
+        return (string) $json['url'];
     }
 }

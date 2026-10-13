@@ -17,7 +17,7 @@ class ModerateBundledAssetsController
         TwigEnvironment $twig,
         FlashMessage $flash,
         EntityManager $em,
-    ) {
+    ): Response {
 
         // Get directories
         $game_files_bundle_dir  = Config::get('storage.path.game-files-file-bundle');
@@ -100,14 +100,14 @@ class ModerateBundledAssetsController
         }
 
         // Sort alphabetically
-        \usort($return, static function ($a, $b) {
+        \usort($return, static function (array $a, array $b): int {
             return
                 \strtolower($a['text'])
                 <=> \strtolower($b['text']);
         });
 
         // Move directories up front
-        \usort($return, static function ($a, $b) {
+        \usort($return, static function (array $a, array $b): int {
             return
                 (int) !isset($a['nodes'])
                 <=> (int) !isset($b['nodes']);

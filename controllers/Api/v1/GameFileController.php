@@ -20,7 +20,7 @@ class GameFileController
         GameFileHandler $game_file_handler,
         string $type,
         string $version,
-    ) {
+    ): Response {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
 

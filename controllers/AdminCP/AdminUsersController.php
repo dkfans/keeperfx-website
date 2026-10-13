@@ -22,7 +22,7 @@ class AdminUsersController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $users = $em->getRepository(User::class)->findAll();
 
         $response->getBody()->write(
@@ -38,7 +38,7 @@ class AdminUsersController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('admincp/users/users.add.admincp.html.twig')
         );

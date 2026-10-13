@@ -33,6 +33,9 @@ class PathTwigExtension extends \Twig\Extension\AbstractExtension
         return 'path_extension';
     }
 
+    /**
+     * @return \Twig\TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [

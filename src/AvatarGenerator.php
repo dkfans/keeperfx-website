@@ -74,6 +74,7 @@ class AvatarGenerator
 
     /**
      * Hashes the username to create a consistent, unique RGB background.
+     * @return array<int, int|float>
      */
     private static function getBackgroundColor(string $username): array
     {

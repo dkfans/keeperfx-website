@@ -14,7 +14,7 @@ class WebsiteChangelogController
         Response $response,
         TwigEnvironment $twig,
         CacheInterface $cache,
-    ) {
+    ): Response {
 
         $response->getBody()->write(
             $twig->render('website.changelog.html.twig', [

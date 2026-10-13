@@ -16,6 +16,9 @@ class CDN
 
     private array $possible_locations = [];
 
+    /**
+     * @return array<string, array<string, array<string, mixed>>|mixed[]|bool|string>
+     */
     private function getDefaultConfig(): array
     {
         return [

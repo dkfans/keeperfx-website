@@ -25,6 +25,9 @@ class FetchAlphaCommand extends Command
 
     public const ARTIFACT_NAME_REGEX = '/^keeperfx\-([\d\_\-]+?)[\-\_]Alpha\-patch\-signed$/';
 
+    /**
+     * @var string[]
+     */
     private array $version_regex = [
         '/^keeperfx\-(\d+\_\d+\_\d+\_\d+)[\-\_]Alpha\-patch$/',
     ];

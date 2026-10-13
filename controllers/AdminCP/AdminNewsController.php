@@ -27,7 +27,7 @@ class AdminNewsController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $articles = $em->getRepository(NewsArticle::class)->findBy([], ['created_timestamp' => 'DESC']);
 
         $response->getBody()->write(
@@ -43,7 +43,7 @@ class AdminNewsController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('admincp/news/news.add.admincp.html.twig')
         );

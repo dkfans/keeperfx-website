@@ -19,6 +19,9 @@ class EmailTwigExtension extends \Twig\Extension\AbstractExtension
         return 'email_extension';
     }
 
+    /**
+     * @return \Twig\TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [

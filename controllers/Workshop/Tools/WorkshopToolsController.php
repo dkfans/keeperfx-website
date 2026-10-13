@@ -15,7 +15,7 @@ class WorkshopToolsController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $yani = $em->getRepository(User::class)->findOneBy(['username' => 'Yani']);
 
         $response->getBody()->write(

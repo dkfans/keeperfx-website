@@ -17,7 +17,7 @@ class ModerateCrashReportController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('devcp/crash-report/crash-report.list.devcp.html.twig', [
                 'crash_reports' => $em->getRepository(CrashReport::class)->findBy([], ['id' => 'DESC']),

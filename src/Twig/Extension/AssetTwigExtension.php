@@ -11,6 +11,9 @@ class AssetTwigExtension extends \Twig\Extension\AbstractExtension
         return 'asset_extension';
     }
 
+    /**
+     * @return \Twig\TwigFunction[]
+     */
     public function getFunctions(): array
     {
         return [

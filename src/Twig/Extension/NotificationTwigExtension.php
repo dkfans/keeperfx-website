@@ -19,6 +19,9 @@ class NotificationTwigExtension extends \Twig\Extension\AbstractExtension implem
         return 'notification_extension';
     }
 
+    /**
+     * @return \Twig\TwigFilter[]
+     */
     public function getFilters(): array
     {
         return [

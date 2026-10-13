@@ -12,6 +12,9 @@ class BinaryFormatterTwigExtension extends \Twig\Extension\AbstractExtension
         return 'binary_formatter_extension';
     }
 
+    /**
+     * @return \Twig\TwigFilter[]
+     */
     public function getFilters(): array
     {
         return [

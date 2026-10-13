@@ -198,7 +198,7 @@ class Account
      *
      * @return self
      */
-    public function setUser(?User $user)
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 

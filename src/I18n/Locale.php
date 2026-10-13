@@ -79,7 +79,7 @@ class Locale
     /**
      * Set the long date format for use with \DateTime.
      */
-    public function setDateFormatLong(string $date_format_long)
+    public function setDateFormatLong(string $date_format_long): static
     {
         $this->date_format_long = $date_format_long;
 

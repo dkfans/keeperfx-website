@@ -16,7 +16,7 @@ class WorkshopMapNumberListToolController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $map_numbers = [];
 
         $items = $em->getRepository(WorkshopItem::class)->findBy(['category' => WorkshopCategory::Map], ['map_number' => 'ASC']);

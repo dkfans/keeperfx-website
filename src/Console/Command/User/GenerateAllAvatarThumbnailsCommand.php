@@ -6,7 +6,7 @@ use App\Config\Config;
 use App\Entity\User;
 use App\Helper\ThumbnailHelper;
 use Doctrine\ORM\EntityManager;
-use Psr\Container\ContainerInterface as Container;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
@@ -14,12 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 #[\Symfony\Component\Console\Attribute\AsCommand(name: 'user:generate-all-avatar-thumbnails', description: 'Generate thumbnails for all user avatars')]
 class GenerateAllAvatarThumbnailsCommand extends Command
 {
-    /** @var Container */
-    private $container;
-
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        private ContainerInterface $container,
+    ) {
         parent::__construct();
     }
 

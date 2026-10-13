@@ -125,7 +125,7 @@ class User
     /**
      * Get the value of id.
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -133,7 +133,7 @@ class User
     /**
      * Get the value of username.
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -143,7 +143,7 @@ class User
      *
      * @return self
      */
-    public function setUsername($username)
+    public function setUsername(string $username): static
     {
         $this->username = $username;
 
@@ -163,7 +163,7 @@ class User
      *
      * @return self
      */
-    public function setPassword(?string $password)
+    public function setPassword(?string $password): static
     {
         // NULL password
         if ($password === null) {
@@ -192,7 +192,7 @@ class User
     /**
      * Get the value of email.
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -269,7 +269,7 @@ class User
     /**
      * Get the value of created_timestamp.
      */
-    public function getCreatedTimestamp()
+    public function getCreatedTimestamp(): \DateTime
     {
         return $this->created_timestamp;
     }
@@ -279,7 +279,7 @@ class User
      *
      * @return self
      */
-    public function setCreatedTimestamp($created_timestamp)
+    public function setCreatedTimestamp(\DateTime $created_timestamp): static
     {
         $this->created_timestamp = $created_timestamp;
 

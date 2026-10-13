@@ -32,7 +32,7 @@ class ModerateWorkshopEditController
         TwigEnvironment $twig,
         EntityManager $em,
         int $id,
-    ) {
+    ): Response {
         // Get workshop item
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
         if (!$workshop_item) {

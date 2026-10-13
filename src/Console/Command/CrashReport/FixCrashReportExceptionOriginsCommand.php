@@ -4,7 +4,7 @@ namespace App\Console\Command\CrashReport;
 
 use App\Entity\CrashReport;
 use Doctrine\ORM\EntityManager;
-use Psr\Container\ContainerInterface as Container;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
@@ -13,13 +13,9 @@ use Xenokore\Utility\Helper\StringHelper;
 #[\Symfony\Component\Console\Attribute\AsCommand(name: 'crash-report:fix-exception-origins', description: 'Grab and set all exception origin in crash reports')]
 class FixCrashReportExceptionOriginsCommand extends Command
 {
-    /** @var Container */
-    private $container;
-
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-
+    public function __construct(
+        private ContainerInterface $container,
+    ) {
         parent::__construct();
     }
 
@@ -31,7 +27,7 @@ class FixCrashReportExceptionOriginsCommand extends Command
         $em = $this->container->get(EntityManager::class);
 
         // Get crash reports
-        /** @var array $crash_reports */
+        /** @var array<CrashReport> $crash_reports */
         $crash_reports = $em->getRepository(CrashReport::class)->findAll();
         if (\count($crash_reports) <= 0) {
             $output->writeln('[?] No crash reports found');

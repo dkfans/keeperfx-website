@@ -98,7 +98,7 @@ class FetchForumActivityCommand extends Command
 
         $crawler = new Crawler((string) $content);
 
-        $found_threads = $crawler->filter('#threads .threadbit:not(.moved)')->each(static function (Crawler $node, $i) use ($base_url) {
+        $found_threads = $crawler->filter('#threads .threadbit:not(.moved)')->each(static function (Crawler $node, $i) use ($base_url): array {
 
             // Get amount of replies
             $replies_str = $node->filter('.threadstats li')->first()->text();

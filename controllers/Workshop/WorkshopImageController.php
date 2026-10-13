@@ -24,7 +24,7 @@ class WorkshopImageController
         TwigEnvironment $twig,
         EntityManager $em,
         int $id,
-        string $filename)
+        string $filename): Response
     {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);

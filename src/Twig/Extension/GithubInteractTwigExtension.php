@@ -11,6 +11,9 @@ class GithubInteractTwigExtension extends \Twig\Extension\AbstractExtension
         return 'github_interact_extension';
     }
 
+    /**
+     * @return \Twig\TwigFilter[]
+     */
     public function getFilters(): array
     {
         return [

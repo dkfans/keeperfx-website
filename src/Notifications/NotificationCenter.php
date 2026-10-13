@@ -251,7 +251,10 @@ class NotificationCenter
         }
     }
 
-    public function getUnreadNotifications()
+    /**
+     * @return mixed[]
+     */
+    public function getUnreadNotifications(): array
     {
         if (!$this->account->isLoggedIn()) {
             throw new NotificationException("can't get unread notifications if not logged in");
@@ -303,7 +306,10 @@ class NotificationCenter
         return false;
     }
 
-    public function getAllNotifications()
+    /**
+     * @return \App\Notifications\NotificationInterface[]
+     */
+    public function getAllNotifications(): array
     {
         if (!$this->account->isLoggedIn()) {
             throw new NotificationException("can't get notifications if not logged in");

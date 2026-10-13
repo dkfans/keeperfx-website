@@ -38,7 +38,7 @@ class AccountController
         EntityManager $em,
         CDN $cdn,
         Theme $theme,
-    ) {
+    ): Response {
         // Response
         $response->getBody()->write(
             $twig->render('cp/account-settings.cp.html.twig', [

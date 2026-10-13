@@ -16,7 +16,7 @@ class WorkshopTrainingLevelToolController
         Request $request,
         Response $response,
         TwigEnvironment $twig,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('workshop/tools/training_level_tool.html.twig')
         );

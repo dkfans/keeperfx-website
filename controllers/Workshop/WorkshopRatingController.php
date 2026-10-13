@@ -26,7 +26,7 @@ class WorkshopRatingController
         WorkshopCache $workshop_cache,
         WorkshopRatingTwigExtension $workshop_rating_extension,
         int $id,
-    ) {
+    ): Response {
         $post  = $request->getParsedBody();
         $score = (int) ($post['score'] ?? 0);
 
@@ -115,7 +115,7 @@ class WorkshopRatingController
         WorkshopRatingTwigExtension $workshop_rating_extension,
         WorkshopCache $workshop_cache,
         int $id,
-    ) {
+    ): Response {
         $post  = $request->getParsedBody();
         $score = (int) ($post['score'] ?? 0);
 
@@ -197,7 +197,7 @@ class WorkshopRatingController
         WorkshopRatingTwigExtension $workshop_rating_extension,
         WorkshopCache $workshop_cache,
         int $id,
-    ) {
+    ): Response {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
 
@@ -286,7 +286,7 @@ class WorkshopRatingController
         WorkshopRatingTwigExtension $workshop_rating_extension,
         WorkshopCache $workshop_cache,
         int $id,
-    ) {
+    ): Response {
         // Output JSON
         $response = $response->withHeader('Content-Type', 'application/json');
 
@@ -372,7 +372,7 @@ class WorkshopRatingController
         TwigEnvironment $twig,
         EntityManager $em,
         Account $account,
-    ) {
+    ): Response {
 
         $ratings = [];
 
@@ -411,7 +411,7 @@ class WorkshopRatingController
 
         // Sort by date (descending)
         // It can be changed to ascending by changing switching the variables around the spaceship operator.
-        \uasort($ratings, static function ($a, $b) {
+        \uasort($ratings, static function (array $a, array $b): int {
             return $b['date'] <=> $a['date'];
         });
 

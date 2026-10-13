@@ -15,7 +15,7 @@ class ModerateLauncherController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-    ) {
+    ): Response {
         $response->getBody()->write(
             $twig->render('devcp/launcher.list.devcp.html.twig', [
                 'launcher_releases' => $em->getRepository(LauncherRelease::class)->findBy([], ['timestamp' => 'DESC']),
