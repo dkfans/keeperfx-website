@@ -157,6 +157,11 @@ class WorkshopBrokenFileHandler
         }
     }
 
+    /**
+     * Get all the file hashes of broken files.
+     *
+     * @return array<string>
+     */
     private function getBrokenFileHashes(): array
     {
         $hashes = [];

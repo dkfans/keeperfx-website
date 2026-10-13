@@ -24,7 +24,7 @@ class VirusTotalScanner
      *
      * @param string $file_path the local filepath of the file for sending
      *
-     * @return false|array returns false if we failed to submit, or the JSON response of the VirusTotal endpoint on success
+     * @return false|array<mixed> returns false if we failed to submit, or the JSON response of the VirusTotal endpoint on success
      */
     public static function scanFile(string $file_path): false|array
     {

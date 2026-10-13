@@ -71,7 +71,7 @@ class WorkshopGlobalsTwigExtension extends \Twig\Extension\AbstractExtension imp
 
                     $mirrors         = [];
                     $mirror_entities = $entity->getMirrors();
-                    if ($mirror_entities) {
+                    if (\count($mirror_entities) > 0) {
                         foreach ($mirror_entities as $mirror_entity) {
                             $mirrors[] = [
                                 'url' => $mirror_entity->getUrl(),

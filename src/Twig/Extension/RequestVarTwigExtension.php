@@ -23,25 +23,13 @@ class RequestVarTwigExtension extends \Twig\Extension\AbstractExtension
         ];
     }
 
-    public function getPostVar(string $name, $default = '')
+    public function getPostVar(string $name, string $default = ''): string
     {
-
-        $return = $_POST[$name] ?? $default;
-        if (\is_array($return)) {
-            return $default;
-        }
-
-        return (string) $return;
+        return (string) ($_POST[$name] ?? $default);
     }
 
-    public function getQueryParam(string $name, $default = '')
+    public function getQueryParam(string $name, string $default = ''): string
     {
-
-        $return = $_GET[$name] ?? $default;
-        if (\is_array($return)) {
-            return $default;
-        }
-
-        return (string) $return;
+        return (string) ($_GET[$name] ?? $default);
     }
 }

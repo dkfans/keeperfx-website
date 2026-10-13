@@ -17,7 +17,7 @@ class TwigExtensionLoader
     }
 
     /**
-     * @return \Twig\Extension\ExtensionInterface[]
+     * @return ExtensionInterface[]
      */
     public function getExtensions(): array
     {
@@ -52,7 +52,7 @@ class TwigExtensionLoader
         return $extensions;
     }
 
-    public function handleExtensionDefinition(mixed $definition)
+    public function handleExtensionDefinition(mixed $definition): ?object
     {
         if (\is_object($definition)) {
             return $definition;
