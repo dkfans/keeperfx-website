@@ -21,7 +21,7 @@ class WorkshopItemApiController
     ) {
         /** @var WorkshopItem $item */
         $item = $em->getRepository(WorkshopItem::class)->find($id);
-        if (!$item || $item->isPublished() == false) {
+        if ($item == null || $item->isPublished() == false) {
             throw new HttpNotFoundException($request);
         }
 
@@ -60,7 +60,7 @@ class WorkshopItemApiController
     ) {
         /** @var WorkshopComment $comment */
         $comment = $em->getRepository(WorkshopComment::class)->find($id);
-        if (!$comment) {
+        if ($comment == null) {
             throw new HttpNotFoundException($request);
         }
 

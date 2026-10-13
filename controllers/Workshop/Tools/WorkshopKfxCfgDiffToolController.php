@@ -41,8 +41,8 @@ class WorkshopKfxCfgDiffToolController
     ) {
         // Get post vars
         $post  = $request->getParsedBody();
-        $left  = (string) $post['left']  ?? '';
-        $right = (string) $post['right'] ?? '';
+        $left  = (string) ($post['left'] ?? '');
+        $right = (string) ($post['right'] ?? '');
 
         // Make sure data is posted
         if (empty($left) || empty($right)) {
@@ -178,8 +178,11 @@ class WorkshopKfxCfgDiffToolController
         // Loop trough all the lines in the string
         foreach (\preg_split("/\r\n|\n|\r/", $string) as $line) {
 
+            // Trim the line in case of weird whitespaces
+            $line = \trim($line);
+
             // Ignore empty lines
-            if (empty($line) || $line === '' || $line === ' ') {
+            if (empty($line)) {
                 continue;
             }
 

@@ -69,7 +69,7 @@ class ModerateWorkshopEditController
         Account $account,
         UploadSizeHelper $upload_size_helper,
         WorkshopCache $workshop_cache,
-        $id,
+        int $id,
     ) {
         // Check if workshop item exists
         $workshop_item = $em->getRepository(WorkshopItem::class)->find($id);
@@ -92,39 +92,38 @@ class ModerateWorkshopEditController
         // Handle submitter
         if (!\in_array($submitter_value, ['current_user', 'kfx', 'username'])) {
             throw new WorkshopException('invalid submitter');
-            $success = false;
-        } else {
-            if ($submitter_value === 'current_user') {
-                // Current logged in user
-                $submitter = $account->getUser();
-            } elseif ($submitter_value === 'kfx') {
-                // KeeperFX Team
-                $submitter = null;
-            } elseif ($submitter_value === 'username') {
-                // Custom user
-                $submitter_username = (string) ($post['submitter_username'] ?? '');
+        }
 
-                // Check valid username for custom user
-                if (empty($submitter_username)) {
-                    $flash->warning('No username given for custom submitter.');
-                    $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
+        if ($submitter_value === 'current_user') {
+            // Current logged in user
+            $submitter = $account->getUser();
+        } elseif ($submitter_value === 'kfx') {
+            // KeeperFX Team
+            $submitter = null;
+        } elseif ($submitter_value === 'username') {
+            // Custom user
+            $submitter_username = (string) ($post['submitter_username'] ?? '');
 
-                    return $response;
-                }
-                // Search user
-                $submitter_user = $em->getRepository(User::class)->findOneBy(['username' => $submitter_username]);
-                if (!$submitter_user) {
-                    $flash->warning("User '{$submitter_username}' not found ");
-                    $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
+            // Check valid username for custom user
+            if (empty($submitter_username)) {
+                $flash->warning('No username given for custom submitter.');
+                $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
 
-                    return $response;
-                }
-                $submitter = $submitter_user;
-
-            } else {
-                // Invalid submitter value
-                throw new WorkshopException('invalid submitter');
+                return $response;
             }
+            // Search user
+            $submitter_user = $em->getRepository(User::class)->findOneBy(['username' => $submitter_username]);
+            if (!$submitter_user) {
+                $flash->warning("User '{$submitter_username}' not found ");
+                $response = $response->withHeader('Location', '/moderate/workshop/' . $workshop_item->getId())->withStatus(302);
+
+                return $response;
+            }
+            $submitter = $submitter_user;
+
+        } else {
+            // Invalid submitter value
+            throw new WorkshopException('invalid submitter');
         }
 
         // Get category
@@ -259,7 +258,7 @@ class ModerateWorkshopEditController
                 $width  = null;
                 $height = null;
                 $size   = @\getimagesize($path);
-                if ($size && \is_array($size)) {
+                if ($size) {
                     $width  = $size[0];
                     $height = $size[1];
                 }
@@ -318,9 +317,7 @@ class ModerateWorkshopEditController
         if (\is_string($original_creation_date) && !empty($original_creation_date)) {
             try {
                 $datetime = new \DateTime($original_creation_date);
-                if ($datetime) {
-                    $workshop_item->setOriginalCreationDate($datetime);
-                }
+                $workshop_item->setOriginalCreationDate($datetime);
             } catch (\Exception $ex) {
                 $workshop_item->setOriginalCreationDate(null);
             }
@@ -356,9 +353,9 @@ class ModerateWorkshopEditController
         CsrfGuard $csrf_guard,
         WorkshopCache $workshop_cache,
         LoggerInterface $logger,
-        $id,
-        $token_name,
-        $token_value,
+        int $id,
+        string $token_name,
+        string $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
@@ -380,10 +377,8 @@ class ModerateWorkshopEditController
                 $logger->error("Failed to clear item storage dir during workshop item removal: $workshop_item_dir");
             } else {
                 // Remove workshop item dir
-                if (\is_dir($workshop_item_dir)) {
-                    if (@\rmdir($workshop_item_dir) == false) {
-                        $logger->error("Failed to remove item storage dir during workshop item removal: $workshop_item_dir");
-                    }
+                if (@\rmdir($workshop_item_dir) == false) {
+                    $logger->error("Failed to remove item storage dir during workshop item removal: $workshop_item_dir");
                 }
             }
         }

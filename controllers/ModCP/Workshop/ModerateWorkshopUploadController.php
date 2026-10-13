@@ -224,10 +224,9 @@ class ModerateWorkshopUploadController
         if (\is_string($original_creation_date) && !empty($original_creation_date)) {
             try {
                 $datetime = new \DateTime($original_creation_date);
-                if ($datetime) {
-                    $workshop_item->setOriginalCreationDate($datetime);
-                }
+                $workshop_item->setOriginalCreationDate($datetime);
             } catch (\Exception $ex) {
+                // TODO: log this
             }
         }
 
@@ -353,7 +352,7 @@ class ModerateWorkshopUploadController
             $width  = null;
             $height = null;
             $size   = @\getimagesize($path);
-            if ($size && \is_array($size)) {
+            if ($size) {
                 $width  = $size[0];
                 $height = $size[1];
             }

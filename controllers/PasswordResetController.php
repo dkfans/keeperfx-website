@@ -64,15 +64,15 @@ class PasswordResetController
         // Check for email address first
         /** @var User $user */
         $user = $em->getRepository(User::class)->findOneBy(['email' => $post['identifier']]);
-        if (!$user) {
+        if ($user == null) {
 
             // Then check for username
             /** @var User $user */
             $user = $em->getRepository(User::class)->findOneBy(['username' => $post['identifier']]);
         }
 
-        // If we need to send an email
-        if ($user) {
+        // If we have found a user
+        if ($user != null) {
 
             // Some accounts do not have email addresses
             if ($user->getEmail() !== null) {
@@ -122,7 +122,7 @@ class PasswordResetController
         EntityManager $em,
         FlashMessage $flash,
         Account $account,
-        $token,
+        string $token,
     ) {
         // Only logged-out guests allowed
         if ($account->isLoggedIn()) {
@@ -157,7 +157,7 @@ class PasswordResetController
         FlashMessage $flash,
         Session $session,
         Account $account,
-        $token,
+        string $token,
     ) {
         // Only logged-out guests allowed
         if ($account->isLoggedIn()) {
@@ -179,8 +179,8 @@ class PasswordResetController
 
         // Get POST data
         $post            = $request->getParsedBody();
-        $password        = (string) $post['password']        ?? '';
-        $repeat_password = (string) $post['repeat_password'] ?? '';
+        $password        = (string) ($post['password'] ?? '');
+        $repeat_password = (string) ($post['repeat_password'] ?? '');
 
         $success = true;
 
@@ -209,9 +209,6 @@ class PasswordResetController
         // Get the user
         /** @var User $user */
         $user = $reset_token->getUser();
-        if (!$user) {
-            throw new \Exception('somehow we failed to get the user');
-        }
 
         // Update the password and remove the password reset token
         $user->setPassword($password);

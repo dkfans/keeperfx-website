@@ -170,7 +170,7 @@ class AdminUsersController
         // Get user
         /** @var User $user */
         $user = $em->getRepository(User::class)->find($id);
-        if (!$user) {
+        if ($user == null) {
             $flash->warning('User not found.');
             $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
 
@@ -324,7 +324,7 @@ class AdminUsersController
         // Get user
         /** @var User $user */
         $user = $em->getRepository(User::class)->find($id);
-        if (!$user) {
+        if ($user == null) {
             $flash->warning('User not found.');
             $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
 

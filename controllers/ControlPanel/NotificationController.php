@@ -25,17 +25,13 @@ class NotificationController
         EntityManager $em,
         Account $account,
         NotificationCenter $nc,
-        $id,
+        int $id,
     ) {
-        // Make sure ID is numeric
-        if (!\is_numeric($id)) {
-            throw new HttpNotFoundException($request);
-        }
 
         // Get notification
         /** @var UserNotification $notification */
         $notification = $em->getRepository(UserNotification::class)->find($id);
-        if (!$notification) {
+        if ($notification == null) {
             throw new HttpNotFoundException($request);
         }
 
@@ -155,7 +151,7 @@ class NotificationController
             ]);
 
             // Create the setting in the DB if it doesn't exist yet
-            if (!$notification_setting) {
+            if ($notification_setting == null) {
                 $notification_setting = new UserNotificationSetting();
                 $notification_setting->setClass($class);
                 $notification_setting->setUser($account->getUser());
@@ -185,8 +181,8 @@ class NotificationController
         NotificationCenter $nc,
         FlashMessage $flash,
         CsrfGuard $csrf_guard,
-        $token_name,
-        $token_value,
+        string $token_name,
+        string $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {

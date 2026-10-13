@@ -69,7 +69,7 @@ class AccountController
 
         // Get post vars
         $post         = $request->getParsedBody();
-        $country_code = (string) $post['country'] ?? '';
+        $country_code = (string) ($post['country'] ?? '');
 
         // Get original country for logging later
         $original_country = $account->getUser()->getCountry();
@@ -109,7 +109,7 @@ class AccountController
     ) {
         // Get post vars
         $post   = $request->getParsedBody();
-        $cdn_id = (string) $post['cdn'] ?? '';
+        $cdn_id = (string) ($post['cdn'] ?? '');
 
         // Update country code
         if ($cdn->isValidCdn($cdn_id) === false) {
@@ -184,7 +184,7 @@ class AccountController
     ) {
         // Get post vars
         $post  = $request->getParsedBody();
-        $email = (string) $post['new_email_address'] ?? '';
+        $email = (string) ($post['new_email_address'] ?? '');
 
         // Check for valid email address
         if (empty($email) || !\filter_var($email, \FILTER_VALIDATE_EMAIL)) {
@@ -241,8 +241,8 @@ class AccountController
         FlashMessage $flash,
         Session $session,
         CacheInterface $cache,
-        $token_name,
-        $token_value,
+        string $token_name,
+        string $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
@@ -313,8 +313,8 @@ class AccountController
         EntityManager $em,
         FlashMessage $flash,
         CsrfGuard $csrf_guard,
-        $token_name,
-        $token_value,
+        string $token_name,
+        string $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
@@ -348,9 +348,9 @@ class AccountController
     ) {
         // Get post vars
         $post             = $request->getParsedBody();
-        $current_password = (string) $post['current_password'] ?? '';
-        $new_password     = (string) $post['new_password']     ?? '';
-        $repeat_password  = (string) $post['repeat_password']  ?? '';
+        $current_password = (string) ($post['current_password'] ?? '');
+        $new_password     = (string) ($post['new_password'] ?? '');
+        $repeat_password  = (string) ($post['repeat_password'] ?? '');
 
         // Check if current account has a password set
         // Some accounts do not have passwords because they are creation by an OAuth connection
@@ -394,7 +394,7 @@ class AccountController
     ) {
         // Get post vars
         $post     = $request->getParsedBody();
-        $theme_id = (string) $post['theme_id'] ?? '';
+        $theme_id = (string) ($post['theme_id'] ?? '');
 
         // Update the theme on the account
         if ($account->updateTheme($theme_id) === false) {
@@ -527,8 +527,8 @@ class AccountController
         FlashMessage $flash,
         CsrfGuard $csrf_guard,
         WorkshopCache $workshop_cache,
-        $token_name,
-        $token_value,
+        string $token_name,
+        string $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {
@@ -590,8 +590,8 @@ class AccountController
         Session $session,
         EntityManager $em,
         Account $account,
-        $token_name,
-        $token_value,
+        string $token_name,
+        string $token_value,
     ) {
         // Check for valid CSRF token
         if (!$csrf_guard->validateToken($token_name, $token_value)) {

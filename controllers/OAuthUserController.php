@@ -40,9 +40,9 @@ class OAuthUserController
         FlashMessage $flash,
         CsrfGuard $csrf_guard,
         OAuthProviderService $provider_service,
-        $provider_name,
-        $token_name = null,
-        $token_value = null,
+        string $provider_name,
+        ?string $token_name = null,
+        ?string $token_value = null,
     ) {
         // Get IP address and host name
         $ip       = $request->getAttribute('ip_address');
@@ -107,7 +107,8 @@ class OAuthUserController
                 'code' => $query_params['code'],
             ]);
         } catch (\Exception $ex) {
-            exit('Your access token has expired. Try again.');
+            $flash->error('Your access token has expired. Try again.');
+            $response->getBody()->write($twig->render('error/alert.html.twig'));
 
             return $response;
         }
@@ -117,7 +118,8 @@ class OAuthUserController
             /** @var ResourceOwnerInterface|DiscordResourceOwner|TwitchHelixResourceOwner $resource_owner */
             $resource_owner = $provider->getResourceOwner($token);
         } catch (\Exception $ex) {
-            exit('Failed to grab user details from OAuth provider.');
+            $flash->error('Failed to grab user details from OAuth provider.');
+            $response->getBody()->write($twig->render('error/alert.html.twig'));
 
             return $response;
         }
@@ -289,9 +291,9 @@ class OAuthUserController
         Account $account,
         FlashMessage $flash,
         CsrfGuard $csrf_guard,
-        $provider_name,
-        $token_name = null,
-        $token_value = null,
+        string $provider_name,
+        ?string $token_name = null,
+        ?string $token_value = null,
     ) {
         // Make sure provider is valid
         $provider_type = OAuthProviderType::tryFrom($provider_name);
@@ -410,7 +412,8 @@ class OAuthUserController
             'uid'           => $session['oauth_register']['uid'],
         ]);
         if ($existing_token) {
-            exit('oauth connection already exists');
+            $flash->error('OAuth connection already exists.');
+            $response->getBody()->write($twig->render('error/alert.html.twig'));
 
             return $response;
         }

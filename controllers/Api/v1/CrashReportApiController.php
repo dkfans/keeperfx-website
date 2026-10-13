@@ -57,7 +57,7 @@ class CrashReportApiController
 
         // Check for exception source function
         if (\preg_match('/\[\#\d+\s?\]\s(?:keeperfx|KEEPERFX|KeeperFX)\S+?\s+\:\s+(\S+)\s+\[/', $game_log, $matches)) {
-            $exception_source_function = $matches[1] ?? null;
+            $exception_source_function = $matches[1];
             if (!empty($exception_source_function) && StringHelper::startsWith($exception_source_function, '@') == false) {
                 $crash_report->setExceptionSourceFunction($exception_source_function);
             }
@@ -83,7 +83,7 @@ class CrashReportApiController
 
         // Check if savefile is included in request
         if (
-            \array_key_exists('save_file_name', $post) && \is_string($post['save_file_name']) && $post['save_file_name']    !== ''
+            \array_key_exists('save_file_name', $post) && \is_string($post['save_file_name']) && $post['save_file_name']                                               !== ''
                                                        && \array_key_exists('save_file_data', $post) && \is_string($post['save_file_data']) && $post['save_file_data'] !== ''
         ) {
 

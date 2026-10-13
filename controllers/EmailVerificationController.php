@@ -27,7 +27,7 @@ class EmailVerificationController
         // Get user
         /** @var User $user */
         $user = $em->getRepository(User::class)->find($user_id);
-        if (!$user) {
+        if ($user == null) {
             $flash->warning('Invalid email verification token.');
             $response->getBody()->write(
                 $twig->render('email.verification.html.twig')
