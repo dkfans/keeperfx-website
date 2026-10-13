@@ -14,6 +14,13 @@ class WorkshopCache
     ) {
     }
 
+    /**
+     * Get workshop browse page data from the cache.
+     *
+     * @param array<mixed> $query_params The query params that are used (these create a unique hash for this browser page)
+     *
+     * @return array<mixed>|null
+     */
     public function getCachedBrowsePageData(array $query_params): ?array
     {
         $cache_key = self::BROWSE_CACHE_NAMESPACE . '-' . \md5(\serialize((array) $query_params));
@@ -21,6 +28,12 @@ class WorkshopCache
         return $this->cache->get($cache_key);
     }
 
+    /**
+     * Store workshop browse page data into the cache.
+     *
+     * @param array<mixed> $query_params The query params that are used (these create a unique hash for this browser page)
+     * @param array<mixed> $data         The data that must be cached
+     */
     public function setCachedBrowsePageData(array $query_params, array $data): void
     {
         $cache_list_key = self::BROWSE_CACHE_NAMESPACE . '-' . self::BROWSE_CACHE_LIST_KEY;

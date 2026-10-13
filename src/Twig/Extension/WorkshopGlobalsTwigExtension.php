@@ -45,6 +45,7 @@ class WorkshopGlobalsTwigExtension extends \Twig\Extension\AbstractExtension imp
         $latest_minor_releases = $this->cache->get('latest-stable-minor-releases', null);
         if ($latest_minor_releases === null) {
 
+            /** @var array<array<array<array<mixed>>>> $stable_releases */
             $stable_releases = [];
 
             /** @var GithubRelease $entity */

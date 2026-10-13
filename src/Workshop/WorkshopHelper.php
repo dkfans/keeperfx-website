@@ -46,7 +46,7 @@ class WorkshopHelper
         return true;
     }
 
-    public static function removeThumbnail(EntityManager $em, WorkshopItem $item)
+    public static function removeThumbnail(EntityManager $em, WorkshopItem $item): bool
     {
         // Get workshop item image dir
         $item_images_dir = Config::get('storage.path.workshop') . '/' . $item->getId() . '/images';
@@ -80,6 +80,8 @@ class WorkshopHelper
      *
      * Returns an array with the 'score' and 'count' keys.
      * 'score' can be null
+     *
+     * @return array{score: float, count: int}
      */
     public static function calculateRatingScore(WorkshopItem $workshop_item, int $type = self::RATING_QUALITY): array
     {
@@ -119,10 +121,10 @@ class WorkshopHelper
     /**
      * Sorts the nested [major][minor][patch] array.
      *
-     * @param array $releases   The input array: $releases[$major][$minor][$patch] = $entity
-     * @param bool  $descending If true, sorts newest-first (e.g., 3.2.1 before 1.0.0)
+     * @param array<array<array<array<mixed>>>> $releases   The input array: $releases[$major][$minor][$patch] = $entity
+     * @param bool                              $descending If true, sorts newest-first (e.g., 3.2.1 before 1.0.0)
      *
-     * @return array sorted array with the same nesting
+     * @return array<array<array<array<mixed>>>> sorted array with the same nesting
      */
     public static function sortStableReleases(array $releases, bool $descending = false): array
     {
