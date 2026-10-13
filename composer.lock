@@ -1259,16 +1259,16 @@
         },
         {
             "name": "doctrine/persistence",
-            "version": "4.2.0",
+            "version": "4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/persistence.git",
-                "reference": "49ab73e0d3e2ac8d1f5ecda3dd8acd5503781e8b"
+                "reference": "d8293831c5b99449b2f63eb1e1bbdc202118daa6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/persistence/zipball/49ab73e0d3e2ac8d1f5ecda3dd8acd5503781e8b",
-                "reference": "49ab73e0d3e2ac8d1f5ecda3dd8acd5503781e8b",
+                "url": "https://api.github.com/repos/doctrine/persistence/zipball/d8293831c5b99449b2f63eb1e1bbdc202118daa6",
+                "reference": "d8293831c5b99449b2f63eb1e1bbdc202118daa6",
                 "shasum": ""
             },
             "require": {
@@ -1333,7 +1333,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/persistence/issues",
-                "source": "https://github.com/doctrine/persistence/tree/4.2.0"
+                "source": "https://github.com/doctrine/persistence/tree/4.2.1"
             },
             "funding": [
                 {
@@ -1349,7 +1349,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-26T12:12:52+00:00"
+            "time": "2026-10-03T14:15:35+00:00"
         },
         {
             "name": "dragonmantank/cron-expression",
@@ -9304,16 +9304,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "13.4.1",
+            "version": "13.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "ccde40327c501eebff192614b0dcf11806418901"
+                "reference": "7b9ba83328f01ce299ef82161720195bd827a4bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ccde40327c501eebff192614b0dcf11806418901",
-                "reference": "ccde40327c501eebff192614b0dcf11806418901",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/7b9ba83328f01ce299ef82161720195bd827a4bb",
+                "reference": "7b9ba83328f01ce299ef82161720195bd827a4bb",
                 "shasum": ""
             },
             "require": {
@@ -9384,7 +9384,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/13.4.1"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/13.4.2"
             },
             "funding": [
                 {
@@ -9392,7 +9392,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-10-05T05:51:21+00:00"
+            "time": "2026-10-12T15:29:04+00:00"
         },
         {
             "name": "psy/psysh",
