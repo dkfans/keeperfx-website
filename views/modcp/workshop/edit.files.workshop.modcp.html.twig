@@ -158,24 +158,28 @@
                                     class="btn btn-medieval btn-medieval-gray"
                                     onclick="if (confirm('Are you sure you want to delete this file?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
                                 >
-                                    Delete
+                                    <ion-icon name="trash-outline"></ion-icon>
                                 </a>
 
-                                {# Mark as broken #}
                                 {% if file.isBroken %}
-                                <a
-                                    href="/moderate/workshop/{{ workshop_item.id }}/files/{{ file.id }}/unmark_as_broken/{{ csrf.name }}/{{ csrf.value }}"
-                                    class="btn btn-medieval btn-medieval-gray"
-                                >
-                                    Unmark as Broken
-                                </a>
+                                    {# Unmark as Broken #}
+                                    <a
+                                        href="/moderate/workshop/{{ workshop_item.id }}/files/{{ file.id }}/unmark_as_broken/{{ csrf.name }}/{{ csrf.value }}"
+                                        class="btn btn-medieval btn-medieval-gray"
+                                    >
+                                        <span class="ion-stack">
+                                            <ion-icon class="ion-overlay text-danger" name="ban-outline"></ion-icon>
+                                            <ion-icon name="skull-outline"></ion-icon>
+                                        </span>
+                                    </a>
                                 {% else %}
+                                    {# Mark as broken #}
                                     <a
                                         href="/moderate/workshop/{{ workshop_item.id }}/files/{{ file.id }}/mark_as_broken/{{ csrf.name }}/{{ csrf.value }}"
                                         class="btn btn-medieval btn-medieval-gray"
                                         onclick="if (confirm('Are you sure you want to mark this file as broken?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
                                     >
-                                        Mark as Broken
+                                        <ion-icon name="skull-outline"></ion-icon>
                                     </a>
                                 {% endif %}
                             </td>

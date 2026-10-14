@@ -584,6 +584,10 @@ footer {
     background: url(../img/bg-button-red.png) repeat;
     text-shadow: 2px 2px 4px black;
     font-family: 'Cinzel', serif;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-medieval:hover,
@@ -639,6 +643,12 @@ footer {
 
 .btn-medieval ion-icon {
     font-size: 18px;
+    color: #e1e1e1;
+    margin: 2px -1px;
+}
+
+/* .btn-medieval ion-icon {
+    font-size: 18px;
     margin: 0;
     padding: 0;
     line-height: 16px;
@@ -653,7 +663,7 @@ button.btn-medieval ion-icon {
     margin-top: 4px;
     margin-right: 6px;
     font-weight: 600;
-}
+} */
 
 .btn-medieval:focus {
     border: 1px solid #ddd;
@@ -1937,3 +1947,28 @@ div.phpdebugbar-widgets-callgraph pre span {
 .task-body table td {
     padding: 5px;
 }
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.ion-stack {
+    display: inline-grid;
+    place-items: center;
+    vertical-align: middle;
+}
+
+.ion-stack>ion-icon {
+    grid-area: 1 / 1;
+}
+
+.ion-overlay {
+    z-index: 2;
+    pointer-events: none;
+    transform: scale(1.35);
+    --ionicon-stroke-width: 42px;
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/

@@ -23,7 +23,8 @@ $.fn.buttonLoader = function (show = true) {
             $(el).data('original-html', $(el).html());
 
             // Set button contents to loader
-            $(el).html('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>');
+            // $(el).html('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>'); // custom spinner
+            $(el).html('<div class="d-flex justify-content-center"><div class="spinner-border" style="width: 1.4rem; height: 1.4rem; border-width: 0.186rem;" role="status"><span class="visually-hidden">Loading...</span></div>'); // bootstrap spinner
 
             // Reset button size (because it might have changed)
             $(el).outerWidth(width);
