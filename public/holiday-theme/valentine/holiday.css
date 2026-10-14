@@ -1,0 +1,40 @@
+.custom-top-banner {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    pointer-events: none;
+
+    /* Background Layer - Small Red Hearts */
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' viewBox='0 0 50 50' style='enable-background:new 0 0 50 50%3B' xml:space='preserve'%3E%3Cstyle type='text/css'%3E.heart-red%7Bfill:%23ff3344%3Bopacity:0.45%3B%7D%3C/style%3E%3Cpath class='heart-red' d='M5,4 C4,2 1,2 1,5 C1,8 5,10 5,10 C5,10 9,8 9,5 C9,2 6,2 5,4 Z' transform='translate(5, 5) scale(0.5)'/%3E%3Cpath class='heart-red' d='M5,4 C4,2 1,2 1,5 C1,8 5,10 5,10 C5,10 9,8 9,5 C9,2 6,2 5,4 Z' transform='translate(35, 15) scale(0.6)'/%3E%3Cpath class='heart-red' d='M5,4 C4,2 1,2 1,5 C1,8 5,10 5,10 C5,10 9,8 9,5 C9,2 6,2 5,4 Z' transform='translate(20, 35) scale(0.4)'/%3E%3C/svg%3E");
+    background-position: 0px 0px;
+    background-size: 250px 250px;
+    animation: animatedBackground 12s linear infinite;
+}
+
+.custom-top-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Foreground Layer - Tiny Pink and Soft Red Hearts */
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' viewBox='0 0 50 50' style='enable-background:new 0 0 50 50%3B' xml:space='preserve'%3E%3Cstyle type='text/css'%3E.heart-pink%7Bfill:%23ff66aa%3Bopacity:0.65%3B%7D.heart-softred%7Bfill:%23ff3355%3Bopacity:0.75%3B%7D%3C/style%3E%3Cpath class='heart-pink' d='M5,4 C4,2 1,2 1,5 C1,8 5,10 5,10 C5,10 9,8 9,5 C9,2 6,2 5,4 Z' transform='translate(10, 10) scale(0.4)'/%3E%3Cpath class='heart-softred' d='M5,4 C4,2 1,2 1,5 C1,8 5,10 5,10 C5,10 9,8 9,5 C9,2 6,2 5,4 Z' transform='translate(40, 5) scale(0.35)'/%3E%3Cpath class='heart-pink' d='M5,4 C4,2 1,2 1,5 C1,8 5,10 5,10 C5,10 9,8 9,5 C9,2 6,2 5,4 Z' transform='translate(25, 25) scale(0.45)'/%3E%3Cpath class='heart-softred' d='M5,4 C4,2 1,2 1,5 C1,8 5,10 5,10 C5,10 9,8 9,5 C9,2 6,2 5,4 Z' transform='translate(5, 40) scale(0.3)'/%3E%3C/svg%3E");
+    background-position: 0px 0px;
+    background-size: 250px 250px;
+    animation: animatedBackground 8s linear infinite;
+}
+
+@keyframes animatedBackground {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        /* Falling downward */
+        background-position: 0px 250px;
+    }
+}

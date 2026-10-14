@@ -98,22 +98,41 @@
         {# Clear Input Button #}
         <script src="{{ asset('js/clearInputButton.jquery.js') }}" data-no-instant></script>
 
-        {# Custom background for events, holidays, etc #}
-        {% if get_env('APP_THEME_BACKGROUND') is not empty %}
-            <style>
-                body {
+        {# Custom background and CSS for events, holidays, etc #}
+        {% set theme = get_env('APP_HOLIDAY_THEME') %}
+        {% if theme is not empty %}
 
-                }
-            </style>
+            {# Custom background #}
+            {% set existing_backgrounds = [] %}
+            {% set paths = [
+                "/holiday-theme/" ~ theme ~ "/img/background.jpeg",
+                "/holiday-theme/" ~ theme ~ "/img/background.jpg",
+                "/holiday-theme/" ~ theme ~ "/img/background.png"
+            ] %}
+            {% for path in paths %}
+                {% if public_file_exists(path) %}
+                    {% set existing_backgrounds = existing_backgrounds|merge(['url("' ~ path ~ '")']) %}
+                {% endif %}
+            {% endfor %}
+            {% if existing_backgrounds is not empty %}
+                <style>
+                    body {
+                        background: {{ existing_backgrounds|join(', ')|raw }} !important;
+                    }
+                </style>
+            {% endif %}
+
+            {# Custom CSS #}
+            {% set custom_css_file = "/holiday-theme/" ~ theme ~ "/holiday.css" %}
+            {% if public_file_exists(custom_css_file) %}
+                <link rel="stylesheet" href="{{ asset(custom_css_file) }}" />
+            {% endif %}
         {% endif %}
 
-        {% if get_env('APP_THEME_BANNER_SNOW_ENABLED') is not empty and get_env('APP_THEME_BANNER_SNOW_ENABLED') == '1' %}
-            <link rel="stylesheet" href="{{ asset('/css/snow.css') }}" />
-        {% endif %}
 
     </head>
 
-    <body style="{% if get_env('APP_THEME_BACKGROUND') is not empty %}background: url('{{ get_env('APP_THEME_BACKGROUND') }}') !important;{% else %}background-color: #222;{% endif %}" data-no-instant>
+    <body style="background-color: #222;" data-no-instant>
 
         {% block body %}{% endblock %}
 

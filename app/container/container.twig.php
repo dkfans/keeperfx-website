@@ -12,7 +12,7 @@ use Psr\Container\ContainerInterface;
 return [
     App\Twig\Extension\Markdown\CustomMarkdownRuntimeLoader::class => DI\create(),
 
-    Twig\Environment::class => static function (ContainerInterface $container): \Twig\Environment {
+    Twig\Environment::class => static function (ContainerInterface $container): Twig\Environment {
 
         // Make sure Twig is enabled in config
         if (Config::get('twig.is_enabled') === false) {
@@ -42,6 +42,19 @@ return [
         $twig->addTest(
             new Twig\TwigTest('array', static function ($value): bool {
                 return \is_array($value);
+            })
+        );
+
+        // Add simple functions
+        $twig->addFunction(
+            new Twig\TwigFunction('file_exists', static function (string $path): bool {
+                return \file_exists($path);
+            })
+        );
+        // Add simple functions
+        $twig->addFunction(
+            new Twig\TwigFunction('public_file_exists', static function (string $path): bool {
+                return \file_exists(\APP_ROOT . '/public/' . \ltrim(\str_replace('\\', '/', $path), '/'));
             })
         );
 
