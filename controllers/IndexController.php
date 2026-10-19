@@ -64,7 +64,7 @@ class IndexController
         $twitch_channel = null;
         $streams        = $cache->get('twitch_streams', []);
         if (!empty($streams)) {
-            $twitch_channel = $streams[\array_rand($streams)];
+            $twitch_channel = $streams[\array_rand($streams)]['user_login'];
         }
 
         $response->getBody()->write(
