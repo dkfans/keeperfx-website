@@ -7,6 +7,9 @@ use Symfony\Component\Yaml\Yaml;
 
 class CDN
 {
+    /**
+     * @var array<string, bool|string|mixed[]>
+     */
     private array $cdn_config;
 
     private string $current_cdn_id;
