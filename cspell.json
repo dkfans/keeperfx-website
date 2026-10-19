@@ -169,6 +169,7 @@
         "openssl",
         "opentype",
         "outdir",
+        "OVERWORLD",
         "passtrough",
         "pcntl",
         "pecl",

@@ -8,7 +8,7 @@ return App\TaskScheduler::schedule(
     ),
     App\TaskScheduler::task(
         description: 'Fetch and handle Twitch streams that are playing KeeperFX',
-        console_command: 'kfx:handle-twitch-streams',
+        console_command: 'kfx:fetch-homepage-twitch-streams',
         interval: 'everyMinute',
     ),
 );

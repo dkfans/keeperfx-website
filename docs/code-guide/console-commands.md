@@ -19,10 +19,10 @@ The KeeperFX website uses the Symfony Console library and comes with a set of pr
  kfx
   kfx:fetch-alpha                   Fetch the latest alpha releases
   kfx:fetch-forum-activity          Fetch the latest KeeperFX forum threads from Keeper Klan
+  kfx:fetch-homepage-twitch-streams Fetch and handle Twitch streams to broadcast on homepage
   kfx:fetch-stable                  Fetch the latest stable release
   kfx:fetch-wiki                    Fetch the latest wiki pages
   kfx:handle-commits                Handle the commit history of the KeeperFX project
-  kfx:handle-twitch-streams         Fetch and handle Twitch streams to broadcast on homepage
   kfx:pull-repo                     Pull the latest master branch of KeeperFX
  lubiki
   lubiki:add-file-dump-to-workshop  Add Lubiki file dump to Workshop

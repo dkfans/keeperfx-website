@@ -4,17 +4,17 @@ namespace App\Console\Command\KeeperFX;
 
 use App\Entity\UserOAuthToken;
 use App\Enum\OAuthProviderType;
+use App\Twitch\Enum\TwitchGame;
+use App\Twitch\TwitchClient;
 use Doctrine\ORM\EntityManager;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
-#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:handle-twitch-streams', description: 'Fetch and handle Twitch streams to broadcast on homepage')]
-class HandleTwitchStreamsCommand extends Command
+#[\Symfony\Component\Console\Attribute\AsCommand(name: 'kfx:fetch-homepage-twitch-streams', description: 'Fetch and handle Twitch streams to broadcast on homepage')]
+class FetchHomepageTwitchStreamsCommand extends Command
 {
-    public const DUNGEON_KEEPER_GAME_ID = 16169;
-
     public const PRIORITY_LANGUAGE = 'en';
 
     public const KEEPER_FX_STRINGS = [
@@ -34,74 +34,15 @@ class HandleTwitchStreamsCommand extends Command
 
     protected function execute(Input $input, Output $output): int
     {
-        // Get Twitch API client credentials
-        $client_id     = $_ENV['APP_OAUTH_TWITCH_CLIENT_ID'];
-        $client_secret = $_ENV['APP_OAUTH_TWITCH_CLIENT_SECRET'];
-
-        // Create a HTTP client
-        $client = new \GuzzleHttp\Client(['base_uri' => 'https://api.twitch.tv/']);
-
+        // Get Dungeon Keeper Twitch streams
         try {
-            $output->writeln('[>] Authenticating with Twitch API...');
+            $output->writeln('[+] Grabbing Dungeon Keeper Twitch streams...');
+            $streams = TwitchClient::getStreams(TwitchGame::DUNGEON_KEEPER_1);
 
-            // Get OAuth App Access Token
-            $auth_response = $client->post('https://id.twitch.tv/oauth2/token', [
-                'form_params' => [
-                    'client_id'     => $client_id,
-                    'client_secret' => $client_secret,
-                    'grant_type'    => 'client_credentials',
-                ],
-            ]);
-            $auth_data    = \json_decode($auth_response->getBody(), true);
-            $access_token = $auth_data['access_token'];
-
-            // Fetch all streams
-            $output->writeln('[>] Grabbing streams...');
-            $streams = [];
-
-            // Use pagination to go beyond 100
-            $cursor = null;
-            do {
-
-                $query = [
-                    'game_id' => (string) self::DUNGEON_KEEPER_GAME_ID,
-                    'first'   => 100,
-                ];
-
-                // If a cursor exists from the previous loop, attach it to fetch the next page
-                if ($cursor) {
-                    $query['after'] = $cursor;
-                }
-
-                // Get the streams
-                $response = $client->get('helix/streams', [
-                    'headers' => [
-                        'Client-Id'     => $client_id,
-                        'Authorization' => 'Bearer ' . $access_token,
-                    ],
-                    'query' => $query,
-                ]);
-
-                // Decode the data
-                $data = \json_decode($response->getBody(), true);
-
-                // Append the current page of streams to our main array
-                if (!empty($data['data'])) {
-                    \array_push($streams, ...$data['data']);
-                }
-
-                // Twitch returns an empty pagination object when we reach the end of the results
-                $cursor = $data['pagination']['cursor'] ?? null;
-
-            } while ($cursor !== null);
-
-        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+        } catch (\Exception $ex) {
 
             $output->writeln('[-] Something went wrong');
-            $output->writeln('[-] API error: ' . $e->getMessage());
-
-            // Clear the cache because if something went wrong we want to make sure we don't show anything
-            $this->cache->set('twitch_streams', []);
+            $output->writeln('[-] API error: ' . $ex->getMessage());
 
             return Command::FAILURE;
         }

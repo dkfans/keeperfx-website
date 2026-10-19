@@ -14,23 +14,23 @@ You can get the configured task list by running: `php ./vendor/bin/crunz schedul
 Example:
 
 ```
-+----+------------------------------------------------------------+--------------+---------------------------------------------------------------------------------+
-| #  | Task                                                       | Expression   | Command to Run                                                                  |
-+----+------------------------------------------------------------+--------------+---------------------------------------------------------------------------------+
-| 1  | Send all mails in the mail queue                           | * * * * *    | /usr/bin/php8.1 /var/www/keeperfx-website/console mail:send-queue-all           |
-| 2  | Pull the game git repo from github                         | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:pull-repo                 |
-| 3  | Handle game git repo commits and create changelogs         | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:handle-commits            |
-| 4  | Fetch the game dev wiki from github                        | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:fetch-wiki                |
-| 5  | Remove stale password reset tokens                         | 0 0 * * *    | /usr/bin/php8.1 /var/www/keeperfx-website/console user:clear-old-password-reset |
-| 6  | Fetch the stable releases from github                      | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:fetch-stable              |
-| 7  | Fetch the alpha patches from github                        | */5 * * * *  | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:fetch-alpha               |
-| 8  | Fetch latest version of Unearth                            | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console workshop:fetch-unearth        |
-| 9  | Fetch latest version of CreatureMaker                      | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console workshop:fetch-creature-maker |
-| 10 | Scan new workshop files for malware                        | * * * * *    | /usr/bin/php8.1 /var/www/keeperfx-website/console clamav:scan-workshop-new      |
-| 11 | Scan all workshop files for malware                        | 0 0 * * *    | /usr/bin/php8.1 /var/www/keeperfx-website/console clamav:scan-workshop-all      |
-| 12 | Fetch the forum activity from the Keeper Klan forums       | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:fetch-forum-activity      |
-| 13 | Fetch and handle connected Twitch streams playing KeeperFX | */2 * * * *  | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:handle-twitch-streams     |
-+----+------------------------------------------------------------+--------------+---------------------------------------------------------------------------------+
++----+------------------------------------------------------------+--------------+-------------------------------------------------------------------------------------+
+| #  | Task                                                       | Expression   | Command to Run                                                                      |
++----+------------------------------------------------------------+--------------+-------------------------------------------------------------------------------------+
+| 1  | Send all mails in the mail queue                           | * * * * *    | /usr/bin/php8.1 /var/www/keeperfx-website/console mail:send-queue-all               |
+| 2  | Pull the game git repo from github                         | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:pull-repo                     |
+| 3  | Handle game git repo commits and create changelogs         | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:handle-commits                |
+| 4  | Fetch the game dev wiki from github                        | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:fetch-wiki                    |
+| 5  | Remove stale password reset tokens                         | 0 0 * * *    | /usr/bin/php8.1 /var/www/keeperfx-website/console user:clear-old-password-reset     |
+| 6  | Fetch the stable releases from github                      | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:fetch-stable                  |
+| 7  | Fetch the alpha patches from github                        | */5 * * * *  | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:fetch-alpha                   |
+| 8  | Fetch latest version of Unearth                            | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console workshop:fetch-unearth            |
+| 9  | Fetch latest version of CreatureMaker                      | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console workshop:fetch-creature-maker     |
+| 10 | Scan new workshop files for malware                        | * * * * *    | /usr/bin/php8.1 /var/www/keeperfx-website/console clamav:scan-workshop-new          |
+| 11 | Scan all workshop files for malware                        | 0 0 * * *    | /usr/bin/php8.1 /var/www/keeperfx-website/console clamav:scan-workshop-all          |
+| 12 | Fetch the forum activity from the Keeper Klan forums       | */10 * * * * | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:fetch-forum-activity          |
+| 13 | Fetch and handle connected Twitch streams playing KeeperFX | */2 * * * *  | /usr/bin/php8.1 /var/www/keeperfx-website/console kfx:fetch-homepage-twitch-streams |
++----+------------------------------------------------------------+--------------+-------------------------------------------------------------------------------------+
 ```
 
 _This example might be outdated, all tasks are stored in the `./tasks` directory._
