@@ -62,7 +62,7 @@ class IndexController
 
         // Get featured Twitch stream
         $twitch_channel = null;
-        $streams        = $cache->get('twitch_streams', []);
+        $streams        = $cache->get('twitch_homepage_streams', []);
         if (!empty($streams)) {
             $twitch_channel = $streams[\array_rand($streams)]['user_login'];
         }

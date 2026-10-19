@@ -44,6 +44,8 @@ class FetchHomepageTwitchStreamsCommand extends Command
             $output->writeln('[-] Something went wrong');
             $output->writeln('[-] API error: ' . $ex->getMessage());
 
+            $this->cache->set('twitch_homepage_streams', []);
+
             return Command::FAILURE;
         }
 
@@ -144,7 +146,7 @@ class FetchHomepageTwitchStreamsCommand extends Command
 
         // Store into cache
         $output->writeln('[>] Storing <info>' . \count($streams) . '</info> streams into cache...');
-        $this->cache->set('twitch_streams', $streams);
+        $this->cache->set('twitch_homepage_streams', $streams);
 
         $output->writeln('[+] Done!');
 
