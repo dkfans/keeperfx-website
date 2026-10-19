@@ -55,10 +55,11 @@ class FetchHomepageTwitchStreamsCommand extends Command
             $output->writeln('[+] Grabbed <comment>' . \count($streams) . '</comment> total streams');
 
             // Variables
-            $priority_user_found         = false;
-            $priority_language_found     = false;
-            $prioritized_twitch_user_ids = [];
-            $stream_removed_count        = 0;
+            $priority_keeperfx_string_found = false;
+            $priority_user_found            = false;
+            $priority_language_found        = false;
+            $prioritized_twitch_user_ids    = [];
+            $stream_removed_count           = 0;
 
             // Grab Twitch user ids of our registered users
             // We'll use the OAuth tokens as these contain the Twitch account connections
@@ -71,29 +72,22 @@ class FetchHomepageTwitchStreamsCommand extends Command
 
             $output->writeln('[>] Filtering streams...');
 
-            // Filter out non KeeperFX streams
+            // See if we found a stream that contains a KeeperFX string in either the tags or title
             foreach ($streams as $key => $stream) {
-
-                $has_keeperfx_string = false;
-
-                // Gather strings to search trough
-                $strings   = (array) ($stream['tags'] ?? []);
-                $strings[] = (string) ($stream['title'] ?? '');
-
-                // Check if "KeeperFX" string is found in title or tags
-                foreach ($strings as $string) {
-                    foreach (self::KEEPER_FX_STRINGS as $string_search) {
-                        if (\str_contains(\strtolower($string), \strtolower($string_search)) === true) {
-                            $has_keeperfx_string = true;
-                            break 2;
-                        }
-                    }
+                if ($this->hasKfxString($stream)) {
+                    $output->writeln('[+] KeeperFX string found!');
+                    $priority_keeperfx_string_found = true;
+                    break;
                 }
+            }
 
-                // Remove the stream if it doesn't mention keeperfx
-                if ($has_keeperfx_string === false) {
-                    unset($streams[$key]);
-                    ++$stream_removed_count;
+            // Remove streams missing KeeperFX string if one was found
+            if ($priority_keeperfx_string_found) {
+                foreach ($streams as $key => $stream) {
+                    if ($this->hasKfxString($stream) === false) {
+                        unset($streams[$key]);
+                        ++$stream_removed_count;
+                    }
                 }
             }
 
@@ -151,5 +145,23 @@ class FetchHomepageTwitchStreamsCommand extends Command
         $output->writeln('[+] Done!');
 
         return Command::SUCCESS;
+    }
+
+    private function hasKfxString(array $stream): bool
+    {
+        // Gather strings to search trough
+        $strings   = (array) ($stream['tags'] ?? []);
+        $strings[] = (string) ($stream['title'] ?? '');
+
+        // Check if "KeeperFX" string is found in title or tags
+        foreach ($strings as $string) {
+            foreach (self::KEEPER_FX_STRINGS as $string_search) {
+                if (\str_contains(\strtolower($string), \strtolower($string_search)) === true) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

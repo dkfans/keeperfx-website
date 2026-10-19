@@ -203,14 +203,14 @@
         </div>
 
         {# Featured Twitch Stream Box #}
-        {% if twitch_channel %}
+        {% if twitch_homepage_streams is not empty %}
             <div class="content-box bg-keeper bd-keeper">
                 <div class="content-header">
                     <h2>Featured Twitch Stream</h2>
                 </div>
                 <div class="content-body">
                     <iframe
-                        src="https://player.twitch.tv/?channel={{ twitch_channel }}&parent={{ twitch_parent_host }}&muted=true"
+                        src="https://player.twitch.tv/?channel={{ random(twitch_homepage_streams).user_login }}&parent={{ twitch_parent_host }}&muted=true"
                         height="210px"
                         width="100%"
                         allowfullscreen>

@@ -60,22 +60,15 @@ class IndexController
             ->getQuery()
             ->getResult();
 
-        // Get featured Twitch stream
-        $twitch_channel = null;
-        $streams        = $cache->get('twitch_homepage_streams', []);
-        if (!empty($streams)) {
-            $twitch_channel = $streams[\array_rand($streams)]['user_login'];
-        }
-
         $response->getBody()->write(
             $twig->render('index.html.twig', [
-                'articles'              => $articles,
-                'release'               => $release,
-                'latest_workshop_items' => $latest_workshop_items,
-                'forum_threads'         => $cache->get('keeperfx_forum_threads', []),
-                'discord_info'          => $cache->get('discord_info', []),
-                'twitch_channel'        => $twitch_channel,
-                'twitch_parent_host'    => \parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_HOST),
+                'articles'                => $articles,
+                'release'                 => $release,
+                'latest_workshop_items'   => $latest_workshop_items,
+                'forum_threads'           => $cache->get('keeperfx_forum_threads', []),
+                'discord_info'            => $cache->get('discord_info', []),
+                'twitch_homepage_streams' => $cache->get('twitch_homepage_streams', []),
+                'twitch_parent_host'      => \parse_url($_ENV['APP_ROOT_URL'], \PHP_URL_HOST),
             ])
         );
 
