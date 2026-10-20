@@ -858,6 +858,24 @@ button.btn-medieval ion-icon {
     padding-bottom: 20px;
 }
 
+.content-body .workshop-info-about-me h1+p,
+.content-body .workshop-info-about-me h2+p,
+.content-body .workshop-info-about-me h3+p,
+.content-body .workshop-info-about-me h4+p,
+.content-body .workshop-info-about-me h5+p,
+.content-body .workshop-info-about-me h6+p {
+    margin-top: 10px;
+}
+
+.content-body .workshop-info-awards h1+p,
+.content-body .workshop-info-awards h2+p,
+.content-body .workshop-info-awards h3+p,
+.content-body .workshop-info-awards h4+p,
+.content-body .workshop-info-awards h5+p,
+.content-body .workshop-info-awards h6+p {
+    margin-top: 10px;
+}
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -1972,3 +1990,30 @@ div.phpdebugbar-widgets-callgraph pre span {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.award {
+    /* Optional: Adds a slight blur behind the transparent dark background for a modern look */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    /* Smooth out the border rendering */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    cursor: default;
+}
+
+.award-icon {
+    /* Forces the height and automatically adjusts width to keep ratio */
+    height: 14px;
+    width: auto;
+
+    /* Removes standard inline bottom spacing from images */
+    display: block;
+}
+
+.award-text {
+    /* Ensures perfect vertical alignment by overriding default line-heights */
+    line-height: 1;
+    font-weight: 500;
+    font-size: 0.85rem;
+}

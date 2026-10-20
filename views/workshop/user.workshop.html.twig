@@ -22,128 +22,153 @@
         add_back_button: false
     } %}
 
-<div class="content-box bg-keeper bd-keeper">
+    <div class="content-box bg-keeper bd-keeper">
 
-    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h2>{{ user.username }}</h2>
-        <div>
-            {% if account is not null and account.role >= roles.admin %}
-                <a href="/admin/user/{{ user.id }}" style="right: 0;">
-                    <button class="btn btn-medieval btn-medieval-black">
-                        Mod View
-                    </button>
-                </a>
-            {% endif %}
+        <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+            <h2>{{ user.username }}</h2>
+            <div>
+                {% if account is not null and account.role >= roles.admin %}
+                    <a href="/admin/user/{{ user.id }}" style="right: 0;">
+                        <button class="btn btn-medieval btn-medieval-black">
+                            Mod View
+                        </button>
+                    </a>
+                {% endif %}
+            </div>
         </div>
-    </div>
-    <div class="content-body">
+        <div class="content-body">
 
-        {# Banned notice #}
-        {% if user.role.value == roles.banned %}
-            <div class="alert alert-danger">This user has been banned</div>
-        {% endif %}
+            {# Banned notice #}
+            {% if user.role.value == roles.banned %}
+                <div class="alert alert-danger">This user has been banned</div>
+            {% endif %}
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="workshop-info-box" style="min-height: 100%; margin-bottom: 8px; padding-top: 28px;">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="workshop-info-box" style="min-height: 100%; margin-bottom: 8px; padding-top: 28px;">
 
-                    <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 0 auto;">
-                        {% if user.avatar %}
-                            <img src="/avatar/{{ user.avatar }}"/>
-                                {% else %}
-                            <img src="/avatar-generate/128/{{ user.username|url_encode }}.png" />
+                        <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 0 auto;">
+                            {% if user.avatar %}
+                                <img src="/avatar/{{ user.avatar }}"/>
+                            {% else %}
+                                <img src="/avatar-generate/128/{{ user.username|url_encode }}.png"/>
+                            {% endif %}
+                        </div>
+
+                        <table style="margin: 20px; width:100%">
+                            <tbody>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Username
+                                    </td>
+                                    <td class="text-stand-out">
+                                        {{ user.username }}
+                                    </td>
+                                </tr>
+                                {% if user.country is not null %}
+                                    <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                                    <tr>
+                                        <td>
+                                            Country
+                                        </td>
+                                        <td class="text-stand-out">
+                                            <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover" data-bs-content="{{ get_country_string(user.country) }}" data-bs-placement="top">
+                                                {{ get_country_emoji(user.country) }}
+                                            </span>
+                                            {{ get_country_string(user.country) }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Registration Date
+                                    </td>
+                                    <td class="text-stand-out">
+                                        {{ user.createdTimestamp|date('Y-m-d') }}
+                                    </td>
+                                </tr>
+                                <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Workshop Items
+                                    </td>
+                                    <td class="text-stand-out">
+                                        {% if user.workshopItems|length > 0 %}
+                                            <a href="/workshop/browse?user={{ user.username }}">{{ user.workshopItems|length }} items</a>
+                                        {% else %}
+                                            <span class="text-muted">None</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Comments
+                                    </td>
+                                    <td class="text-stand-out">
+                                        {{ user.workshopComments|length }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Ratings
+                                    </td>
+                                    <td class="text-stand-out">
+                                        {{ user.workshopRatings|length }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Difficulty Ratings
+                                    </td>
+                                    <td class="text-stand-out">
+                                        {{ user.workshopDifficultyRatings|length }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+
+                    {# About Me #}
+                    <div class="workshop-info-box p-2 workshop-info-about-me">
+                        <h4 class="m-3">About Me</h4>
+                        {% if user.bio is not null and user.bio.bio is not empty %}
+                            {{ user.bio.bio|markdown_to_html }}
+                        {% else %}
+                            <p><i class="text-muted">I have not written anything here yet.</i></p>
                         {% endif %}
                     </div>
 
-                    <table style="margin: 20px; width:100%">
-                        <tbody>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Username
-                                </td>
-                                <td class="text-stand-out">
-                                    {{ user.username }}
-                                </td>
-                            </tr>
-                            {% if user.country is not null %}
-                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
-                            <tr>
-                                <td>
-                                    Country
-                                </td>
-                                <td class="text-stand-out">
-                                        <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(user.country) }}" data-bs-placement="top">
-                                            {{ get_country_emoji(user.country) }}
-                                        </span>
-                                        {{ get_country_string(user.country) }}
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Registration Date
-                                </td>
-                                <td class="text-stand-out">
-                                    {{ user.createdTimestamp|date('Y-m-d') }}
-                                </td>
-                            </tr>
-                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Workshop Items
-                                </td>
-                                <td class="text-stand-out">
-                                    {% if user.workshopItems|length > 0 %}
-                                        <a href="/workshop/browse?user={{ user.username }}">{{ user.workshopItems|length }} items</a>
-                                    {% else %}
-                                        <span class="text-muted">None</span>
+                    {# Awards #}
+                    <div class="workshop-info-box p-2 workshop-info-awards">
+                        <h4 class="m-3">Awards</h4>
+                        <div class="awards px-3 pb-3 d-flex flex-wrap gap-2">
+                            {% for id, award in awards %}
+                                <span
+                                    class="badge rounded-pill award d-inline-flex align-items-center gap-{{ award.gap|default(1) }} text-nowrap"
+                                    style="{{ award.badge_css }}"
+                                    {% if award.tooltip is defined and award.tooltip %}
+                                    data-bs-toggle="popover"
+                                    data-bs-placement="top"
+                                    data-bs-content="{{ award.tooltip }}"
                                     {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Comments
-                                </td>
-                                <td class="text-stand-out">
-                                    {{ user.workshopComments|length }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Ratings
-                                </td>
-                                <td class="text-stand-out">
-                                    {{ user.workshopRatings|length }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Difficulty Ratings
-                                </td>
-                                <td class="text-stand-out">
-                                    {{ user.workshopDifficultyRatings|length }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                >
+                                    <img src="{{ asset('/img/award/' ~ award.img) }}" alt="{{ award.name }}" class="award-icon"/>
+                                    <span class="award-text" style="{{ award.span_css }}">
+                                        {{ award.name }}
+                                    </span>
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="workshop-info-box" style="padding: 25px 30px 30px;">
-                    <h4>About Me</h4>
-                    {% if user.bio is not null and user.bio.bio is not empty %}
-                        {{ user.bio.bio|markdown_to_html }}
-                    {% else %}
-                        <p><i class="text-muted">I have not written anything here yet.</i></p>
-                    {% endif %}
-                </div>
-            </div>
         </div>
-
     </div>
-</div>
 
     {# Moderator note (only visible to moderators) #}
     {% if account and account.role >= roles.moderator and user.moderatorNote %}
@@ -172,7 +197,7 @@
                 <p style="margin: 15px 0 15px 0;">No workshop items found</p>
             {% else %}
 
-                <input class="form-control form-form-control-sm" id="search" placeholder="Search" style="margin-bottom: 15px;" />
+                <input class="form-control form-form-control-sm" id="search" placeholder="Search" style="margin-bottom: 15px;"/>
 
                 <div class="workshop-grid">
 
@@ -193,11 +218,11 @@
                                 <div class="workshop-grid-item-image-container">
                                     <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" data-instant>
                                         {% if item.thumbnail is not null %}
-                                            <img src="/workshop/image/{{ item.id }}/{{ item.thumbnail }}" />
+                                            <img src="/workshop/image/{{ item.id }}/{{ item.thumbnail }}"/>
                                         {% elseif item.images|length > 0 %}
-                                            <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}" />
+                                            <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}"/>
                                         {% else %}
-                                            <img src="/img/no-image-256.png" />
+                                            <img src="/img/no-image-256.png"/>
                                         {% endif %}
                                     </a>
                                 </div>
@@ -206,34 +231,37 @@
 
                                     {# Show a notice for broken items #}
                                     {% if item.isLastFileBroken %}
-                                            <ion-icon
-                                                name="alert-circle-outline"
-                                                class="workshop-grid-notice-icon"
-                                                style="color: #f91b1b !important;
-                                                {% if item.minGameBuild is not null and item.minGameBuild == -1 %} right: 34px;{% else %} right:8px;{% endif %}
+                                        <ion-icon
+                                            name="alert-circle-outline"
+                                            class="workshop-grid-notice-icon"
+                                            style="color: #f91b1b !important;
+                                                {% if item.minGameBuild is not null and item.minGameBuild == - 1 %} right: 34px;{% else %} right:8px;{% endif %}
                                                 "
-                                                data-bs-toggle="popover" data-bs-placement="top"
-                                                data-bs-content="This workshop item is considered broken by the KeeperFX team."
-                                            ></ion-icon>
+                                            data-bs-toggle="popover"
+                                            data-bs-placement="top"
+                                            data-bs-content="This workshop item is considered broken by the KeeperFX team."
+                                        ></ion-icon>
                                     {% endif %}
 
                                     {# Show a notice for items requiring the latest alpha patch #}
-                                    {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
-                                            <ion-icon
-                                                name="alert-circle-outline"
-                                                class="text-warning workshop-grid-notice-icon"
-                                                style="right: 8px;";
-                                                data-bs-toggle="popover" data-bs-placement="top"
-                                                data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly."
-                                            ></ion-icon>
+                                    {% if item.minGameBuild is not null and item.minGameBuild == - 1 %}
+                                        <ion-icon
+                                            name="alert-circle-outline"
+                                            class="text-warning workshop-grid-notice-icon"
+                                            style="right: 8px;";
+                                            data-bs-toggle="popover"
+                                            data-bs-placement="top"
+                                            data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly."
+                                        ></ion-icon>
                                     {% endif %}
 
                                     {# Title #}
-                                    <div class="workshop-grid-item-title"
+                                    <div
+                                        class="workshop-grid-item-title"
                                         {# Optionally add some padding to the right to make place for the notice icons #}
-                                        {% if item.minGameBuild is not null and item.minGameBuild == -1 and not item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
-                                        {% if (item.minGameBuild is null or item.minGameBuild != -1) and item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
-                                        {% if item.minGameBuild is not null and item.minGameBuild == -1 and item.isLastFileBroken %}style="padding-right: 20px;"{% endif %}
+                                        {% if item.minGameBuild is not null and item.minGameBuild == - 1 and not item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
+                                        {% if (item.minGameBuild is null or item.minGameBuild != - 1) and item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
+                                        {% if item.minGameBuild is not null and item.minGameBuild == - 1 and item.isLastFileBroken %}style="padding-right: 20px;"{% endif %}
                                     >
                                         <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}" title="{{ item.name }}" data-instant>
                                             {{ item.name }}
@@ -310,42 +338,41 @@
 
 {% block body_javascript %}
 
-<script>
+    <script>
+        // Variables
+        var $searchTable = $("#search").parent().find(".workshop-grid");
+        var searchRows = $searchTable.find(".workshop-grid-item");
 
-    // Variables
-    var $searchTable = $('#search').parent().find('.workshop-grid');
-    var searchRows   = $searchTable.find('.workshop-grid-item');
+        // Handle search
+        $("#search").on(
+            "keyup",
+            $.debounce(250, function (e) {
+                // Get search string
+                var string = $(this).val().toLowerCase();
 
-    // Handle search
-    $('#search').on('keyup', $.debounce(250, function(e){
+                // Handle clearing of search
+                if (string == "") {
+                    $(searchRows).show();
+                    $(searchRows).unmark();
+                    return;
+                }
 
-        // Get search string
-        var string = $(this).val().toLowerCase();
+                // Loop trough all rows
+                $.each(searchRows, function (i, el) {
+                    // Show or hide the row
+                    let content = $(el).text().toLowerCase();
+                    if (!content.includes(string)) {
+                        $(el).hide();
+                    } else {
+                        $(el).show();
+                    }
+                });
 
-        // Handle clearing of search
-        if(string == ""){
-            $(searchRows).show();
-            $(searchRows).unmark();
-            return;
-        }
-
-        // Loop trough all rows
-        $.each(searchRows, function(i, el){
-
-            // Show or hide the row
-            let content = $(el).text().toLowerCase();
-            if(!content.includes(string)){
-                $(el).hide();
-            } else {
-                $(el).show();
-            }
-        });
-
-        // Mark the keyword
-        $(searchRows).unmark();
-        $(searchRows).mark(string);
-    }));
-
-</script>
+                // Mark the keyword
+                $(searchRows).unmark();
+                $(searchRows).mark(string);
+            }),
+        );
+    </script>
 
 {% endblock %}

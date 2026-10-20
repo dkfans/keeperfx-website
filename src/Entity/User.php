@@ -76,6 +76,9 @@ class User
     #[ORM\OneToMany(targetEntity: UserNotificationSetting::class, mappedBy: 'user')]
     private Collection $notification_settings;
 
+    // #[ORM\OneToMany(targetEntity: UserAward::class, mappedBy: 'user')]
+    // private Collection $awards;
+
     #[ORM\OneToMany(targetEntity: WorkshopItem::class, mappedBy: 'submitter')]
     private Collection $workshop_items;
 

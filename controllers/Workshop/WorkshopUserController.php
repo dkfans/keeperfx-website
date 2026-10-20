@@ -40,6 +40,7 @@ class WorkshopUserController
         // Check if this page is already cached
         $cached_view_data = $workshop_cache->getCachedBrowsePageData($user_cache_id);
         if ($cached_view_data) {
+            $cached_view_data = \array_merge($cached_view_data, ['awards' => Config::get('awards.awards')]);
             $response->getBody()->write(
                 $twig->render('workshop/user.workshop.html.twig',
                     \array_merge($cached_view_data, ['user' => $user]) // User needs to be dynamic
@@ -104,6 +105,8 @@ class WorkshopUserController
 
         // Cache the view data
         $workshop_cache->setCachedBrowsePageData($user_cache_id, $view_data);
+
+        $view_data = \array_merge($view_data, ['awards' => Config::get('awards.awards')]);
 
         // // Render view
         $response->getBody()->write(
