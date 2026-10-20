@@ -43,9 +43,16 @@ class MonitorAndPostTwitchStreamsCommand extends Command
 
     protected function execute(Input $input, Output $output): int
     {
-        $all_streams = [];
+        // Make sure a webhook is configured
+        if (empty($_ENV['APP_DISCORD_NOTIFY_STREAMS_WEBHOOK_URL'])) {
+            $output->writeln('[-] No Streams webhook configured (APP_DISCORD_NOTIFY_STREAMS_WEBHOOK_URL)');
 
+            return Command::FAILURE;
+        }
+
+        // Start
         $output->writeln('[>] Starting Twitch stream monitor...');
+        $all_streams = [];
 
         // Fetch streams for all configured games
         $output->writeln('[>] Fetching streams...');
