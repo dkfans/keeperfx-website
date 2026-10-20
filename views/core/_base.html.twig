@@ -118,7 +118,9 @@
             {% if existing_backgrounds is not empty %}
                 <style>
                     body {
-                        background: {{ existing_backgrounds|join(', ')|raw }} !important;
+                        background-color: background-color: #222;
+                        background-image: {{ existing_backgrounds|join(', ')|raw }} !important;
+                        background: {{ existing_backgrounds|join(', ')|raw }} #222 !important;
                     }
                 </style>
             {% endif %}
@@ -133,7 +135,7 @@
 
     </head>
 
-    <body style="background-color: #222;" data-no-instant>
+    <body style="background: #222; background-color: #222;" data-no-instant>
 
         {% block body %}{% endblock %}
 
