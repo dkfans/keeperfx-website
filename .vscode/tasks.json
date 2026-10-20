@@ -89,6 +89,7 @@
                 "kfx:fetch-wiki",
                 "kfx:fix-alpha-commit-info",
                 "kfx:handle-commits",
+                "kfx:monitor-and-post-twitch-streams",
                 "kfx:pull-repo",
                 "lubiki:add-file-dump-to-workshop",
                 "mail:create",

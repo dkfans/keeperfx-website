@@ -19,6 +19,7 @@ return [
     App\Console\Command\KeeperFX\ExtractAlphaGameFilesCommand::class,
     App\Console\Command\KeeperFX\FetchLauncherCommand::class,
     App\Console\Command\KeeperFX\FixAlphaBuildCommitInfoCommand::class,
+    App\Console\Command\KeeperFX\MonitorAndPostTwitchStreamsCommand::class,
 
     // User
     App\Console\Command\User\CreateUserCommand::class,

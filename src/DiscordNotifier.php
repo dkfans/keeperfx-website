@@ -24,6 +24,8 @@ class DiscordNotifier
 
     private ?Client $webhook = null;
 
+    private ?Client $streams_webhook = null;
+
     public function __construct(
         private EntityManager $em,
     ) {
@@ -53,6 +55,34 @@ class DiscordNotifier
             // Set avatar
             if (!empty($_ENV['APP_DISCORD_NOTIFY_WEBHOOK_AVATAR'])) {
                 $this->webhook->avatar((string) $_ENV['APP_DISCORD_NOTIFY_WEBHOOK_AVATAR']);
+            }
+        }
+
+        // Setup Stream Webhook
+        if (!empty($_ENV['APP_DISCORD_NOTIFY_STREAMS_WEBHOOK_URL'])) {
+
+            // Get the URL
+            $url = (string) $_ENV['APP_DISCORD_NOTIFY_STREAMS_WEBHOOK_URL'];
+
+            // Make sure URL is a valid Discord webhook URL
+            if (
+                \filter_var($url, \FILTER_VALIDATE_URL) === false
+                || !StringHelper::startsWith($url, 'https://discord.com/api/webhooks/')
+            ) {
+                throw new \Exception('invalid discord webhook URL');
+            }
+
+            // Load client for webhook communication
+            $this->streams_webhook = new Client($url);
+
+            // Set username
+            if (!empty($_ENV['APP_DISCORD_NOTIFY_STREAMS_WEBHOOK_USERNAME'])) {
+                $this->streams_webhook->username((string) $_ENV['APP_DISCORD_NOTIFY_STREAMS_WEBHOOK_USERNAME']);
+            }
+
+            // Set avatar
+            if (!empty($_ENV['APP_DISCORD_NOTIFY_STREAMS_WEBHOOK_AVATAR'])) {
+                $this->streams_webhook->avatar((string) $_ENV['APP_DISCORD_NOTIFY_STREAMS_WEBHOOK_AVATAR']);
             }
         }
     }
@@ -94,6 +124,28 @@ class DiscordNotifier
             }
 
             $hook = clone $this->webhook;
+            $hook->embed($embed);
+
+            if ($message !== null) {
+                $hook->message($message);
+            }
+
+            $hook->send();
+
+            return true;
+        } catch (\Exception $ex) {
+            return false;
+        }
+    }
+
+    public function sendStreamsEmbed(Embed $embed, ?string $message = null): bool
+    {
+        try {
+            if ($this->streams_webhook === null) {
+                return false;
+            }
+
+            $hook = clone $this->streams_webhook;
             $hook->embed($embed);
 
             if ($message !== null) {
@@ -230,5 +282,38 @@ class DiscordNotifier
 
         // Send the embed
         return $this->sendEmbed($embed, 'New game update!');
+    }
+
+    public function notifyTwitchStream(array $stream): bool
+    {
+        if ($this->streams_webhook === null) {
+            return false;
+        }
+
+        $username   = $stream['user_name']  ?? 'Unknown Streamer';
+        $user_login = $stream['user_login'] ?? '';
+        $title      = $stream['title']      ?? 'Live Stream';
+        $game_name  = $stream['game_name']  ?? 'Dungeon Keeper';
+        $language   = \strtoupper($stream['language'] ?? 'xx');
+        $stream_url = 'https://twitch.tv/' . $user_login;
+
+        // Replace template placeholders in Twitch thumbnail URL
+        $thumbnail = $stream['thumbnail_url'] ?? '';
+        $thumbnail = \str_replace(['{width}', '{height}'], ['1280', '720'], $thumbnail);
+
+        $embed = new Embed();
+        $embed->title(\htmlentities($title));
+        $embed->url($stream_url);
+        $embed->color('6441a5'); // Twitch Purple hex color
+        $embed->footer($username . ' is now live on Twitch!');
+
+        if (!empty($thumbnail)) {
+            $embed->image($thumbnail);
+        }
+
+        $embed->field('Game', $game_name, true);
+        $embed->field('Language', $language, true);
+
+        return $this->sendStreamsEmbed($embed, \sprintf('**%s** just went live streaming **%s**!', $username, $game_name));
     }
 }

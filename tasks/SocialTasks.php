@@ -11,4 +11,9 @@ return App\TaskScheduler::schedule(
         console_command: 'kfx:fetch-homepage-twitch-streams',
         interval: 'everyMinute',
     ),
+    App\TaskScheduler::task(
+        description: 'Fetch and notify active Twitch streams to Discord',
+        console_command: 'kfx:monitor-and-post-twitch-streams',
+        interval: 'everyMinute',
+    ),
 );
