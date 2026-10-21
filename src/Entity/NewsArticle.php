@@ -56,10 +56,8 @@ class NewsArticle
 
     /**
      * Set the value of title.
-     *
-     * @return self
      */
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -76,10 +74,8 @@ class NewsArticle
 
     /**
      * Set the value of author.
-     *
-     * @return self
      */
-    public function setAuthor(User $author): static
+    public function setAuthor(User $author): self
     {
         $this->author = $author;
 
@@ -96,10 +92,8 @@ class NewsArticle
 
     /**
      * Set the value of created_timestamp.
-     *
-     * @return self
      */
-    public function setCreatedTimestamp(\DateTime $created_timestamp): static
+    public function setCreatedTimestamp(\DateTime $created_timestamp): self
     {
         $this->created_timestamp = $created_timestamp;
 

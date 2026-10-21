@@ -69,10 +69,8 @@ class GithubRelease
 
     /**
      * Set the value of name.
-     *
-     * @return self
      */
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -89,10 +87,8 @@ class GithubRelease
 
     /**
      * Set the value of tag.
-     *
-     * @return self
      */
-    public function setTag(string $tag): static
+    public function setTag(string $tag): self
     {
         $this->tag = $tag;
 
@@ -109,10 +105,8 @@ class GithubRelease
 
     /**
      * Set the value of timestamp.
-     *
-     * @return self
      */
-    public function setTimestamp(\DateTime $timestamp): static
+    public function setTimestamp(\DateTime $timestamp): self
     {
         $this->timestamp = $timestamp;
 
@@ -129,10 +123,8 @@ class GithubRelease
 
     /**
      * Set the value of download_url.
-     *
-     * @return self
      */
-    public function setDownloadUrl(string $download_url): static
+    public function setDownloadUrl(string $download_url): self
     {
         $this->download_url = $download_url;
 
@@ -149,10 +141,8 @@ class GithubRelease
 
     /**
      * Set the value of size_in_bytes.
-     *
-     * @return self
      */
-    public function setSizeInBytes(int $size_in_bytes): static
+    public function setSizeInBytes(int $size_in_bytes): self
     {
         $this->size_in_bytes = $size_in_bytes;
 
@@ -169,10 +159,8 @@ class GithubRelease
 
     /**
      * Set the value of commits_handled.
-     *
-     * @return self
      */
-    public function setCommitsHandled(bool $commits_handled): static
+    public function setCommitsHandled(bool $commits_handled): self
     {
         $this->commits_handled = $commits_handled;
 
@@ -182,7 +170,7 @@ class GithubRelease
     /**
      * Get the value of commits.
      */
-    public function getCommits(): \Doctrine\Common\Collections\Collection
+    public function getCommits(): Collection
     {
         return $this->commits;
     }
@@ -226,7 +214,7 @@ class GithubRelease
     /**
      * Get the value of mirrors.
      */
-    public function getMirrors(): \Doctrine\Common\Collections\Collection
+    public function getMirrors(): Collection
     {
         return $this->mirrors;
     }

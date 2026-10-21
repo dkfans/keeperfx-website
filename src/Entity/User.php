@@ -143,10 +143,8 @@ class User
 
     /**
      * Set the value of username.
-     *
-     * @return self
      */
-    public function setUsername(string $username): static
+    public function setUsername(string $username): self
     {
         $this->username = $username;
 
@@ -163,10 +161,8 @@ class User
 
     /**
      * Set the value of password.
-     *
-     * @return self
      */
-    public function setPassword(?string $password): static
+    public function setPassword(?string $password): self
     {
         // NULL password
         if ($password === null) {
@@ -279,10 +275,8 @@ class User
 
     /**
      * Set the value of created_timestamp.
-     *
-     * @return self
      */
-    public function setCreatedTimestamp(\DateTime $created_timestamp): static
+    public function setCreatedTimestamp(\DateTime $created_timestamp): self
     {
         $this->created_timestamp = $created_timestamp;
 

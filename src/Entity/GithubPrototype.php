@@ -54,10 +54,8 @@ class GithubPrototype
 
     /**
      * Set the value of artifact_id.
-     *
-     * @return self
      */
-    public function setArtifactId(int $artifact_id): static
+    public function setArtifactId(int $artifact_id): self
     {
         $this->artifact_id = $artifact_id;
 
@@ -74,10 +72,8 @@ class GithubPrototype
 
     /**
      * Set the value of name.
-     *
-     * @return self
      */
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -94,10 +90,8 @@ class GithubPrototype
 
     /**
      * Set the value of filename.
-     *
-     * @return self
      */
-    public function setFilename(string $filename): static
+    public function setFilename(string $filename): self
     {
         $this->filename = $filename;
 
@@ -114,10 +108,8 @@ class GithubPrototype
 
     /**
      * Set the value of timestamp.
-     *
-     * @return self
      */
-    public function setTimestamp(\DateTime $timestamp): static
+    public function setTimestamp(\DateTime $timestamp): self
     {
         $this->timestamp = $timestamp;
 
@@ -134,10 +126,8 @@ class GithubPrototype
 
     /**
      * Set the value of size_in_bytes.
-     *
-     * @return self
      */
-    public function setSizeInBytes(int $size_in_bytes): static
+    public function setSizeInBytes(int $size_in_bytes): self
     {
         $this->size_in_bytes = $size_in_bytes;
 
@@ -154,10 +144,8 @@ class GithubPrototype
 
     /**
      * Set the value of workflow_title.
-     *
-     * @return self
      */
-    public function setWorkflowTitle(string $workflow_title): static
+    public function setWorkflowTitle(string $workflow_title): self
     {
         $this->workflow_title = $workflow_title;
 
@@ -174,10 +162,8 @@ class GithubPrototype
 
     /**
      * Set the value of is_available.
-     *
-     * @return self
      */
-    public function setIsAvailable(bool $is_available): static
+    public function setIsAvailable(bool $is_available): self
     {
         $this->is_available = $is_available;
 

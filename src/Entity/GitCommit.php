@@ -44,10 +44,8 @@ class GitCommit
 
     /**
      * Set the value of hash.
-     *
-     * @return self
      */
-    public function setHash(string $hash): static
+    public function setHash(string $hash): self
     {
         $this->hash = $hash;
 
@@ -57,17 +55,15 @@ class GitCommit
     /**
      * Get the value of release.
      */
-    public function getRelease(): \App\Entity\GithubRelease
+    public function getRelease(): GithubRelease
     {
         return $this->release;
     }
 
     /**
      * Set the value of release.
-     *
-     * @return self
      */
-    public function setRelease(GithubRelease $release): static
+    public function setRelease(GithubRelease $release): self
     {
         $this->release = $release;
 
@@ -84,10 +80,8 @@ class GitCommit
 
     /**
      * Set the value of timestamp.
-     *
-     * @return self
      */
-    public function setTimestamp(\DateTime $timestamp): static
+    public function setTimestamp(\DateTime $timestamp): self
     {
         $this->timestamp = $timestamp;
 
@@ -104,10 +98,8 @@ class GitCommit
 
     /**
      * Set the value of message.
-     *
-     * @return self
      */
-    public function setMessage(string $message): static
+    public function setMessage(string $message): self
     {
         $this->message = $message;
 

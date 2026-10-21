@@ -33,10 +33,8 @@ class WorkshopTag
 
     /**
      * Set the value of name.
-     *
-     * @return self
      */
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
