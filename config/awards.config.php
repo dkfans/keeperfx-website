@@ -133,20 +133,36 @@ return [
             'span_css'  => 'color: #ffffff; text-shadow: 0 0 5px rgba(209, 110, 5, 0.5);',
         ],
 
-        'reaper' => [
-            'name'      => 'REAPER',
+        'insane-skill' => [
+            'name'      => 'Insane Skill',
             'gap'       => 1,
             'img'       => 'horny.png',
             'badge_css' => 'background-color: rgba(0, 0, 0, 0.3); border: 1px solid #870505;',
-            'span_css'  => 'color: #ffffff; text-shadow: 0 0 5px rgba(209, 5, 5, 0.8); font-family: monospace;',
+            'span_css'  => 'color: #ffffff; text-shadow: 0 0 5px rgba(209, 5, 5, 0.8);',
         ],
 
-        'genius' => [
-            'name'      => 'Developer',
+        'developer' => [
+            'name'      => '</dev>',
             'gap'       => 2,
             'img'       => 'computer-code.png',
-            'badge_css' => 'background-color: rgba(0, 0, 0, 0.3); border: 1px solid #2c2c2c;',
+            'badge_css' => 'background-color: rgba(0, 0, 0, 0.3); border: 1px solid #444;',
             'span_css'  => 'color: #ffffff; font-family: var(--bs-font-monospace), monospace;',
+        ],
+
+        'speedrun-record' => [
+            'name'      => 'Speedrun Record',
+            'gap'       => 1,
+            'img'       => 'runner.png',
+            'badge_css' => 'background-color: rgba(0, 0, 0, 0.3); border: 1px solid #6f2fe4;',
+            'span_css'  => 'color: #fff; text-shadow: 0 0 6px rgba(132, 0, 247, 0.78);',
+        ],
+
+        'helpful' => [
+            'name'      => 'Always Helpful',
+            'gap'       => 1,
+            'img'       => 'spellbook_01c.png',
+            'badge_css' => 'background-color: rgba(0, 0, 0, 0.3); border: 1px solid #eff3f5;',
+            'span_css'  => 'color: #ffffff; text-shadow: 0 0 5px rgba(5, 97, 209, 0.5);',
         ],
 
     ],

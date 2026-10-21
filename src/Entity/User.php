@@ -76,8 +76,9 @@ class User
     #[ORM\OneToMany(targetEntity: UserNotificationSetting::class, mappedBy: 'user')]
     private Collection $notification_settings;
 
-    // #[ORM\OneToMany(targetEntity: UserAward::class, mappedBy: 'user')]
-    // private Collection $awards;
+    #[ORM\OneToMany(targetEntity: UserAward::class, mappedBy: 'user')]
+    #[ORM\OrderBy(['weight' => 'ASC'])]
+    private Collection $awards;
 
     #[ORM\OneToMany(targetEntity: WorkshopItem::class, mappedBy: 'submitter')]
     private Collection $workshop_items;
@@ -110,6 +111,7 @@ class User
         $this->password_reset_tokens       = new ArrayCollection();
         $this->notifications               = new ArrayCollection();
         $this->notification_settings       = new ArrayCollection();
+        $this->awards                      = new ArrayCollection();
         $this->workshop_items              = new ArrayCollection();
         $this->workshop_comments           = new ArrayCollection();
         $this->workshop_comment_reports    = new ArrayCollection();
@@ -321,6 +323,14 @@ class User
     public function getNotificationSettings(): Collection
     {
         return $this->notification_settings;
+    }
+
+    /**
+     * Get the value of awards.
+     */
+    public function getAwards(): Collection
+    {
+        return $this->awards;
     }
 
     /**
