@@ -11,6 +11,8 @@ use App\Entity\UserBio;
 use App\Enum\UserRole;
 use App\FlashMessage;
 use App\Mailer;
+use App\Notifications\Notification\AwardNotification;
+use App\Notifications\NotificationCenter;
 use App\Workshop\WorkshopCache;
 use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -493,12 +495,14 @@ class AdminUsersController
         FlashMessage $flash,
         Account $account,
         WorkshopCache $workshop_cache,
+        NotificationCenter $nc,
         int $id,
     ) {
 
         // Get user
+        /** @var User $user */
         $user = $em->getRepository(User::class)->find($id);
-        if (!$user) {
+        if ($user == null) {
             $flash->warning('User not found.');
             $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
 
@@ -506,26 +510,29 @@ class AdminUsersController
         }
 
         // Get POST data
-        $post          = $request->getParsedBody();
-        $award_to_give = (string) ($post['award-to-give'] ?? '');
-        $info          = (string) ($post['info'] ?? '');
+        $post     = $request->getParsedBody();
+        $award_id = (string) ($post['award-to-give'] ?? '');
+        $info     = (string) ($post['info'] ?? '');
 
         // Get all possible awards
         $all_awards = Config::get('awards.awards');
 
         // Make sure award to give is valid
-        if (\array_key_exists($award_to_give, $all_awards) == false) {
-            $flash->warning("Invalid award: '$award_to_give'");
+        if (\array_key_exists($award_id, $all_awards) == false) {
+            $flash->warning("Invalid award: '$award_id'");
             $response = $response->withHeader('Location', '/admin/user/' . $id)->withStatus(302);
 
             return $response;
         }
 
+        // Get award data
+        $award_data = $all_awards[$award_id];
+
         // Create award
         $award = new UserAward();
         $award->setUser($user);
         $award->setGiver($account->getUser());
-        $award->setAwardId($award_to_give);
+        $award->setAwardId($award_id);
         if (!empty($info)) {
             $award->setInfo($info);
         }
@@ -537,8 +544,18 @@ class AdminUsersController
         // Clear browser cache so award is instantly visible
         $workshop_cache->clearAllCachedBrowsePageData();
 
+        // Notify the user of the comment that we replied to them
+        $nc->sendNotification(
+            $user,
+            AwardNotification::class,
+            [
+                'award_name' => $award_data['name'],
+                'username'   => $user->getUsername(),
+            ]
+        );
+
         // Let admin know the award is given
-        $flash->success("Award '{$all_awards[$award_to_give]['name']}' given!");
+        $flash->success("Award '{$award_data['name']}' given!");
 
         // Return to user page
         $response = $response->withHeader('Location', '/admin/user/' . $id)->withStatus(302);
