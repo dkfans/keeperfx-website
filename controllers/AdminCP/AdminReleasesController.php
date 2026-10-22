@@ -37,7 +37,7 @@ class AdminReleasesController
         Response $response,
         TwigEnvironment $twig,
         EntityManager $em,
-        $id,
+        int $id,
     ): Response {
         // Get the release
         $release = $em->getRepository(GithubRelease::class)->find($id);
@@ -61,7 +61,7 @@ class AdminReleasesController
         Response $response,
         FlashMessage $flash,
         EntityManager $em,
-        $id,
+        int $id,
     ) {
         // Get the release
         $github_release = $em->getRepository(GithubRelease::class)->find($id);
@@ -86,7 +86,7 @@ class AdminReleasesController
 
         // Remove all existing mirrors
         $mirrors = $github_release->getMirrors();
-        if ($mirrors !== null) {
+        if ($mirrors != null) {
             foreach ($github_release->getMirrors() as $mirror) {
                 $em->remove($mirror);
             }

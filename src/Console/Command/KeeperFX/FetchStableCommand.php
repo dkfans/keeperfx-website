@@ -274,7 +274,7 @@ class FetchStableCommand extends Command
             $query_builder
                 ->update('workshop_item')
                 ->where('min_game_build = -1')
-                ->set('min_game_build', $new_release->getId());
+                ->set('min_game_build', (string) $new_release->getId());
             $query_builder->executeQuery();
 
             // Send a notification on Discord
