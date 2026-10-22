@@ -171,6 +171,7 @@ class MonitorAndPostTwitchStreamsCommand extends Command
 
     /**
      * Cache both stream ID and user streaming state.
+     * @param array<string, mixed> $stream
      */
     private function markStreamAsNotified(array $stream): void
     {

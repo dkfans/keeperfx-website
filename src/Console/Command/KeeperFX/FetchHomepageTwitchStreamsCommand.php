@@ -147,6 +147,9 @@ class FetchHomepageTwitchStreamsCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @param array<string, mixed> $stream
+     */
     private function hasKfxString(array $stream): bool
     {
         // Gather strings to search trough

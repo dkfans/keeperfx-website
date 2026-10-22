@@ -284,6 +284,9 @@ class DiscordNotifier
         return $this->sendEmbed($embed, 'New game update!');
     }
 
+    /**
+     * @param array<string, mixed> $stream
+     */
     public function notifyTwitchStream(array $stream): bool
     {
         if ($this->streams_webhook === null) {
