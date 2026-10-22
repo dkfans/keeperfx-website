@@ -4,373 +4,564 @@
 
 {% block page %}
 
-{% include 'core/_breadcrumb.html.twig' with {
-    items: [
-        { label: 'Control Panel', url: '/account' },
-        { label: 'Users', url: '/admin/user/list' },
-        { label: user.username }
-    ],
-    add_back_button: true
-} %}
+    {# Breadcrumb #}
+    {% include 'core/_breadcrumb.html.twig' with {
+        items: [
+            { label: 'Control Panel', url: '/account' },
+            { label: 'Users', url: '/admin/user/list' },
+            { label: user.username }
+        ],
+        add_back_button: true
+    } %}
 
-<div class="content-box bg-keeper bd-keeper">
-    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h2>{{ user.username }}</h2>
-        <div>
-            <a href="/workshop/user/{{ user.username|url_encode }}">View Profile</a>
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+            <h2>{{ user.username }}</h2>
+            <div>
+                <a href="/workshop/user/{{ user.username|url_encode }}">View Profile</a>
+            </div>
         </div>
-    </div>
-    <div class="content-body">
+        <div class="content-body">
 
-        <div class="row">
-            <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-6">
 
-                <form action="/admin/user/{{ user.id }}" method="POST">
+                    <form action="/admin/user/{{ user.id }}" method="POST">
 
-                    <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
-                    <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
-
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="text" class="form-control" id="password" name="password" placeholder="Leave empty to not change password">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">
-                            Email address
-                            <span class="text-muted">
-                                (Optional)
-                            </span>
-                        </label>
-                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email ?? '' }}" >
-                    </div>
-
-                    {% if user.email is not empty %}
-                        <p class="m-4 px-2 mx-0 mt-3 d-flex justify-content-between">
-                            <span>
-                                Status:
-                                {% if user.isEmailVerified %}
-                                    <span class="badge bg-success">
-                                        Verified
-                                    </span>
-                                {% else %}
-                                    <span class="badge bg-danger">
-                                        Not verified
-                                    </span>
-                                {% endif %}
-                            </span>
-
-                            <a href="/admin/user/{{ user.id }}/mail">Send Mail</a>
-                        </p>
-                    {% endif %}
-
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect1">Role</label>
-                        <select class="form-control form-select" id="role" name="role">
-                            <option value="{{ roles.banned }}" {% if user.role.value == roles.banned %}selected{% endif %}>Banned</option>
-                            <option value="{{ roles.user }}" {% if user.role.value == roles.user %}selected{% endif %}>User</option>
-                            <option value="{{ roles.moderator }}" {% if user.role.value == roles.moderator %}selected{% endif %}>Moderator</option>
-                            <option value="{{ roles.developer }}" {% if user.role.value == roles.developer %}selected{% endif %}>Developer</option>
-                            <option value="{{ roles.admin }}" {% if user.role.value == roles.admin %}selected{% endif %}>Admin</option>
-                        </select>
-                    </div>
-
-                    <div class="d-flex" style="margin-top: 15px;">
+                        <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+                        <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-medieval">Save</button>
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
                         </div>
 
-                        {% if account.id != user.id %}
-                            <a href="/admin/user/{{ user.id }}/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}" class="btn btn-medieval btn-medieval-gray" style="margin-left: 10px;">Remove</a>
-                        {% endif %}
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="text" class="form-control" id="password" name="password" placeholder="Leave empty to not change password">
+                        </div>
 
-                    </div>
+                        <div class="form-group">
+                            <label for="password">
+                                Email address
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email ?? '' }}">
+                        </div>
 
-                </form>
-
-            </div>
-            <div class="col-md-6">
-                <div class="workshop-info-box" style="min-height: 100%; padding: 20px;">
-
-                    <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 0 auto; margin-bottom: 20px;">
-                        {% if user.avatar %}
-                            <img src="/avatar/{{ user.avatar }}"/>
-                                {% else %}
-                            <img src="/avatar-generate/128/{{ user.username|url_encode }}.png" />
-                        {% endif %}
-                    </div>
-
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Username
-                                </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
-                                    {{ user.username }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Country
-                                </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
-                                    {% if user.country is not null %}
-                                        <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(user.country) }}" data-bs-placement="top">
-                                            {{ get_country_emoji(user.country) }}
+                        {% if user.email is not empty %}
+                            <p class="m-4 px-2 mx-0 mt-3 d-flex justify-content-between">
+                                <span>
+                                    Status:
+                                    {% if user.isEmailVerified %}
+                                        <span class="badge bg-success">
+                                            Verified
                                         </span>
-                                        {{ get_country_string(user.country) }}
                                     {% else %}
-                                        <span class="text-muted">Not set</span>
+                                        <span class="badge bg-danger">
+                                            Not verified
+                                        </span>
                                     {% endif %}
-                                </td>
-                            </tr>
-                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Registration Date
-                                </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
-                                    {{ user.createdTimestamp|date('Y-m-d G:i') }}
-                                </td>
-                            </tr>
-                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Workshop Items
-                                </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
-                                    {% if user.workshopItems|length > 0 %}
-                                        <a href="/workshop/browse?user={{ user.username }}">{{ user.workshopItems|length }} items</a>
-                                    {% else %}
-                                        0
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Comments
-                                </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
-                                    {{ user.workshopComments|length }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Ratings
-                                </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
-                                    {{ user.workshopRatings|length }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Difficulty Ratings
-                                </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
-                                    {{ user.workshopDifficultyRatings|length }}
-                                </td>
-                            </tr>
-                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
-                            <tr>
-                                <td style="width: 50%;">
-                                    Connections
-                                </td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
-                                    {% if user.email is null and user.connectionTokens|length == 0 %}
-                                        <span class="text-muted">None</span>
-                                    {% else %}
-                                        {% if user.email is not null %}
-                                            <span data-bs-toggle="popover"  data-bs-content="Email" data-bs-placement="top">
-                                                <ion-icon name="mail-outline"></ion-icon>
-                                            </span>
-                                        {% endif %}
-                                        {% for token in user.connectionTokens %}
-                                            {% if token.providerType.value == "discord" %}
-                                                <span data-bs-toggle="popover"  data-bs-content="Discord" data-bs-placement="top">
-                                                    <ion-icon name="logo-discord" style="color: #5865F2;"></ion-icon>
-                                                </span>
-                                            {% endif %}
-                                            {% if token.providerType.value == "twitch" %}
-                                                <span data-bs-toggle="popover"  data-bs-content="Twitch" data-bs-placement="top">
-                                                    <ion-icon name="logo-twitch" style="color: rgb(169, 112, 255);"></ion-icon>
-                                                </span>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </span>
+
+                                <a href="/admin/user/{{ user.id }}/mail">Send Mail</a>
+                            </p>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Role</label>
+                            <select class="form-control form-select" id="role" name="role">
+                                <option value="{{ roles.banned }}" {% if user.role.value == roles.banned %}selected{% endif %}>Banned</option>
+                                <option value="{{ roles.user }}" {% if user.role.value == roles.user %}selected{% endif %}>User</option>
+                                <option value="{{ roles.moderator }}" {% if user.role.value == roles.moderator %}selected{% endif %}>Moderator</option>
+                                <option value="{{ roles.developer }}" {% if user.role.value == roles.developer %}selected{% endif %}>Developer</option>
+                                <option value="{{ roles.admin }}" {% if user.role.value == roles.admin %}selected{% endif %}>Admin</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex" style="margin-top: 15px;">
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-medieval">Save</button>
+                            </div>
+
+                            {% if account.id != user.id %}
+                                <a href="/admin/user/{{ user.id }}/delete/{{ csrf.name }}/{{ csrf.value|url_encode }}" class="btn btn-medieval btn-medieval-gray" style="margin-left: 10px;">Remove</a>
+                            {% endif %}
+
+                        </div>
+
+                    </form>
 
                 </div>
+                <div class="col-md-6">
+                    <div class="workshop-info-box" style="min-height: 100%; padding: 20px;">
+
+                        <div class="account-settings-avatar" style="max-height: 128px; max-width: 128px; margin: 0 auto; margin-bottom: 20px;">
+                            {% if user.avatar %}
+                                <img src="/avatar/{{ user.avatar }}"/>
+                            {% else %}
+                                <img src="/avatar-generate/128/{{ user.username|url_encode }}.png"/>
+                            {% endif %}
+                        </div>
+
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Username
+                                    </td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {{ user.username }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Country
+                                    </td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {% if user.country is not null %}
+                                            <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover" data-bs-content="{{ get_country_string(user.country) }}" data-bs-placement="top">
+                                                {{ get_country_emoji(user.country) }}
+                                            </span>
+                                            {{ get_country_string(user.country) }}
+                                        {% else %}
+                                            <span class="text-muted">Not set</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Registration Date
+                                    </td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {{ user.createdTimestamp|date('Y-m-d G:i') }}
+                                    </td>
+                                </tr>
+                                <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Workshop Items
+                                    </td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {% if user.workshopItems|length > 0 %}
+                                            <a href="/workshop/browse?user={{ user.username }}">{{ user.workshopItems|length }} items</a>
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Comments
+                                    </td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {{ user.workshopComments|length }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Ratings
+                                    </td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {{ user.workshopRatings|length }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Difficulty Ratings
+                                    </td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {{ user.workshopDifficultyRatings|length }}
+                                    </td>
+                                </tr>
+                                <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        Connections
+                                    </td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
+                                        {% if user.email is null and user.connectionTokens|length == 0 %}
+                                            <span class="text-muted">None</span>
+                                        {% else %}
+                                            {% if user.email is not null %}
+                                                <span data-bs-toggle="popover" data-bs-content="Email" data-bs-placement="top">
+                                                    <ion-icon name="mail-outline"></ion-icon>
+                                                </span>
+                                            {% endif %}
+                                            {% for token in user.connectionTokens %}
+                                                {% if token.providerType.value == "discord" %}
+                                                    <span data-bs-toggle="popover" data-bs-content="Discord" data-bs-placement="top">
+                                                        <ion-icon name="logo-discord" style="color: #5865F2;"></ion-icon>
+                                                    </span>
+                                                {% endif %}
+                                                {% if token.providerType.value == "twitch" %}
+                                                    <span data-bs-toggle="popover" data-bs-content="Twitch" data-bs-placement="top">
+                                                        <ion-icon name="logo-twitch" style="color: rgb(169, 112, 255);"></ion-icon>
+                                                    </span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
             </div>
+
         </div>
-
     </div>
-</div>
 
-{# About Me #}
-<div class="content-box bg-keeper bd-keeper">
-    <div class="content-header">
-        <h2>About</h2>
-    </div>
-    <div class="content-body">
-        <form action="/admin/user/{{ user.id }}/bio" method="POST">
+    {# Awards #}
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header d-flex justify-content-between">
+            <h2>Awards</h2>
+            <button class="btn btn-medieval" id="give-award-button" style="display: none;">
+                Give Award
+            </button>
+        </div>
+        <div class="content-body">
 
-            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
-            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
 
-            <div class="form-group">
-                <textarea class="form-control mb-1" name="about_me" rows="6">{% if user.bio is not null and user.bio.bio is not empty %}{{ user.bio.bio }}{% endif %}</textarea>
-                <span class="text-muted mx-2" style="font-size: 12px;">
-                    Markdown and spoilers supported.
-                    <a href="#" data-markdown-format-info-link="true">
-                        More info
-                    </a>
-                </span>
-            </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-medieval">Update</button>
-            </div>
-
-        </form>
-    </div>
-</div>
-
-{# Moderator note (hidden) #}
-<div class="content-box bg-keeper bd-keeper">
-    <div class="content-header">
-        <h2>
-            <ion-icon name="eye-off-outline" style="position: relative; top: 2px;" class="text-special"></ion-icon>
-            Moderator Note
-            <span class="text-muted px-1">
-                (Hidden)
-            </span>
-        </h2>
-        <span class="text-muted">Communicate information about this user to other members of the KeeperFX team.</span>
-    </div>
-    <div class="content-body">
-        <form action="/admin/user/{{ user.id }}/note" method="POST">
-
-            <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}" />
-            <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}" />
-
-            <div class="form-group">
-                <textarea class="form-control mb-1" name="note" rows="6">{{ user.moderatorNote ?? '' }}</textarea>
-                <span class="text-muted mx-2" style="font-size: 12px;">No markdown supported</span>
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-medieval">Update</button>
-            </div>
-
-        </form>
-    </div>
-</div>
-
-<div class="content-box bg-keeper bd-keeper">
-    <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h2>IP logs for {{ user.username }}</h2>
-    </div>
-    <div class="content-body">
-
-        {% if user.ipLogs|length == 0 %}
-            <p>
-                No IP logs found.
-            </p>
-        {% else %}
-            <table class="table table-bordered" style="font-size: 11px">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th style="width:25px;"></th>
-                        <th>IP</th>
-                        <th>Host</th>
-                        <th>ISP</th>
-                        <th>Last Seen</th>
-                        <th>First Seen</th>
+                        <th>Award</th>
                         <th>Info</th>
+                        <th>Given By</th>
+                        <th>Date</th>
+                        <th>Options</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ip_log in user.ipLogs %}
+                    {% for award in awards %}
+                        <tr>
 
-                        <tr {% if ip_log.isProxy or ip_log.isHosting %} style="background-color: rgba(255, 50, 50, 0.15);"{% endif %}>
-
-                            {# Country #}
+                            {# Award #}
                             <td>
-                                {% if ip_log.country is not null %}
-                                    <span style="font-size: 14px; position: relative; top: -4px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(ip_log.country) }}" data-bs-placement="top">
-                                        {{ get_country_emoji(ip_log.country) }}
+                                <span
+                                    class="badge rounded-pill award d-inline-flex align-items-center gap-{{ award.gap|default(1) }} text-nowrap"
+                                    style="{{ award.badge_css }}"
+                                >
+                                    <img src="{{ asset('/img/award/' ~ award.img) }}" alt="{{ award.name }}" class="award-icon"/>
+                                    <span class="award-text" style="{{ award.span_css }}">
+                                        {{ award.name }}
                                     </span>
-                                {% endif %}
-                            </td>
-
-                            {# IP #}
-                            <td>
-                                <a href="/admin/ip-lookup/ip/{{ ip_log.ip|url_encode }}">
-                                    {{ ip_log.ip }}
-                                </a>
-                            </td>
-
-                            {# Host Name #}
-                            <td>
-                                <a href="/admin/ip-lookup/host_name/{{ ip_log.hostName|url_encode }}">
-                                    {{ ip_log.hostName }}
-                                </a>
-                            </td>
-
-                            {# ISP #}
-                            <td>
-                                <a href="/admin/ip-lookup/isp/{{ ip_log.isp|url_encode }}">
-                                    {{ ip_log.isp }}
-                                </a>
-                            </td>
-
-                            {# Last Seen #}
-                            <td>
-                                {{ ip_log.lastSeenTimestamp|date('Y-m-d, G:i') }}
-                            </td>
-
-                            {# First Seen #}
-                            <td>
-                                {{ ip_log.firstSeenTimestamp|date('Y-m-d, G:i') }}
+                                </span>
                             </td>
 
                             {# Info #}
-                            <td style="width: 75px;">
-
-                                {# Proxy #}
-                                {% if ip_log.isProxy %}
-                                    <span data-bs-toggle="popover" data-bs-content="Proxy, VPN or Tor" data-bs-placement="top">
-                                        <ion-icon style="font-size: 16px;" name="shield-outline"></ion-icon>
-                                    </span>
-                                {% endif %}
-
-                                {# Hosting #}
-                                {% if ip_log.isHosting %}
-                                    <span data-bs-toggle="popover" data-bs-content="Hosting" data-bs-placement="top">
-                                        <ion-icon style="font-size: 16px;" name="server-outline"></ion-icon>
-                                    </span>
+                            <td style="font-size: 12px;">
+                                {% if award.info is not null %}
+                                    {{ award.info|nl2br }}
+                                {% else %}
+                                    -
                                 {% endif %}
                             </td>
 
+                            {# Given By #}
+                            <td>
+                                {% if award.giver is not null %}
+                                    <a href="/admin/user/{{ award.giver.id }}">
+                                        {{ award.giver.username }}
+                                    </a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+
+                            {# Date #}
+                            <td>{{ award.timestamp|date('Y-m-d') }}</td>
+
+                            {# Actions #}
+                            <td>
+
+                                {# Delete button #}
+                                <a
+                                    href="/admin/user/{{ user.id }}/award/{{ award.id }}/delete/{{ csrf.name }}/{{ csrf.value }}"
+                                    class="btn btn-medieval btn-medieval-gray"
+                                    onclick="if (confirm('Are you sure you want to remove this award?')){return true;}else{event.stopPropagation(); event.preventDefault();};"
+                                >
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
-                    </tbody>
+                </tbody>
             </table>
-        {% endif %}
-
+        </div>
     </div>
-</div>
 
-{% include 'markdown.format.html.twig' %}
+    {# About Me #}
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>About</h2>
+        </div>
+        <div class="content-body">
+            <form action="/admin/user/{{ user.id }}/bio" method="POST">
+
+                <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}"/>
+                <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}"/>
+
+                <div class="form-group">
+                    <textarea class="form-control mb-1" name="about_me" rows="6">{% if user.bio is not null and user.bio.bio is not empty %}{{ user.bio.bio }}{% endif %}</textarea>
+                    <span class="text-muted mx-2" style="font-size: 12px;">
+                        Markdown and spoilers supported.
+                        <a href="#" data-markdown-format-info-link="true">
+                            More info
+                        </a>
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-medieval">Update</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    {# Moderator note (hidden) #}
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header">
+            <h2>
+                <ion-icon name="eye-off-outline" style="position: relative; top: 2px;" class="text-special"></ion-icon>
+                Moderator Note
+                <span class="text-muted px-1">
+                    (Hidden)
+                </span>
+            </h2>
+            <span class="text-muted">Communicate information about this user to other members of the KeeperFX team.</span>
+        </div>
+        <div class="content-body">
+            <form action="/admin/user/{{ user.id }}/note" method="POST">
+
+                <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}"/>
+                <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}"/>
+
+                <div class="form-group">
+                    <textarea class="form-control mb-1" name="note" rows="6">{{ user.moderatorNote ?? '' }}</textarea>
+                    <span class="text-muted mx-2" style="font-size: 12px;">No markdown supported</span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-medieval">Update</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="content-box bg-keeper bd-keeper">
+        <div class="content-header" style="display: flex; flex-direction: row; justify-content: space-between;">
+            <h2>IP logs for {{ user.username }}</h2>
+        </div>
+        <div class="content-body">
+
+            {% if user.ipLogs|length == 0 %}
+                <p>
+                    No IP logs found.
+                </p>
+            {% else %}
+                <table class="table table-bordered" style="font-size: 11px">
+                    <thead>
+                        <tr>
+                            <th style="width:25px;"></th>
+                            <th>IP</th>
+                            <th>Host</th>
+                            <th>ISP</th>
+                            <th>Last Seen</th>
+                            <th>First Seen</th>
+                            <th>Info</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ip_log in user.ipLogs %}
+
+                            <tr {% if ip_log.isProxy or ip_log.isHosting %} style="background-color: rgba(255, 50, 50, 0.15);"{% endif %}>
+
+                                {# Country #}
+                                <td>
+                                    {% if ip_log.country is not null %}
+                                        <span style="font-size: 14px; position: relative; top: -4px; padding-right: 4px" data-bs-toggle="popover" data-bs-content="{{ get_country_string(ip_log.country) }}" data-bs-placement="top">
+                                            {{ get_country_emoji(ip_log.country) }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                {# IP #}
+                                <td>
+                                    <a href="/admin/ip-lookup/ip/{{ ip_log.ip|url_encode }}">
+                                        {{ ip_log.ip }}
+                                    </a>
+                                </td>
+
+                                {# Host Name #}
+                                <td>
+                                    <a href="/admin/ip-lookup/host_name/{{ ip_log.hostName|url_encode }}">
+                                        {{ ip_log.hostName }}
+                                    </a>
+                                </td>
+
+                                {# ISP #}
+                                <td>
+                                    <a href="/admin/ip-lookup/isp/{{ ip_log.isp|url_encode }}">
+                                        {{ ip_log.isp }}
+                                    </a>
+                                </td>
+
+                                {# Last Seen #}
+                                <td>
+                                    {{ ip_log.lastSeenTimestamp|date('Y-m-d, G:i') }}
+                                </td>
+
+                                {# First Seen #}
+                                <td>
+                                    {{ ip_log.firstSeenTimestamp|date('Y-m-d, G:i') }}
+                                </td>
+
+                                {# Info #}
+                                <td style="width: 75px;">
+
+                                    {# Proxy #}
+                                    {% if ip_log.isProxy %}
+                                        <span data-bs-toggle="popover" data-bs-content="Proxy, VPN or Tor" data-bs-placement="top">
+                                            <ion-icon style="font-size: 16px;" name="shield-outline"></ion-icon>
+                                        </span>
+                                    {% endif %}
+
+                                    {# Hosting #}
+                                    {% if ip_log.isHosting %}
+                                        <span data-bs-toggle="popover" data-bs-content="Hosting" data-bs-placement="top">
+                                            <ion-icon style="font-size: 16px;" name="server-outline"></ion-icon>
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+        </div>
+    </div>
+
+    {% include 'markdown.format.html.twig' %}
+
+    <div class="modal fade" id="giveAwardModal" tabindex="-1" aria-labelledby="giveAwardModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-keeper bd-keeper">
+                <form action="/admin/user/{{ user.id }}/award" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Give Award</h5>
+                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}"/>
+                        <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}"/>
+
+                        <div class="form-group mb-3">
+
+                            <label for="award-to-give-visual">Award</label>
+
+                            <input type="hidden" id="award-to-give" name="award-to-give" value="">
+
+                            <div class="dropdown">
+
+                                {# Dropdown button #}
+                                <button
+                                    class="form-control dropdown-toggle text-start d-flex justify-content-between align-items-center"
+                                    type="button"
+                                    id="award-to-give-visual"
+                                    data-bs-toggle="dropdown"
+                                    data-bs-display="static"
+                                    aria-expanded="false"
+                                    style="cursor: pointer;"
+                                >
+                                    <span id="selected-award-html" class="text-muted d-flex align-items-center m-0">Select an award...</span>
+                                </button>
+
+                                {# The dropdown containing the awards #}
+                                <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper dropdown-award w-100" aria-labelledby="award-to-give-visual">
+                                    {% for id, award in all_awards %}
+                                        <li>
+                                            <a class="dropdown-item award-dropdown-item" href="javascript:void(0);" data-value="{{ id }}">
+                                                <span class="badge rounded-pill award d-inline-flex align-items-center gap-{{ award.gap|default(1) }} text-nowrap" style="{{ award.badge_css }}">
+                                                    <img src="{{ asset('/img/award/' ~ award.img) }}" alt="{{ award.name }}" class="award-icon"/>
+                                                    <span class="award-text" style="{{ award.span_css }}">
+                                                        {{ award.name }}
+                                                    </span>
+                                                </span>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="info">
+                                Info
+                                <span class="text-muted">
+                                    (Optional)
+                                </span>
+                            </label>
+                            <textarea class="form-control mb-1" name="info" rows="6"></textarea>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-medieval mt-3">Give</button>
+                        <button type="button" class="btn btn-medieval btn-medieval-gray mt-3" data-bs-dismiss="modal">Close</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
+
+
+
+{% block body_javascript %}
+
+    <script>
+        $(function () {
+            // Show the button to show the award modal
+            $("#give-award-button").show();
+
+            // Button to show the award modal
+            $("#give-award-button").on("click", function (e) {
+                $("#giveAwardModal").modal("show");
+            });
+
+            // Handle award giving
+            $(".award-dropdown-item").on("click", function () {
+                // Get the value (ID) and the HTML (the badge) from the clicked option
+                var selectedValue = $(this).attr("data-value");
+                var selectedHtml = $(this).html();
+
+                // Set the hidden input value so the form submits the correct ID
+                $("#award-to-give").val(selectedValue);
+
+                // Put the badge HTML inside the button and remove the muted text color
+                $("#selected-award-html").html(selectedHtml).removeClass("text-muted");
+
+                // Update the active styling in the dropdown menu
+                $(".award-dropdown-item").removeClass("active");
+                $(this).addClass("active");
+            });
+        });
+    </script>
+
+{% endblock %}
+

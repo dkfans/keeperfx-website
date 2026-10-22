@@ -140,6 +140,8 @@ $app->group('', static function (RouteCollectorProxy $group): void {
                 $group->get('/{id:\d+}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminUsersController::class, 'userDelete']);
                 $group->get('/{id:\d+}/mail', [AdminCP\AdminUsersController::class, 'userMailIndex']);
                 $group->post('/{id:\d+}/mail', [AdminCP\AdminUsersController::class, 'userMail']);
+                $group->post('/{id:\d+}/award', [AdminCP\AdminUsersController::class, 'userAddAward']);
+                $group->get('/{id:\d+}/award/{award_id:\d+}/delete/{token_name}/{token_value:.+}', [AdminCP\AdminUsersController::class, 'userAwardDelete']);
             });
 
             // Admin: UPLOADS

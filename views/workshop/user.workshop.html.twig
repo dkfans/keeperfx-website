@@ -146,22 +146,27 @@
                     <div class="workshop-info-box p-2 workshop-info-awards">
                         <h4 class="m-3">Awards</h4>
                         <div class="awards px-3 pb-3 d-flex flex-wrap gap-2">
-                            {% for id, award in awards %}
-                                <span
-                                    class="badge rounded-pill award d-inline-flex align-items-center gap-{{ award.gap|default(1) }} text-nowrap"
-                                    style="{{ award.badge_css }}"
-                                    {% if award.tooltip is defined and award.tooltip %}
-                                    data-bs-toggle="popover"
-                                    data-bs-placement="top"
-                                    data-bs-content="{{ award.tooltip }}"
-                                    {% endif %}
-                                >
-                                    <img src="{{ asset('/img/award/' ~ award.img) }}" alt="{{ award.name }}" class="award-icon"/>
-                                    <span class="award-text" style="{{ award.span_css }}">
-                                        {{ award.name }}
+                            {% if awards is defined and awards is not empty %}
+                                {% for id, award in awards %}
+                                    <span
+                                        class="badge rounded-pill award d-inline-flex align-items-center gap-{{ award.gap|default(1) }} text-nowrap"
+                                        style="{{ award.badge_css }}"
+                                        {% if award.tooltip is defined and award.tooltip %}
+                                        data-bs-toggle="popover"
+                                        data-bs-placement="top"
+                                        data-bs-content="{{ award.tooltip|nl2br }}"
+                                        data-bs-html="true"
+                                        {% endif %}
+                                    >
+                                        <img src="{{ asset('/img/award/' ~ award.img) }}" alt="{{ award.name }}" class="award-icon"/>
+                                        <span class="award-text" style="{{ award.span_css }}">
+                                            {{ award.name }}
+                                        </span>
                                     </span>
-                                </span>
-                            {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                <p><i class="text-muted">I do not have any awards.</i></p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

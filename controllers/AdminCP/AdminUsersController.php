@@ -2,11 +2,16 @@
 
 namespace App\Controller\AdminCP;
 
+use App\Account;
+use App\AwardHandler;
+use App\Config\Config;
 use App\Entity\User;
+use App\Entity\UserAward;
 use App\Entity\UserBio;
 use App\Enum\UserRole;
 use App\FlashMessage;
 use App\Mailer;
+use App\Workshop\WorkshopCache;
 use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -148,7 +153,9 @@ class AdminUsersController
 
         $response->getBody()->write(
             $twig->render('admincp/users/user.admincp.html.twig', [
-                'user' => $user,
+                'user'       => $user,
+                'awards'     => AwardHandler::getAwardsFromCollection($user->getAwards()),
+                'all_awards' => Config::get('awards.awards'),
             ])
         );
 
@@ -475,6 +482,119 @@ class AdminUsersController
         // Success!
         $flash->success('The mail has been added to the queue and will be sent shortly.');
         $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
+        return $response;
+    }
+
+    public function userAddAward(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        FlashMessage $flash,
+        Account $account,
+        WorkshopCache $workshop_cache,
+        int $id,
+    ) {
+
+        // Get user
+        $user = $em->getRepository(User::class)->find($id);
+        if (!$user) {
+            $flash->warning('User not found.');
+            $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
+            return $response;
+        }
+
+        // Get POST data
+        $post          = $request->getParsedBody();
+        $award_to_give = (string) ($post['award-to-give'] ?? '');
+        $info          = (string) ($post['info'] ?? '');
+
+        // Get all possible awards
+        $all_awards = Config::get('awards.awards');
+
+        // Make sure award to give is valid
+        if (\array_key_exists($award_to_give, $all_awards) == false) {
+            $flash->warning("Invalid award: '$award_to_give'");
+            $response = $response->withHeader('Location', '/admin/user/' . $id)->withStatus(302);
+
+            return $response;
+        }
+
+        // Create award
+        $award = new UserAward();
+        $award->setUser($user);
+        $award->setGiver($account->getUser());
+        $award->setAwardId($award_to_give);
+        if (!empty($info)) {
+            $award->setInfo($info);
+        }
+
+        // Add award to database
+        $em->persist($award);
+        $em->flush();
+
+        // Clear browser cache so award is instantly visible
+        $workshop_cache->clearAllCachedBrowsePageData();
+
+        // Let admin know the award is given
+        $flash->success("Award '{$all_awards[$award_to_give]['name']}' given!");
+
+        // Return to user page
+        $response = $response->withHeader('Location', '/admin/user/' . $id)->withStatus(302);
+
+        return $response;
+    }
+
+    public function userAwardDelete(
+        Request $request,
+        Response $response,
+        EntityManager $em,
+        FlashMessage $flash,
+        Account $account,
+        WorkshopCache $workshop_cache,
+        Guard $csrf_guard,
+        int $id,
+        int $award_id,
+        string $token_name,
+        string $token_value,
+    ) {
+
+        // Check for valid CSRF token
+        if (!$csrf_guard->validateToken($token_name, $token_value)) {
+            throw new HttpForbiddenException($request);
+        }
+
+        // Get user
+        $user = $em->getRepository(User::class)->find($id);
+        if (!$user) {
+            $flash->warning('User not found.');
+            $response = $response->withHeader('Location', '/admin/user/list')->withStatus(302);
+
+            return $response;
+        }
+
+        // Get award
+        $award = $em->getRepository(UserAward::class)->find($award_id);
+        if (!$award) {
+            $flash->warning('Award not found.');
+            $response = $response->withHeader('Location', '/admin/user/' . $id)->withStatus(302);
+
+            return $response;
+        }
+
+        // Add award to database
+        $em->remove($award);
+        $em->flush();
+
+        // Clear browser cache so award is instantly visible
+        $workshop_cache->clearAllCachedBrowsePageData();
+
+        // Let admin know the award is given
+        $flash->success('Award removed!');
+
+        // Return to user page
+        $response = $response->withHeader('Location', '/admin/user/' . $id)->withStatus(302);
 
         return $response;
     }

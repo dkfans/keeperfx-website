@@ -3,6 +3,7 @@
 namespace App\Controller\Workshop;
 
 use App\Account;
+use App\AwardHandler;
 use App\Config\Config;
 use App\Entity\User;
 use App\Entity\WorkshopTag;
@@ -40,7 +41,6 @@ class WorkshopUserController
         // Check if this page is already cached
         $cached_view_data = $workshop_cache->getCachedBrowsePageData($user_cache_id);
         if ($cached_view_data) {
-            $cached_view_data = \array_merge($cached_view_data, ['awards' => Config::get('awards.awards')]);
             $response->getBody()->write(
                 $twig->render('workshop/user.workshop.html.twig',
                     \array_merge($cached_view_data, ['user' => $user]) // User needs to be dynamic
@@ -100,13 +100,12 @@ class WorkshopUserController
             'workshop_items'                => $workshop_items_serialized,
             'categories'                    => WorkshopCategory::cases(),
             'categories_without_difficulty' => Config::get('app.workshop.item_categories_without_difficulty'),
+            'awards'                        => AwardHandler::getAwardsFromCollection($user->getAwards()),
             // 'tags'                          => $em->getRepository(WorkshopTag::class)->findBy([], ['name' => 'ASC']),
         ];
 
         // Cache the view data
         $workshop_cache->setCachedBrowsePageData($user_cache_id, $view_data);
-
-        $view_data = \array_merge($view_data, ['awards' => Config::get('awards.awards')]);
 
         // // Render view
         $response->getBody()->write(
