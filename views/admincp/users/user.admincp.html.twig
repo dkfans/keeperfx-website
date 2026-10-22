@@ -244,7 +244,7 @@
                         <tr>
 
                             {# Award #}
-                            <td>
+                            <td style="vertical-align: middle;">
                                 <span
                                     class="badge rounded-pill award d-inline-flex align-items-center gap-{{ award.gap|default(1) }} text-nowrap"
                                     style="{{ award.badge_css }}"
@@ -257,7 +257,7 @@
                             </td>
 
                             {# Info #}
-                            <td style="font-size: 12px;">
+                            <td style="font-size: 12px; vertical-align: middle;">
                                 {% if award.info is not null %}
                                     {{ award.info|nl2br }}
                                 {% else %}
@@ -266,7 +266,7 @@
                             </td>
 
                             {# Given By #}
-                            <td>
+                            <td style="vertical-align: middle;">
                                 {% if award.giver is not null %}
                                     <a href="/admin/user/{{ award.giver.id }}">
                                         {{ award.giver.username }}
@@ -277,10 +277,12 @@
                             </td>
 
                             {# Date #}
-                            <td>{{ award.timestamp|date('Y-m-d') }}</td>
+                            <td style="vertical-align: middle;">
+                                {{ award.timestamp|date('Y-m-d') }}
+                            </td>
 
                             {# Actions #}
-                            <td>
+                            <td style="vertical-align: middle;">
 
                                 {# Delete button #}
                                 <a
