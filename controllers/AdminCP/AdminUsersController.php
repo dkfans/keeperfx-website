@@ -242,7 +242,11 @@ class AdminUsersController
         // Output errors if not successful
         if (!$success) {
             $response->getBody()->write(
-                $twig->render('admincp/users/user.admincp.html.twig', ['user' => $user])
+                $twig->render('admincp/users/user.admincp.html.twig', [
+                    'user'       => $user,
+                    'awards'     => AwardHandler::getAwardsFromCollection($user->getAwards()),
+                    'all_awards' => Config::get('awards.awards'),
+                ])
             );
 
             return $response;
@@ -264,7 +268,11 @@ class AdminUsersController
 
         // Return view
         $response->getBody()->write(
-            $twig->render('admincp/users/user.admincp.html.twig', ['user' => $user])
+            $twig->render('admincp/users/user.admincp.html.twig', [
+                'user'       => $user,
+                'awards'     => AwardHandler::getAwardsFromCollection($user->getAwards()),
+                'all_awards' => Config::get('awards.awards'),
+            ])
         );
 
         return $response;
