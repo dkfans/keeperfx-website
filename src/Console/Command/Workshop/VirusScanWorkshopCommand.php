@@ -21,7 +21,6 @@ class VirusScanWorkshopCommand extends Command
         private EntityManager $em,
         private NotificationCenter $nc,
     ) {
-        $this->em = $em;
         parent::__construct();
     }
 
