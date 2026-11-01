@@ -11,4 +11,9 @@ return App\TaskScheduler::schedule(
         console_command: 'workshop:virus-scan scanned',
         interval: 'daily',
     ),
+    App\TaskScheduler::task(
+        description: 'Submit new workshop files to VirusTotal',
+        console_command: 'workshop:virustotal-submit new',
+        interval: 'everyMinute',
+    ),
 );

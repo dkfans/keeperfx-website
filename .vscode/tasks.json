@@ -111,7 +111,8 @@
                 "workshop:fetch-creature-maker",
                 "workshop:fetch-unearth",
                 "workshop:fix-ratings",
-                "workshop:generate-all-thumbnails"
+                "workshop:generate-all-thumbnails",
+                "workshop:virustotal-submit"
             ]
         },
         {

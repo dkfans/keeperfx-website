@@ -36,6 +36,7 @@ return [
     App\Console\Command\Workshop\GenerateAllThumbnailsCommand::class,
     App\Console\Command\Workshop\FixWorkshopRatingsCommand::class,
     App\Console\Command\Workshop\VirusScanWorkshopCommand::class,
+    App\Console\Command\Workshop\VirusTotalWorkshopCommand::class,
 
     // Cache
     App\Console\Command\Cache\CacheClearCommand::class,

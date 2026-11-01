@@ -324,7 +324,7 @@ class FetchPrototypeCommand extends Command
             // - Antivirus companies will get a sample that they can whitelist
             if (!empty($_ENV['APP_VIRUSTOTAL_API_KEY'])) {
                 $output->writeln('[+] Sending file to VirusTotal...');
-                $resp = VirusTotalScanner::scanFile($output_path);
+                $resp = VirusTotalScanner::submitFile($output_path);
             }
         }
 

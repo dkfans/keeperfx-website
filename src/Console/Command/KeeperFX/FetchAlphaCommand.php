@@ -8,7 +8,6 @@ use App\Entity\GithubAlphaBuild;
 use App\Enum\ReleaseType;
 use App\GameFileHandler;
 use App\VirusTotalScanner;
-use ByteUnits\Binary as BinaryFormatter;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
@@ -450,7 +449,7 @@ class FetchAlphaCommand extends Command
             // - Antivirus companies will get a sample that they can whitelist
             if (!empty($_ENV['APP_VIRUSTOTAL_API_KEY'])) {
                 $output->writeln('[+] Sending file to VirusTotal...');
-                $resp = VirusTotalScanner::scanFile($output_path);
+                $resp = VirusTotalScanner::submitFile($output_path);
             }
 
             // Remove temp files and dir

@@ -138,7 +138,7 @@ class VirusScanWorkshopCommand extends Command
         }
 
         if (\count($files) === 0) {
-            $output->writeln('[?] No files found to scan');
+            $output->writeln('[?] No files found that match the target');
             $output->writeln('[>] Done!');
 
             return Command::SUCCESS;

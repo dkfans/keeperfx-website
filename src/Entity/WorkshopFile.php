@@ -40,6 +40,9 @@ class WorkshopFile
     private WorkshopScanStatus $scan_status = WorkshopScanStatus::NOT_SCANNED_YET;
 
     #[ORM\Column]
+    private bool $sent_to_virustotal = false;
+
+    #[ORM\Column]
     private \DateTime $created_timestamp;
 
     #[ORM\PrePersist]
@@ -224,6 +227,24 @@ class WorkshopFile
     public function setIsBroken(bool $is_broken): self
     {
         $this->is_broken = $is_broken;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of sent_to_virustotal.
+     */
+    public function isSentToVirusTotal(): bool
+    {
+        return $this->sent_to_virustotal;
+    }
+
+    /**
+     * Set the value of sent_to_virustotal.
+     */
+    public function setSentToVirusTotal(bool $sent_to_virustotal): self
+    {
+        $this->sent_to_virustotal = $sent_to_virustotal;
 
         return $this;
     }
