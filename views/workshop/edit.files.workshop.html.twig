@@ -87,7 +87,7 @@
                 </thead>
                 <tbody>
                     {% for file in workshop_item.files %}
-                        <tr>
+                        <tr {% if loop.first %}class="bg-dark"{% endif %}>
 
                             <td style="white-space: nowrap;">
 
