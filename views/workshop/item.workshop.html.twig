@@ -84,18 +84,20 @@
                     <div class="workshop-item-images" id="workshop-images">
                         {% if item.images|length == 0 %}
                             <div class="workshop-item-image bd-keeper">
-                                <img src="/img/no-image-512.png" />
+                                <img src="/img/no-image-512.png"/>
                             </div>
                         {% else %}
                             {% for image in item.images %}
                                 <div class="workshop-item-image bd-keeper">
-                                    <a href="/workshop/image/{{ item.id }}/{{ image.filename }}"
+                                    <a
+                                        href="/workshop/image/{{ item.id }}/{{ image.filename }}"
                                         data-pswp-width="{{ image.width }}"
                                         data-pswp-height="{{ image.height }}"
                                         data-cropped="true"
                                         class="workshop-image"
-                                        target="_blank">
-                                            <img src="/workshop/image/{{ item.id }}/{{ image.filename }}" alt="" />
+                                        target="_blank"
+                                    >
+                                        <img src="/workshop/image/{{ item.id }}/{{ image.filename }}" alt=""/>
                                     </a>
                                 </div>
                             {% endfor %}
@@ -146,36 +148,36 @@
                                 </td>
                             </tr>
                             {% if item.category not in workshop_globals.categories_without_difficulty and item.difficultyRatingEnabled %}
-                            <tr style="height: 15px;">{# Empty table row spacer #}</tr>
-                            <tr>
-                                <td style="vertical-align: top">Difficulty</td>
-                                <td class="text-stand-out" style="padding-left: 25px;">
+                                <tr style="height: 15px;">{# Empty table row spacer #}</tr>
+                                <tr>
+                                    <td style="vertical-align: top">Difficulty</td>
+                                    <td class="text-stand-out" style="padding-left: 25px;">
 
-                                    {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
+                                        {{ render_workshop_difficulty_rating(item.id, item.difficultyRatingScore) }}
 
-                                    <span id="difficulty-rating-info" class="text-muted" style="display: block; margin-top: 3px;">
-                                        {% if item.difficultyRatingScore is not null %}
-                                            <span id="difficulty-rating-score" class="text-muted">{{ item.difficultyRatingScore|round(2, 'floor') }}</span> / 5
-                                            <span style="margin: 0 3px" class="text-muted">&bull;</span>
-                                            <span id="difficulty-rating-total" class="text-muted">
-                                                {% if difficulty_rating_amount == 1 %}
-                                                    1 rating
-                                                {% else %}
-                                                    {{ difficulty_rating_amount }} ratings
-                                                {% endif %}
-                                            </span>
-                                            {% if user_difficulty_rating != null %}
+                                        <span id="difficulty-rating-info" class="text-muted" style="display: block; margin-top: 3px;">
+                                            {% if item.difficultyRatingScore is not null %}
+                                                <span id="difficulty-rating-score" class="text-muted">{{ item.difficultyRatingScore|round(2, 'floor') }}</span> / 5
                                                 <span style="margin: 0 3px" class="text-muted">&bull;</span>
-                                                Your rating:
-                                                <span id="difficulty-rating-self" class="text-muted">{{ user_difficulty_rating }}</span>
-                                                <a href="#" data-workshop-rating-type="difficulty" class="rating-remove text-stand-out">Remove</a>
+                                                <span id="difficulty-rating-total" class="text-muted">
+                                                    {% if difficulty_rating_amount == 1 %}
+                                                        1 rating
+                                                    {% else %}
+                                                        {{ difficulty_rating_amount }} ratings
+                                                    {% endif %}
+                                                </span>
+                                                {% if user_difficulty_rating != null %}
+                                                    <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                                                    Your rating:
+                                                    <span id="difficulty-rating-self" class="text-muted">{{ user_difficulty_rating }}</span>
+                                                    <a href="#" data-workshop-rating-type="difficulty" class="rating-remove text-stand-out">Remove</a>
+                                                {% endif %}
+                                            {% else %}
+                                                Not rated yet
                                             {% endif %}
-                                        {% else %}
-                                            Not rated yet
-                                        {% endif %}
-                                    </span>
-                                </td>
-                            </tr>
+                                        </span>
+                                    </td>
+                                </tr>
                             {% endif %}
                             <tr style="height: 15px;">{# Empty table row spacer #}</tr>
                             {% if item.originalAuthor is not empty and item.submitter is not null %}
@@ -204,7 +206,7 @@
                                 <tr>
                                     <td>Last updated</td>
                                     <td class="text-stand-out" style="padding-left: 25px;">
-                                            {{ item.updatedTimestamp|date('Y-m-d') }}
+                                        {{ item.updatedTimestamp|date('Y-m-d') }}
                                     </td>
                                 </tr>
                             {% endif %}
@@ -213,7 +215,7 @@
                                 <tr>
                                     <td>Min. game version</td>
                                     <td class="text-stand-out" style="padding-left: 25px;">
-                                        {% if item.minGameBuild == -1 %}
+                                        {% if item.minGameBuild == - 1 %}
                                             Latest KeeperFX alpha patch
                                         {% else %}
                                             {{ workshop_globals.stable_builds[item.minGameBuild].name }}
@@ -268,7 +270,7 @@
                         {% endif %}
 
                         {# Show extra alpha patch notice #}
-                        {% if item.minGameBuild is not null and item.minGameBuild == -1 %}
+                        {% if item.minGameBuild is not null and item.minGameBuild == - 1 %}
                             <div class="alert bg-dark m-3" style="font-size: 13px;">
                                 <div class="d-flex">
                                     <div style="flex-grow: 1; display:flex; align-items:center; margin-right: 15px; max-width: 20px;">
@@ -301,15 +303,20 @@
                                     href="{{ globals.cdn.base_url }}/workshop/download/{{ item.id }}/{{ item.files|first.id }}/{{ item.files|first.filename|url_encode }}"
                                     class="btn btn-lg btn-medieval {% if item.isBundledWithGame %}btn-grayscale{% endif %}"
                                     style="width: 100%; max-width: 300px; min-height: 50px; padding-top: 9px; padding-bottom: 4px; font-size: {% if item.isBundledWithGame %}18{% else %}22{% endif %}px;"
-                                    download>
-                                        {% if item.isBundledWithGame %}
-                                            Included with KeeperFX
-                                        {% else %}
-                                            Download
-                                        {% endif %}
+                                    download
+                                >
+                                    <div class="btn-medieval-content">
+                                        <span class="btn-medieval-title">
+                                            {% if item.isBundledWithGame %}
+                                                Included with KeeperFX
+                                            {% else %}
+                                                Download
+                                            {% endif %}
+                                        </span>
                                         <span class="btn-download-filename">
                                             {{ item.files|first.filename }}
                                         </span>
+                                    </div>
                                 </a>
                                 <div style="display:none; margin-top: 10px;" class="text-muted" id="show-all-versions">
                                     <a href="#">Show all versions ({{ item.files|length }})</a>
@@ -404,7 +411,7 @@
                                 {% endif %}
                                 Moderator note
                                 <span class="text-muted px-1">
-                                   (KeeperFX Team)
+                                    (KeeperFX Team)
                                 </span>
                                 <a href="#moderator-note" class="header-link" aria-hidden="true" tabindex="-1" title="Permalink">🔗</a>
                             </h5>
@@ -435,8 +442,10 @@
                         <h5 style="margin-top: 30px; padding: 5px; border-bottom: 0;">
                             More items by
                             <a
-                            href="/workshop/user/{{ item.submitter.username|url_encode }}"
-                            class="user-link d-inline-block" data-instant>
+                                href="/workshop/user/{{ item.submitter.username|url_encode }}"
+                                class="user-link d-inline-block"
+                                data-instant
+                            >
                                 <span class="user-username" {% if item.submitter.role.value == roles.banned %}style="text-decoration: line-through;"{% endif %}>{{ item.submitter.username }}</span>
                             </a>
                         </h5>
@@ -449,11 +458,11 @@
                                     <div class="workshop-grid-item-image-container">
                                         <a href="/workshop/item/{{ more_workshop_item.id }}/{{ more_workshop_item.name|slugify }}" data-instant>
                                             {% if more_workshop_item.thumbnail is not null %}
-                                                <img src="/workshop/image/{{ more_workshop_item.id }}/{{ more_workshop_item.thumbnail }}" />
+                                                <img src="/workshop/image/{{ more_workshop_item.id }}/{{ more_workshop_item.thumbnail }}"/>
                                             {% elseif more_workshop_item.images|length > 0 %}
-                                                <img src="/workshop/image/{{ more_workshop_item.id }}/{{ more_workshop_item.images|first.filename }}" />
+                                                <img src="/workshop/image/{{ more_workshop_item.id }}/{{ more_workshop_item.images|first.filename }}"/>
                                             {% else %}
-                                                <img src="/img/no-image-256.png" />
+                                                <img src="/img/no-image-256.png"/>
                                             {% endif %}
                                         </a>
                                     </div>
@@ -461,22 +470,24 @@
                                     <div class="workshop-grid-item-info">
 
                                         {# Show a notice for items requiring the latest alpha patch #}
-                                        {% if more_workshop_item.minGameBuild is not null and more_workshop_item.minGameBuild == -1 %}
-                                                <ion-icon
-                                                    name="alert-circle-outline"
-                                                    class="text-warning workshop-grid-notice-icon"
-                                                    style="right: 8px;";
-                                                    data-bs-toggle="popover" data-bs-placement="top"
-                                                    data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly."
-                                                ></ion-icon>
+                                        {% if more_workshop_item.minGameBuild is not null and more_workshop_item.minGameBuild == - 1 %}
+                                            <ion-icon
+                                                name="alert-circle-outline"
+                                                class="text-warning workshop-grid-notice-icon"
+                                                style="right: 8px;";
+                                                data-bs-toggle="popover"
+                                                data-bs-placement="top"
+                                                data-bs-content="This workshop item uses unreleased KeeperFX functionality and requires the latest alpha patch to work correctly."
+                                            ></ion-icon>
                                         {% endif %}
 
                                         {# Title #}
-                                        <div class="workshop-grid-item-title"
+                                        <div
+                                            class="workshop-grid-item-title"
                                             {# Optionally add some padding to the right to make place for the notice icons #}
-                                            {% if more_workshop_item.minGameBuild is not null and more_workshop_item.minGameBuild == -1 and not more_workshop_item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
-                                            {% if (more_workshop_item.minGameBuild is null or more_workshop_item.minGameBuild != -1) and more_workshop_item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
-                                            {% if more_workshop_item.minGameBuild is not null and more_workshop_item.minGameBuild == -1 and more_workshop_item.isLastFileBroken %}style="padding-right: 20px;"{% endif %}
+                                            {% if more_workshop_item.minGameBuild is not null and more_workshop_item.minGameBuild == - 1 and not more_workshop_item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
+                                            {% if (more_workshop_item.minGameBuild is null or more_workshop_item.minGameBuild != - 1) and more_workshop_item.isLastFileBroken %}style="padding-right: 10px;"{% endif %}
+                                            {% if more_workshop_item.minGameBuild is not null and more_workshop_item.minGameBuild == - 1 and more_workshop_item.isLastFileBroken %}style="padding-right: 20px;"{% endif %}
                                         >
                                             <a href="/workshop/item/{{ more_workshop_item.id }}/{{ more_workshop_item.name|slugify }}" title="{{ more_workshop_item.name }}" data-instant>
                                                 {{ more_workshop_item.name }}
@@ -586,32 +597,38 @@
         </div>
     </div>
 
-{% include 'workshop/comment.report.workshop.html.twig' %}
-{% include 'markdown.format.html.twig' %}
+    {% include 'workshop/comment.report.workshop.html.twig' %}
+    {% include 'markdown.format.html.twig' %}
 
 {% endblock %}
 
 {% block body_javascript %}
-<script>
-    $.each($('.workshop-item-image img'), function(e){
-        if(this.complete){
-            return;
-        }
-        $(this).on('load', function(e){
-            $(this).parent().find('.lds-ring').remove();
-            $(this).fadeIn();
+    <script>
+        $.each($(".workshop-item-image img"), function (e) {
+            if (this.complete) {
+                return;
+            }
+            $(this).on("load", function (e) {
+                $(this).parent().find(".lds-ring").remove();
+                $(this).fadeIn();
+            });
+            $(this)
+                .parent()
+                .prepend(
+                    $(
+                        '<div class="lds-ring"><div></div><div></div><div></div><div></div></div>',
+                    ),
+                );
+            $(this).hide();
         });
-        $(this).parent().prepend($('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>'));
-        $(this).hide();
-    });
-</script>
-<script>
+    </script>
+    <script>
     var workshop_item = {
         id: {{ item.id }},
         slug: '{{ item.name|slugify }}',
         submitter_id: {{ item.submitter.id ?? 'null' }}
     }
 </script>
-<script src="{{ asset('lib/EmojiButtonList.js/src/emojibuttonlistjs.min.js') }}"></script>
-<script src="{{ asset('js/workshop.item.js') }}"></script>
+    <script src="{{ asset('lib/EmojiButtonList.js/src/emojibuttonlistjs.min.js') }}"></script>
+    <script src="{{ asset('js/workshop.item.js') }}"></script>
 {% endblock %}

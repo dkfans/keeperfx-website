@@ -674,6 +674,34 @@ button.btn-medieval ion-icon {
     border: 1px solid #ddd;
 }
 
+/* Container for text inside the button */
+.btn-medieval-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 4px;
+}
+
+/* Main title styling */
+.btn-medieval-title {
+    display: block;
+    line-height: 1.2;
+    word-break: keep-all;
+}
+
+/* Filename subtext styling */
+.btn-download-filename {
+    display: block;
+    font-size: 12px;
+    /* Set your preferred smaller font size */
+    opacity: 0.8;
+    line-height: 1.1;
+    word-break: break-all;
+    margin-top: 8px;
+}
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
