@@ -9,450 +9,470 @@
 
 {% block content %}
 
-{{ render_flash_messages() }}
+    {{ render_flash_messages() }}
 
-<div class="row">
+    <div class="row">
 
-    <div class="col-sm-8">
+        <div class="col-sm-8">
 
-        {# Intro #}
-        <div class="content-box bg-keeper bd-keeper">
+            {# Intro #}
+            <div class="content-box bg-keeper bd-keeper">
 
-            <div class="content-header">
-                <h2>KeeperFX</h2>
-            </div>
-            <div class="content-body">
-                {# Screenshots to the right #}
-                <div class="d-none d-lg-block" id="homepage-screenshots">
-                    <a href="/screenshots/1-eversmile.png"
-                        data-pswp-width="1920"
-                        data-pswp-height="1080"
-                        data-cropped="true"
-                        target="_blank">
-                        <picture>
-                            <source type="image/jxl" srcset="/screenshots/thumbnail/1-eversmile.jxl">
-                            <img src="/screenshots/thumbnail/1-eversmile.png" alt="KeeperFX Eversmile">
-                        </picture>
-                    </a>
-                    <a href="/screenshots/2-tulipscent.png"
-                        data-pswp-width="1920"
-                        data-pswp-height="1080"
-                        data-cropped="true"
-                        target="_blank">
-                        <picture>
-                            <source type="image/jxl" srcset="/screenshots/thumbnail/2-tulipscent.jxl">
-                            <img src="/screenshots/thumbnail/2-tulipscent.png" alt="KeeperFX Tulipscent">
-                        </picture>
-                    </a>
-                    <a href="/screenshots/3-reaper-in-chair.png"
-                        data-pswp-width="1920"
-                        data-pswp-height="1080"
-                        data-cropped="true"
-                        target="_blank">
-                        <picture>
-                            <source type="image/jxl" srcset="/screenshots/thumbnail/3-reaper-in-chair.jxl">
-                            <img src="/screenshots/thumbnail/3-reaper-in-chair.png" alt="KeeperFX Reaper in Chair">
-                        </picture>
-                    </a>
-                    <a href="/screenshots/4-puzzlebox.png"
-                        data-pswp-width="1728"
-                        data-pswp-height="995"
-                        data-cropped="true"
-                        target="_blank">
-                        <picture>
-                            <source type="image/jxl" srcset="/screenshots/thumbnail/4-puzzlebox.jxl">
-                            <img src="/screenshots/thumbnail/4-puzzlebox.png" alt="KeeperFX Puzzlebox">
-                        </picture>
-                    </a>
+                <div class="content-header">
+                    <h2>KeeperFX</h2>
                 </div>
+                <div class="content-body">
+                    {# Screenshots to the right #}
+                    <div class="d-none d-lg-block" id="homepage-screenshots">
+                        <a
+                            href="/screenshots/1-eversmile.png"
+                            data-pswp-width="1920"
+                            data-pswp-height="1080"
+                            data-cropped="true"
+                            target="_blank"
+                        >
+                            <picture>
+                                <source type="image/jxl" srcset="/screenshots/thumbnail/1-eversmile.jxl">
+                                <img src="/screenshots/thumbnail/1-eversmile.png" alt="KeeperFX Eversmile">
+                            </picture>
+                        </a>
+                        <a
+                            href="/screenshots/2-tulipscent.png"
+                            data-pswp-width="1920"
+                            data-pswp-height="1080"
+                            data-cropped="true"
+                            target="_blank"
+                        >
+                            <picture>
+                                <source type="image/jxl" srcset="/screenshots/thumbnail/2-tulipscent.jxl">
+                                <img src="/screenshots/thumbnail/2-tulipscent.png" alt="KeeperFX Tulipscent">
+                            </picture>
+                        </a>
+                        <a
+                            href="/screenshots/3-reaper-in-chair.png"
+                            data-pswp-width="1920"
+                            data-pswp-height="1080"
+                            data-cropped="true"
+                            target="_blank"
+                        >
+                            <picture>
+                                <source type="image/jxl" srcset="/screenshots/thumbnail/3-reaper-in-chair.jxl">
+                                <img src="/screenshots/thumbnail/3-reaper-in-chair.png" alt="KeeperFX Reaper in Chair">
+                            </picture>
+                        </a>
+                        <a
+                            href="/screenshots/4-puzzlebox.png"
+                            data-pswp-width="1728"
+                            data-pswp-height="995"
+                            data-cropped="true"
+                            target="_blank"
+                        >
+                            <picture>
+                                <source type="image/jxl" srcset="/screenshots/thumbnail/4-puzzlebox.jxl">
+                                <img src="/screenshots/thumbnail/4-puzzlebox.png" alt="KeeperFX Puzzlebox">
+                            </picture>
+                        </a>
+                    </div>
 
-                {# Intro #}
-                <p>
-                    <strong>KeeperFX</strong> is an open-source remake and fan expansion of <a href="https://en.wikipedia.org/wiki/Dungeon_Keeper" target="_blank">Dungeon Keeper <ion-icon name="open-outline" class="outgoing"></ion-icon></a>.
-                </p>
-                <p>
-                    The main goal of <strong>KeeperFX</strong> is to preserve and expand upon the original Dungeon Keeper experience,
-                    offering many new features, improvements, and much more while staying true to the original feeling of the game.
-                </p>
-                <p>
-                    You can delve into the <strong>original campaign</strong>, or enjoy custom content created by the community and shared on <a href="/workshop/browse" alt="Browse Workshop" data-instant>the Workshop</a>.
-                </p>
-                <p>
-                    <h5 style="margin-left: 15px; margin-top: 35px; border-bottom: 0;">Features</h5>
-                    <ul class="horned-list">
-                        <li>Windows 7/10/11 support</li>
-                        <li>Higher screen resolutions</li>
-                        <li>Modernized controls</li>
-                        <li>Many bugfixes</li>
-                        <li>Additional campaigns and maps</li>
-                        <li>New level script commands</li>
-                        <li>New creatures, textures and sprites</li>
-                        <li>Multiplayer</li>
-                        <li>And much more!</li>
-                    </ul>
-                </p>
-                <p style="margin-top: 40px;">
-                    <strong>KeeperFX</strong> is a standalone game but requires the original game files to operate.
-                    You can use your old CDs or the digital Gold edition that can be bought from
-                    <a href="https://www.ea.com/games/dungeon-keeper/dungeon-keeper" target="_blank">EA <ion-icon name="open-outline" class="outgoing"></ion-icon></a>
-                    ,
-                    <a href="https://store.steampowered.com/app/1996630/Dungeon_Keeper_Gold/" target="_blank">Steam <ion-icon name="open-outline" class="outgoing"></ion-icon></a>
-                    or
-                    <a href="https://www.gog.com/game/dungeon_keeper" target="_blank">GOG <ion-icon name="open-outline" class="outgoing"></ion-icon></a>
-                    .
-                </p>
-                {# <p>
+                    {# Intro #}
+                    <p>
+                        <strong>KeeperFX</strong> is an open-source remake and fan expansion of <a href="https://en.wikipedia.org/wiki/Dungeon_Keeper" target="_blank">Dungeon Keeper <ion-icon name="open-outline" class="outgoing"></ion-icon></a>.
+                    </p>
+                    <p>
+                        The main goal of <strong>KeeperFX</strong> is to preserve and expand upon the original Dungeon Keeper experience,
+                        offering many new features, improvements, and much more while staying true to the original feeling of the game.
+                    </p>
+                    <p>
+                        You can delve into the <strong>original campaign</strong>, or enjoy custom content created by the community and shared on <a href="/workshop/browse" alt="Browse Workshop" data-instant>the Workshop</a>.
+                    </p>
+                    <p>
+                        <h5 style="margin-left: 15px; margin-top: 35px; border-bottom: 0;">Features</h5>
+                        <ul class="horned-list">
+                            <li>Windows 7/10/11 support</li>
+                            <li>Higher screen resolutions</li>
+                            <li>Modernized controls</li>
+                            <li>Many bugfixes</li>
+                            <li>Additional campaigns and maps</li>
+                            <li>New level script commands</li>
+                            <li>New creatures, textures and sprites</li>
+                            <li>Multiplayer</li>
+                            <li>And much more!</li>
+                        </ul>
+                    </p>
+                    <p style="margin-top: 40px;">
+                        <strong>KeeperFX</strong> is a standalone game but requires the original game files to operate.
+                        You can use your old CDs or the digital Gold edition that can be bought from
+                        <a href="https://www.ea.com/games/dungeon-keeper/dungeon-keeper" target="_blank">EA <ion-icon name="open-outline" class="outgoing"></ion-icon></a>
+                        ,
+                        <a href="https://store.steampowered.com/app/1996630/Dungeon_Keeper_Gold/" target="_blank">Steam <ion-icon name="open-outline" class="outgoing"></ion-icon></a>
+                        or
+                        <a href="https://www.gog.com/game/dungeon_keeper" target="_blank">GOG <ion-icon name="open-outline" class="outgoing"></ion-icon></a>
+                        .
+                    </p>
+                    {# <p>
                     It's very easy to get started but be sure to follow the <a href="/wiki/Home" target="_blank" data-instant>installation instructions</a> as there is no automatic installer.
                 </p> #}
 
+                </div>
             </div>
-        </div>
 
-        {# News #}
-        {% if articles %}
-            <div class="content-box bg-keeper bd-keeper">
-                <div class="content-header">
-                    <div class="d-flex justify-content-between">
-                        <h2>
-                            Latest News
-                        </h2>
-                        <div>
-                            <a href="/news" data-instant>Browse all</a>
+            {# News #}
+            {% if articles %}
+                <div class="content-box bg-keeper bd-keeper">
+                    <div class="content-header">
+                        <div class="d-flex justify-content-between">
+                            <h2>
+                                Latest News
+                            </h2>
+                            <div>
+                                <a href="/news" data-instant>Browse all</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="content-body">
-                    {% for article in articles %}
-                        <div class="news d-flex" style="min-height: 168px;">
+                    <div class="content-body">
+                        {% for article in articles %}
+                            <div class="news d-flex" style="min-height: 168px;">
 
-                            <div>
-                                {% if article.image is not empty %}
-                                    <img src="/news/image/{{ article.image }}" class="bd-keeper" style="float: left; margin: 0px 25px 0px 0px; height: 128px; width: 128px; object-fit: cover;" />
-                                {% else %}
-                                    <img src="/img/horny-face-256.png" class="bd-keeper bg-keeper" style="float: left; margin: 0px 25px 0px 0px; height: 128px; width: 128px; object-fit: cover;" />
-                                {% endif %}
-                            </div>
-
-                            <div style="width: 100%">
-                                <div class="d-flex justify-content-between mt-1 mb-3" style="width: 100%">
-                                    <h4 style="border:0; margin:0; margin-right: 15px;">
-                                        <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}" style="color: inherit;" data-instant>
-                                            {{ article.title }}
-                                        </a>
-                                    </h4>
-                                    <span class="text-special">{{ article.createdTimestamp|date('Y-m-d') }}</span>
-                                </div>
-                                <div class="news-item-text">
-
-                                    {# The excerpt of the news article #}
-                                    {{ article.excerpt|markdown_to_html }}
-
-                                    {# Add a "Read more..." link if the article is longer than its excerpt #}
-                                    {% if article.excerpt != article.contents %}
-                                        <p>
-                                            <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}" data-instant>Read more...</a>
-                                        </p>
+                                <div>
+                                    {% if article.image is not empty %}
+                                        <img src="/news/image/{{ article.image }}" class="bd-keeper" style="float: left; margin: 0px 25px 0px 0px; height: 128px; width: 128px; object-fit: cover;"/>
+                                    {% else %}
+                                        <img src="/img/horny-face-256.png" class="bd-keeper bg-keeper" style="float: left; margin: 0px 25px 0px 0px; height: 128px; width: 128px; object-fit: cover;"/>
                                     {% endif %}
+                                </div>
 
+                                <div style="width: 100%">
+                                    <div class="d-flex justify-content-between mt-1 mb-3" style="width: 100%">
+                                        <h4 style="border:0; margin:0; margin-right: 15px;">
+                                            <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}" style="color: inherit;" data-instant>
+                                                {{ article.title }}
+                                            </a>
+                                        </h4>
+                                        <span class="text-special">{{ article.createdTimestamp|date('Y-m-d') }}</span>
+                                    </div>
+                                    <div class="news-item-text">
+
+                                        {# The excerpt of the news article #}
+                                        {{ article.excerpt|markdown_to_html }}
+
+                                        {# Add a "Read more..." link if the article is longer than its excerpt #}
+                                        {% if article.excerpt != article.contents %}
+                                            <p>
+                                                <a href="/news/{{ article.id }}/{{ article.createdTimestamp|date('Y-m-d') }}/{{ article.titleSlug }}" data-instant>Read more...</a>
+                                            </p>
+                                        {% endif %}
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
 
-    </div>
-
-    <div class="col-sm-4">
-
-        {# Download Button #}
-        {% if release %}
-            <a href="/downloads" alt="Download" data-instant>
-                <button class="btn btn-medieval d-none d-sm-block" style="padding: 16px;width: 100%; margin-bottom: 25px">
-                    <h3>Download</h3>
-                    <span>{{ release.name }}</span>
-                </button>
-            </a>
-        {% endif %}
-
-        {# Github box #}
-        <div class="content-box bg-keeper bd-keeper mt-4 mt-sm-0">
-
-            <div class="content-header">
-                <h2>GitHub</h2>
-            </div>
-            <div class="content-body">
-                Repository:
-                <a href="https://github.com/dkfans/keeperfx" target="_blank">
-                    dkfans/keeperfx <ion-icon name="open-outline" class="outgoing"></ion-icon>
-                </a>
-
-                <br />
-                <br />
-
-                <img alt="GitHub: Latest KeeperFX stable release" src="https://img.shields.io/github/v/release/dkfans/keeperfx?style=flat-square&cacheSeconds=3600">
-                <img alt="GitHub: Total KeeperFX downloads" src="https://img.shields.io/github/downloads/dkfans/keeperfx/total?style=flat-square&cacheSeconds=86400">
-                <img alt="GitHub: Total KeeperFX contributors" src="https://img.shields.io/github/contributors/dkfans/keeperfx?style=flat-square&cacheSeconds=86400">
-                <img alt="GitHub: Last KeeperFX commit" src="https://img.shields.io/github/last-commit/dkfans/keeperfx?style=flat-square&cacheSeconds=3600">
-                <img alt="GitHub: Total KeeperFX stars" src="https://img.shields.io/github/stars/dkfans/keeperfx?style=flat-square&cacheSeconds=86400">
-                    {# TODO: fix github LoC counter badge, its broken? #}
-                {# <img alt="Lines of code"
-                    src="https://img.shields.io/tokei/lines/github/dkfans/keeperfx?style=flat-square"> #}
-            </div>
         </div>
 
-        {# Featured Twitch Stream Box #}
-        {% if twitch_homepage_streams is not empty %}
-            <div class="content-box bg-keeper bd-keeper">
+        <div class="col-sm-4">
+
+            {# Download Button #}
+            {% if release %}
+                <a href="/downloads" alt="Download" data-instant>
+                    <button class="btn btn-medieval d-none d-sm-block" style="padding: 16px;width: 100%; margin-bottom: 25px">
+                        <h3>Download</h3>
+                        <span>{{ release.name }}</span>
+                    </button>
+                </a>
+            {% endif %}
+
+            {# Github box #}
+            <div class="content-box bg-keeper bd-keeper mt-4 mt-sm-0">
+
                 <div class="content-header">
-                    <h2>Featured Twitch Stream</h2>
+                    <h2>GitHub</h2>
                 </div>
                 <div class="content-body">
-                    <iframe
-                        src="https://player.twitch.tv/?channel={{ random(twitch_homepage_streams).user_login }}&parent={{ twitch_parent_host }}&muted=true"
-                        height="210px"
-                        width="100%"
-                        allowfullscreen>
-                    </iframe>
+                    Repository:
+                    <a href="https://github.com/dkfans/keeperfx" target="_blank">
+                        dkfans/keeperfx <ion-icon name="open-outline" class="outgoing"></ion-icon>
+                    </a>
+
+                    <br/>
+                    <br/>
+
+                    <img alt="GitHub: Latest KeeperFX stable release" src="https://img.shields.io/github/v/release/dkfans/keeperfx?style=flat-square&cacheSeconds=3600">
+                    <img alt="GitHub: Total KeeperFX downloads" src="https://img.shields.io/github/downloads/dkfans/keeperfx/total?style=flat-square&cacheSeconds=86400">
+                    <img alt="GitHub: Total KeeperFX contributors" src="https://img.shields.io/github/contributors/dkfans/keeperfx?style=flat-square&cacheSeconds=86400">
+                    <img alt="GitHub: Last KeeperFX commit" src="https://img.shields.io/github/last-commit/dkfans/keeperfx?style=flat-square&cacheSeconds=3600">
+                    <img alt="GitHub: Total KeeperFX stars" src="https://img.shields.io/github/stars/dkfans/keeperfx?style=flat-square&cacheSeconds=86400">
+                    {# TODO: fix github LoC counter badge, its broken? #}
+                    {# <img alt="Lines of code"
+                    src="https://img.shields.io/tokei/lines/github/dkfans/keeperfx?style=flat-square"> #}
                 </div>
             </div>
-        {% endif %}
 
-        {# Discord Box #}
-        <div class="content-box bg-keeper bd-keeper">
-            <div class="content-header">
-                <h2>Keeper Klan Discord</h2>
-            </div>
-            <div class="content-body">
+            {# Featured Twitch Stream Box #}
+            {% if twitch_homepage_streams is not empty %}
+                <div class="content-box bg-keeper bd-keeper">
+                    <div class="content-header">
+                        <h2>Featured Twitch Stream</h2>
+                    </div>
+                    <div class="content-body">
+                        <iframe
+                            src="https://player.twitch.tv/?channel={{ random(twitch_homepage_streams).user_login }}&parent={{ twitch_parent_host }}&muted=true"
+                            height="210px"
+                            width="100%"
+                            allowfullscreen
+                        >
+                        </iframe>
+                    </div>
+                </div>
+            {% endif %}
 
-                {# Discord Button Link #}
-                <a class="index-discord-button" href="https://discord.gg/{{ get_env('APP_DISCORD_INVITE_ID') }}" target="_blank">
+            {# Discord Box #}
+            <div class="content-box bg-keeper bd-keeper">
+                <div class="content-header">
+                    <h2>Keeper Klan Discord</h2>
+                </div>
+                <div class="content-body">
 
-                    {# Discord Button #}
-                    <div>
+                    {# Discord Button Link #}
+                    <a class="index-discord-button" href="https://discord.gg/{{ get_env('APP_DISCORD_INVITE_ID') }}" target="_blank">
+
+                        {# Discord Button #}
+                        <div>
 
                             {# Logo #}
-                            <img src="/img/branding/discord-logo-white.svg" style="height: 26px;" />
+                            <img src="/img/branding/discord-logo-white.svg" style="height: 26px;"/>
 
                             {# Info on the right #}
                             <div style="font-size: 13px;">
                                 {% if discord_info is not empty %}
-                                <span style="position: relative; top: 1px; margin-right: 3px;"><ion-icon name="ellipse" style="color: #28a745;"></ion-icon></span>
-                                <span class="text-white" style="font-weight: 700;">{{ discord_info.approximate_presence_count }}</span>
-                                <span class="text-white" style="font-weight: 320;">Online</span>
-                                <br />
-                                <span style="position: relative; top: 1px; margin-right: 3px;"><ion-icon name="ellipse" style="color: #aaa;"></ion-icon></span>
-                                <span class="text-white" style="font-weight: 700;">{{ discord_info.approximate_member_count }}</span>
-                                <span class="text-white" style="font-weight: 320;">Members</span>
+                                    <span style="position: relative; top: 1px; margin-right: 3px;"><ion-icon name="ellipse" style="color: #28a745;"></ion-icon></span>
+                                    <span class="text-white" style="font-weight: 700;">{{ discord_info.approximate_presence_count }}</span>
+                                    <span class="text-white" style="font-weight: 320;">Online</span>
+                                    <br/>
+                                    <span style="position: relative; top: 1px; margin-right: 3px;"><ion-icon name="ellipse" style="color: #aaa;"></ion-icon></span>
+                                    <span class="text-white" style="font-weight: 700;">{{ discord_info.approximate_member_count }}</span>
+                                    <span class="text-white" style="font-weight: 320;">Members</span>
                                 {% endif %}
                             </div>
 
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        {# Latest workshop items #}
-        {% if latest_workshop_items|length > 0  %}
-            <div class="content-box bg-keeper bd-keeper">
-                <div class="content-header">
-                    <h2>Latest workshop items</h2>
+                        </div>
+                    </a>
                 </div>
-                <div class="content-body" style="padding-top: 10px;">
-                    {% for item in latest_workshop_items %}
-                        <div class="workshop-grid-item" style="margin-top: 10px;">
+            </div>
 
-                            {# Thumbnail #}
-                            <div class="workshop-grid-item-image-container">
-                                <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
-                                    {% if item.thumbnail is not null %}
-                                        <img src="/workshop/image/{{ item.id }}/{{ item.thumbnail }}" />
-                                    {% elseif item.images|length > 0 %}
-                                        <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}" />
-                                    {% else %}
-                                        <img src="/img/no-image-256.png" />
-                                    {% endif %}
-                                </a>
-                            </div>
+            {# Latest workshop items #}
+            {% if latest_workshop_items|length > 0 %}
+                <div class="content-box bg-keeper bd-keeper">
+                    <div class="content-header">
+                        <h2>Latest workshop items</h2>
+                    </div>
+                    <div class="content-body" style="padding-top: 10px;">
+                        {% for item in latest_workshop_items %}
+                            <div class="workshop-grid-item" style="margin-top: 10px;">
 
-                            <div class="workshop-grid-item-info">
-
-                                {# Title #}
-                                <div class="workshop-grid-item-title">
+                                {# Thumbnail #}
+                                <div class="workshop-grid-item-image-container">
                                     <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
-                                        {{ item.name }}
+                                        {% if item.thumbnail is not null %}
+                                            <img src="/workshop/image/{{ item.id }}/{{ item.thumbnail }}"/>
+                                        {% elseif item.images|length > 0 %}
+                                            <img src="/workshop/image/{{ item.id }}/{{ item.images|first.filename }}"/>
+                                        {% else %}
+                                            <img src="/img/no-image-256.png"/>
+                                        {% endif %}
                                     </a>
                                 </div>
 
-                                {# Info #}
-                                <div class="row" style="margin-top: 10px;">
+                                <div class="workshop-grid-item-info">
 
-                                    <div class="col-12">
+                                    {# Title #}
+                                    <div class="workshop-grid-item-title">
+                                        <a href="/workshop/item/{{ item.id }}/{{ item.name|slugify }}">
+                                            {{ item.name }}
+                                        </a>
+                                    </div>
 
-                                        {# Type #}
-                                        {# <span class="text-warning"> #}
-                                        <span style="margin-top: 2px; display: block; margin-bottom: 5px">
-                                            {{ item.category.name|enum_beautify }}
-                                        </span>
+                                    {# Info #}
+                                    <div class="row" style="margin-top: 10px;">
 
-                                        {# User or Original Author #}
-                                        <div class="workshop-grid-item-user">
-                                            {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: true} %}
+                                        <div class="col-12">
+
+                                            {# Type #}
+                                            {# <span class="text-warning"> #}
+                                            <span style="margin-top: 2px; display: block; margin-bottom: 5px">
+                                                {{ item.category.name|enum_beautify }}
+                                            </span>
+
+                                            {# User or Original Author #}
+                                            <div class="workshop-grid-item-user">
+                                                {% include 'workshop/_user_small.widget.html.twig' with {workshop_item: item, includeOriginalAuthor: true} %}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
 
-                    <div style="padding-top: 16px; text-align: left;">
-                        <a href="/workshop/browse" style="margin: 0 auto;" data-instant>Browse workshop</a>
+                        <div style="padding-top: 16px; text-align: left;">
+                            <a href="/workshop/browse" style="margin: 0 auto;" data-instant>Browse workshop</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
 
-        {# Forum Threads #}
-        {% if forum_threads|length > 0  %}
+            {# Forum Threads #}
+            {% if forum_threads|length > 0 %}
+                <div class="content-box bg-keeper bd-keeper">
+                    <div class="content-header">
+                        <h2>Forum Activity</h2>
+                    </div>
+                    <div class="content-body">
+                        {% for thread in forum_threads %}
+                            <p>
+                                <a href="{{ thread.url }}" target="_blank">{{ thread.title }} <ion-icon name="open-outline" class="outgoing"></ion-icon></a>
+                                <br/>
+                                {{ thread.date_str }}
+                                <span style="margin: 0 3px" class="text-muted">&bull;</span>
+                                {{ thread.replies ?? 0 }} replies
+                            </p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Moon Phase #}
             <div class="content-box bg-keeper bd-keeper">
                 <div class="content-header">
-                    <h2>Forum Activity</h2>
+                    <h2>Moon Phase</h2>
                 </div>
                 <div class="content-body">
-                    {% for thread in forum_threads %}
-                        <p>
-                            <a href="{{ thread.url }}" target="_blank">{{ thread.title }} <ion-icon name="open-outline" class="outgoing"></ion-icon></a>
-                            <br />
-                            {{ thread.date_str }}
-                            <span style="margin: 0 3px" class="text-muted">&bull;</span>
-                            {{ thread.replies ?? 0 }} replies
-                        </p>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endif %}
 
-        {# Moon Phase #}
-        <div class="content-box bg-keeper bd-keeper">
-            <div class="content-header">
-                <h2>Moon Phase</h2>
-            </div>
-            <div class="content-body">
+                    <div class="d-flex">
 
-                <div class="d-flex">
-
-                    {# Current moon phase image #}
-                    <div>
-                        <img style="max-width: 72px; max-height: 72px;"class="" src="{{ moon_phase.img }}" />
-                    </div>
-
-                    <div style="padding-left: 15px;">
-
-                        {# Name of the current moon #}
-                        <strong class="fs-5">{{ moon_phase.name }}</strong>
-
-                        {# Full moon info #}
-                        <div class="d-flex" style="margin-top: 15px;">
-                            <div>
-                                <img src="/img/moon/full-moon.png" style="height: 16px; width: 16px; position: relative; top: -2px;" />
-                            </div>
-                            <div style="margin-left: 6px;">
-                                Full Moon levels:
-                                {% if moon_phase.is_full_moon %}
-                                    <span class="text-success">Available</span>
-                                {% elseif moon_phase.is_near_full_moon %}
-                                    <span class="text-warning"
-                                        data-bs-toggle="popover"  data-bs-content="Maps are visible in the landview but not playable (yet)" data-bs-placement="top"
-                                        style="cursor: default;"
-                                    >
-                                        Visible
-                                    </span>
-                                {% else %}
-                                    <span class="text-muted">Not available</span>
-                                {% endif %}
-
-                                {% if not moon_phase.is_full_moon %}
-                                    <br />
-                                    Next Full Moon:
-                                    <time
-                                        class="text-special" datetime="{{ moon_phase.next_full_moon|date('c') }}"
-                                        data-bs-toggle="popover"  data-bs-content="{{ moon_phase.next_full_moon|date('Y/m/d - H:i') }}" data-bs-placement="top"
-                                        style="cursor: default;"
-                                    >
-                                        {{ moon_phase.next_full_moon|date('Y/m/d - H:i') }}
-                                    </time>
-                                {% endif %}
-
-                            </div>
+                        {# Current moon phase image #}
+                        <div>
+                            <img style="max-width: 72px; max-height: 72px;"class="" src="{{ moon_phase.img }}"/>
                         </div>
 
-                        {# New moon info #}
-                        <div class="d-flex" style="margin-top: 15px;">
-                            <div>
-                                <img src="/img/moon/new-moon.png" style="height: 16px; width: 16px; position: relative; top: -2px;" />
-                            </div>
-                            <div style="margin-left: 6px;">
-                                New Moon levels:
-                                {% if moon_phase.is_new_moon %}
-                                    <span class="text-success">Available</span>
-                                {% elseif moon_phase.is_near_new_moon %}
-                                    <span class="text-warning"
-                                        data-bs-toggle="popover"  data-bs-content="Maps are visible in the landview but not playable (yet)" data-bs-placement="top"
-                                        style="cursor: default;"
-                                    >
-                                        Visible
-                                    </span>
-                                {% else %}
-                                    <span class="text-muted">Not available</span>
-                                {% endif %}
+                        <div style="padding-left: 15px;">
 
-                                {% if not moon_phase.is_new_moon %}
-                                    <br />
-                                    Next New Moon:
-                                    <time
-                                        class="text-special" datetime="{{ moon_phase.next_new_moon|date('c') }}"
-                                        data-bs-toggle="popover"  data-bs-content="{{ moon_phase.next_new_moon|date('Y/m/d - H:i') }}" data-bs-placement="top"
-                                        style="cursor: default;"
-                                    >
-                                        {{ moon_phase.next_new_moon|date('Y/m/d - H:i') }}
-                                    </time>
-                                {% endif %}
+                            {# Name of the current moon #}
+                            <strong class="fs-5">{{ moon_phase.name }}</strong>
+
+                            {# Full moon info #}
+                            <div class="d-flex" style="margin-top: 15px;">
+                                <div>
+                                    <img src="/img/moon/full-moon.png" style="height: 16px; width: 16px; position: relative; top: -2px;"/>
+                                </div>
+                                <div style="margin-left: 6px;">
+                                    Full Moon levels:
+                                    {% if moon_phase.is_full_moon %}
+                                        <span class="text-success">Available</span>
+                                    {% elseif moon_phase.is_near_full_moon %}
+                                        <span
+                                            class="text-warning"
+                                            data-bs-toggle="popover"
+                                            data-bs-content="Maps are visible in the landview but not playable (yet)"
+                                            data-bs-placement="top"
+                                            style="cursor: default;"
+                                        >
+                                            Visible
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">Not available</span>
+                                    {% endif %}
+
+                                    {% if not moon_phase.is_full_moon %}
+                                        <br/>
+                                        Next Full Moon:
+                                        <time
+                                            class="text-special"
+                                            datetime="{{ moon_phase.next_full_moon|date('c') }}"
+                                            data-bs-toggle="popover"
+                                            data-bs-content="{{ moon_phase.next_full_moon|date('Y/m/d - H:i') }}"
+                                            data-bs-placement="top"
+                                            style="cursor: default;"
+                                        >
+                                            {{ moon_phase.next_full_moon|date('Y/m/d - H:i') }}
+                                        </time>
+                                    {% endif %}
+
+                                </div>
                             </div>
+
+                            {# New moon info #}
+                            <div class="d-flex" style="margin-top: 15px;">
+                                <div>
+                                    <img src="/img/moon/new-moon.png" style="height: 16px; width: 16px; position: relative; top: -2px;"/>
+                                </div>
+                                <div style="margin-left: 6px;">
+                                    New Moon levels:
+                                    {% if moon_phase.is_new_moon %}
+                                        <span class="text-success">Available</span>
+                                    {% elseif moon_phase.is_near_new_moon %}
+                                        <span
+                                            class="text-warning"
+                                            data-bs-toggle="popover"
+                                            data-bs-content="Maps are visible in the landview but not playable (yet)"
+                                            data-bs-placement="top"
+                                            style="cursor: default;"
+                                        >
+                                            Visible
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">Not available</span>
+                                    {% endif %}
+
+                                    {% if not moon_phase.is_new_moon %}
+                                        <br/>
+                                        Next New Moon:
+                                        <time
+                                            class="text-special"
+                                            datetime="{{ moon_phase.next_new_moon|date('c') }}"
+                                            data-bs-toggle="popover"
+                                            data-bs-content="{{ moon_phase.next_new_moon|date('Y/m/d - H:i') }}"
+                                            data-bs-placement="top"
+                                            style="cursor: default;"
+                                        >
+                                            {{ moon_phase.next_new_moon|date('Y/m/d - H:i') }}
+                                        </time>
+                                    {% endif %}
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
-
                 </div>
             </div>
+
         </div>
 
     </div>
-
-</div>
 
 {% endblock %}
 
 
 {% block body_javascript %}
     <script>
-        $(function(){
-
+        $(function () {
             // Initialize image lightbox
             var lightbox = new PhotoSwipeLightbox({
                 bgOpacity: 0.8,
-                gallery: '#homepage-screenshots',
-                children: 'a',
+                gallery: "#homepage-screenshots",
+                children: "a",
                 pswpModule: PhotoSwipe,
-                mainClass: 'pswp-with-perma-preloader',
+                mainClass: "pswp-with-perma-preloader",
             });
 
             // Init lightbox
             lightbox.init();
 
             // Preload the full sizes screenshots
-            $('a[href^="/screenshot/"]').each(function(){
-                let url = $(this).attr('href');
+            $('a[href^="/screenshot/"]').each(function () {
+                let url = $(this).attr("href");
                 if (url) {
                     var img = new Image();
                     img.src = url;

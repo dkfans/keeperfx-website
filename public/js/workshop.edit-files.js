@@ -50,7 +50,7 @@ $(function(){
                     return;
                 }
 
-                var $filenameAnchor   = $renameButton.parent().find('a:first');
+                var $filenameAnchor   = $renameButton.parent().parent().find('.file-link');
 
                 $renameButton.attr('data-rename-filename', data.filename);
                 $filenameAnchor.text(data.filename);
