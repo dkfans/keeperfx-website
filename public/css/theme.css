@@ -238,14 +238,19 @@ nav {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
+.content-box {
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.7) inset;
+}
+
 .content-box+.content-box {
     margin-top: 30px;
 }
 
 .content-header {
     border-bottom: 2px solid var(--bd-color);
-    margin: 0px 20px;
-    padding: 20px 0px 5px 0px;
+    /* margin: 0px 20px; */
+    padding: 20px 20px 5px 20px;
+    box-shadow: 0 -1px 10px 50px rgba(0, 0, 0, 0.4) inset;
 }
 
 .content-header-box {
