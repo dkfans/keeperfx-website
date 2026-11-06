@@ -48,3 +48,11 @@ body {
     border-bottom: 0;
     padding-bottom: 0;
 }
+
+.content-box {
+    box-shadow: none;
+}
+
+.content-header {
+    box-shadow: none;
+}

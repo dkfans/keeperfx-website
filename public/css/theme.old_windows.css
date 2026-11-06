@@ -225,3 +225,11 @@ footer a {
 .table th {
     border: 1px solid black;
 }
+
+.content-box {
+    box-shadow: none;
+}
+
+.content-header {
+    box-shadow: none;
+}
