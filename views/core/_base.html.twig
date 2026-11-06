@@ -11,25 +11,25 @@
         {% include 'core/_meta_tags.html.twig' %}
 
         {# Favicon + Shortcut logo #}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="shortcut" sizes="256x256" type="image/png" href="/img/horny-face-256.png" />
-        <link rel="apple-touch-icon" sizes="256x256" href="/img/horny-face-256.png" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+        <link rel="shortcut" sizes="256x256" type="image/png" href="/img/horny-face-256.png"/>
+        <link rel="apple-touch-icon" sizes="256x256" href="/img/horny-face-256.png"/>
 
         {# Theme color (for shortcuts backgrounds) #}
-        <meta name="theme-color" content="#131313" />
+        <meta name="theme-color" content="#131313"/>
 
         {# Disable Dark Reader browser addon/extension (because the website is already dark) #}
-        <meta name="darkreader-lock" />
+        <meta name="darkreader-lock"/>
 
         {# Preload assets #}
         {# - Assets in CSS files require the CSS file to be fully parsed. #}
-        <link rel="preload" as="font" href="/font/cinzel/static/Cinzel-Medium.ttf" type="font/ttf" crossorigin="anonymous" />
-        <link rel="preload" as="font" href="/font/nunito/static/Nunito-Regular.ttf" type="font/ttf" crossorigin="anonymous" />
-        <link rel="preload" as="image" href="/img/bg.png" />
-        <link rel="preload" as="image" href="/img/bg-button-red.png" />
-        <link rel="preload" as="image" href="/img/bg-button.png" />
-        <link rel="preload" as="image" href="/img/bg-gray.png" />
-        <link rel="preload" as="image" href="/img/bg-black.png" />
+        <link rel="preload" as="font" href="/font/cinzel/static/Cinzel-Medium.ttf" type="font/ttf" crossorigin="anonymous"/>
+        <link rel="preload" as="font" href="/font/nunito/static/Nunito-Regular.ttf" type="font/ttf" crossorigin="anonymous"/>
+        <link rel="preload" as="image" href="/img/bg.png"/>
+        <link rel="preload" as="image" href="/img/bg-button-red.png"/>
+        <link rel="preload" as="image" href="/img/bg-button.png"/>
+        <link rel="preload" as="image" href="/img/bg-gray.png"/>
+        <link rel="preload" as="image" href="/img/bg-black.png"/>
 
         {# Debug Bar #}
         {% if get_env('APP_ENV') == 'dev' %}
@@ -37,31 +37,31 @@
         {% endif %}
 
         {# Bootstrap core CSS #}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap-utilities.min.css" integrity="sha512-4ocAKAxnrkSm7MvkkF1D435kko3/HWWvoi/U9+7+ln94B/U01Mggca05Pm3W59BIv3abl0U3MPdygAPLo5aeqg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap-utilities.min.css" integrity="sha512-4ocAKAxnrkSm7MvkkF1D435kko3/HWWvoi/U9+7+ln94B/U01Mggca05Pm3W59BIv3abl0U3MPdygAPLo5aeqg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
         {# Toastr CSS #}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" integrity="sha512-6S2HWzVFxruDlZxI3sXOZZ4/eJ8AcxkQH1+JjSe/ONCEqR9L4Ysq5JdT5ipqtzU7WHalNwzwBv+iE51gNHJNqQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" integrity="sha512-6S2HWzVFxruDlZxI3sXOZZ4/eJ8AcxkQH1+JjSe/ONCEqR9L4Ysq5JdT5ipqtzU7WHalNwzwBv+iE51gNHJNqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
         {# Photoswipe CSS #}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.4/photoswipe.min.css" integrity="sha512-LFWtdAXHQuwUGH9cImO9blA3a3GfQNkpF2uRlhaOpSbDevNyK1rmAjs13mtpjvWyi+flP7zYWboqY+8Mkd42xA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.4/photoswipe.min.css" integrity="sha512-LFWtdAXHQuwUGH9cImO9blA3a3GfQNkpF2uRlhaOpSbDevNyK1rmAjs13mtpjvWyi+flP7zYWboqY+8Mkd42xA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
         {# EmojiButtonList CSS #}
-        <link rel="stylesheet" href="{{ asset('/lib/EmojiButtonList.js/src/emojibuttonlistjs.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('/lib/EmojiButtonList.js/src/emojibuttonlistjs.min.css') }}"/>
 
         {# GitHub's Markdown CSS #}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-dark.min.css" integrity="sha512-OtEVQKlou4M/GacGwvUl27uo+XNyHfUlMP/furdKClgpkU++3SepORomgRC1uV7qjJ5fnV8ENVt2qXkR8enD1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-dark.min.css" integrity="sha512-OtEVQKlou4M/GacGwvUl27uo+XNyHfUlMP/furdKClgpkU++3SepORomgRC1uV7qjJ5fnV8ENVt2qXkR8enD1w==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
         {# Button Loader Spinner #}
         {# Commented out because now we use the bootstrap spinner #}
         {# <link rel="stylesheet" href="{{ asset('/css/button-loader.css') }}" /> #}
 
         {# CSS #}
-        <link rel="stylesheet" href="{{ asset('/css/theme.css') }}" />
+        <link rel="stylesheet" href="{{ asset('/css/theme.css') }}"/>
 
         {# Other User themes #}
         {% if account is not null and account.theme.id != 'default' %}
-            <link rel="stylesheet" href="{{ asset('/css/' ~ account.theme.stylesheet) }}" />
+            <link rel="stylesheet" href="{{ asset('/css/' ~ account.theme.stylesheet) }}"/>
         {% endif %}
 
         {# Page specific stylesheets #}
@@ -128,7 +128,7 @@
             {# Custom CSS #}
             {% set custom_css_file = "/holiday-theme/" ~ theme ~ "/holiday.css" %}
             {% if public_file_exists(custom_css_file) %}
-                <link rel="stylesheet" href="{{ asset(custom_css_file) }}" />
+                <link rel="stylesheet" href="{{ asset(custom_css_file) }}"/>
             {% endif %}
         {% endif %}
 
@@ -192,7 +192,11 @@
         {% endif %}
 
         {# Disable form resubmission by pressing F5 (little hack) #}
-        <script>if(window.history.replaceState){ window.history.replaceState(null, null, window.location.href); }</script>
+        <script>
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
+        </script>
 
         {# Debug Bar #}
         {% if get_env('APP_ENV') == 'dev' %}
