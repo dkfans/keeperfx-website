@@ -132,7 +132,9 @@
             and use the included <strong>legacy</strong> launcher.
         </p>
         <p>
-            Currently <strong>only Windows is supported</strong>, but Linux and Mac users can use <a href="https://www.winehq.org/" target="_blank">Wine <ion-icon name="open-outline" class="outgoing"></ion-icon></a>.
+            The full releases are for Windows. Linux users can run KeeperFX natively by extracting a <a href="#alpha-patches">Linux alpha patch</a> over a full release,
+            see the <a href="https://github.com/dkfans/keeperfx/blob/master/docs/linux.md" target="_blank">Linux guide <ion-icon name="open-outline" class="outgoing"></ion-icon></a>.
+            Mac users can use <a href="https://www.winehq.org/" target="_blank">Wine <ion-icon name="open-outline" class="outgoing"></ion-icon></a>.
             If your computer can not open the archive directly, we recommend using <a href="https://www.7-zip.org/" target="_blank">7zip <ion-icon name="open-outline" class="outgoing"></ion-icon></a> to extract the files.
         </p>
         <p class="mb-1">
@@ -214,10 +216,10 @@
 </div>
 
 {# Alpha patches #}
-<div class="content-box bg-keeper bd-keeper">
+<div class="content-box bg-keeper bd-keeper" id="alpha-patches">
     <div class="content-header">
         <h2>Alpha Patches</h2>
-        <h6 class="text-muted">for Windows</h6>
+        <h6 class="text-muted">for Windows and Linux</h6>
     </div>
     <div class="content-body">
         <p>
@@ -227,6 +229,12 @@
         <p>
             These builds are provided as patches which should be extracted over the files of the latest full release.
             All patches contain the earlier patches as well.
+        </p>
+        <p>
+            <ion-icon name="logo-tux"></ion-icon> <strong>Linux:</strong> the Linux x86_64 patch (<code>.tar.gz</code>) contains native <code>keeperfx</code> and <code>keeperfx_hvlog</code> executables and the libraries they need.
+            Extract it over a full release that has the original Dungeon Keeper files, and start <code>./keeperfx</code>.
+            It needs glibc 2.39 or newer (Ubuntu 24.04, Debian 13, Fedora 40, SteamOS, Arch and later).
+            See the <a href="https://github.com/dkfans/keeperfx/blob/master/docs/linux.md" target="_blank">Linux guide <ion-icon name="open-outline" class="outgoing"></ion-icon></a>.
         </p>
         <p class="py-3 bd-keeper" style="{# border: 1px solid #ff4217; #}background-color: rgba(0,0,0,0.3)">
             If you are using these builds, we would love to hear your feedback.
@@ -265,6 +273,12 @@
                             <a href="{{ globals.cdn.base_url }}/download/alpha/{{ build.filename|url_encode }}" data-alpha-patch-download="true" download>
                                 {{ build.name }}
                             </a>
+                            {% if build.linuxFilename %}
+                                <br />
+                                <a href="{{ globals.cdn.base_url }}/download/alpha/{{ build.linuxFilename|url_encode }}" class="text-muted" data-alpha-patch-download="true" download>
+                                    <ion-icon name="logo-tux"></ion-icon> Linux x86_64 ({{ build.linuxSizeInBytes|format_bytes }})
+                                </a>
+                            {% endif %}
                         </td>
                         <td>{{ build.sizeInBytes|format_bytes }}</td>
                         <td>
