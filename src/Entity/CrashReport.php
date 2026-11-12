@@ -35,6 +35,18 @@ class CrashReport
     private ?string $save_filename = null;
 
     #[ORM\Column(nullable: true)]
+    private ?string $crash_dump_filename = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $exit_code = null; // e.g. "0xC0000005"
+
+    #[ORM\Column(nullable: true)]
+    private ?string $replay_filename = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $replay_turn = null; // Game turn the crash happened on
+
+    #[ORM\Column(nullable: true)]
     private ?string $source = null; // The source of the crash report
 
     #[ORM\Column(nullable: true)]
@@ -179,6 +191,78 @@ class CrashReport
     public function setSaveFilename(?string $save_filename): self
     {
         $this->save_filename = $save_filename;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of crash_dump_filename.
+     */
+    public function getCrashDumpFilename(): ?string
+    {
+        return $this->crash_dump_filename;
+    }
+
+    /**
+     * Set the value of crash_dump_filename.
+     */
+    public function setCrashDumpFilename(?string $crash_dump_filename): self
+    {
+        $this->crash_dump_filename = $crash_dump_filename;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of exit_code.
+     */
+    public function getExitCode(): ?string
+    {
+        return $this->exit_code;
+    }
+
+    /**
+     * Set the value of exit_code.
+     */
+    public function setExitCode(?string $exit_code): self
+    {
+        $this->exit_code = $exit_code;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of replay_filename.
+     */
+    public function getReplayFilename(): ?string
+    {
+        return $this->replay_filename;
+    }
+
+    /**
+     * Set the value of replay_filename.
+     */
+    public function setReplayFilename(?string $replay_filename): self
+    {
+        $this->replay_filename = $replay_filename;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of replay_turn.
+     */
+    public function getReplayTurn(): ?int
+    {
+        return $this->replay_turn;
+    }
+
+    /**
+     * Set the value of replay_turn.
+     */
+    public function setReplayTurn(?int $replay_turn): self
+    {
+        $this->replay_turn = $replay_turn;
 
         return $this;
     }

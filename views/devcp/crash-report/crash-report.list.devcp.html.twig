@@ -27,6 +27,8 @@
                     <th>Exception Origin</th>
                     <th>Timestamp</th>
                     <th>Savefile</th>
+                    <th>Dump</th>
+                    <th>Replay</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -51,6 +53,20 @@
                                     <ion-icon name="save-outline"></ion-icon>
                                 {% else %}
                                     <ion-icon name="save-outline" style="filter:brightness(0.45);" class="text-muted"></ion-icon>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if crash_report.crashDumpFilename is not null %}
+                                    <ion-icon name="bug-outline"></ion-icon>
+                                {% else %}
+                                    <ion-icon name="bug-outline" style="filter:brightness(0.45);" class="text-muted"></ion-icon>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if crash_report.replayFilename is not null %}
+                                    <ion-icon name="film-outline"></ion-icon>
+                                {% else %}
+                                    <ion-icon name="film-outline" style="filter:brightness(0.45);" class="text-muted"></ion-icon>
                                 {% endif %}
                             </td>
                             <td>

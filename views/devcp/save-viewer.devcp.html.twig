@@ -1,0 +1,23 @@
+{% extends "cp/_cp_layout.html.twig" %}
+
+{% set page_title = 'Save Viewer - DevCP' %}
+
+{% block page %}
+
+<div class="content-box bg-keeper bd-keeper">
+    <div class="content-header">
+        <h2>Save Viewer</h2>
+    </div>
+    <div class="content-body">
+        {# Filled in by save-viewer.js #}
+        <div data-kfxs-picker hidden></div>
+        <noscript><p>The save viewer needs JavaScript.</p></noscript>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block body_javascript %}
+<script src="/js/kfxs-reader.js"></script>
+<script src="/js/save-viewer.js"></script>
+{% endblock %}
