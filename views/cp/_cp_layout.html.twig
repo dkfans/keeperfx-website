@@ -71,6 +71,10 @@
                             <ion-icon name="bug-outline"></ion-icon>
                             Crash Reports
                         </a>
+                        <a class="nav-link {% if path_equals('/dev/save-viewer') %}active{% endif %}" href="/dev/save-viewer">
+                            <ion-icon name="file-tray-full-outline"></ion-icon>
+                            Save Viewer
+                        </a>
                     {% endif %}
                     {% if account.role >= roles.admin %}
                         <hr style="background-color: transparent" />

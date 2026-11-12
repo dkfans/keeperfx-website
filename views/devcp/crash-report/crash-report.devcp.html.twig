@@ -46,7 +46,42 @@
                 <td>Savefile</td>
                 <td>
                     {% if crash_report.saveFilename %}
-                        <a href="/dev/crash-report/download/{{ crash_report.saveFilename }}" download>{{ crash_report.saveFilename }}</a>
+                        <a href="/dev/crash-report/{{ crash_report.id }}/save">Download</a>
+                    {% else %}
+                        <span class="text-muted">N/A</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Crash Dump</td>
+                <td>
+                    {% if crash_report.crashDumpFilename %}
+                        <a href="/dev/crash-report/{{ crash_report.id }}/dump">Download</a>
+                        <span class="text-muted">(symbols: <a href="https://github.com/dkfans/keeperfx-symbols" target="_blank">keeperfx-symbols</a>)</span>
+                    {% else %}
+                        <span class="text-muted">N/A</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Replay</td>
+                <td>
+                    {% if crash_report.replayFilename %}
+                        <a href="/dev/crash-report/{{ crash_report.id }}/replay">Download</a>
+                        <span class="text-muted">(open it with the launcher's Replays button, or <code>keeperfx -packetload &lt;file&gt;</code>)</span>
+                    {% else %}
+                        <span class="text-muted">N/A</span>
+                    {% endif %}
+                    {% if crash_report.replayTurn is not null %}
+                        <span class="text-muted">&middot; crashed on game turn {{ crash_report.replayTurn }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Exit Code</td>
+                <td>
+                    {% if crash_report.exitCode %}
+                        {{ crash_report.exitCode }}
                     {% else %}
                         <span class="text-muted">N/A</span>
                     {% endif %}
@@ -64,18 +99,48 @@
             </tr>
         </table>
 
+        {# Filled in by crash-report-viewer.js; stays hidden if the script can't run #}
+        <div id="crash-analysis" hidden></div>
+        <script type="application/json" id="crash-analysis-data">{{ {
+            dumpUrl: crash_report.crashDumpFilename ? '/dev/crash-report/' ~ crash_report.id ~ '/dump' : null,
+            dumpName: crash_report.crashDumpFilename,
+            gameVersion: crash_report.gameVersion,
+            exitCode: crash_report.exitCode,
+            replayTurn: crash_report.replayTurn,
+            hasReplay: crash_report.replayFilename is not null,
+            logError: error.info is not empty ? error.info : null,
+            logTrace: error.trace,
+            symbolsUrl: symbols_url,
+        }|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
+
+        {# Filled in by save-viewer.js: what was going on in the game, from the save and replay #}
+        {% if crash_report.saveFilename or crash_report.replayFilename %}
+            <div id="game-state" hidden>
+                <h5 style="margin-top: 30px; border-bottom: 0;">The game at the time</h5>
+                {% if crash_report.saveFilename %}
+                    <div data-kfxs-url="/dev/crash-report/{{ crash_report.id }}/save" data-kfxs-name="{{ crash_report.saveFilename }}" data-kfxs-title="Save file sent with the report" data-kfxs-version="{{ crash_report.gameVersion }}" hidden></div>
+                {% endif %}
+                {% if crash_report.replayFilename %}
+                    <div data-kfxs-url="/dev/crash-report/{{ crash_report.id }}/replay" data-kfxs-name="{{ crash_report.replayFilename }}" data-kfxs-title="Replay of the crashed game" data-kfxs-version="{{ crash_report.gameVersion }}" hidden></div>
+                {% endif %}
+            </div>
+        {% endif %}
+
         {% if crash_report.description %}
             <h5 style="margin-top: 30px; border-bottom: 0;">Description</h5>
             <p style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0;">{{ crash_report.description }}</p>
         {% endif %}
 
         {% if error.info is not empty or error.trace is not empty %}
+            {# Shown without JavaScript; crash-report-viewer.js replaces it with the "What happened" panel #}
+            <div id="crash-log-error">
             <h5 style="margin-top: 30px; border-bottom: 0;">Error</h5>
             <pre style="color: #ccc; background-color: #0D0D0D; border: 2px solid black; padding: 10px; margin: 0; font-size: 12px;">{% if error.info is not empty %}{{ error.info.identifier }} ({{ error.info.exception_code }})
 {{ error.info.error_message }}
 
 {% endif %}{% if error.trace is not empty %}{% for num, text in error.trace %}{% if loop.index == 1 %}<span style="color: white; font-weight: 600;">{% endif %}[#{{ num }}] {{ text }}{% if loop.index == 1 %}</span>{% endif %}
 {% endfor %}{% endif %}</pre>
+            </div>
         {% endif %}
 
         <h5 style="margin-top: 30px; border-bottom: 0;">Technical Data</h5>
@@ -126,4 +191,10 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block body_javascript %}
+<script src="/js/crash-report-viewer.js"></script>
+<script src="/js/kfxs-reader.js"></script>
+<script src="/js/save-viewer.js"></script>
 {% endblock %}

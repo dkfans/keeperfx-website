@@ -8,6 +8,8 @@ return [
         'avatar'                  => $_ENV['APP_AVATAR_STORAGE']                  ?? '/app/storage/avatar',
         'news-img'                => $_ENV['APP_NEWS_IMAGE_STORAGE']              ?? '/app/storage/news-img',
         'crash-report-savefile'   => $_ENV['APP_CRASH_REPORT_SAVEFILE_STORAGE']   ?? '/app/storage/crash-report-savefile',
+        'crash-report-dump'       => $_ENV['APP_CRASH_REPORT_DUMP_STORAGE']       ?? '/app/storage/crash-report-dump',
+        'crash-report-replay'     => $_ENV['APP_CRASH_REPORT_REPLAY_STORAGE']     ?? '/app/storage/crash-report-replay',
         'alpha-patch'             => $_ENV['APP_ALPHA_PATCH_STORAGE']             ?? '/app/storage/alpha-patch',
         'alpha-patch-file-bundle' => $_ENV['APP_ALPHA_PATCH_FILE_BUNDLE_STORAGE'] ?? '/app/storage/alpha-patch-file-bundle',
         'prototype'               => $_ENV['APP_PROTOTYPE_STORAGE']               ?? '/app/storage/prototype',
