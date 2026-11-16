@@ -40,6 +40,12 @@
                             <a href="{{ globals.cdn.base_url }}/download/alpha/{{ build.filename|url_encode }}" data-alpha-patch-download="true" download>
                                 {{ build.name }}
                             </a>
+                            {% if build.linuxFilename %}
+                                <br />
+                                <a href="{{ globals.cdn.base_url }}/download/alpha/{{ build.linuxFilename|url_encode }}" class="text-muted" data-alpha-patch-download="true" download>
+                                    <ion-icon name="logo-tux"></ion-icon> Linux x86_64 ({{ build.linuxSizeInBytes|format_bytes }})
+                                </a>
+                            {% endif %}
                         </td>
                         <td>{{ build.sizeInBytes|format_bytes }}</td>
                         <td>

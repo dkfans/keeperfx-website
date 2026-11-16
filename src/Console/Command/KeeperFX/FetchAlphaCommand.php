@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
+use Symfony\Component\Process\Process;
 use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 use wapmorgan\UnifiedArchive\Exceptions\EmptyFileListException;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
@@ -23,6 +24,12 @@ class FetchAlphaCommand extends Command
     public const GITHUB_WORKFLOW_RUNS_URL = 'https://api.github.com/repos/dkfans/keeperfx/actions/runs';
 
     public const ARTIFACT_NAME_REGEX = '/^keeperfx\-([\d\_\-]+?)[\-\_]Alpha\-patch\-signed$/';
+
+    /**
+     * Linux x86_64 patch from the same workflow run. It is not signed; the
+     * artifact holds a single .tar.gz (a zip would drop the executable bits).
+     */
+    public const LINUX_ARTIFACT_NAME_REGEX = '/^keeperfx\-linux_x86_64\-([\d\_\-]+?)[\-\_]Alpha\-patch$/';
 
     /**
      * @var string[]
@@ -156,7 +163,8 @@ class FetchAlphaCommand extends Command
             }
 
             // Get the correct artifact
-            $artifact = null;
+            $artifact       = null;
+            $linux_artifact = null;
             foreach ($json->artifacts as $found_artifact) {
                 if (!isset($found_artifact->name) || empty($found_artifact->name)) {
                     $output->writeln('[-] Invalid artifact...');
@@ -164,6 +172,10 @@ class FetchAlphaCommand extends Command
                 }
                 if (\preg_match(self::ARTIFACT_NAME_REGEX, $found_artifact->name, $matches)) {
                     $artifact = $found_artifact;
+                    continue;
+                }
+                if (\preg_match(self::LINUX_ARTIFACT_NAME_REGEX, $found_artifact->name)) {
+                    $linux_artifact = $found_artifact;
                     continue;
                 }
             }
@@ -268,8 +280,7 @@ class FetchAlphaCommand extends Command
                 }
 
                 // Add bundle files
-                $bundled_files_added = 0;
-                $bundle_path         = Config::get('storage.path.alpha-patch-file-bundle');
+                $bundle_path = Config::get('storage.path.alpha-patch-file-bundle');
                 $output->writeln('[>] Adding file bundle...');
                 if ($bundle_path === null || !\is_dir($bundle_path)) {
                     $output->writeln('[-] File bundle path is not a dir');
@@ -277,23 +288,7 @@ class FetchAlphaCommand extends Command
 
                     return Command::FAILURE;
                 }
-                $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);
-                $iterator     = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
-                foreach ($iterator as $item) {
-                    if ($item->isDir()) {
-                        $item_dir_path = $temp_archive_dir . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-                        if (!\file_exists($item_dir_path) && !\is_dir($item_dir_path)) {
-                            \mkdir($item_dir_path);
-                        }
-                    } else {
-                        $item_filepath = $temp_archive_dir . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-                        if (\copy($item, $item_filepath) === true) {
-                            ++$bundled_files_added;
-                        } else {
-                            throw new \Exception('failed to copy bundled alpha patch file');
-                        }
-                    }
-                }
+                $bundled_files_added = $this->copyFileBundle($bundle_path, $temp_archive_dir);
 
                 $output->writeln("[+] Copied <info>{$bundled_files_added}</info> files from alpha patch bundle");
 
@@ -415,6 +410,16 @@ class FetchAlphaCommand extends Command
                 }
             }
 
+            // Store the Linux patch of this run, if there is one.
+            // A failure here only means no Linux download for this build.
+            $linux_patch = null;
+            if ($linux_artifact) {
+                $output->writeln("[>] Linux artifact found: {$linux_artifact->name}");
+                $linux_patch = $this->storeLinuxPatch($client, $linux_artifact, $storage_dir, $output);
+            } else {
+                $output->writeln('[>] No Linux artifact in this run');
+            }
+
             // Create entity
             $build = new GithubAlphaBuild();
             $build->setName($build_name);
@@ -428,6 +433,10 @@ class FetchAlphaCommand extends Command
             $build->setVersion($version);
             $build->setCommitComment($commit_comment);
             $build->setCommitSha($commit_sha);
+            if ($linux_patch !== null) {
+                $build->setLinuxFilename($linux_patch['filename']);
+                $build->setLinuxSizeInBytes($linux_patch['size']);
+            }
 
             // Save to DB
             $this->em->persist($build);
@@ -461,5 +470,143 @@ class FetchAlphaCommand extends Command
         $output->writeln('[+] Done!');
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Copy the alpha patch file bundle into a directory.
+     *
+     * @return int number of files copied
+     */
+    private function copyFileBundle(string $bundle_path, string $target_dir): int
+    {
+        $files_copied = 0;
+        $dir_iterator = new \RecursiveDirectoryIterator($bundle_path, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $iterator     = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($iterator as $item) {
+            if ($item->isDir()) {
+                $item_dir_path = $target_dir . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                if (!\file_exists($item_dir_path) && !\is_dir($item_dir_path)) {
+                    \mkdir($item_dir_path);
+                }
+            } else {
+                $item_filepath = $target_dir . \DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+                if (\copy($item, $item_filepath) === true) {
+                    ++$files_copied;
+                } else {
+                    throw new \Exception('failed to copy bundled alpha patch file');
+                }
+            }
+        }
+
+        return $files_copied;
+    }
+
+    /**
+     * Download the Linux patch artifact and store it in the alpha patch storage dir.
+     *
+     * It gets the same changes as the Windows patch: the alpha patch file bundle is
+     * added and 'keeperfx.cfg' is renamed to '_keeperfx.cfg'. It is repacked with
+     * the tar command, which keeps the executable bits of the binaries.
+     *
+     * @return array{filename: string, size: int}|null NULL if it could not be stored
+     */
+    private function storeLinuxPatch(\GuzzleHttp\Client $client, object $artifact, string $storage_dir, Output $output): ?array
+    {
+        $dl_url = $artifact->archive_download_url ?? null;
+        if (!\is_string($dl_url) || !\filter_var($dl_url, \FILTER_VALIDATE_URL)) {
+            $output->writeln('[-] Invalid Linux artifact download URL');
+
+            return null;
+        }
+
+        $new_filename = $artifact->name . '.tar.gz';
+        $output_path  = $storage_dir . '/' . $new_filename;
+        $temp_zip     = \sys_get_temp_dir() . '/' . $artifact->name . '.zip';
+        $temp_dir     = \sys_get_temp_dir() . '/' . $artifact->name;
+        $temp_tar_new = \sys_get_temp_dir() . '/' . $artifact->name . '-new.tar.gz';
+
+        $cleanup = static function () use ($temp_zip, $temp_dir, $temp_tar_new): void {
+            if (\file_exists($temp_zip)) {
+                \unlink($temp_zip);
+            }
+            if (\file_exists($temp_tar_new)) {
+                \unlink($temp_tar_new);
+            }
+            // Not DirectoryHelper::delete(): it skips symlinks that point to an
+            // already deleted file, and lib/ is full of library symlinks.
+            if (\file_exists($temp_dir)) {
+                (new Process(['rm', '-rf', $temp_dir]))->run();
+            }
+        };
+
+        try {
+            $cleanup();
+
+            // Download the artifact zip, which holds the .tar.gz
+            $output->writeln("[>] Downloading: {$artifact->name} -> <info>{$temp_zip}</info>");
+            $client->request('GET', $dl_url, ['sink' => $temp_zip]);
+            $zip = UnifiedArchive::open($temp_zip);
+            if ($zip === null) {
+                throw new \Exception('failed to open the artifact zip');
+            }
+            $zip->extract($temp_dir . '/zip');
+            $tarballs = \glob($temp_dir . '/zip/*.tar.gz') ?: [];
+            if (\count($tarballs) !== 1) {
+                throw new \Exception('expected one .tar.gz in the artifact, found ' . \count($tarballs));
+            }
+
+            // Unpack it
+            $files_dir = $temp_dir . '/files';
+            \mkdir($files_dir, 0777, true);
+            $this->runTar(['tar', '-xzf', $tarballs[0], '-C', $files_dir]);
+
+            // Same changes as the Windows patch
+            $bundle_path = Config::get('storage.path.alpha-patch-file-bundle');
+            if ($bundle_path !== null && \is_dir($bundle_path)) {
+                $bundled_files_added = $this->copyFileBundle($bundle_path, $files_dir);
+                $output->writeln("[+] Copied <info>{$bundled_files_added}</info> files from alpha patch bundle");
+            }
+            if (\file_exists($files_dir . '/keeperfx.cfg')) {
+                \rename($files_dir . '/keeperfx.cfg', $files_dir . '/_keeperfx.cfg');
+            }
+
+            // Repack without a './' prefix on the entries
+            $entries = \array_values(\array_diff(\scandir($files_dir) ?: [], ['.', '..']));
+            $this->runTar(\array_merge(['tar', '-czf', $temp_tar_new, '-C', $files_dir], $entries));
+
+            if (\file_exists($output_path)) {
+                \unlink($output_path);
+            }
+            if (\rename($temp_tar_new, $output_path) === false) {
+                throw new \Exception('failed to move file');
+            }
+            $size = \filesize($output_path);
+            if ($size === false) {
+                throw new \Exception('failed to get the file size');
+            }
+
+            $output->writeln("[+] Linux patch stored: <info>{$new_filename}</info> (" . \App\Helper\FormatHelper::formatBytes($size) . ')');
+
+            return ['filename' => $new_filename, 'size' => $size];
+        } catch (\Exception $ex) {
+            $output->writeln('[-] <error>Failed to store the Linux patch</error>: ' . $ex->getMessage());
+
+            return null;
+        } finally {
+            $cleanup();
+        }
+    }
+
+    /**
+     * @param string[] $command
+     */
+    private function runTar(array $command): void
+    {
+        $process = new Process($command);
+        $process->setTimeout(600);
+        $process->run();
+        if (!$process->isSuccessful()) {
+            throw new \Exception('tar failed: ' . \trim($process->getErrorOutput()));
+        }
     }
 }

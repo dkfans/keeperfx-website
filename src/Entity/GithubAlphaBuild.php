@@ -46,6 +46,16 @@ class GithubAlphaBuild
     private ?string $commit_comment;
 
     /**
+     * Filename of the Linux x86_64 patch (.tar.gz) from the same workflow run.
+     * NULL when the run has no Linux build.
+     */
+    #[ORM\Column(nullable: true)]
+    private ?string $linux_filename = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $linux_size_in_bytes = null;
+
+    /**
      * Get the value of id.
      */
     public function getId(): ?int
@@ -247,6 +257,42 @@ class GithubAlphaBuild
     public function setCommitSha(?string $commit_sha): self
     {
         $this->commit_sha = $commit_sha;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of linux_filename.
+     */
+    public function getLinuxFilename(): ?string
+    {
+        return $this->linux_filename;
+    }
+
+    /**
+     * Set the value of linux_filename.
+     */
+    public function setLinuxFilename(?string $linux_filename): self
+    {
+        $this->linux_filename = $linux_filename;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of linux_size_in_bytes.
+     */
+    public function getLinuxSizeInBytes(): ?int
+    {
+        return $this->linux_size_in_bytes;
+    }
+
+    /**
+     * Set the value of linux_size_in_bytes.
+     */
+    public function setLinuxSizeInBytes(?int $linux_size_in_bytes): self
+    {
+        $this->linux_size_in_bytes = $linux_size_in_bytes;
 
         return $this;
     }
