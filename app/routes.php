@@ -233,6 +233,10 @@ $app->group('', static function (RouteCollectorProxy $group): void {
             $group->get('/crash-report/list', [DevCP\ModerateCrashReportController::class, 'listIndex']);
             $group->get('/crash-report/{id:\d+}', [DevCP\ModerateCrashReportController::class, 'view']);
             $group->get('/crash-report/{id:\d+}/delete', [DevCP\ModerateCrashReportController::class, 'delete']);
+            $group->get('/crash-report/{id:\d+}/dump', [DevCP\ModerateCrashReportController::class, 'downloadCrashDump']);
+            $group->get('/crash-report/{id:\d+}/replay', [DevCP\ModerateCrashReportController::class, 'downloadReplay']);
+            $group->get('/crash-report/{id:\d+}/save', [DevCP\ModerateCrashReportController::class, 'downloadSave']);
+            $group->get('/save-viewer', [DevCP\ModerateCrashReportController::class, 'saveViewer']);
 
             // Bundled Assets
             $group->get('/bundled-assets', [DevCP\ModerateBundledAssetsController::class, 'index']);
