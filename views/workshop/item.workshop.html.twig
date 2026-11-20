@@ -382,7 +382,7 @@
                                 Description
                                 <a href="#description" class="header-link" aria-hidden="true" tabindex="-1" title="Permalink">🔗</a>
                             </h5>
-                            <div class="workshop-item-text-content force-wordwrap markdown-body" style="margin-top: 25px;">
+                            <div class="workshop-item-text-content text-break markdown-body" style="margin-top: 25px;">
                                 {{ item.description|markdown_to_html }}
                             </div>
                         </div>
@@ -395,7 +395,7 @@
                                 Installation Instructions
                                 <a href="#installation-instructions" class="header-link" aria-hidden="true" tabindex="-1" title="Permalink">🔗</a>
                             </h5>
-                            <div class="workshop-item-text-content force-wordwrap markdown-body" style="margin-top: 25px;">
+                            <div class="workshop-item-text-content text-break markdown-body" style="margin-top: 25px;">
                                 {{ item.installInstructions|markdown_to_html }}
                             </div>
                         </div>
@@ -415,7 +415,7 @@
                                 </span>
                                 <a href="#moderator-note" class="header-link" aria-hidden="true" tabindex="-1" title="Permalink">🔗</a>
                             </h5>
-                            <div class="workshop-item-text-content force-wordwrap markdown-body" style="margin-top: 25px;">
+                            <div class="workshop-item-text-content text-break markdown-body" style="margin-top: 25px;">
                                 {{ item.moderatorNotePublic|markdown_to_html }}
                             </div>
                         </div>
@@ -432,7 +432,7 @@
                                 </span>
                                 <a href="#moderator-note-hidden" class="header-link" aria-hidden="true" tabindex="-1" title="Permalink">🔗</a>
                             </h5>
-                            <div class="workshop-item-text-content force-wordwrap markdown-body" style="margin-top: 25px;">
+                            <div class="workshop-item-text-content text-break markdown-body" style="margin-top: 25px;">
                                 {{ item.moderatorNoteHidden|markdown_to_html }}
                             </div>
                         </div>
@@ -552,7 +552,7 @@
                     <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
                     <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
                     <div class="" style="width: 100%; margin-left: 5px; padding: 0;">
-                        <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
+                        <div class="text-break" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
                             <textarea class="form-control" name="content" rows="2" placeholder="Write a comment" id="comment-input" tabindex="10"></textarea>
                         </div>
                     </div>
