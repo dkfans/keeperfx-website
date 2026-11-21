@@ -1,209 +1,214 @@
 {% macro render_comment(item, comment) %}
     {% import _self as self %}
 
-        <div class="workshop-item-comment" data-comment-id="{{ comment.id }}" id="comment-{{ comment.id }}" data-comment-user-id="{{ comment.user.id }}">
+    <div class="workshop-item-comment" data-comment-id="{{ comment.id }}" id="comment-{{ comment.id }}" data-comment-user-id="{{ comment.user.id }}">
 
-            <div class="" style="height: 100%;">
-                {% if comment.user.avatarSmall %}
-                    <img src="/avatar/{{ comment.user.avatarSmall }}" class="user-avatar user-avatar-big" />
-                {% elseif comment.user.avatar %}
-                    <img src="/avatar/{{ comment.user.avatar }}" class="user-avatar user-avatar-big" />
-                {% else %}
-                    <img src="/avatar-generate/128/{{ comment.user.username|url_encode }}.png" class="user-avatar user-avatar-big" />
-                {% endif %}
-            </div>
+        <div class="d-flex align-items-center" style="height: 30px;">
+            {% if comment.user.avatarSmall %}
+                <img src="/avatar/{{ comment.user.avatarSmall }}" class="user-avatar user-avatar-big"/>
+            {% elseif comment.user.avatar %}
+                <img src="/avatar/{{ comment.user.avatar }}" class="user-avatar user-avatar-big"/>
+            {% else %}
+                <img src="/avatar-generate/128/{{ comment.user.username|url_encode }}.png" class="user-avatar user-avatar-big"/>
+            {% endif %}
+        </div>
 
-            <div class="" style="width: 100%; margin-left: 10px; padding: 0; padding-top: 2px;">
-                <div class="d-flex justify-content-between" style="width: 100%;">
+        <div class="" style="width: 100%; margin-left: 10px; padding: 0;">
+            <div class="d-flex justify-content-between align-items-center" style="width: 100%; min-height: 30px;">
 
-                    {# Left side #}
-                    <span>
+                {# Left side #}
+                <div class="d-flex align-items-center flex-wrap gap-2">
 
-                        {# Username #}
-                        <a
+                    {# Username #}
+                    <a
                         href="/workshop/user/{{ comment.user.username|url_encode }}"
-                        {# href="/workshop/browse?user={{ comment.user.username }}" #}
-                        {# title="Browse {{ comment.user.username }}'s Workshop Items" #}
-                        class="user-link d-inline-block me-2" data-instant>
-                            <span class="user-username">{{ comment.user.username }}</span>
-                        </a>
+                        class="user-link"
+                        data-instant
+                    >
+                        <span class="user-username">{{ comment.user.username }}</span>
+                    </a>
 
-                        {# Moderation note #}
-                        {% if account and account.role >= roles.moderator and comment.user.moderatorNote %}
-                            <ion-icon
-                                name="document-text-outline"
-                                class="text-muted"
-                                style="position: relative; top: 2px;"
-                                data-bs-toggle="popover" data-bs-placement="top"
-                                data-bs-content="{{ comment.user.moderatorNote }}"
-                            ></ion-icon>
-                        {% endif %}
+                    {# Moderation note #}
+                    {% if account and account.role >= roles.moderator and comment.user.moderatorNote %}
+                        <ion-icon
+                            name="document-text-outline"
+                            class="text-muted"
+                            data-bs-toggle="popover"
+                            data-bs-placement="top"
+                            data-bs-content="{{ comment.user.moderatorNote }}"
+                        ></ion-icon>
+                    {% endif %}
 
-                        {# Country #}
-                        {% if comment.user.country is not null %}
-                            <span style="font-size: 14px; position: relative; top: -0px; padding-right: 4px" data-bs-toggle="popover"  data-bs-content="{{ get_country_string(comment.user.country) }}" data-bs-placement="top">
-                                {{ get_country_emoji(comment.user.country) }}
-                            </span>
-                        {% endif %}
-
-                        {# Badge: If user is submitter #}
-                        {% if item.submitter is not null and comment.user == item.submitter %}
-                            <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Submitter</span>
-                        {% endif %}
-
-                        {# Badge: If user is admin #}
-                        {% if comment.user.role.value == roles.admin  %}
-                            <span class="badge bg-dark text-uppercase" style="font-size: 10px; position: relative; top: -2px; padding: 3px 4px 2px 4px;">Admin</span>
-                        {% endif %}
-
-                        {# Date #}
-                        <a href="#comment-{{ comment.id }}" class="text-muted" data-bs-toggle="popover"  data-bs-content="{{ comment.createdTimestamp|date('Y/m/d - H:i') }}" data-bs-placement="top">
-                            <time class="text-muted" datetime="{{ comment.createdTimestamp|date('c') }}">
-                                {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
-                            </time>
-                        </a>
-
-                        {# Edited #}
-                        <span class="text-muted workshop-comment-is-edited" {% if comment.createdTimestamp == comment.updatedTimestamp %}style="display:none;"{% endif %}>
-                            &bullet; Edited
+                    {# Country #}
+                    {% if comment.user.country is not null %}
+                        <span style="font-size: 14px; line-height: 1;" data-bs-toggle="popover" data-bs-content="{{ get_country_string(comment.user.country) }}" data-bs-placement="top">
+                            {{ get_country_emoji(comment.user.country) }}
                         </span>
+                    {% endif %}
 
+                    {# Badge: If user is submitter #}
+                    {% if item.submitter is not null and comment.user == item.submitter %}
+                        <span class="badge bg-dark text-uppercase" style="font-size: 10px;">Submitter</span>
+                    {% endif %}
+
+                    {# Badge: If user is admin #}
+                    {% if comment.user.role.value == roles.admin %}
+                        <span class="badge bg-dark text-uppercase" style="font-size: 10px;">Admin</span>
+                    {% endif %}
+
+                    {# Awards #}
+                    {% if comment.user is not null and comment.user.awards is not empty %}
+                        {% include 'workshop/_user_awards_small.widget.html.twig' with {awards: get_award_data(comment.user.awards)} %}
+                    {% endif %}
+
+                    {# Date #}
+                    <a href="#comment-{{ comment.id }}" class="text-muted" data-bs-toggle="popover" data-bs-content="{{ comment.createdTimestamp|date('Y/m/d - H:i') }}" data-bs-placement="top">
+                        <time class="text-muted" datetime="{{ comment.createdTimestamp|date('c') }}">
+                            {{ comment.createdTimestamp|date('Y/m/d - H:i') }}
+                        </time>
+                    </a>
+
+                    {# Edited #}
+                    <span class="text-muted workshop-comment-is-edited" {% if comment.createdTimestamp == comment.updatedTimestamp %}style="display:none;"{% endif %}>
+                        &bullet; Edited
                     </span>
 
-                    {# Right side #}
-                    <span style="position: relative; top: -3px; display: none;" class="comment-buttons">
+                </div>
 
-                        {# Collapse button #}
-                        <button class="btn" style="padding: 2px 0; margin-right: 10px; height: 28px;" type="button" data-comment-action="collapse">
-                            <ion-icon data-comment-collapse="down" name="chevron-down-outline"></ion-icon>
-                            <ion-icon data-comment-collapse="up" name="chevron-up-outline" style="display:none;"></ion-icon>
+                {# Right side #}
+                <div class="comment-buttons d-flex align-items-center gap-1" style="display: none !important;">
+
+                    {# Collapse button #}
+                    <button class="btn btn-sm p-1 d-inline-flex align-items-center" type="button" data-comment-action="collapse">
+                        <ion-icon data-comment-collapse="down" name="chevron-down-outline"></ion-icon>
+                        <ion-icon data-comment-collapse="up" name="chevron-up-outline" style="display: none;"></ion-icon>
+                    </button>
+
+                    {% if account is not null %}
+
+                        {# Reply button #}
+                        <button class="btn btn-sm p-1 d-inline-flex align-items-center" type="button" data-comment-action="reply">
+                            <ion-icon name="chatbubbles-outline"></ion-icon>
                         </button>
 
-                        {% if account is not null %}
-
-                            {# Reply button #}
-                            <button class="btn" style="padding: 2px; margin-right: 5px; height: 28px;" type="button" data-comment-action="reply">
-                                <ion-icon name="chatbubbles-outline"></ion-icon>
+                        {# Comment extra menu button #}
+                        <div class="btn-group">
+                            <button class="btn btn-sm p-1 d-inline-flex align-items-center dropdown-toggle caret-off" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
                             </button>
-
-                            {# Comment extra menu button #}
-                            <div class="btn-group">
-                                <button class="btn dropdown-toggle caret-off" style="padding: 2px; height: 28px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper">
-                                    {% if account.role >= roles.moderator or comment.user.id == account.id  %}
-                                        <li><a class="dropdown-item" data-comment-action="edit" href="#">Edit</a></li>
-                                        {% if account.role >= roles.moderator %}
-                                            <li><a class="dropdown-item" data-comment-action="move" href="#">Move</a></li>
-                                        {% endif %}
-                                        <li><a class="dropdown-item" data-comment-action="delete" href="#">Delete</a></li>
-                                        <li><hr class="dropdown-divider"></li>
+                            <ul class="dropdown-menu dropdown-menu-dark bg-keeper bd-keeper dropdown-keeper">
+                                {% if account.role >= roles.moderator or comment.user.id == account.id %}
+                                    <li><a class="dropdown-item" data-comment-action="edit" href="#">Edit</a></li>
+                                    {% if account.role >= roles.moderator %}
+                                        <li><a class="dropdown-item" data-comment-action="move" href="#">Move</a></li>
                                     {% endif %}
-                                    <li><a class="dropdown-item" data-comment-action="report" href="#">Report</a></li>
-                                </ul>
-                            </div>
-
-                        {% endif %}
-                    </span>
-                </div>
-
-                {# Comment #}
-                <div class="force-wordwrap workshop-item-comment-content markdown-body {% if account is not null and account.role >= roles.moderator and comment.reports|length > 0 %}workshop-comment-report{% endif %}">
-                    {{ comment.content|markdown_to_html }}
-                </div>
-
-                {# Edit comment #}
-                <div class="workshop-item-comment-edit pb-3" style="display:none;">
-                    <textarea class="form-control mt-3 mb-2" rows="4" data-comment-edit-area="true" tabindex="{{ comment.id }}001"></textarea>
-                    <div class="display-flex justify-content-between">
-                        <div>
-                            <button class="btn btn-sm btn-dark" data-emoji-picker="true">&#128516;</button>
-                            <span class="text-muted mx-1" style="font-size: 12px;">
-                                Markdown and spoilers supported.
-                                <a href="#" data-markdown-format-info-link="true">
-                                    More info
-                                </a>
-                            </span>
-                        </div>
-                        <div>
-                            <button class="btn btn-sm btn-medieval btn-medieval-gray mx-2" data-comment-action="cancel-edit" tabindex="{{ comment.id }}003">Cancel</button>
-                            <button type="submit" class="btn btn-sm btn-medieval" data-comment-action="do-edit" tabindex="{{ comment.id }}002">Edit</button>
-                        </div>
-                    </div>
-                </div>
-
-                {# Reply to comment #}
-                <form action="/workshop/item/{{ item.id }}/comment/{{ comment.id }}" method="POST" class="mb-3" style="display:none;" data-comment-reply="true">
-                    <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
-                    <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
-                    <div class="" style="width: 100%; margin-left: 5px; padding: 0;">
-                        <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
-                            <textarea class="form-control" name="content" rows="3" placeholder="Write a reply" required tabindex="{{ comment.id }}005" ></textarea>
-                        </div>
-                    </div>
-                    <div class="display-flex justify-content-between px-1">
-                        <div>
-                            <button class="btn btn-sm btn-dark" data-emoji-picker="true">&#128516;</button>
-                            <span class="text-muted mx-2" style="font-size: 12px;">
-                                Markdown and spoilers supported.
-                                <a href="#" data-markdown-format-info-link="true">
-                                    More info
-                                </a>
-                            </span>
-                        </div>
-                        <div>
-                            <button class="btn btn-sm btn-medieval btn-medieval-gray mx-2" data-comment-action="cancel-reply" tabindex="{{ comment.id }}007">Cancel</button>
-                            <button type="submit" class="btn btn-sm btn-medieval" tabindex="{{ comment.id }}006">Reply</button>
-                        </div>
-                    </div>
-                </form>
-
-                {# Reports #}
-                {% if account is not null and account.role >= roles.moderator and comment.reports|length > 0 %}
-                    <div class="workshop-item-comment-reports">
-                        {% for report in comment.reports %}
-                            <div class="alert bg-danger workshop-item-comment-report" data-report-id="{{ report.id }}">
-                                <div class="alert-heading display-flex justify-content-between">
-                                    <span>
-                                        Reported by {{ report.user.username }} &bullet;
-                                        <time datetime="{{ report.createdTimestamp|date('c') }}">
-                                            {{ report.createdTimestamp|date('Y/m/d - H:i') }}
-                                        </time>
-                                    </span>
-
-                                    <button type="button" class="btn-close btn-close-white" data-comment-report-button="close"></button>
-                                </div>
-                                {% if report.reason is not null and report.reason is not empty %}
-                                    <p class="m-0 mt-2">
-                                        {{ report.reason }}
-                                    </p>
+                                    <li><a class="dropdown-item" data-comment-action="delete" href="#">Delete</a></li>
+                                    <li><hr class="dropdown-divider"></li>
                                 {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                                <li><a class="dropdown-item" data-comment-action="report" href="#">Report</a></li>
+                            </ul>
+                        </div>
 
-                {# Move comment to this location button #}
-                <div class="workshop-item-move-box" style="display:none;">
-                    <button class="btn btn-primary" data-move-comment-to="{{ comment.id }}">Move comment here</button>
+                    {% endif %}
                 </div>
-
-                {# Disable comment move mode #}
-                <div class="workshop-item-move-cancel-box" style="display:none;">
-                    <button class="btn btn-sm btn-dark" data-disable-move-comment-mode="true">Disable comment move mode</button>
-                </div>
-
-                {# Replies #}
-                {% if comment.replies|length > 0 %}
-                    {% for reply in comment.replies %}
-                        {{ self.render_comment(item, reply) }}
-                    {% endfor %}
-                {% endif %}
-
             </div>
 
+            {# Comment #}
+            <div class="text-break workshop-item-comment-content markdown-body {% if account is not null and account.role >= roles.moderator and comment.reports|length > 0 %}workshop-comment-report{% endif %}">
+                {{ comment.content|markdown_to_html }}
+            </div>
+
+            {# Edit comment #}
+            <div class="workshop-item-comment-edit pb-3" style="display:none;">
+                <textarea class="form-control mt-3 mb-2" rows="4" data-comment-edit-area="true" tabindex="{{ comment.id }}001"></textarea>
+                <div class="display-flex justify-content-between">
+                    <div>
+                        <button class="btn btn-sm btn-dark" data-emoji-picker="true">&#128516;</button>
+                        <span class="text-muted mx-1" style="font-size: 12px;">
+                            Markdown and spoilers supported.
+                            <a href="#" data-markdown-format-info-link="true">
+                                More info
+                            </a>
+                        </span>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-medieval btn-medieval-gray mx-2" data-comment-action="cancel-edit" tabindex="{{ comment.id }}003">Cancel</button>
+                        <button type="submit" class="btn btn-sm btn-medieval" data-comment-action="do-edit" tabindex="{{ comment.id }}002">Edit</button>
+                    </div>
+                </div>
+            </div>
+
+            {# Reply to comment #}
+            <form action="/workshop/item/{{ item.id }}/comment/{{ comment.id }}" method="POST" class="mb-3" style="display:none;" data-comment-reply="true">
+                <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+                <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
+                <div class="" style="width: 100%; margin-left: 5px; padding: 0;">
+                    <div class="force-wordwrap" style="margin-bottom: 12px; margin-top: 0px; margin-right: 10px;">
+                        <textarea class="form-control" name="content" rows="3" placeholder="Write a reply" required tabindex="{{ comment.id }}005" ></textarea>
+                    </div>
+                </div>
+                <div class="display-flex justify-content-between px-1">
+                    <div>
+                        <button class="btn btn-sm btn-dark" data-emoji-picker="true">&#128516;</button>
+                        <span class="text-muted mx-2" style="font-size: 12px;">
+                            Markdown and spoilers supported.
+                            <a href="#" data-markdown-format-info-link="true">
+                                More info
+                            </a>
+                        </span>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-medieval btn-medieval-gray mx-2" data-comment-action="cancel-reply" tabindex="{{ comment.id }}007">Cancel</button>
+                        <button type="submit" class="btn btn-sm btn-medieval" tabindex="{{ comment.id }}006">Reply</button>
+                    </div>
+                </div>
+            </form>
+
+            {# Reports #}
+            {% if account is not null and account.role >= roles.moderator and comment.reports|length > 0 %}
+                <div class="workshop-item-comment-reports">
+                    {% for report in comment.reports %}
+                        <div class="alert bg-danger workshop-item-comment-report" data-report-id="{{ report.id }}">
+                            <div class="alert-heading display-flex justify-content-between">
+                                <span>
+                                    Reported by {{ report.user.username }} &bullet;
+                                    <time datetime="{{ report.createdTimestamp|date('c') }}">
+                                        {{ report.createdTimestamp|date('Y/m/d - H:i') }}
+                                    </time>
+                                </span>
+
+                                <button type="button" class="btn-close btn-close-white" data-comment-report-button="close"></button>
+                            </div>
+                            {% if report.reason is not null and report.reason is not empty %}
+                                <p class="m-0 mt-2">
+                                    {{ report.reason }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {# Move comment to this location button #}
+            <div class="workshop-item-move-box" style="display:none;">
+                <button class="btn btn-primary" data-move-comment-to="{{ comment.id }}">Move comment here</button>
+            </div>
+
+            {# Disable comment move mode #}
+            <div class="workshop-item-move-cancel-box" style="display:none;">
+                <button class="btn btn-sm btn-dark" data-disable-move-comment-mode="true">Disable comment move mode</button>
+            </div>
+
+            {# Replies #}
+            {% if comment.replies|length > 0 %}
+                {% for reply in comment.replies %}
+                    {{ self.render_comment(item, reply) }}
+                {% endfor %}
+            {% endif %}
+
         </div>
+
+    </div>
 
 {% endmacro %}
 

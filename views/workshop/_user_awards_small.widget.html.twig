@@ -1,0 +1,20 @@
+
+{# <div class="workshop-info-box p-2 workshop-info-awards"> #}
+{# <h4 class="m-3">Awards</h4> #}
+<div class="awards d-flex flex-wrap gap-1"style="filter: contrast(90%);">
+    {% if awards is defined and awards is not empty %}
+        {% for id, award in awards %}
+            <span
+                class="badge rounded-pill award d-inline-flex align-items-center gap-{{ award.gap|default(1) }} text-nowrap badge-sm award-small"
+                style="{{ award.badge_css }}"
+                data-bs-toggle="popover"
+                data-bs-placement="top"
+                data-bs-content="<h5>{{ award.name|escape|escape }}</h5>{% if award.tooltip is defined and award.tooltip %}{{ award.tooltip|nl2br }}{% endif %}"
+                data-bs-html="true"
+            >
+                <img src="{{ asset('/img/award/' ~ award.img) }}" alt="{{ award.name }}" class="award-icon"/>
+            </span>
+        {% endfor %}
+    {% endif %}
+</div>
+{# </div> #}
