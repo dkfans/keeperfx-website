@@ -22,14 +22,13 @@
         <meta name="darkreader-lock"/>
 
         {# Preload assets #}
-        {# - Assets in CSS files require the CSS file to be fully parsed. #}
-        <link rel="preload" as="font" href="/font/cinzel/static/Cinzel-Medium.ttf" type="font/ttf" crossorigin="anonymous"/>
-        <link rel="preload" as="font" href="/font/nunito/static/Nunito-Regular.ttf" type="font/ttf" crossorigin="anonymous"/>
-        <link rel="preload" as="image" href="/img/bg.png"/>
-        <link rel="preload" as="image" href="/img/bg-button-red.png"/>
-        <link rel="preload" as="image" href="/img/bg-button.png"/>
-        <link rel="preload" as="image" href="/img/bg-gray.png"/>
-        <link rel="preload" as="image" href="/img/bg-black.png"/>
+        <link rel="preload" as="font" href="{{ asset('/font/cinzel/static/Cinzel-Medium.ttf') }}" type="font/ttf" crossorigin="anonymous"/>
+        <link rel="preload" as="font" href="{{ asset('/font/nunito/static/Nunito-Regular.ttf') }}" type="font/ttf" crossorigin="anonymous"/>
+        <link rel="preload" as="image" href="{{ asset('/img/bg.png') }}"/>
+        <link rel="preload" as="image" href="{{ asset('/img/bg-button-red.png') }}"/>
+        <link rel="preload" as="image" href="{{ asset('/img/bg-button.png') }}"/>
+        <link rel="preload" as="image" href="{{ asset('/img/bg-gray.png') }}"/>
+        <link rel="preload" as="image" href="{{ asset('/img/bg-black.png') }}"/>
 
         {# Debug Bar #}
         {% if get_env('APP_ENV') == 'dev' %}
@@ -116,7 +115,7 @@
             ] %}
             {% for path in paths %}
                 {% if public_file_exists(path) %}
-                    {% set existing_backgrounds = existing_backgrounds|merge(['url("' ~ path ~ '")']) %}
+                    {% set existing_backgrounds = existing_backgrounds|merge(['url("' ~ asset(path) ~ '")']) %}
                 {% endif %}
             {% endfor %}
             {% if existing_backgrounds is not empty %}
