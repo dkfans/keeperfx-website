@@ -1,8 +1,46 @@
 // Emoji UTF-8 ranges
 var emojiPickerRanges = [
-    [128512, 128591],
-    [9989,9990],
-    [10060,10061]
+
+    // Smileys & Emotion
+    [128512, 128591], // Emoticons (😀 - 🙏)
+    [129296, 129343], // Supplemental Smileys & Hands (🤐 - 🤿)
+    [129392, 129402], // Additional Faces (🥰 - 🥳)
+    [129776, 129784], // Saluting, Melting, Dotted Line, Holding Back Tears (🫠 - 🫶)
+
+    // People & Body (Hands & Gestures)
+    [9994, 9997],     // Fist, Raised Hand, Victory, Writing Hand (✊ - ✍️)
+    [128070, 128080], // Pointing, Thumbs, Clapping, Open Hands (👆 - 👐)
+
+    // Hearts & Symbols
+    [10083, 10085],   // Heart Exclamation & Red Heart (❣️ - ❤️)
+    [128147, 128159], // Beating, Sparkling, Broken, Colored Hearts (💓 - 💟)
+    [129505, 129505], // Orange Heart (🧡)
+    [129653, 129655], // Brown, White, Light Blue, Grey, Pink Hearts (🤎 - 🩷)
+    [9989, 9990],     // White Heavy Check Mark (✅)
+    [10060, 10060],   // Cross Mark (❌)
+    [10067, 10069],   // Question & Exclamation Marks (❓ - ❕)
+    [128293, 128293], // Fire (🔥)
+    [10024, 10024],   // Sparkles (✨)
+    [128175, 128175], // 100 Points (💯)
+
+    // Animals & Nature
+    [128000, 128063], // Animals (🐀 - 🐿️)
+    [129408, 129454], // More Animals (🦀 - 🦮)
+    [127792, 127827], // Plants, Flowers & Fruit (🌰 - 🍓)
+
+    // Food & Drink
+    [127828, 127871], // Meals, Fast Food, Sweets & Drinks (🍔 - 🍾)
+    [129360, 129391], // Croissant, Avocado, Taco, Coffee, etc. (🥐 - 🧋)
+
+    // Activities, Objects & Travel
+    [127904, 127948], // Entertainment, Music & Sports (🎠 - 🏌️)
+    [128640, 128709], // Transport & Vehicles (🚀 - 🛀)
+    [128187, 128252], // Tech, Office & Books (💻 - 📿)
+    [128270, 128276], // Magnifying Glass, Lock, Key, Bell (🔎 - 🔔)
+
+    // Weather & Sky
+    [9728, 9733],     // Sun, Cloud, Umbrella, Snowman, Comet (☀️ - ★)
+    [127744, 127776]  // Cyclone, Rainbow, Moon Phases, Sun (🌀 - 🌠)
 ];
 
 // Variables to temporary hold the comment we are moving
