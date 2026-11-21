@@ -2117,3 +2117,38 @@ div.phpdebugbar-widgets-callgraph pre span {
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.emoji-popover {
+    --bs-popover-max-width: 350px;
+    --bs-popover-body-padding-x: 0;
+    --bs-popover-body-padding-y: 0;
+}
+
+emoji-picker {
+    width: 340px;
+    height: 320px;
+    --border-radius: var(--bs-popover-border-radius);
+
+    /* Transparent picker background (lets Bootstrap's popover background show through) */
+    --background: transparent;
+
+    /* Smaller emoji buttons and icons (defaults are ~1.375rem and ~2rem) */
+    --emoji-size: 1.2rem;
+    --button-size: 1.6rem;
+    --emoji-padding: 0.2rem;
+
+    /* Search bar styling inside emoji-picker */
+    --input-border-color: #333333;
+    --input-border-radius: 0px;
+    /* Modern pill search bar (or 8px to match .form-control) */
+    --input-border-size: 1px;
+    --input-font-color: #ffdec4;
+    --input-placeholder-color: rgba(215, 197, 182, 0.45);
+    --input-padding: 0.4rem 0.9rem;
+    --outline-color: rgba(172, 144, 124, 0.5);
+    --indicator-color: var(--special-text-color);
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/

@@ -45,9 +45,6 @@
         {# Photoswipe CSS #}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.4/photoswipe.min.css" integrity="sha512-LFWtdAXHQuwUGH9cImO9blA3a3GfQNkpF2uRlhaOpSbDevNyK1rmAjs13mtpjvWyi+flP7zYWboqY+8Mkd42xA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
-        {# EmojiButtonList CSS #}
-        <link rel="stylesheet" href="{{ asset('/lib/EmojiButtonList.js/src/emojibuttonlistjs.min.css') }}"/>
-
         {# GitHub's Markdown CSS #}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.9.0/github-markdown-dark.min.css" integrity="sha512-C6KMW/IytTDn1Ol4o9HiDTCiKni7T9zQTSc/iU9RGX6TbrH6ZBkwd+RtyIVlEuJtu4pdunXwpq18/FbY/y3m/A==" crossorigin="anonymous" referrerpolicy="no-referrer">
 
@@ -165,6 +162,9 @@
         {# Photoswipe JS #}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.4/umd/photoswipe.umd.min.js" integrity="sha512-BXwwGU7zCXVgpT2jpXnTbioT9q1Byf7NEXVxovTZPlNvelL2I/4LjOaoiB2a19L+g5za8RbkoJFH4fMPQcjFFw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.4.4/umd/photoswipe-lightbox.umd.min.js" integrity="sha512-D16CBrIrVF48W0Ou0ca3D65JFo/HaEAjTugBXeWS/JH+1KNu54ZOtHPccxJ7PQ44rTItUT6DSI6xNL+U34SuuQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        {# emoji-picker-element #}
+        <script type="module" src="{{ asset('/lib/emoji-picker-element/emoji-picker.min.js') }}"></script>
 
         {# Javascript #}
         {% block body_javascript %}{% endblock %}
