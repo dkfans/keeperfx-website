@@ -9,7 +9,7 @@
                 style="{{ award.badge_css }}"
                 data-bs-toggle="popover"
                 data-bs-placement="top"
-                data-bs-content="<h5>{{ award.name|escape|escape }}</h5>{% if award.tooltip is defined and award.tooltip %}{{ award.tooltip|nl2br }}{% endif %}"
+                data-bs-content="<h5>{{ award.name|escape }}</h5>{% if award.tooltip is defined and award.tooltip %}{{ award.tooltip|nl2br }}{% endif %}"
                 data-bs-html="true"
             >
                 <img src="{{ asset('/img/award/' ~ award.img) }}" alt="{{ award.name }}" class="award-icon"/>

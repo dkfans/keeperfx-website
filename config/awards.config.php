@@ -142,7 +142,7 @@ return [
         ],
 
         'developer' => [
-            'name'      => '</dev>',
+            'name'      => './dev',
             'gap'       => 2,
             'img'       => 'computer-code.png',
             'badge_css' => 'background-color: rgba(0, 0, 0, 0.3); border: 1px solid #444;',
