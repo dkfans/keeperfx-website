@@ -10,7 +10,7 @@ cp cdn.config.yml.example cdn.config.yml
 sed -i 's/^APP_ENV=.*/APP_ENV=dev/' .env
 
 # Generate secrets for the MariaDB database
-sed -i "s/^MYSQL_PASSWORD=.*/MYSQL_PASSWORD=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32)/" .env && \
+sed -i "s/^MYSQL_PASSWORD=.*/MYSQL_PASSWORD=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32)/" .env
 sed -i "s/^MYSQL_ROOT_PASSWORD=.*/MYSQL_ROOT_PASSWORD=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32)/" .env
 
 # Setup mailpit
