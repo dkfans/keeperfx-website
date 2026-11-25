@@ -25,6 +25,8 @@ services:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            # Auto upgrade system  table if MariaDB updates (new image)
+            MARIADB_AUTO_UPGRADE: "1"
         volumes:
             - kfx_database:/var/lib/mysql
         networks:
