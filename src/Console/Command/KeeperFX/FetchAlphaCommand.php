@@ -310,7 +310,9 @@ class FetchAlphaCommand extends Command
                     UnifiedArchive::create(['' => $temp_archive_dir], $temp_archive_path_new, (int) $_ENV['APP_ARCHIVE_COMPRESSION_LEVEL_ALPHA_PATCH']);
                     $output->writeln("[+] Archive created: <info>{$temp_archive_path_new}</info>");
                 } catch (\Exception $ex) {
-                    throw $ex;
+                    $output->writeln('[-] Archive creation Exception: ' . $ex->getMessage());
+
+                    return Command::FAILURE;
                 }
 
                 // Remove output file if it already exists
@@ -337,6 +339,7 @@ class FetchAlphaCommand extends Command
             } catch (\Exception $ex) {
 
                 $output->writeln('[-] <error>Something went wrong</error>');
+                $output->writeln("[-] <error>ERROR:</error> {$ex->getMessage()}");
 
                 // Cleanup if something went wrong
                 $output->writeln('[>] Removing created files and directory...');
