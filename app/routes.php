@@ -397,7 +397,7 @@ $app->group('/api', static function (RouteCollectorProxy $group): void {
     $group->get('/v1/release/{type}/{version:[a-zA-Z0-9\.\-]+}/files', [Api\v1\GameFileController::class, 'listFiles']);
 
     // API: Crash Report
-    $group->post('/v1/crash-report', [Api\v1\CrashReportApiController::class, 'upload']);
+    // $group->post('/v1/crash-report', [Api\v1\CrashReportApiController::class, 'upload']);
 
     // API: Prototype
     $group->get('/v1/prototype/run/{id:\d+}', [Api\v1\PrototypeApiController::class, 'getByRunId']);
