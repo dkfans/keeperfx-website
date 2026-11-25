@@ -27,31 +27,51 @@ function handleSpoilers()
 
 function setImageLoadingHandler(element, fallbackImage, showSpinner = true)
 {
-    function fixBrokenImage(element) {
-        if ($(element).attr('src') !== fallbackImage) {
-            $(element).attr('src', fallbackImage);
+    const $img = $(element);
+
+    // Walk up past inline wrappers (<picture>, <a>) to the nearest block container
+    let $container = $img.parent();
+    while ($container.is('picture, a')) {
+        $container = $container.parent();
+    }
+
+    function fixBrokenImage() {
+        if ($img.attr('src') !== fallbackImage) {
+            $img.attr('src', fallbackImage);
+        } else {
+            $container.find('.spinner').remove();
+            if (addedRelative) {
+                $container.removeClass('position-relative');
+            }
+            $img.fadeTo(0, 1);
         }
     }
 
-    if ($(element)[0].complete) {
-        if($(element)[0].naturalWidth === 0){
-            fixBrokenImage(element);
+    if ($img[0].complete) {
+        if ($img[0].naturalWidth === 0) {
+            fixBrokenImage();
         }
         return;
     }
 
-    $(element).on("error", function() {
-        fixBrokenImage(element);
+    $img.on('error', fixBrokenImage);
+
+    const addedRelative = !$container.hasClass('position-relative');
+
+    $img.on('load', function() {
+        $container.find('.spinner').remove();
+        if (addedRelative) {
+            $container.removeClass('position-relative');
+        }
+        $img.fadeTo(400, 1);
     });
 
-    $(element).on('load', function(e){
-        $(element).parent().find('.lds-ring').remove();
-        $(element).fadeIn();
-    });
-
-    if(showSpinner) {
-        $(element).parent().prepend($('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>'));
-        $(element).hide();
+    if (showSpinner) {
+        if (addedRelative) {
+            $container.addClass('position-relative');
+        }
+        $container.prepend('<div class="spinner position-absolute top-50 start-50 translate-middle"><div class="spinner-border" style="border-width: 0.186rem;" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+        $img.fadeTo(0, 0);
     }
 }
 
