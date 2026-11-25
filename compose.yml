@@ -46,13 +46,14 @@ services:
             - ./docker/php/php.${APP_ENV}.ini:/usr/local/etc/php/conf.d/custom.ini:ro
             - ./docker/php/php-fpm.conf:/usr/local/etc/php-fpm.d/zzz-php-fpm.conf:ro
             - kfx_storage:/app/storage:rw
+            - kfx_php_socket:/var/run/php
         depends_on:
             - redis
             - mariadb
         networks:
             - kfx_network
         healthcheck:
-            test: ["CMD-SHELL", "SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000 || exit 1"]
+            test: ["CMD-SHELL", "SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET cgi-fcgi -bind -connect /var/run/php/php-fpm.sock | grep -q pong || exit 1"]
             interval: 10s
             timeout: 3s
             retries: 3
@@ -68,6 +69,7 @@ services:
             - ./docker/nginx/mime.types:/etc/nginx/mime.types:ro
             - .:/app/www:ro
             - kfx_storage:/app/storage:rw
+            - kfx_php_socket:/var/run/php
         ports:
             - "127.0.0.1:5500:80"
         depends_on:
@@ -123,3 +125,9 @@ volumes:
     kfx_database:
         name: kfx_database
         external: true
+    kfx_php_socket:
+        driver: local
+        driver_opts:
+            type: tmpfs
+            device: tmpfs
+            o: size=10m,mode=0777

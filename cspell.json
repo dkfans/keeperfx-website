@@ -225,6 +225,7 @@
         "threadstats",
         "timeago",
         "TINYINT",
+        "tmpfs",
         "toastr",
         "TRANSLIT",
         "treeview",
