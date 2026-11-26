@@ -21,28 +21,30 @@
             {% endif %}
 
             {# Top banner #}
-            {% set theme = get_env('APP_HOLIDAY_THEME') %}
-            {% if theme is not empty %}
-                {% set base_path = "/holiday-theme/" ~ theme ~ "/img/banner." %}
-                <picture>
-                    {% if public_file_exists(base_path ~ 'jxl') %}
-                        <source type="image/jxl" srcset="{{ base_path }}jxl" width="100%" height="270">
-                    {% endif %}
-                    {% if public_file_exists(base_path ~ 'jpeg') %}
-                        <source type="image/jpeg" srcset="{{ base_path }}jpeg" width="100%" height="270">
-                    {% endif %}
-                    {% if public_file_exists(base_path ~ 'jpg') %}
-                        <source type="image/jpeg" srcset="{{ base_path }}jpg" width="100%" height="270">
-                    {% endif %}
-                    {# PNG Fallback, must be set #}
-                    <img src="{{ base_path }}png" alt="KeeperFX Top Banner" width="100%" height="270">
-                </picture>
-            {% else %}
-                <picture>
-                    <source type="image/jxl" srcset="/img/top-banner.jxl">
-                    <img src="/img/top-banner.png" alt="KeeperFX Top Banner" width="100%" height="270">
-                </picture>
-            {% endif %}
+            <div class="top-banner">
+                {% set theme = get_env('APP_HOLIDAY_THEME') %}
+                {% if theme is not empty %}
+                    {% set base_path = "/holiday-theme/" ~ theme ~ "/img/banner." %}
+                    <picture>
+                        {% if public_file_exists(base_path ~ 'jxl') %}
+                            <source type="image/jxl" srcset="{{ base_path }}jxl">
+                        {% endif %}
+                        {% if public_file_exists(base_path ~ 'jpeg') %}
+                            <source type="image/jpeg" srcset="{{ base_path }}jpeg">
+                        {% endif %}
+                        {% if public_file_exists(base_path ~ 'jpg') %}
+                            <source type="image/jpeg" srcset="{{ base_path }}jpg">
+                        {% endif %}
+                        {# PNG Fallback, must be set #}
+                        <img src="{{ base_path }}png" alt="KeeperFX Top Banner">
+                    </picture>
+                {% else %}
+                    <picture>
+                        <source type="image/jxl" srcset="/img/top-banner.jxl">
+                        <img src="/img/top-banner.png" alt="KeeperFX Top Banner">
+                    </picture>
+                {% endif %}
+            </div>
         </div>
 
         {# 'dev' environment banner #}
