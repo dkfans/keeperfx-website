@@ -10,7 +10,6 @@ use App\Enum\UserRole;
 use App\FlashMessage;
 use App\Helper\IpHelper;
 use Doctrine\ORM\EntityManager;
-use GuzzleHttp\Psr7\LazyOpenStream;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -98,14 +97,12 @@ class WorkshopDownloadController
             }
         }
 
-        // Return download
+        // Return download using X-Accel-Redirect (works for Nginx)
         return $response
             ->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->withHeader('Pragma', 'no-cache')
             ->withHeader('Content-Type', 'application/octet-stream')
-            ->withHeader('Content-Length', (string) $file->getSize())
-            ->withHeader('Content-Transfer-Encoding', 'Binary')
             ->withHeader('Content-Disposition', 'attachment; filename="' . $file->getFilename() . '"')
-            ->withBody(new LazyOpenStream($filepath, 'r'));
+            ->withHeader('X-Accel-Redirect', '/workshop/internal-download/' . $workshop_item->getId() . '/' . $file->getStorageFilename());
     }
 }
