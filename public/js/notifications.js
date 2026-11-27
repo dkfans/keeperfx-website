@@ -71,6 +71,11 @@ $(function(){
                 // var newNotificationCount = $newDropdown.find('.dropdown-item').length - 2;
                 var newNotificationCount = parseInt($html.find('#notificationBadge').text());
 
+                // Make sure new notification count is a valid number
+                if(isNaN(newNotificationCount)){
+                    return;
+                }
+
                 // Make sure our current dropdown is not open
                 // And that there are either less or more notifications now
                 if($dropdownButton.hasClass('show') == false && currentNotificationCount != newNotificationCount){
