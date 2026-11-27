@@ -29,21 +29,30 @@ function setImageLoadingHandler(element, fallbackImage, showSpinner = true)
 {
     const $img = $(element);
 
-    // Walk up past inline wrappers (<picture>, <a>) to the nearest block container
+    // Skip <picture>, and only skip <a> if it's purely inline (no block/flex box of its own)
     let $container = $img.parent();
-    while ($container.is('picture, a')) {
+    if ($container.is('picture')) {
         $container = $container.parent();
+    }
+    if ($container.is('a') && $container.css('display') === 'inline') {
+        $container = $container.parent();
+    }
+
+    const addedRelative = $container.css('position') === 'static';
+
+    function cleanup() {
+        $container.find('.spinner').remove();
+        if (addedRelative) {
+            $container.removeClass('position-relative');
+        }
+        $img.fadeTo(400, 1);
     }
 
     function fixBrokenImage() {
         if ($img.attr('src') !== fallbackImage) {
             $img.attr('src', fallbackImage);
         } else {
-            $container.find('.spinner').remove();
-            if (addedRelative) {
-                $container.removeClass('position-relative');
-            }
-            $img.fadeTo(0, 1);
+            cleanup();
         }
     }
 
@@ -55,16 +64,7 @@ function setImageLoadingHandler(element, fallbackImage, showSpinner = true)
     }
 
     $img.on('error', fixBrokenImage);
-
-    const addedRelative = !$container.hasClass('position-relative');
-
-    $img.on('load', function() {
-        $container.find('.spinner').remove();
-        if (addedRelative) {
-            $container.removeClass('position-relative');
-        }
-        $img.fadeTo(400, 1);
-    });
+    $img.on('load', cleanup);
 
     if (showSpinner) {
         if (addedRelative) {
