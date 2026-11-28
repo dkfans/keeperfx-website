@@ -337,24 +337,27 @@
                     .removeClass("text-danger")
                     .text("");
 
-                const speedTestFile = "/speedtest/10MiB.speedtest.bin";
-                const speedTestFileSize = 10485760;
+                const small_test_file = "/speedtest/256KiB.speedtest.bin";
+                const large_test_file = "/speedtest/10MiB.speedtest.bin";
 
                 async function testTransferSpeed(
                     url,
-                    maxDownloadDuration = 5,
-                    connectionTimeout = 5000,
+                    max_download_duration = 5,
+                    connection_timeout = 8000,
                 ) {
-                    const startTime = performance.now();
-                    let downloadedBytes = 0;
+                    let downloaded_bytes = 0;
+                    let download_start_time = 0;
+                    let reader = null;
+                    let connect_timer = null;
+                    let download_timer = null;
 
                     const controller = new AbortController();
-                    let abortReason = null; // State variable for browser compatibility
+                    let abort_reason = null;
 
-                    const connectTimer = setTimeout(() => {
-                        abortReason = "connection_timeout";
+                    connect_timer = setTimeout(() => {
+                        abort_reason = "connection_timeout";
                         controller.abort();
-                    }, connectionTimeout);
+                    }, connection_timeout);
 
                     try {
                         const response = await fetch(url, {
@@ -363,7 +366,7 @@
                             mode: "cors",
                         });
 
-                        clearTimeout(connectTimer);
+                        clearTimeout(connect_timer);
 
                         if (!response.ok) {
                             return {
@@ -374,31 +377,37 @@
                             };
                         }
 
-                        const downloadTimer = setTimeout(() => {
-                            abortReason = "download_timeout";
-                            controller.abort();
-                        }, maxDownloadDuration * 1000);
+                        // Measure transfer duration after headers arrive so TLS handshake doesn't skew speed
+                        download_start_time = performance.now();
 
-                        const reader = response.body.getReader();
+                        download_timer = setTimeout(async () => {
+                            abort_reason = "download_timeout";
+                            try {
+                                if (reader) await reader.cancel();
+                            } catch (_) {}
+                            controller.abort();
+                        }, max_download_duration * 1000);
+
+                        reader = response.body.getReader();
                         while (true) {
                             const { done, value } = await reader.read();
                             if (done) break;
-                            downloadedBytes += value.length;
+                            downloaded_bytes += value.length;
                         }
 
-                        clearTimeout(downloadTimer);
+                        const duration =
+                            (performance.now() - download_start_time) / 1000;
+                        const speed_mbps = downloaded_bytes / (1024 * 1024) / duration;
 
-                        const endTime = performance.now();
-                        const duration = (endTime - startTime) / 1000;
-                        const speedMBps = downloadedBytes / (1024 * 1024) / duration;
-
-                        return { url, speedMBps, duration, downloadedBytes };
+                        return {
+                            url,
+                            speedMBps: speed_mbps,
+                            duration,
+                            downloadedBytes: downloaded_bytes,
+                        };
                     } catch (error) {
-                        const endTime = performance.now();
-                        const duration = (endTime - startTime) / 1000;
-
                         if (error.name === "AbortError" || controller.signal.aborted) {
-                            if (abortReason === "connection_timeout") {
+                            if (abort_reason === "connection_timeout") {
                                 return {
                                     url,
                                     speedMBps: 0,
@@ -407,18 +416,27 @@
                                 };
                             }
 
-                            if (abortReason === "download_timeout") {
-                                console.log(
-                                    `[SpeedTest] 5s up. JS actually received: ${downloadedBytes} bytes.`,
+                            if (abort_reason === "download_timeout") {
+                                const duration = Math.max(
+                                    (performance.now() - download_start_time) / 1000,
+                                    0.001,
                                 );
-                                const speedMBps =
-                                    downloadedBytes / (1024 * 1024) / duration;
-                                return { url, speedMBps, duration, downloadedBytes };
+                                const speed_mbps =
+                                    downloaded_bytes / (1024 * 1024) / duration;
+                                return {
+                                    url,
+                                    speedMBps: speed_mbps,
+                                    duration,
+                                    downloadedBytes: downloaded_bytes,
+                                };
                             }
                         }
 
                         console.error(`Request failed for ${url}:`, error);
                         return { url, speedMBps: 0, duration: -1, downloadedBytes: 0 };
+                    } finally {
+                        clearTimeout(connect_timer);
+                        clearTimeout(download_timer);
                     }
                 }
 
@@ -431,7 +449,12 @@
 
                     // Test the download speed for this endpoint
                     $("#cdn-speedtest-status").text(`Testing ${data.name}...`);
-                    const result = await testTransferSpeed(data.url + speedTestFile);
+
+                    let result = await testTransferSpeed(data.url + small_test_file);
+
+                    if (result.duration > 0 && result.duration < 0.5) {
+                        result = await testTransferSpeed(data.url + large_test_file);
+                    }
 
                     if (result.duration == -1) {
                         $speed_el.text("Failure").addClass("text-danger");
