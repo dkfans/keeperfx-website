@@ -53,7 +53,7 @@ class ModerateCrashReportController
         TwigEnvironment $twig,
         EntityManager $em,
         FlashMessage $flash,
-        $id,
+        int $id,
     ) {
         // Separated error var
         $error = [
@@ -179,8 +179,8 @@ class ModerateCrashReportController
         $id,
     ) {
         $crash_report = $em->getRepository(CrashReport::class)->find($id);
-        $filename = $crash_report?->getCrashDumpFilename();
-        $extension = \pathinfo((string) $filename, \PATHINFO_EXTENSION);
+        $filename     = $crash_report?->getCrashDumpFilename();
+        $extension    = \pathinfo((string) $filename, \PATHINFO_EXTENSION);
 
         return $this->serveAttachment($response, $flash, $crash_report, 'crash-report-dump', $filename, 'dump.' . ($extension === 'gz' ? 'dmp.gz' : $extension), 'Crash dump');
     }
@@ -193,7 +193,7 @@ class ModerateCrashReportController
         $id,
     ) {
         $crash_report = $em->getRepository(CrashReport::class)->find($id);
-        $filename = $crash_report?->getReplayFilename();
+        $filename     = $crash_report?->getReplayFilename();
 
         return $this->serveAttachment($response, $flash, $crash_report, 'crash-report-replay', $filename, 'replay.' . \pathinfo((string) $filename, \PATHINFO_EXTENSION), 'Replay');
     }
@@ -206,7 +206,7 @@ class ModerateCrashReportController
         $id,
     ) {
         $crash_report = $em->getRepository(CrashReport::class)->find($id);
-        $filename = $crash_report?->getSaveFilename();
+        $filename     = $crash_report?->getSaveFilename();
 
         return $this->serveAttachment($response, $flash, $crash_report, 'crash-report-savefile', $filename, 'save.' . \pathinfo((string) $filename, \PATHINFO_EXTENSION), 'Save file');
     }
