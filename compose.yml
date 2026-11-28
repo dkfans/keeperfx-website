@@ -74,6 +74,7 @@ services:
             - kfx_php_socket:/var/run/php
         ports:
             - "127.0.0.1:5500:80"
+            - "127.0.0.1:5501:8080"
         depends_on:
             - php
         networks:
