@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
-use Slim\Exception\HttpSpecializedException;
+use Slim\Exception\HttpException;
 use Slim\Psr7\Factory\ResponseFactory;
 use Twig\Environment as TwigEnvironment;
 
@@ -28,7 +28,6 @@ class ErrorMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
-
             return $handler->handle($request);
         } catch (\Throwable $ex) {
 
@@ -43,34 +42,11 @@ class ErrorMiddleware implements MiddlewareInterface
                 $json_response = true;
             }
 
-            // Get database connection exception
-            if (
-                $ex instanceof DbalConnectionException
-                || ($ex instanceof DbalPdoException && $ex->getCode() == 2002) // Connection not found
-            ) {
-                $response = $this->response_factory->createResponse(500); // Server error
+            // Log non-HTTP exceptions and 5xx HTTP exceptions (skip 4xx like 404)
+            $is_http_exception = $ex instanceof HttpException;
+            $status_code       = $is_http_exception ? (int) $ex->getCode() : 500;
 
-                if ($json_response == true) {
-                    // Write JSON response
-                    $response->getBody()->write(\json_encode([
-                        'success'    => false,
-                        'error_code' => 500,
-                        'error'      => 'DATABASE_CONNECTION_ERROR',
-                    ]));
-                    $response = $response->withHeader('Content-Type', 'application/json');
-                } else {
-                    // Write hardcoded HTML response
-                    // We can not use Twig here because it uses a database connection (which is probably kind of wrong)
-                    $response->getBody()->write(
-                        \file_get_contents(APP_ROOT . '/views/database-connection-error.html')
-                    );
-                }
-
-                return $response;
-            }
-
-            // Log error if not a normal HTTP exception
-            if ($ex instanceof HttpSpecializedException) {
+            if (!$is_http_exception || $status_code >= 500) {
                 $this->logger->error(
                     \sprintf(
                         "%s: %s in %s:%d\n%s",
@@ -83,45 +59,62 @@ class ErrorMiddleware implements MiddlewareInterface
                 );
             }
 
-            if ($json_response == true) {
+            // Get database connection exception
+            if (
+                $ex instanceof DbalConnectionException
+                || ($ex instanceof DbalPdoException && $ex->getCode() == 2002)
+            ) {
+                $response = $this->response_factory->createResponse(500);
 
-                if (\in_array($ex->getCode(), [403, 404, 405])) {
-                    $response = $this->response_factory->createResponse($ex->getCode());
-                    $response->getBody()->write(\json_encode([
-                        'success'    => false,
-                        'error_code' => $ex->getCode(),
-                        'error'      => match ($ex->getCode()) {
-                            403     => 'FORBIDDEN',
-                            404     => 'NOT_FOUND',
-                            405     => 'METHOD_NOT_ALLOWED',
-                            default => 'UNKNOWN_ERROR',
-                        },
-                    ]));
-                } else {
-                    $response = $this->response_factory->createResponse(500);
+                if ($json_response === true) {
                     $response->getBody()->write(\json_encode([
                         'success'    => false,
                         'error_code' => 500,
-                        'error'      => 'INTERNAL_SERVER_ERROR',
+                        'error'      => 'DATABASE_CONNECTION_ERROR',
                     ]));
-                }
-            } else {
 
-                // Check if HTTP code has a unique error page
-                $template_file = \sprintf('error/%d.html.twig', $ex->getCode());
-                if (\file_exists(APP_ROOT . '/views/' . $template_file)) {
-                    // Show template
-                    $response = $this->response_factory->createResponse($ex->getCode());
-                    $response->getBody()->write(
-                        $this->twig->render($template_file)
-                    );
-                } else {
-                    // Show default template (500 - Server error)
-                    $response = $this->response_factory->createResponse(500);
-                    $response->getBody()->write(
-                        $this->twig->render('error/500.html.twig')
-                    );
+                    return $response->withHeader('Content-Type', 'application/json');
                 }
+
+                // Avoid Twig here because it may touch the database
+                $response->getBody()->write(
+                    \file_get_contents(APP_ROOT . '/views/database-connection-error.html')
+                );
+
+                return $response;
+            }
+
+            if ($json_response === true) {
+                $error_label = $is_http_exception ? match ($status_code) {
+                    403     => 'FORBIDDEN',
+                    404     => 'NOT_FOUND',
+                    405     => 'METHOD_NOT_ALLOWED',
+                    default => null,
+                } : null;
+
+                $response_code = $error_label !== null ? $status_code : 500;
+                $response      = $this->response_factory->createResponse($response_code);
+                $response->getBody()->write(\json_encode([
+                    'success'    => false,
+                    'error_code' => $response_code,
+                    'error'      => $error_label ?? 'INTERNAL_SERVER_ERROR',
+                ]));
+
+                return $response->withHeader('Content-Type', 'application/json');
+            }
+
+            // Check if HTTP code has a unique error page
+            $template_file = \sprintf('error/%d.html.twig', $status_code);
+            if ($is_http_exception && \file_exists(APP_ROOT . '/views/' . $template_file)) {
+                $response = $this->response_factory->createResponse($status_code);
+                $response->getBody()->write(
+                    $this->twig->render($template_file)
+                );
+            } else {
+                $response = $this->response_factory->createResponse(500);
+                $response->getBody()->write(
+                    $this->twig->render('error/500.html.twig')
+                );
             }
 
             return $response;
