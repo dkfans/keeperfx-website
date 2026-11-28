@@ -19,9 +19,28 @@ class ModerateCrashReportController
         TwigEnvironment $twig,
         EntityManager $em,
     ): Response {
+
+        $rows = $em->getConnection()->createQueryBuilder()
+            ->select(
+                'id',
+                'game_version AS gameVersion',
+                'exception_source_function AS exceptionSourceFunction',
+                'created_timestamp AS createdTimestamp',
+                'save_filename AS saveFilename',
+                'crash_dump_filename AS crashDumpFilename',
+                'replay_filename AS replayFilename'
+            )
+            ->from('crash_report') // Verify exact table name if your NamingStrategy differs
+            ->orderBy('id', 'DESC')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        // Cast each row to stdClass so your existing Twig property access works unchanged
+        $crashReports = \array_map(static fn (array $row): \stdClass => (object) $row, $rows);
+
         $response->getBody()->write(
             $twig->render('devcp/crash-report/crash-report.list.devcp.html.twig', [
-                'crash_reports' => $em->getRepository(CrashReport::class)->findBy([], ['id' => 'DESC']),
+                'crash_reports' => $crashReports,
             ])
         );
 
