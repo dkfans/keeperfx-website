@@ -103,7 +103,7 @@ class WorkshopItemController
         $more_items_by_user = [];
         /** @var User $submitter */
         $submitter = $workshop_item->getSubmitter();
-        if (empty($workshop_item->getOriginalAuthor())) {
+        if ($submitter != null && empty($workshop_item->getOriginalAuthor())) {
             $workshop_items       = $submitter->getWorkshopItems();
             $workshop_items_array = [];
             /** @var WorkshopItem $workshop_item2 */
